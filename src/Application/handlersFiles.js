@@ -36,6 +36,25 @@ export function getHandlers(appController) {
 					dispatchEvent('file:opened');
 
 					console.log('File opened successfully:', file.name);
+
+					// Save file handle for persistence (only if we have a file handle)
+					if (appController.fileService.fileHandle) {
+						try {
+							console.log('File handle type:', typeof appController.fileService.fileHandle);
+							console.log('File handle methods:', Object.getOwnPropertyNames(appController.fileService.fileHandle));
+							console.log('Has serialize method:', 'serialize' in appController.fileService.fileHandle);
+							
+							if ('serialize' in appController.fileService.fileHandle) {
+								const serialized = await appController.fileService.fileHandle.serialize();
+								localStorage.setItem('lastFileHandle', JSON.stringify(serialized));
+								console.log('File handle saved for persistence');
+							} else {
+								console.warn('File handle does not support serialize() method');
+							}
+						} catch (error) {
+							console.warn('Could not save file handle:', error);
+						}
+					}
 				} else {
 					console.log('File picker cancelled');
 					// Show splash screen again

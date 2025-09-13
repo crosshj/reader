@@ -60,6 +60,9 @@ export class ApplicationController {
 		// Setup database cleanup functions
 		this.databaseService.setupCleanupFunctions(this.databaseHandlers);
 
+		// Try to restore last opened file
+		await this.tryRestoreLastFile();
+
 		// Simulate some initialization work
 		setTimeout(() => {
 			dispatchEvent('reader:ready');
@@ -84,5 +87,45 @@ export class ApplicationController {
 				console.error('Error handling file open:', error);
 			}
 		};
+	}
+
+	/**
+	 * Try to restore the last opened file
+	 */
+	async tryRestoreLastFile() {
+		// Only try to restore on web platforms (where File System Access API is available)
+		const platform = this.capacitorService.getPlatform();
+		console.log('Current platform:', platform);
+		
+		if (platform !== 'web') {
+			console.log('Skipping file restoration - not on web platform');
+			return;
+		}
+
+		try {
+			const serialized = localStorage.getItem('lastFileHandle');
+			if (!serialized) {
+				return;
+			}
+
+			const handleData = JSON.parse(serialized);
+			const fileHandle = await window.showOpenFilePicker.restore(handleData);
+			
+			// Verify the handle is still valid
+			const file = await fileHandle.getFile();
+			
+			// Set the file handle in the service
+			this.fileService.fileHandle = fileHandle;
+			this.fileService.fileData = file;
+			
+			console.log('Restoring last file:', file.name);
+			
+			// Dispatch file open event to load the file
+			dispatchEvent('ui:openFile', { file });
+		} catch (error) {
+			console.log('Could not restore last file:', error);
+			// Clear invalid handle
+			localStorage.removeItem('lastFileHandle');
+		}
 	}
 }
