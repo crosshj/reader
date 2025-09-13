@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "vite build",
-    "dev": "vite dev",
+    "dev": "vite dev --host",
     "preview": "vite preview",
     "sync": "npm run build && npx cap sync",
     "open:ios": "npx cap open ios",
