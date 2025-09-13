@@ -9,7 +9,10 @@
     "StatusBar": {
       "style": "default",
       "backgroundColor": "transparent",
-      "overlaysWebView": true
+      "overlaysWebView": false
+    },
+    "SplashScreen": {
+      "launchShowDuration": 0
     }
   }
 }

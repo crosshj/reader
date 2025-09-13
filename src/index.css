@@ -52,7 +52,7 @@ body {
 	overflow: hidden;
 }
 
-/* Use Capacitor's safe area handling */
+/* Use Capacitor's safe area handling - apply to body only */
 .platform-ios body,
 .platform-android body {
 	padding-top: env(safe-area-inset-top);
