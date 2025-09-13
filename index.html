@@ -30,7 +30,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: env(safe-area-inset-top, 0px);
+            height: env(safe-area-inset-top, 24px);
             background: #ff0000; /* Red */
             z-index: 1000;
             display: flex;
@@ -38,6 +38,7 @@
             justify-content: center;
             font-size: 12px;
             font-weight: bold;
+            min-height: 24px;
         }
 
         /* Navigation Bar Area (bottom) */
@@ -46,7 +47,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: env(safe-area-inset-bottom, 0px);
+            height: env(safe-area-inset-bottom, 48px);
             background: #00ff00; /* Green */
             z-index: 1000;
             display: flex;
@@ -54,6 +55,7 @@
             justify-content: center;
             font-size: 12px;
             font-weight: bold;
+            min-height: 48px;
         }
 
         /* Left Safe Area */
@@ -72,6 +74,7 @@
             text-orientation: mixed;
             font-size: 10px;
             font-weight: bold;
+            min-width: 0px;
         }
 
         /* Right Safe Area */
@@ -90,15 +93,16 @@
             text-orientation: mixed;
             font-size: 10px;
             font-weight: bold;
+            min-width: 0px;
         }
 
         /* Main Content Area (Safe Area) */
         .main-content {
             position: fixed;
-            top: env(safe-area-inset-top, 0px);
+            top: env(safe-area-inset-top, 24px);
             left: env(safe-area-inset-left, 0px);
             right: env(safe-area-inset-right, 0px);
-            bottom: env(safe-area-inset-bottom, 0px);
+            bottom: env(safe-area-inset-bottom, 48px);
             background: #800080; /* Purple */
             z-index: 1;
             display: flex;
@@ -290,6 +294,20 @@
             console.log('Screen dimensions:', screen.width + 'x' + screen.height);
             console.log('Window dimensions:', window.innerWidth + 'x' + window.innerHeight);
             console.log('Device pixel ratio:', window.devicePixelRatio);
+            
+            // Check if we're in a Capacitor environment
+            console.log('Capacitor available:', typeof window.Capacitor !== 'undefined');
+            console.log('Platform:', window.Capacitor?.getPlatform?.() || 'unknown');
+            
+            // Check for Android-specific properties
+            if (window.Android) {
+                console.log('Android WebView detected');
+            }
+            
+            // Check for iOS-specific properties
+            if (window.webkit) {
+                console.log('WebKit detected');
+            }
         }
 
         // Update on load and resize
