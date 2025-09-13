@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+		/>
+		<title>Reader</title>
+
+		<!-- Theme colors - handled by Capacitor -->
+
+		<!-- Icons - handled by Capacitor native icons -->
+
+		<style>
+			/* Hide content until styles are loaded to prevent FOUC */
+			body {
+				visibility: hidden;
+			}
+			body.styles-loaded {
+				visibility: visible;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Loading indicator -->
+		<div
+			id="loading-indicator"
+			class="loading-indicator"
+		>
+			<div class="loading-spinner"></div>
+			<p>Loading Reader...</p>
+		</div>
+
+		<!-- Main app container -->
+		<div
+			id="app-container"
+			style="display: none"
+		>
+			<!-- App content will be dynamically inserted here -->
+		</div>
+
+		<!-- Handle file opening from system -->
+		<script>
+			// Handle file opening from system
+			window.addEventListener('message', (event) => {
+				if (event.data && event.data.type === 'FILE_OPENED') {
+					console.log('File opened from system:', event.data.file);
+					// Handle the opened file
+					if (window.handleFileOpen) {
+						window.handleFileOpen(event.data.file);
+					}
+				}
+			});
+
+			// Show loading indicator initially
+			document.addEventListener('DOMContentLoaded', () => {
+				const loadingIndicator =
+					document.getElementById('loading-indicator');
+				const appContainer = document.getElementById('app-container');
+
+				// Hide loading indicator and show app after a short delay
+				setTimeout(() => {
+					loadingIndicator.style.display = 'none';
+					appContainer.style.display = 'block';
+				}, 1000);
+			});
+		</script>
+
+		<!-- Main app script -->
+		<script
+			type="module"
+			src="/src/index.js"
+		></script>
+	</body>
+</html>
