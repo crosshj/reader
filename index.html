@@ -30,7 +30,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: env(safe-area-inset-top, 24px);
+            height: var(--status-height, env(safe-area-inset-top, 24px));
             background: #ff0000; /* Red */
             z-index: 1000;
             display: flex;
@@ -47,7 +47,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: env(safe-area-inset-bottom, 48px);
+            height: var(--nav-height, env(safe-area-inset-bottom, 48px));
             background: #00ff00; /* Green */
             z-index: 1000;
             display: flex;
@@ -64,7 +64,7 @@
             top: 0;
             left: 0;
             bottom: 0;
-            width: env(safe-area-inset-left, 0px);
+            width: var(--left-width, env(safe-area-inset-left, 0px));
             background: #0000ff; /* Blue */
             z-index: 999;
             display: flex;
@@ -83,7 +83,7 @@
             top: 0;
             right: 0;
             bottom: 0;
-            width: env(safe-area-inset-right, 0px);
+            width: var(--right-width, env(safe-area-inset-right, 0px));
             background: #ffff00; /* Yellow */
             z-index: 999;
             display: flex;
@@ -99,10 +99,10 @@
         /* Main Content Area (Safe Area) */
         .main-content {
             position: fixed;
-            top: env(safe-area-inset-top, 24px);
-            left: env(safe-area-inset-left, 0px);
-            right: env(safe-area-inset-right, 0px);
-            bottom: env(safe-area-inset-bottom, 48px);
+            top: var(--status-height, env(safe-area-inset-top, 24px));
+            left: var(--left-width, env(safe-area-inset-left, 0px));
+            right: var(--right-width, env(safe-area-inset-right, 0px));
+            bottom: var(--nav-height, env(safe-area-inset-bottom, 48px));
             background: #800080; /* Purple */
             z-index: 1;
             display: flex;
@@ -248,20 +248,74 @@
 
     <script>
         function updateDebugInfo() {
-            // Update safe area dimensions
-            const statusHeight = getComputedStyle(document.documentElement).getPropertyValue('--status-height') || 
-                                window.getComputedStyle(document.querySelector('.status-bar')).height;
-            const navHeight = getComputedStyle(document.documentElement).getPropertyValue('--nav-height') || 
-                             window.getComputedStyle(document.querySelector('.nav-bar')).height;
-            const leftWidth = getComputedStyle(document.documentElement).getPropertyValue('--left-width') || 
-                             window.getComputedStyle(document.querySelector('.safe-left')).width;
-            const rightWidth = getComputedStyle(document.documentElement).getPropertyValue('--right-width') || 
-                              window.getComputedStyle(document.querySelector('.safe-right')).width;
+            // Try to get safe area insets via JavaScript
+            let statusBarHeight = 0;
+            let navBarHeight = 0;
+            let leftInset = 0;
+            let rightInset = 0;
 
-            document.getElementById('status-height').textContent = statusHeight;
-            document.getElementById('nav-height').textContent = navHeight;
-            document.getElementById('left-width').textContent = leftWidth;
-            document.getElementById('right-width').textContent = rightWidth;
+            // Method 1: Try CSS environment variables
+            const statusBarEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)');
+            const navBarEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-bottom)');
+            const leftEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-left)');
+            const rightEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-right)');
+
+            console.log('CSS env values:', { statusBarEnv, navBarEnv, leftEnv, rightEnv });
+
+            // Method 2: Try Capacitor StatusBar plugin
+            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.StatusBar) {
+                try {
+                    window.Capacitor.Plugins.StatusBar.getInfo().then(info => {
+                        console.log('StatusBar info:', info);
+                        if (info.visible) {
+                            statusBarHeight = info.height || 24;
+                            updateSafeAreas();
+                        }
+                    });
+                } catch (e) {
+                    console.log('StatusBar plugin error:', e);
+                }
+            }
+
+            // Method 3: Calculate based on screen vs viewport difference
+            const screenHeight = screen.height;
+            const viewportHeight = window.innerHeight;
+            const screenWidth = screen.width;
+            const viewportWidth = window.innerWidth;
+
+            // If viewport is smaller than screen, we have system UI
+            if (viewportHeight < screenHeight) {
+                const heightDiff = screenHeight - viewportHeight;
+                // Assume bottom nav bar takes more space than top status bar
+                navBarHeight = Math.max(48, heightDiff * 0.7);
+                statusBarHeight = Math.max(24, heightDiff * 0.3);
+            }
+
+            if (viewportWidth < screenWidth) {
+                const widthDiff = screenWidth - viewportWidth;
+                leftInset = widthDiff / 2;
+                rightInset = widthDiff / 2;
+            }
+
+            // Method 4: Use fallback values
+            if (statusBarHeight === 0) statusBarHeight = 24;
+            if (navBarHeight === 0) navBarHeight = 48;
+
+            function updateSafeAreas() {
+                // Update CSS custom properties
+                document.documentElement.style.setProperty('--status-height', statusBarHeight + 'px');
+                document.documentElement.style.setProperty('--nav-height', navBarHeight + 'px');
+                document.documentElement.style.setProperty('--left-width', leftInset + 'px');
+                document.documentElement.style.setProperty('--right-width', rightInset + 'px');
+
+                // Update display values
+                document.getElementById('status-height').textContent = statusBarHeight + 'px';
+                document.getElementById('nav-height').textContent = navBarHeight + 'px';
+                document.getElementById('left-width').textContent = leftInset + 'px';
+                document.getElementById('right-width').textContent = rightInset + 'px';
+            }
+
+            updateSafeAreas();
 
             // Calculate safe area dimensions
             const safeArea = document.querySelector('.main-content');
