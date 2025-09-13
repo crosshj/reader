@@ -39,6 +39,8 @@
             font-size: 12px;
             font-weight: bold;
             min-height: 24px;
+            /* Ensure visibility even if safe area is 0 */
+            height: max(var(--safe-area-inset-top, 0px), 24px);
         }
 
         /* Navigation Bar Area (bottom) */
@@ -56,6 +58,8 @@
             font-size: 12px;
             font-weight: bold;
             min-height: 48px;
+            /* Ensure visibility even if safe area is 0 */
+            height: max(var(--safe-area-inset-bottom, 0px), 48px);
         }
 
         /* Left Safe Area */
@@ -266,6 +270,20 @@
             const rightEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-right)');
 
             console.log('CSS env values (for comparison):', { statusBarEnv, navBarEnv, leftEnv, rightEnv });
+
+            // Check if plugin is working
+            console.log('Plugin detection:');
+            console.log('- Capacitor available:', typeof window.Capacitor !== 'undefined');
+            console.log('- Platform:', window.Capacitor?.getPlatform?.() || 'unknown');
+            console.log('- Safe area plugin available:', typeof window.SafeArea !== 'undefined');
+            
+            // Check computed styles of our colored areas
+            const statusBarEl = document.querySelector('.status-bar');
+            const navBarEl = document.querySelector('.nav-bar');
+            console.log('Status bar computed height:', getComputedStyle(statusBarEl).height);
+            console.log('Nav bar computed height:', getComputedStyle(navBarEl).height);
+            console.log('Status bar element height:', statusBarEl.offsetHeight);
+            console.log('Nav bar element height:', navBarEl.offsetHeight);
 
             // Update display values
             document.getElementById('status-height').textContent = statusBarHeight || '0px';

@@ -5,13 +5,20 @@
   "server": {
     "androidScheme": "https"
   },
+  "android": {
+    "webContentsDebuggingEnabled": true
+  },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 0
     },
     "SafeArea": {
       "enabled": true,
-      "customColorsForSystemBars": false,
+      "customColorsForSystemBars": true,
+      "statusBarColor": "#00000000",
+      "statusBarContent": "light",
+      "navigationBarColor": "#00000000",
+      "navigationBarContent": "light",
       "offset": 0
     }
   }
