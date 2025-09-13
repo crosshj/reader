@@ -4,16 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "echo 'Web assets are ready in www/'",
-    "dev": "echo 'Open www/index.html in a web browser'",
-    "sync": "npx cap sync",
+    "build": "vite build",
+    "dev": "vite dev",
+    "preview": "vite preview",
+    "sync": "npm run build && npx cap sync",
     "open:ios": "npx cap open ios",
     "open:android": "npx cap open android",
     "run:ios": "npx cap run ios",
     "run:android": "npx cap run android",
-    "build:android": "npx cap sync android && cd android && ./gradlew assembleDebug",
-    "build:android-release": "npx cap sync android && cd android && ./gradlew assembleRelease",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:android": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug",
+    "build:android-release": "npm run build && npx cap sync android && cd android && ./gradlew assembleRelease",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +23,15 @@
     "@capacitor/android": "^7.4.3",
     "@capacitor/cli": "^7.4.3",
     "@capacitor/core": "^7.4.3",
-    "@capacitor/ios": "^7.4.3"
+    "@capacitor/ios": "^7.4.3",
+    "sql.js": "^1.13.0"
+  },
+  "devDependencies": {
+    "vite": "^7.0.4",
+    "jest": "^30.0.3",
+    "jest-environment-jsdom": "^30.0.3",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "babel-jest": "^30.0.3"
   }
 }
