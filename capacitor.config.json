@@ -6,13 +6,13 @@
     "androidScheme": "https"
   },
   "plugins": {
-    "StatusBar": {
-      "style": "default",
-      "backgroundColor": "transparent",
-      "overlaysWebView": true
-    },
     "SplashScreen": {
       "launchShowDuration": 0
+    },
+    "SafeArea": {
+      "enabled": true,
+      "customColorsForSystemBars": false,
+      "offset": 0
     }
   }
 }

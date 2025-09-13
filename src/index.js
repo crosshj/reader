@@ -3,23 +3,13 @@ import { dispatchEvent } from './_lib/utils.js';
 
 // Import Capacitor
 import { Capacitor } from '@capacitor/core';
-import { StatusBar, Style } from '@capacitor/status-bar';
 
 // Import controllers
 import { ApplicationController } from './Application/ApplicationController.js';
 import { ReaderController } from './Reader/ReaderController.js';
 
 async function startReader() {
-	// Initialize Capacitor status bar
-	if (Capacitor.isNativePlatform()) {
-		try {
-			await StatusBar.setStyle({ style: Style.Default });
-			await StatusBar.setBackgroundColor({ color: 'transparent' });
-			await StatusBar.setOverlaysWebView({ overlay: false });
-		} catch (error) {
-			console.warn('Failed to configure status bar:', error);
-		}
-	}
+	// Status bar configuration is now handled by @capacitor-community/safe-area plugin
 
 	// Initialize controllers
 	const applicationController = new ApplicationController();
