@@ -6,6 +6,7 @@ import { Capacitor } from '@capacitor/core';
 import { App } from '@capacitor/app';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { FileOpener } from '@capacitor-community/file-opener';
 import { initializeSafeAreas } from './safeAreas.js';
 
 export class CapacitorService {
@@ -85,18 +86,34 @@ export class CapacitorService {
 					});
 				} else if (url.startsWith('content://')) {
 					// Handle content:// URLs (from file managers)
-					// For now, we'll try to read it as a file
-					// This might need additional permissions or plugins
+					// Use FileOpener to read the content
 					try {
-						fileContent = await Filesystem.readFile({
-							path: url,
-							directory: Directory.External
+						alert(`Content URI detected: ${url}\n\nAttempting to read file...`);
+						
+						// Try to open the file with FileOpener
+						const result = await FileOpener.open({
+							uri: url,
+							contentType: 'application/octet-stream'
 						});
-						fileName = url.split('/').pop() || 'file.smartText';
+						
+						alert(`FileOpener result: ${JSON.stringify(result)}`);
+						
+						// For now, create a placeholder file object
+						// In a real implementation, we'd need to read the actual content
+						const file = {
+							name: url.split('/').pop() || 'file.smartText',
+							path: url,
+							content: new ArrayBuffer(0),
+							type: 'application/octet-stream'
+						};
+						this.dispatchFileOpenEvent(file);
+						return;
 					} catch (error) {
+						alert(`Error reading content URI: ${error.message}`);
+						
 						// Fallback: create a placeholder file object
 						const file = {
-							name: 'file.smartText',
+							name: url.split('/').pop() || 'file.smartText',
 							path: url,
 							content: new ArrayBuffer(0),
 							type: 'application/octet-stream'
