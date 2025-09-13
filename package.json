@@ -24,14 +24,15 @@
     "@capacitor/cli": "^7.4.3",
     "@capacitor/core": "^7.4.3",
     "@capacitor/ios": "^7.4.3",
+    "@capacitor/status-bar": "^7.0.3",
     "sql.js": "^1.13.0"
   },
   "devDependencies": {
-    "vite": "^7.0.4",
-    "jest": "^30.0.3",
-    "jest-environment-jsdom": "^30.0.3",
     "@babel/core": "^7.23.0",
     "@babel/preset-env": "^7.23.0",
-    "babel-jest": "^30.0.3"
+    "babel-jest": "^30.0.3",
+    "jest": "^30.0.3",
+    "jest-environment-jsdom": "^30.0.3",
+    "vite": "^7.0.4"
   }
 }
