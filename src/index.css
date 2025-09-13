@@ -40,11 +40,21 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+/* Ensure the area behind system bars matches your app background */
+html {
+	background: var(--bg);
+}
+
 body {
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
+	height: 100vh; /* Full viewport height - background bleeds into system areas */
 	overflow: hidden;
+	/* Add padding to avoid interferences with system bars */
+	padding-top: env(safe-area-inset-top);
+	padding-bottom: env(safe-area-inset-bottom);
+	padding-left: env(safe-area-inset-left);
+	padding-right: env(safe-area-inset-right);
 }
 
 /* =====================
