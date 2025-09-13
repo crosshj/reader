@@ -1,383 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Safe Area Debug Tool</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+		/>
+		<title>Reader</title>
 
-        html, body {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
+		<!-- Theme colors - handled by Capacitor -->
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #000;
-            color: white;
-            position: relative;
-        }
+		<!-- Icons - handled by Capacitor native icons -->
 
-        /* Status Bar Area (top) */
-        .status-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--status-height, env(safe-area-inset-top, 24px));
-            background: #ff0000; /* Red */
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            min-height: 24px;
-        }
+		<style>
+			/* Hide content until styles are loaded to prevent FOUC */
+			body {
+				visibility: hidden;
+			}
+			body.styles-loaded {
+				visibility: visible;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Loading indicator -->
+		<div
+			id="loading-indicator"
+			class="loading-indicator"
+		>
+			<div class="loading-spinner"></div>
+			<p>Loading Reader...</p>
+		</div>
 
-        /* Navigation Bar Area (bottom) */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: var(--nav-height, env(safe-area-inset-bottom, 48px));
-            background: #00ff00; /* Green */
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            min-height: 48px;
-        }
+		<!-- Main app container -->
+		<div
+			id="app-container"
+			style="display: none"
+		>
+			<!-- App content will be dynamically inserted here -->
+		</div>
 
-        /* Left Safe Area */
-        .safe-left {
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: var(--left-width, env(safe-area-inset-left, 0px));
-            background: #0000ff; /* Blue */
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            font-size: 10px;
-            font-weight: bold;
-            min-width: 0px;
-        }
+		<!-- Handle file opening from system -->
+		<script>
+			// Handle file opening from system
+			window.addEventListener('message', (event) => {
+				if (event.data && event.data.type === 'FILE_OPENED') {
+					console.log('File opened from system:', event.data.file);
+					// Handle the opened file
+					if (window.handleFileOpen) {
+						window.handleFileOpen(event.data.file);
+					}
+				}
+			});
 
-        /* Right Safe Area */
-        .safe-right {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: var(--right-width, env(safe-area-inset-right, 0px));
-            background: #ffff00; /* Yellow */
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            font-size: 10px;
-            font-weight: bold;
-            min-width: 0px;
-        }
+			// Show loading indicator initially
+			document.addEventListener('DOMContentLoaded', () => {
+				const loadingIndicator =
+					document.getElementById('loading-indicator');
+				const appContainer = document.getElementById('app-container');
 
-        /* Main Content Area (Safe Area) */
-        .main-content {
-            position: fixed;
-            top: var(--status-height, env(safe-area-inset-top, 24px));
-            left: var(--left-width, env(safe-area-inset-left, 0px));
-            right: var(--right-width, env(safe-area-inset-right, 0px));
-            bottom: var(--nav-height, env(safe-area-inset-bottom, 48px));
-            background: #800080; /* Purple */
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
-        }
+				// Hide loading indicator and show app after a short delay
+				setTimeout(() => {
+					loadingIndicator.style.display = 'none';
+					appContainer.style.display = 'block';
+				}, 1000);
+			});
+		</script>
 
-        /* Body Area (Full Screen) */
-        .body-area {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #ffa500; /* Orange */
-            z-index: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        /* Info Panel */
-        .info-panel {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            margin: 10px;
-            max-width: 90%;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .info-item {
-            margin: 5px 0;
-            padding: 5px;
-            border-radius: 3px;
-        }
-
-        .status-bar-info { background: rgba(255, 0, 0, 0.3); }
-        .nav-bar-info { background: rgba(0, 255, 0, 0.3); }
-        .safe-left-info { background: rgba(0, 0, 255, 0.3); }
-        .safe-right-info { background: rgba(255, 255, 0, 0.3); }
-        .main-content-info { background: rgba(128, 0, 128, 0.3); }
-        .body-area-info { background: rgba(255, 165, 0, 0.3); }
-
-        /* Debug Info */
-        .debug-info {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 10px;
-            z-index: 1001;
-            max-width: 200px;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 480px) {
-            .info-panel {
-                font-size: 10px;
-                padding: 15px;
-            }
-            
-            .debug-info {
-                font-size: 8px;
-                padding: 8px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Status Bar Area -->
-    <div class="status-bar">
-        STATUS BAR<br>
-        <span id="status-height">0px</span>
-    </div>
-
-    <!-- Navigation Bar Area -->
-    <div class="nav-bar">
-        NAV BAR<br>
-        <span id="nav-height">0px</span>
-    </div>
-
-    <!-- Left Safe Area -->
-    <div class="safe-left">
-        LEFT<br>
-        <span id="left-width">0px</span>
-    </div>
-
-    <!-- Right Safe Area -->
-    <div class="safe-right">
-        RIGHT<br>
-        <span id="right-width">0px</span>
-    </div>
-
-    <!-- Main Content Area (Safe Area) -->
-    <div class="main-content">
-        <div class="info-panel">
-            <h2>SAFE AREA CONTENT</h2>
-            <div class="info-item main-content-info">
-                <strong>This is your safe area</strong><br>
-                Content here should be visible and accessible
-            </div>
-            <div class="info-item">
-                <strong>Dimensions:</strong><br>
-                <span id="safe-width">0px</span> × <span id="safe-height">0px</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Body Area (Full Screen) -->
-    <div class="body-area">
-        <div class="info-panel">
-            <h2>FULL BODY AREA</h2>
-            <div class="info-item body-area-info">
-                <strong>This covers the entire screen</strong><br>
-                Including status bar and navigation bar areas
-            </div>
-            <div class="info-item">
-                <strong>Dimensions:</strong><br>
-                <span id="body-width">0px</span> × <span id="body-height">0px</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Debug Info Panel -->
-    <div class="debug-info">
-        <div><strong>DEBUG INFO</strong></div>
-        <div>Screen: <span id="screen-width">0</span>×<span id="screen-height">0</span></div>
-        <div>Viewport: <span id="viewport-width">0</span>×<span id="viewport-height">0</span></div>
-        <div>Device Pixel Ratio: <span id="dpr">1</span></div>
-        <div>Orientation: <span id="orientation">portrait</span></div>
-        <div>User Agent: <span id="user-agent">Unknown</span></div>
-    </div>
-
-    <script>
-        function updateDebugInfo() {
-            // Try to get safe area insets via JavaScript
-            let statusBarHeight = 0;
-            let navBarHeight = 0;
-            let leftInset = 0;
-            let rightInset = 0;
-
-            // Method 1: Try CSS environment variables
-            const statusBarEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)');
-            const navBarEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-bottom)');
-            const leftEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-left)');
-            const rightEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-right)');
-
-            console.log('CSS env values:', { statusBarEnv, navBarEnv, leftEnv, rightEnv });
-
-            // Method 2: Try Capacitor StatusBar plugin
-            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.StatusBar) {
-                try {
-                    window.Capacitor.Plugins.StatusBar.getInfo().then(info => {
-                        console.log('StatusBar info:', info);
-                        if (info.visible) {
-                            statusBarHeight = info.height || 24;
-                            updateSafeAreas();
-                        }
-                    });
-                } catch (e) {
-                    console.log('StatusBar plugin error:', e);
-                }
-            }
-
-            // Method 3: Calculate based on screen vs viewport difference
-            const screenHeight = screen.height;
-            const viewportHeight = window.innerHeight;
-            const screenWidth = screen.width;
-            const viewportWidth = window.innerWidth;
-
-            // If viewport is smaller than screen, we have system UI
-            if (viewportHeight < screenHeight) {
-                const heightDiff = screenHeight - viewportHeight;
-                // Assume bottom nav bar takes more space than top status bar
-                navBarHeight = Math.max(48, heightDiff * 0.7);
-                statusBarHeight = Math.max(24, heightDiff * 0.3);
-            }
-
-            if (viewportWidth < screenWidth) {
-                const widthDiff = screenWidth - viewportWidth;
-                leftInset = widthDiff / 2;
-                rightInset = widthDiff / 2;
-            }
-
-            // Method 4: Use fallback values
-            if (statusBarHeight === 0) statusBarHeight = 24;
-            if (navBarHeight === 0) navBarHeight = 48;
-
-            function updateSafeAreas() {
-                // Update CSS custom properties
-                document.documentElement.style.setProperty('--status-height', statusBarHeight + 'px');
-                document.documentElement.style.setProperty('--nav-height', navBarHeight + 'px');
-                document.documentElement.style.setProperty('--left-width', leftInset + 'px');
-                document.documentElement.style.setProperty('--right-width', rightInset + 'px');
-
-                // Update display values
-                document.getElementById('status-height').textContent = statusBarHeight + 'px';
-                document.getElementById('nav-height').textContent = navBarHeight + 'px';
-                document.getElementById('left-width').textContent = leftInset + 'px';
-                document.getElementById('right-width').textContent = rightInset + 'px';
-            }
-
-            updateSafeAreas();
-
-            // Calculate safe area dimensions
-            const safeArea = document.querySelector('.main-content');
-            const safeRect = safeArea.getBoundingClientRect();
-            document.getElementById('safe-width').textContent = Math.round(safeRect.width) + 'px';
-            document.getElementById('safe-height').textContent = Math.round(safeRect.height) + 'px';
-
-            // Calculate body dimensions
-            const bodyArea = document.querySelector('.body-area');
-            const bodyRect = bodyArea.getBoundingClientRect();
-            document.getElementById('body-width').textContent = Math.round(bodyRect.width) + 'px';
-            document.getElementById('body-height').textContent = Math.round(bodyRect.height) + 'px';
-
-            // Update debug info
-            document.getElementById('screen-width').textContent = screen.width;
-            document.getElementById('screen-height').textContent = screen.height;
-            document.getElementById('viewport-width').textContent = window.innerWidth;
-            document.getElementById('viewport-height').textContent = window.innerHeight;
-            document.getElementById('dpr').textContent = window.devicePixelRatio;
-            document.getElementById('orientation').textContent = screen.orientation ? screen.orientation.type : 'unknown';
-            document.getElementById('user-agent').textContent = navigator.userAgent.substring(0, 50) + '...';
-
-            // Log CSS environment variables
-            console.log('=== SAFE AREA DEBUG INFO ===');
-            console.log('safe-area-inset-top:', getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)'));
-            console.log('safe-area-inset-bottom:', getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-bottom)'));
-            console.log('safe-area-inset-left:', getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-left)'));
-            console.log('safe-area-inset-right:', getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-right)'));
-            console.log('Viewport fit:', getComputedStyle(document.documentElement).getPropertyValue('viewport-fit'));
-            console.log('Screen dimensions:', screen.width + 'x' + screen.height);
-            console.log('Window dimensions:', window.innerWidth + 'x' + window.innerHeight);
-            console.log('Device pixel ratio:', window.devicePixelRatio);
-            
-            // Check if we're in a Capacitor environment
-            console.log('Capacitor available:', typeof window.Capacitor !== 'undefined');
-            console.log('Platform:', window.Capacitor?.getPlatform?.() || 'unknown');
-            
-            // Check for Android-specific properties
-            if (window.Android) {
-                console.log('Android WebView detected');
-            }
-            
-            // Check for iOS-specific properties
-            if (window.webkit) {
-                console.log('WebKit detected');
-            }
-        }
-
-        // Update on load and resize
-        document.addEventListener('DOMContentLoaded', updateDebugInfo);
-        window.addEventListener('resize', updateDebugInfo);
-        window.addEventListener('orientationchange', () => {
-            setTimeout(updateDebugInfo, 100);
-        });
-
-        // Update every second to catch any dynamic changes
-        setInterval(updateDebugInfo, 1000);
-
-        // Add touch events for testing
-        document.addEventListener('touchstart', (e) => {
-            console.log('Touch at:', e.touches[0].clientX, e.touches[0].clientY);
-        });
-    </script>
-</body>
+		<!-- Main app script -->
+		<script
+			type="module"
+			src="/src/index.js"
+		></script>
+	</body>
 </html>
