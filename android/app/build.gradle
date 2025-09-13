@@ -7,8 +7,8 @@ android {
         applicationId "com.example.reader"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode project.hasProperty('devBuild') ? (int)(System.currentTimeMillis() / 1000) : 1
+        versionName project.hasProperty('devBuild') ? "dev-" + new Date().format('yyyyMMdd-HHmmss') : "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -27,15 +27,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-}
-
-// Handle version code overrides
-if (project.hasProperty('android.injected.version.code')) {
-    android.defaultConfig.versionCode android.injected.version.code
-}
-if (project.hasProperty('devBuild')) {
-    android.defaultConfig.versionCode (int)(System.currentTimeMillis() / 1000)
-    android.defaultConfig.versionName "dev-" + new Date().format('yyyyMMdd-HHmmss')
 }
 
 repositories {
