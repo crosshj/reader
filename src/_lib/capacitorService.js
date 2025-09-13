@@ -47,18 +47,17 @@ export class CapacitorService {
 
 		// Listen for app state changes
 		App.addListener('appStateChange', ({ isActive }) => {
-			console.log('App state changed. Is active?', isActive);
+			// App state changed
 		});
 
 		// Listen for app URL opening (for file associations)
 		App.addListener('appUrlOpen', async (data) => {
-			console.log('App opened with URL:', data.url);
+			alert(`File opened! URL: ${data.url}`);
 			await this.handleAppUrlOpen(data.url);
 		});
 
 		// Listen for resume events (when app comes back from background)
 		App.addListener('resume', async () => {
-			console.log('App resumed');
 			await this.checkForFileToOpen();
 		});
 	}
@@ -69,35 +68,57 @@ export class CapacitorService {
 	 */
 	async handleAppUrlOpen(url) {
 		try {
-			console.log('Handling app URL open:', url);
 			
 			// Check if this is a file URL
 			if (url.startsWith('file://') || url.startsWith('content://')) {
-				// Extract file path from URL
-				let filePath = url;
-				if (url.startsWith('file://')) {
-					filePath = url.replace('file://', '');
-				}
+				let fileContent;
+				let fileName = 'unknown.smartText';
 				
-				// Read the file content
-				const fileContent = await Filesystem.readFile({
-					path: filePath,
-					directory: Directory.External
-				});
+				if (url.startsWith('file://')) {
+					// Handle file:// URLs
+					const filePath = url.replace('file://', '');
+					fileName = filePath.split('/').pop();
+					
+					fileContent = await Filesystem.readFile({
+						path: filePath,
+						directory: Directory.External
+					});
+				} else if (url.startsWith('content://')) {
+					// Handle content:// URLs (from file managers)
+					// For now, we'll try to read it as a file
+					// This might need additional permissions or plugins
+					try {
+						fileContent = await Filesystem.readFile({
+							path: url,
+							directory: Directory.External
+						});
+						fileName = url.split('/').pop() || 'file.smartText';
+					} catch (error) {
+						// Fallback: create a placeholder file object
+						const file = {
+							name: 'file.smartText',
+							path: url,
+							content: new ArrayBuffer(0),
+							type: 'application/octet-stream'
+						};
+						this.dispatchFileOpenEvent(file);
+						return;
+					}
+				}
 				
 				// Create a file object
 				const file = {
-					name: filePath.split('/').pop(),
-					path: filePath,
+					name: fileName,
+					path: url,
 					content: fileContent.data,
-					type: 'text/plain'
+					type: 'application/octet-stream'
 				};
 				
 				// Dispatch file open event
 				this.dispatchFileOpenEvent(file);
 			}
 		} catch (error) {
-			console.error('Error handling app URL open:', error);
+			// Error handling
 		}
 	}
 
@@ -107,7 +128,6 @@ export class CapacitorService {
 	async checkForFileToOpen() {
 		// This could be used to check for files in shared storage or other locations
 		// For now, it's a placeholder
-		console.log('Checking for files to open...');
 	}
 
 	/**
