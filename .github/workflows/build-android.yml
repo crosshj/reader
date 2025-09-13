@@ -52,34 +52,60 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x android/gradlew
       
-    - name: Build APK
+    - name: Generate build info
+      run: |
+        echo "BUILD_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
+        echo "BUILD_DATE=$(date -u +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+        echo "COMMIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
+        
+    - name: Build APK with unique version
       run: |
         cd android
-        ./gradlew assembleDebug
+        # Use timestamp as version code to ensure unique builds
+        ./gradlew assembleDebug -PdevBuild=true
+        
+    - name: Rename APK with build info
+      run: |
+        cd android/app/build/outputs/apk/debug
+        cp app-debug.apk reader-app-build-${{ github.run_number }}-${{ env.BUILD_DATE }}.apk
         
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
-        name: reader-app-debug
-        path: android/app/build/outputs/apk/debug/app-debug.apk
+        name: reader-app-debug-${{ github.run_number }}
+        path: android/app/build/outputs/apk/debug/reader-app-build-${{ github.run_number }}-${{ env.BUILD_DATE }}.apk
         retention-days: 30
         
     - name: Create Release (on push to main)
       if: github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v1
       with:
-        files: android/app/build/outputs/apk/debug/app-debug.apk
+        files: android/app/build/outputs/apk/debug/reader-app-build-${{ github.run_number }}-${{ env.BUILD_DATE }}.apk
         tag_name: v${{ github.run_number }}
         name: Reader App v${{ github.run_number }}
         body: |
-          Android APK build from commit ${{ github.sha }}
+          ## Reader App - Build ${{ github.run_number }}
           
-          **Download the APK** from the assets below and install on your Android device.
+          **Build Date:** ${{ env.BUILD_DATE }}  
+          **Commit:** ${{ github.sha }}  
+          **Version Code:** Timestamp-based (always installs over existing app)
           
-          **Installation instructions:**
-          1. Download the APK file
-          2. Enable "Install from unknown sources" in your Android settings
-          3. Install the APK
+          ### Installation Instructions
+          
+          1. **Download the APK** from the assets below
+          2. **Enable "Install from unknown sources"** in your Android settings:
+             - Go to Settings → Security → Unknown Sources (or Install unknown apps)
+             - Enable for your file manager/browser
+          3. **Install the APK** - it will automatically overwrite any existing version
+          
+          ### What's New
+          - This build uses a unique version code based on build timestamp
+          - No need to uninstall previous versions
+          - Safe area insets properly configured for system bars
+          
+          ### Troubleshooting
+          - If installation fails, try: `adb install -r filename.apk`
+          - For development: Use `npm run build:android-dev` locally
         draft: false
         prerelease: false
       env:

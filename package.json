@@ -13,6 +13,11 @@
     "run:ios": "npx cap run ios",
     "run:android": "npx cap run android",
     "build:android": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug",
+    "build:android-update": "node update-version.js && npm run build && npx cap sync android && cd android && ./gradlew assembleDebug",
+    "build:android-dev": "npm run build && npx cap sync android && cd android && ./gradlew assembleDebug -PdevBuild=true",
+    "install:android": "npm run build:android && adb install -r android/app/build/outputs/apk/debug/app-debug.apk",
+    "run:android-dev": "npm run build && npx cap run android --target=emulator",
+    "run:android-device": "npm run build && npx cap run android --target=device",
     "build:android-release": "npm run build && npx cap sync android && cd android && ./gradlew assembleRelease",
     "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },

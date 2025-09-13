@@ -9,6 +9,15 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        // Auto-increment version code for debug builds
+        if (project.hasProperty('android.injected.version.code')) {
+            versionCode android.injected.version.code
+        }
+        // For development: use timestamp as version code
+        if (project.hasProperty('devBuild')) {
+            versionCode (int)(System.currentTimeMillis() / 1000)
+            versionName "dev-" + new Date().format('yyyyMMdd-HHmmss')
+        }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -17,6 +26,11 @@ android {
         }
     }
     buildTypes {
+        debug {
+            // Allow installation over existing app
+            applicationIdSuffix ""
+            versionNameSuffix "-debug"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

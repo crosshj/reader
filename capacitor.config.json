@@ -1,6 +1,6 @@
 {
   "appId": "com.example.reader",
-  "appName": "Reader - SmartText",
+  "appName": "Reader",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"
