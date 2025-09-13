@@ -14,5 +14,13 @@
     "SplashScreen": {
       "launchShowDuration": 0
     }
+  },
+  "ios": {
+    "contentInset": "automatic"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true
   }
 }

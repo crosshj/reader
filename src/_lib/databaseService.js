@@ -1769,4 +1769,44 @@ export class DatabaseService {
 			throw error;
 		}
 	}
+
+	/**
+	 * Setup database cleanup functions on window object for easy access
+	 * @param {Object} handlers - Database handlers object
+	 */
+	setupCleanupFunctions(handlers) {
+		window.dbCleanup = {
+			stats: async () => {
+				await handlers.handleGetDatabaseStats();
+			},
+			cleanup: async () => {
+				await handlers.handleCleanupDatabase();
+			},
+			removeTables: async () => {
+				await handlers.handleRemoveUnusedTables();
+			},
+			tables: () => {
+				if (this.isLoaded()) {
+					const tables = this.getTableNames();
+					console.log('📊 Database Tables:', tables);
+					return tables;
+				} else {
+					console.log('❌ No database loaded');
+					return [];
+				}
+			},
+		};
+
+		console.log(
+			'🔧 Database cleanup functions available on window.dbCleanup:'
+		);
+		console.log('  - window.dbCleanup.tables() - List all tables');
+		console.log('  - window.dbCleanup.stats() - Get database statistics');
+		console.log(
+			'  - window.dbCleanup.cleanup() - Clean up database (VACUUM + ANALYZE)'
+		);
+		console.log(
+			'  - window.dbCleanup.removeTables() - Remove unused tables'
+		);
+	}
 }
