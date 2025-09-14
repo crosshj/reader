@@ -14,7 +14,7 @@ export class ReaderController {
 	}
 
 	setupEventListeners() {
-		addEventListener('reader:ready', () => this.ui.showContent());
+		addEventListener('reader:ready', () => this.handleReaderReady());
 
 		const uiClickHandlers = {
 			'#hamburger-menu': () => this.ui.toggleHamburgerMenu(),
@@ -24,6 +24,8 @@ export class ReaderController {
 			'#open-file-btn': () => dispatchEvent('ui:openFile'),
 			'#create-file-btn': () => dispatchEvent('ui:createFile'),
 			'#menu-edit-metadata': () => this.ui.showMetadataEditForm(),
+			'#menu-save-file': this.handleMenuSaveFile,
+			'#menu-close-file': this.handleMenuCloseFile,
 			'#add-item-btn': () => this.ui.showAddForm(),
 			'.edit-btn': (e) => this.ui.showEditForm(e.target.dataset.id),
 			'.delete-btn': (e) =>
@@ -151,4 +153,29 @@ export class ReaderController {
 		this.ui.hideHamburgerMenu();
 		dispatchEvent('ui:createFile');
 	};
+
+	handleMenuSaveFile = () => {
+		this.ui.hideHamburgerMenu();
+		dispatchEvent('ui:saveFile');
+	};
+
+	handleMenuCloseFile = () => {
+		this.ui.hideHamburgerMenu();
+		dispatchEvent('ui:closeFile');
+	};
+
+	/**
+	 * Handle reader ready event - check if there's a file to restore before showing splash
+	 */
+	handleReaderReady() {
+		// Check if there's a persisted file to restore
+		const hasPersistedFile = localStorage.getItem('persistedFileContent') && localStorage.getItem('persistedFileName');
+		
+		if (hasPersistedFile) {
+			// Don't show splash screen - wait for file restoration
+			// The ApplicationController will restore the file and trigger db:state event
+		} else {
+			this.ui.showContent();
+		}
+	}
 }

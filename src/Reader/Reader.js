@@ -259,16 +259,25 @@ export class Reader {
 	showLoadingState(message = 'Loading...') {
 		const content = this.container.querySelector('.reader-content');
 		if (content) {
-			content.innerHTML = html`
-				<div class="loading-state">
-					<div class="loading-spinner"></div>
-					<p>${message}</p>
-				</div>
-			`;
+			if (message && message.trim() !== '') {
+				content.innerHTML = html`
+					<div class="loading-state">
+						<div class="loading-spinner"></div>
+						<p>${message}</p>
+					</div>
+				`;
+			} else {
+				// Clear loading state - restore previous content
+				// This will be handled by the normal UI flow
+				content.innerHTML = '';
+			}
 		}
 	}
 
+
 	showDatabaseState({ action, state, metadata, message }) {
+		
+		
 		// Store current state and schema for editing
 		this.currentState = state;
 		this.currentSchema = metadata?.schema;
@@ -287,6 +296,7 @@ export class Reader {
 			}
 			// Update filter icons
 			this.updateFilterIcons();
+		} else {
 		}
 	}
 
@@ -821,7 +831,13 @@ export class Reader {
 						  `
 						: ''}
 					${this.currentSchema?.fields
-						?.filter((field) => field.name !== 'id') // Exclude ID field from form
+						?.filter((field) => {
+							// Exclude ID field from form
+							if (field.name === 'id') return false;
+							// Exclude timestamp fields from both add and edit modes
+							if (field.name === 'created_at' || field.name === 'modified_at') return false;
+							return true;
+						})
 						?.map(
 							(field) => html`
 								<div class="form-field">
@@ -1043,6 +1059,47 @@ export class Reader {
 									></path>
 								</svg>
 								<span>Edit Database Info</span>
+							</button>
+							<button
+								id="menu-save-file"
+								class="menu-item"
+							>
+								<svg
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<path
+										d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+									></path>
+									<polyline points="17,21 17,13 7,13 7,21"></polyline>
+									<polyline points="7,3 7,8 15,8"></polyline>
+								</svg>
+								<span>Save File</span>
+							</button>
+							<button
+								id="menu-close-file"
+								class="menu-item"
+							>
+								<svg
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<path
+										d="M18 6L6 18"
+									></path>
+									<path
+										d="M6 6l12 12"
+									></path>
+								</svg>
+								<span>Close File</span>
 							</button>
 					  `
 					: ''}

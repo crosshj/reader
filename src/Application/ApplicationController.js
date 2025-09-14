@@ -2,6 +2,7 @@ import { dispatchEvent, addEventListener } from '../_lib/utils.js';
 import { FileService } from '../_lib/fileService.js';
 import { DatabaseService } from '../_lib/databaseService.js';
 import { CapacitorService } from '../_lib/capacitorService.js';
+import { PersistenceService } from '../_lib/persistenceService.js';
 import { getHandlers as getFileHandlers } from './handlersFiles.js';
 import { getHandlers as getDatabaseHandlers } from './handlersDatabase.js';
 
@@ -10,17 +11,23 @@ export class ApplicationController {
 		this.fileService = new FileService();
 		this.databaseService = new DatabaseService();
 		this.capacitorService = new CapacitorService();
+		this.persistenceService = new PersistenceService(this.databaseService);
 		this.fileHandlers = getFileHandlers(this);
 		this.databaseHandlers = getDatabaseHandlers(this);
+		this.currentState = null;
+		this.currentSchema = null;
 		this.setupEventListeners();
 	}
 
 	setupEventListeners() {
 		addEventListener('app:init', this.onAppInit.bind(this));
+		addEventListener('reader:ready', this.onReaderReady.bind(this));
 
 		// File operation event handlers
 		addEventListener('ui:openFile', this.fileHandlers.handleOpenFile);
 		addEventListener('ui:createFile', this.fileHandlers.handleCreateFile);
+		addEventListener('ui:saveFile', this.fileHandlers.handleSaveFile);
+		addEventListener('ui:closeFile', this.handleCloseFile.bind(this));
 
 		// Database operation event handlers
 		addEventListener(
@@ -43,6 +50,13 @@ export class ApplicationController {
 			'ui:bulkUpsert',
 			this.databaseHandlers.handleBulkUpsert
 		);
+
+		// Track database state for UI restoration
+		addEventListener('db:state', (e) => {
+			const { state, metadata } = e.detail;
+			this.currentState = state;
+			this.currentSchema = metadata?.schema;
+		});
 	}
 
 	async onAppInit() {
@@ -59,9 +73,6 @@ export class ApplicationController {
 
 		// Setup database cleanup functions
 		this.databaseService.setupCleanupFunctions(this.databaseHandlers);
-
-		// Try to restore last opened file
-		await this.tryRestoreLastFile();
 
 		// Simulate some initialization work
 		setTimeout(() => {
@@ -90,15 +101,42 @@ export class ApplicationController {
 	}
 
 	/**
+	 * Handle close file request
+	 */
+	async handleCloseFile() {
+		const result = await this.persistenceService.closeFile();
+		if (result && result.showSplash) {
+			// Dispatch event to show splash screen
+			dispatchEvent('ui:showSplash');
+		} else if (result && result.needsSave) {
+			// Dispatch event to save file first
+			dispatchEvent('ui:saveFile');
+		}
+	}
+
+	/**
+	 * Handle reader ready event - restore file after UI is ready
+	 */
+	async onReaderReady() {
+		await this.tryRestoreLastFile();
+	}
+
+	/**
 	 * Try to restore the last opened file
 	 */
 	async tryRestoreLastFile() {
-		// Only try to restore on web platforms (where File System Access API is available)
+		// Try to restore from app storage first (works on all platforms)
+		const restored = await this.persistenceService.restoreFile();
+		if (restored && restored.success) {
+			// Handle the restored file using the file handler
+			await this.fileHandlers.handleOpenFile({ detail: { file: restored.file } });
+			return;
+		}
+
+		// Fallback to web file handle restoration (web only)
 		const platform = this.capacitorService.getPlatform();
-		console.log('Current platform:', platform);
 		
 		if (platform !== 'web') {
-			console.log('Skipping file restoration - not on web platform');
 			return;
 		}
 
@@ -118,12 +156,10 @@ export class ApplicationController {
 			this.fileService.fileHandle = fileHandle;
 			this.fileService.fileData = file;
 			
-			console.log('Restoring last file:', file.name);
 			
 			// Dispatch file open event to load the file
 			dispatchEvent('ui:openFile', { file });
 		} catch (error) {
-			console.log('Could not restore last file:', error);
 			// Clear invalid handle
 			localStorage.removeItem('lastFileHandle');
 		}

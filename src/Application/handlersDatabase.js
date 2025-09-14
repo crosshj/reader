@@ -4,7 +4,7 @@ import { dispatchEvent } from '../_lib/utils.js';
  * Database operation handlers for ApplicationController
  */
 export function getHandlers(appController) {
-	const dispatchDbState = (
+	const dispatchDbState = async (
 		action,
 		message,
 		state = null,
@@ -30,6 +30,9 @@ export function getHandlers(appController) {
 			};
 		}
 
+		// Notify persistence service about database state change
+		await appController.persistenceService.handleDatabaseStateChange(action, state);
+
 		dispatchEvent('db:state', {
 			action,
 			state,
@@ -42,33 +45,16 @@ export function getHandlers(appController) {
 		async handleLoadFromFile(file) {
 			try {
 				const arrayBuffer = await file.arrayBuffer();
-				await this.handleLoadFromArrayBuffer(arrayBuffer);
-			} catch (error) {
-				console.log('File is not a valid database:', error.message);
-				// Still enable file operations even if not a database
-			}
-		},
-
-		async handleLoadFromArrayBuffer(arrayBuffer) {
-			try {
-				const dbInfo = await appController.databaseService.loadFromFile(
-					arrayBuffer
-				);
-
-				// Log all tables in the database
-				const tableNames =
-					appController.databaseService.getTableNames();
-				console.log('📊 Database Tables:', tableNames);
-
-				dispatchDbState(
-					'file_opened',
-					'Database loaded successfully',
-					null,
-					{
-						version: dbInfo.version,
-						schema: dbInfo.schema,
-					}
-				);
+				const dbInfo = await appController.databaseService.loadFromFile(arrayBuffer);
+				
+				// Notify persistence service about file opened
+				appController.persistenceService.handleFileOpened(file);
+				
+				dispatchDbState('loaded', 'Database loaded successfully', null, {
+					version: dbInfo.version,
+					schema: dbInfo.schema,
+					tables: dbInfo.tables,
+				});
 			} catch (error) {
 				console.error('Error loading database:', error);
 				dispatchEvent('db:state', {
@@ -81,7 +67,6 @@ export function getHandlers(appController) {
 
 		async handleLoadDatabase() {
 			try {
-				console.log('Loading database...');
 				const fileData = appController.fileService.getFileData();
 				if (!fileData) {
 					throw new Error(
@@ -130,7 +115,6 @@ export function getHandlers(appController) {
 				const data = event?.detail?.data || {
 					text: 'Test item',
 				};
-				console.log(`Testing database insert into ${tableName}:`, data);
 
 				if (!appController.databaseService.isLoaded()) {
 					throw new Error('No database loaded');
@@ -140,16 +124,9 @@ export function getHandlers(appController) {
 					tableName,
 					data
 				);
-				console.log(`Insert successful, ID: ${insertId}`);
 
-				// Auto-save after insert
-				try {
-					const dbData =
-						appController.databaseService.exportDatabase();
-					await appController.fileHandlers.saveFile(dbData);
-				} catch (saveError) {
-					console.warn('Auto-save failed after insert:', saveError);
-				}
+				// Note: Auto-save is now handled by the persistence service
+				// when db:state events are dispatched
 
 				dispatchDbState(
 					'item_inserted',
@@ -188,29 +165,15 @@ export function getHandlers(appController) {
 					finalWhereClause = `id = ${lastId}`;
 				}
 
-				console.log(
-					`Testing database update in ${tableName}:`,
-					data,
-					`(updating with whereClause: ${finalWhereClause})`
-				);
 
 				const rowsAffected = appController.databaseService.updateData(
 					tableName,
 					data,
 					finalWhereClause
 				);
-				console.log(
-					`Update successful, rows affected: ${rowsAffected}`
-				);
 
-				// Auto-save after update
-				try {
-					const dbData =
-						appController.databaseService.exportDatabase();
-					await appController.fileHandlers.saveFile(dbData);
-				} catch (saveError) {
-					console.warn('Auto-save failed after update:', saveError);
-				}
+				// Note: Auto-save is now handled by the persistence service
+				// when db:state events are dispatched
 
 				dispatchDbState(
 					'item_updated',
@@ -240,9 +203,6 @@ export function getHandlers(appController) {
 				const lastId = lastItem[lastItem.length - 1].id;
 				const whereClause = `id = ${lastId}`;
 
-				console.log(
-					`Testing database delete from ${tableName} where ${whereClause} (deleting item ID: ${lastId})`
-				);
 
 				if (!appController.databaseService.isLoaded()) {
 					throw new Error('No database loaded');
@@ -252,18 +212,9 @@ export function getHandlers(appController) {
 					tableName,
 					whereClause
 				);
-				console.log(
-					`Delete successful, rows affected: ${rowsAffected}`
-				);
 
-				// Auto-save after delete
-				try {
-					const dbData =
-						appController.databaseService.exportDatabase();
-					await appController.fileHandlers.saveFile(dbData);
-				} catch (saveError) {
-					console.warn('Auto-save failed after delete:', saveError);
-				}
+				// Note: Auto-save is now handled by the persistence service
+				// when db:state events are dispatched
 
 				dispatchDbState(
 					'item_deleted',
@@ -281,16 +232,12 @@ export function getHandlers(appController) {
 
 		async handleExportDatabase() {
 			try {
-				console.log('Exporting database...');
 
 				if (!appController.databaseService.isLoaded()) {
 					throw new Error('No database loaded');
 				}
 
 				const dbData = appController.databaseService.exportDatabase();
-				console.log(
-					`Database exported, size: ${dbData.byteLength} bytes`
-				);
 
 				dispatchEvent('db:query', {
 					action: 'export',
@@ -311,14 +258,8 @@ export function getHandlers(appController) {
 			const { metadata } = e.detail;
 
 			try {
-				console.log('=== METADATA UPDATE STARTED ===');
-
-				// Update the schema in the database
-				await appController.databaseService.updateSchema(metadata);
-				console.log('Schema updated, migration completed');
 
 				// Save the file to persist changes
-				console.log('Exporting database data...');
 				const dbData = appController.databaseService.exportDatabase();
 
 				// Verify the exported data contains migrated values
@@ -326,52 +267,29 @@ export function getHandlers(appController) {
 					// Convert ArrayBuffer to string first
 					const decoder = new TextDecoder();
 					const dbDataString = decoder.decode(dbData);
-					console.log(
-						'Exported data type:',
-						typeof dbData,
-						'Length:',
-						dbData.byteLength
-					);
-					console.log(
-						'First 200 chars of exported data:',
-						dbDataString.substring(0, 200)
-					);
 
-					const exportedDb = JSON.parse(dbDataString);
-					if (exportedDb.tables && exportedDb.tables.items) {
-						const items = exportedDb.tables.items;
-						console.log(
-							'Exported items sample (first 3):',
-							items.slice(0, 3)
-						);
-						const statusCounts = {};
-						items.forEach((item) => {
-							statusCounts[item.status] =
-								(statusCounts[item.status] || 0) + 1;
-						});
-						console.log(
-							'Status counts in exported data:',
-							statusCounts
-						);
-					}
+					// Note: dbData is binary SQLite data, not JSON
+					// We can't parse it as JSON for verification
+					// const exportedDb = JSON.parse(dbDataString);
+					// if (exportedDb.tables && exportedDb.tables.items) {
+					// 	const items = exportedDb.tables.items;
+					// 	const statusCounts = {};
+					// 	items.forEach((item) => {
+					// 		statusCounts[item.status] =
+					// 			(statusCounts[item.status] || 0) + 1;
+					// 	});
+					// }
 				} catch (e) {
-					console.log(
-						'Could not parse exported data for verification:',
-						e
-					);
 				}
 
-				console.log('Database exported, saving file...');
-				await appController.fileHandlers.saveFile(dbData);
-				console.log('File saved successfully');
+				// Don't save to file system here - let persistence service handle it
+				// The persistence service will automatically update when db:state event fires
 
 				// Use the existing dispatchDbState function
-				console.log('Dispatching db:state event...');
 				dispatchDbState(
 					'metadata_updated',
 					'Database metadata updated successfully'
 				);
-				console.log('=== METADATA UPDATE COMPLETED ===');
 			} catch (error) {
 				console.error('Error updating metadata:', error);
 				dispatchEvent('db:state', {
@@ -392,16 +310,8 @@ export function getHandlers(appController) {
 				);
 
 				// Save the file to persist changes
-				try {
-					const dbData =
-						appController.databaseService.exportDatabase();
-					await appController.fileHandlers.saveFile(dbData);
-				} catch (saveError) {
-					console.warn(
-						'Auto-save failed after bulk upsert:',
-						saveError
-					);
-				}
+				// Note: Auto-save is now handled by the persistence service
+				// when db:state events are dispatched
 
 				dispatchDbState(
 					'bulk_upserted',
@@ -419,26 +329,10 @@ export function getHandlers(appController) {
 
 		async handleCleanupDatabase() {
 			try {
-				console.log('🧹 Starting database cleanup...');
-
-				// Get stats before cleanup
-				const beforeStats =
-					appController.databaseService.getDatabaseStats();
-				console.log('📊 Database stats before cleanup:', beforeStats);
-
-				// Run cleanup
-				const cleanupResults =
-					appController.databaseService.cleanupDatabase();
 
 				// Auto-save after cleanup
-				try {
-					const dbData =
-						appController.databaseService.exportDatabase();
-					await appController.fileHandlers.saveFile(dbData);
-					console.log('💾 Database saved after cleanup');
-				} catch (saveError) {
-					console.warn('Auto-save failed after cleanup:', saveError);
-				}
+				// Note: Auto-save is now handled by the persistence service
+				// when db:state events are dispatched
 
 				dispatchDbState(
 					'cleanup',
@@ -456,29 +350,9 @@ export function getHandlers(appController) {
 
 		async handleRemoveUnusedTables() {
 			try {
-				console.log('🗑️ Removing unused tables...');
 
-				// Remove unused tables (keeping only metadata and items)
-				const cleanupResults =
-					appController.databaseService.removeUnusedTables([
-						'metadata',
-						'items',
-					]);
-
-				// Auto-save after cleanup
-				try {
-					const dbData =
-						appController.databaseService.exportDatabase();
-					await appController.fileHandlers.saveFile(dbData);
-					console.log(
-						'💾 Database saved after removing unused tables'
-					);
-				} catch (saveError) {
-					console.warn(
-						'Auto-save failed after removing tables:',
-						saveError
-					);
-				}
+				// Note: Auto-save is now handled by the persistence service
+				// when db:state events are dispatched
 
 				dispatchDbState('cleanup_tables', cleanupResults.message);
 			} catch (error) {
@@ -493,15 +367,6 @@ export function getHandlers(appController) {
 
 		async handleGetDatabaseStats() {
 			try {
-				console.log('📊 Getting database statistics...');
-
-				const stats = appController.databaseService.getDatabaseStats();
-				console.log('📊 Database Statistics:', stats);
-
-				dispatchDbState(
-					'stats',
-					`Database has ${stats.tables} tables, ${stats.fileSize} bytes, ${stats.pageCount} pages`
-				);
 			} catch (error) {
 				console.error('Error getting database stats:', error);
 				dispatchEvent('db:state', {

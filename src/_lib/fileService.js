@@ -71,7 +71,6 @@ export class FileService {
 			});
 
 			this.fileHandle = fileHandle;
-			console.log('File created:', fileHandle.name);
 			return fileHandle;
 		} catch (error) {
 			if (error.name === 'AbortError') {
@@ -97,7 +96,6 @@ export class FileService {
 			const writable = await this.fileHandle.createWritable();
 			await writable.write(data);
 			await writable.close();
-			console.log('File saved successfully');
 		} catch (error) {
 			console.error('Error saving file:', error);
 			throw error;

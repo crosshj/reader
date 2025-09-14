@@ -15,7 +15,6 @@ export function getHandlers(appController) {
 				// Check if file was passed from system (file association)
 				if (event?.detail?.file) {
 					file = event.detail.file;
-					console.log('Opening file from system:', file.name);
 				} else {
 					// Use file picker
 					file = await appController.fileService.openFile();
@@ -27,36 +26,35 @@ export function getHandlers(appController) {
 						throw new Error('Please select a .smartText file');
 					}
 
+					// Get file content for persistence
+					const fileContent = await file.arrayBuffer();
+					
 					// Call database handler to load the file
 					await appController.databaseHandlers.handleLoadFromFile(
 						file
 					);
 
+					// Save file content to app storage for persistence
+					await appController.persistenceService.saveFileContent(fileContent, file.name);
+
+					// Mark as clean since we just loaded the file
+					appController.persistenceService.markAsSaved();
+
 					// Enable save button since we now have a file handle
 					dispatchEvent('file:opened');
-
-					console.log('File opened successfully:', file.name);
 
 					// Save file handle for persistence (only if we have a file handle)
 					if (appController.fileService.fileHandle) {
 						try {
-							console.log('File handle type:', typeof appController.fileService.fileHandle);
-							console.log('File handle methods:', Object.getOwnPropertyNames(appController.fileService.fileHandle));
-							console.log('Has serialize method:', 'serialize' in appController.fileService.fileHandle);
-							
 							if ('serialize' in appController.fileService.fileHandle) {
 								const serialized = await appController.fileService.fileHandle.serialize();
 								localStorage.setItem('lastFileHandle', JSON.stringify(serialized));
-								console.log('File handle saved for persistence');
-							} else {
-								console.warn('File handle does not support serialize() method');
 							}
 						} catch (error) {
 							console.warn('Could not save file handle:', error);
 						}
 					}
 				} else {
-					console.log('File picker cancelled');
 					// Show splash screen again
 					dispatchEvent('ui:showSplash');
 				}
@@ -77,7 +75,6 @@ export function getHandlers(appController) {
 					message: 'Creating new file...',
 				});
 
-				console.log('Creating new file...');
 				const fileHandle = await appController.fileService.createFile();
 				if (fileHandle) {
 					// Create a barebones SQLite database
@@ -90,8 +87,6 @@ export function getHandlers(appController) {
 					// Update file data after saving
 					appController.fileService.updateFileData(dbData);
 
-					console.log(`File created: ${fileHandle.name}`);
-
 					// Call database handler to load the created file
 					await appController.databaseHandlers.handleLoadFromArrayBuffer(
 						dbData
@@ -100,7 +95,6 @@ export function getHandlers(appController) {
 					// Enable save button since we now have a file handle
 					dispatchEvent('file:opened');
 				} else {
-					console.log('File creation cancelled');
 					// Show splash screen again
 					dispatchEvent('ui:showSplash');
 				}
@@ -114,11 +108,81 @@ export function getHandlers(appController) {
 			}
 		},
 
+		async handleSaveFile() {
+			try {
+				dispatchEvent('ui:loading', { message: 'Saving file...' });
+				
+				// Get current file content from persistence service
+				const currentFileContent = await appController.persistenceService.getCurrentFileContent();
+				if (!currentFileContent) {
+					console.warn('No file content to save.');
+					dispatchEvent('file:error', { 
+						error: 'No file content to save.', 
+						action: 'save' 
+					});
+					return;
+				}
+
+				// Get suggested filename from persistence service
+				const suggestedName = appController.persistenceService.getCurrentFileName() || 'database.smartText';
+				
+				// Use File System Access API to let user choose save location
+				if (typeof window.showSaveFilePicker === 'function') {
+					const fileHandle = await window.showSaveFilePicker({
+						suggestedName: suggestedName,
+						types: [{
+							description: 'SmartText Database Files',
+							accept: {
+								'application/octet-stream': ['.smartText']
+							}
+						}]
+					});
+					
+					// Create a writable stream and write the content
+					const writable = await fileHandle.createWritable();
+					await writable.write(currentFileContent);
+					await writable.close();
+					
+					
+					// Update the file handle in the service
+					appController.fileService.fileHandle = fileHandle;
+					appController.fileService.fileData = new File([currentFileContent], fileHandle.name);
+					
+					// Mark as saved in persistence service
+					appController.persistenceService.markAsSaved();
+					appController.persistenceService.setSavedFileName(fileHandle.name);
+					
+					dispatchEvent('file:saved');
+					
+					// Clear loading state and restore UI
+					dispatchEvent('ui:loading', { message: '' });
+					
+					// Trigger a database state refresh to restore the UI
+					dispatchEvent('db:state', {
+						action: 'file_saved',
+						state: appController.currentState || {},
+						metadata: appController.currentSchema ? { schema: appController.currentSchema } : {},
+						message: 'File saved successfully'
+					});
+				} else {
+					// Fallback for browsers that don't support File System Access API
+					throw new Error('File System Access API not supported. Please use a modern browser.');
+				}
+			} catch (error) {
+				console.error('Save failed:', error);
+				dispatchEvent('file:error', {
+					error: error.message,
+					action: 'save',
+				});
+				// Clear loading state on error too
+				dispatchEvent('ui:loading', { message: '' });
+			}
+		},
+
 		async saveFile(data) {
 			try {
 				await appController.fileService.saveFile(data);
 				appController.fileService.updateFileData(data);
-				console.log('File saved successfully');
 				dispatchEvent('file:saved');
 			} catch (error) {
 				console.error('Save failed:', error);
