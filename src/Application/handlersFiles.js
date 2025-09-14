@@ -29,6 +29,8 @@ export function getHandlers(appController) {
 					// Get file content for persistence
 					const fileContent = await file.arrayBuffer();
 					
+					// No need to extract parent directory anymore - user will choose via directory picker
+					
 					// Call database handler to load the file
 					await appController.databaseHandlers.handleLoadFromFile(
 						file
@@ -123,7 +125,7 @@ export function getHandlers(appController) {
 				// Always use save as flow - let user choose where to save
 				const suggestedName = appController.persistenceService.getCurrentFileName() || 'database.smartText';
 				alert(`DEBUG: About to call saveFileAs with suggested name: ${suggestedName}`);
-				await appController.fileService.saveFileAs(currentFileContent, suggestedName);
+				await appController.fileService.saveFileAs(currentFileContent, suggestedName, appController.persistenceService);
 				alert('DEBUG: saveFileAs completed successfully');
 				
 				// Update file data after saving

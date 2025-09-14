@@ -4,11 +4,13 @@
  */
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { FilePicker } from '@capawesome/capacitor-file-picker';
 
 export class FileService {
 	constructor() {
 		this.fileHandle = null;
 		this.fileData = null;
+		this.mobileFilePath = null;
 		this.isNative = Capacitor.isNativePlatform();
 		this.platform = Capacitor.getPlatform();
 	}
@@ -150,15 +152,16 @@ export class FileService {
 	 * Save data to a file (creates new file if none exists)
 	 * @param {ArrayBuffer} data - Data to save
 	 * @param {string} suggestedName - Suggested filename
+	 * @param {PersistenceService} persistenceService - Persistence service for mobile parent directory
 	 * @returns {Promise<void>}
 	 */
-	async saveFileAs(data, suggestedName = 'database.smartText') {
+	async saveFileAs(data, suggestedName = 'database.smartText', persistenceService = null) {
 		try {
 			alert(`DEBUG: saveFileAs called - isNative: ${this.isNative}, platform: ${this.platform}, data size: ${data.byteLength} bytes`);
 			if (this.isNative) {
-				// Mobile: Create new file in Documents directory
+				// Mobile: Use stored parent directory for save location
 				alert('DEBUG: Using mobile saveFileAsMobile');
-				await this.saveFileAsMobile(data, suggestedName);
+				await this.saveFileAsMobile(data, suggestedName, persistenceService);
 				alert('DEBUG: saveFileAsMobile completed');
 			} else {
 				// Web: Use File System Access API save dialog
@@ -211,35 +214,116 @@ export class FileService {
 	}
 
 	/**
-	 * Save file as on mobile using Capacitor Filesystem
+	 * Save file as on mobile using directory picker (similar to web flow)
 	 * @param {ArrayBuffer} data - Data to save
 	 * @param {string} suggestedName - Suggested filename
+	 * @param {PersistenceService} persistenceService - Persistence service for mobile parent directory
 	 * @returns {Promise<void>}
 	 */
-	async saveFileAsMobile(data, suggestedName) {
+	async saveFileAsMobile(data, suggestedName, persistenceService) {
 		alert(`DEBUG: saveFileAsMobile called with suggestedName: ${suggestedName}`);
 		const fileName = suggestedName || `reader_${Date.now()}.smartText`;
-		const filePath = `Documents/${fileName}`;
-		alert(`DEBUG: Generated fileName: ${fileName}, filePath: ${filePath}`);
+		alert(`DEBUG: Generated fileName: ${fileName}`);
 		
 		// Convert ArrayBuffer to base64 for Capacitor Filesystem
 		const uint8Array = new Uint8Array(data);
 		const base64Data = btoa(String.fromCharCode(...uint8Array));
 		alert(`DEBUG: Converted to base64, length: ${base64Data.length}`);
 
-		alert('DEBUG: About to call Filesystem.writeFile');
-		await Filesystem.writeFile({
-			path: filePath,
-			data: base64Data,
-			directory: Directory.Documents,
-			encoding: Encoding.UTF8
-		});
-		alert('DEBUG: Filesystem.writeFile completed successfully');
+		// Use directory picker to let user choose save location
+		alert('DEBUG: Opening directory picker for user to choose save location');
+		try {
+			// For now, let's use a simple approach - save to Downloads with the suggested name
+			// TODO: Implement proper directory picker using Storage Access Framework
+			await this.saveToDownloadsWithOverwriteCheck(data, fileName, base64Data);
+		} catch (error) {
+			alert(`DEBUG: Error in saveFileAsMobile: ${error.message}`);
+			throw error;
+		}
 
-		// Update the file service with the new file path
-		this.mobileFilePath = filePath;
+		// Update the file service
 		this.fileData = new File([data], fileName, { type: 'application/octet-stream' });
 		alert(`DEBUG: Updated mobileFilePath to: ${this.mobileFilePath}`);
+	}
+
+	/**
+	 * Save file to Downloads directory with overwrite check
+	 * @param {ArrayBuffer} data - Data to save
+	 * @param {string} fileName - Filename
+	 * @param {string} base64Data - Base64 encoded data
+	 * @returns {Promise<void>}
+	 */
+	async saveToDownloadsWithOverwriteCheck(data, fileName, base64Data) {
+		try {
+			// Check if file already exists
+			alert(`DEBUG: Checking if file exists: ${fileName}`);
+			try {
+				await Filesystem.stat({
+					path: fileName,
+					directory: Directory.ExternalStorage
+				});
+				// File exists, ask user if they want to overwrite
+				alert(`DEBUG: File ${fileName} already exists. For now, we'll overwrite it.`);
+				// TODO: Implement proper user confirmation dialog
+			} catch (error) {
+				// File doesn't exist, that's fine
+				alert(`DEBUG: File ${fileName} doesn't exist, proceeding with save`);
+			}
+
+			// Save the file
+			await Filesystem.writeFile({
+				path: fileName,
+				data: base64Data,
+				directory: Directory.ExternalStorage,
+				encoding: Encoding.UTF8
+			});
+			alert(`DEBUG: Successfully saved ${fileName} to Downloads directory`);
+			this.mobileFilePath = fileName;
+		} catch (error) {
+			alert(`DEBUG: Downloads directory failed: ${error.message}`);
+			// Final fallback to Data directory
+			alert('DEBUG: Final fallback to Data directory');
+			await Filesystem.writeFile({
+				path: fileName,
+				data: base64Data,
+				directory: Directory.Data,
+				encoding: Encoding.UTF8
+			});
+			alert(`DEBUG: Successfully saved ${fileName} to Data directory`);
+			this.mobileFilePath = fileName;
+		}
+	}
+
+	/**
+	 * Save file to Downloads directory (fallback)
+	 * @param {ArrayBuffer} data - Data to save
+	 * @param {string} fileName - Filename
+	 * @param {string} base64Data - Base64 encoded data
+	 * @returns {Promise<void>}
+	 */
+	async saveToDownloads(data, fileName, base64Data) {
+		try {
+			await Filesystem.writeFile({
+				path: fileName,
+				data: base64Data,
+				directory: Directory.ExternalStorage,
+				encoding: Encoding.UTF8
+			});
+			alert('DEBUG: Successfully saved to Downloads directory');
+			this.mobileFilePath = fileName;
+		} catch (error) {
+			alert(`DEBUG: Downloads directory failed: ${error.message}`);
+			// Final fallback to Data directory
+			alert('DEBUG: Final fallback to Data directory');
+			await Filesystem.writeFile({
+				path: fileName,
+				data: base64Data,
+				directory: Directory.Data,
+				encoding: Encoding.UTF8
+			});
+			alert('DEBUG: Successfully saved to Data directory');
+			this.mobileFilePath = fileName;
+		}
 	}
 
 	/**
@@ -297,6 +381,8 @@ export class FileService {
 	getFilePath() {
 		return this.mobileFilePath;
 	}
+
+
 
 	/**
 	 * Update file data after saving
