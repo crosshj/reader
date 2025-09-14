@@ -161,10 +161,13 @@ export class FileService {
 			const fileName = suggestedName || `reader_${Date.now()}.smartText`;
 			
 			if (this.isNative && this.platform === 'android') {
+				alert(`DEBUG: saveFileAs called - isNative: ${this.isNative}, platform: ${this.platform}, fileName: ${fileName}`);
+				alert('DEBUG: Using Android share intent path');
 				// Use Android share intent for mobile
 				await this.saveFileAsMobileShare(data, fileName);
+				alert('DEBUG: saveFileAs completed successfully');
 			} else {
-				// Use web download approach for web
+				// Use web download approach for web (no debug alerts)
 				await this.saveFileAsWeb(data, fileName);
 			}
 			
@@ -172,6 +175,9 @@ export class FileService {
 			this.fileData = new File([data], fileName, { type: 'application/octet-stream' });
 			
 		} catch (error) {
+			if (this.isNative && this.platform === 'android') {
+				alert(`DEBUG: Error in saveFileAs: ${error.message}`);
+			}
 			console.error('Error saving file as:', error);
 			throw error;
 		}
@@ -222,20 +228,69 @@ export class FileService {
 	 */
 	async saveFileAsMobileShare(data, fileName) {
 		try {
-			// Convert ArrayBuffer to base64 for sharing
+			alert(`DEBUG: saveFileAsMobileShare called with fileName: ${fileName}, data size: ${data.byteLength} bytes`);
+			
+			// Check if Share plugin is available
+			alert(`DEBUG: Share plugin available: ${typeof Share !== 'undefined'}`);
+			
+			// Create a temporary file first, then share it
+			alert('DEBUG: Creating temporary file for sharing...');
+			const tempFilePath = `temp_${Date.now()}_${fileName}`;
+			
+			// Convert ArrayBuffer to base64 for file creation
+			alert('DEBUG: Converting ArrayBuffer to base64...');
 			const uint8Array = new Uint8Array(data);
 			const base64Data = btoa(String.fromCharCode(...uint8Array));
+			alert(`DEBUG: Base64 conversion complete, length: ${base64Data.length} characters`);
+
+			// Write temporary file
+			alert('DEBUG: Writing temporary file...');
+			await Filesystem.writeFile({
+				path: tempFilePath,
+				data: base64Data,
+				directory: Directory.Cache,
+				encoding: Encoding.UTF8
+			});
+			alert(`DEBUG: Temporary file created: ${tempFilePath}`);
+
+			// Get the file URI
+			const fileUri = await Filesystem.getUri({
+				directory: Directory.Cache,
+				path: tempFilePath
+			});
+			alert(`DEBUG: File URI: ${fileUri.uri}`);
 
 			// Use Capacitor Share plugin to trigger Android share intent
-			await Share.share({
+			alert('DEBUG: Calling Share.share()...');
+			const shareOptions = {
 				title: `Share ${fileName}`,
 				text: `Sharing ${fileName}`,
-				url: `data:application/octet-stream;base64,${base64Data}`,
+				url: fileUri.uri,
 				dialogTitle: `Share ${fileName}`
-			});
+			};
+			alert(`DEBUG: Share options: ${JSON.stringify(shareOptions, null, 2)}`);
+			
+			const result = await Share.share(shareOptions);
+			alert(`DEBUG: Share.share() completed with result: ${JSON.stringify(result)}`);
+			
+			// Clean up temporary file after sharing
+			setTimeout(async () => {
+				try {
+					await Filesystem.deleteFile({
+						directory: Directory.Cache,
+						path: tempFilePath
+					});
+					alert('DEBUG: Temporary file cleaned up');
+				} catch (cleanupError) {
+					console.warn('Failed to clean up temporary file:', cleanupError);
+				}
+			}, 5000); // Clean up after 5 seconds
+			
 		} catch (error) {
+			alert(`DEBUG: Error in saveFileAsMobileShare: ${error.message}`);
 			console.error('Error sharing file via Android share intent:', error);
 			// Fallback to download if sharing fails
+			alert('DEBUG: Falling back to web download...');
 			await this.saveFileAsWeb(data, fileName);
 		}
 	}
