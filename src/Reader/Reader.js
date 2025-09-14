@@ -963,7 +963,7 @@ export class Reader {
 
 		return html`
 			<div class="sidebar-header">
-				<button
+				<!-- <button
 					id="close-sidebar"
 					class="close-btn"
 				>
@@ -988,7 +988,7 @@ export class Reader {
 							y2="18"
 						></line>
 					</svg>
-				</button>
+				</button> -->
 			</div>
 			<div class="sidebar-content">
 				<button
