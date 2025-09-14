@@ -154,14 +154,20 @@ export class FileService {
 	 */
 	async saveFileAs(data, suggestedName = 'database.smartText') {
 		try {
+			alert(`DEBUG: saveFileAs called - isNative: ${this.isNative}, platform: ${this.platform}, data size: ${data.byteLength} bytes`);
 			if (this.isNative) {
 				// Mobile: Create new file in Documents directory
+				alert('DEBUG: Using mobile saveFileAsMobile');
 				await this.saveFileAsMobile(data, suggestedName);
+				alert('DEBUG: saveFileAsMobile completed');
 			} else {
 				// Web: Use File System Access API save dialog
+				alert('DEBUG: Using web saveFileAsWeb');
 				await this.saveFileAsWeb(data, suggestedName);
+				alert('DEBUG: saveFileAsWeb completed');
 			}
 		} catch (error) {
+			alert(`DEBUG: Error in saveFileAs: ${error.message}`);
 			console.error('Error saving file as:', error);
 			throw error;
 		}
@@ -211,23 +217,29 @@ export class FileService {
 	 * @returns {Promise<void>}
 	 */
 	async saveFileAsMobile(data, suggestedName) {
+		alert(`DEBUG: saveFileAsMobile called with suggestedName: ${suggestedName}`);
 		const fileName = suggestedName || `reader_${Date.now()}.smartText`;
 		const filePath = `Documents/${fileName}`;
+		alert(`DEBUG: Generated fileName: ${fileName}, filePath: ${filePath}`);
 		
 		// Convert ArrayBuffer to base64 for Capacitor Filesystem
 		const uint8Array = new Uint8Array(data);
 		const base64Data = btoa(String.fromCharCode(...uint8Array));
+		alert(`DEBUG: Converted to base64, length: ${base64Data.length}`);
 
+		alert('DEBUG: About to call Filesystem.writeFile');
 		await Filesystem.writeFile({
 			path: filePath,
 			data: base64Data,
 			directory: Directory.Documents,
 			encoding: Encoding.UTF8
 		});
+		alert('DEBUG: Filesystem.writeFile completed successfully');
 
 		// Update the file service with the new file path
 		this.mobileFilePath = filePath;
 		this.fileData = new File([data], fileName, { type: 'application/octet-stream' });
+		alert(`DEBUG: Updated mobileFilePath to: ${this.mobileFilePath}`);
 	}
 
 	/**
