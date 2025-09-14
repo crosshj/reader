@@ -4,6 +4,7 @@
  */
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 
 export class FileService {
 	constructor() {
@@ -149,7 +150,7 @@ export class FileService {
 
 	/**
 	 * Save data to a file (creates new file if none exists)
-	 * Uses simple web download approach that works on both web and mobile
+	 * Uses Android share intent on mobile, web download on web
 	 * @param {ArrayBuffer} data - Data to save
 	 * @param {string} suggestedName - Suggested filename
 	 * @param {PersistenceService} persistenceService - Not used, kept for compatibility
@@ -159,26 +160,13 @@ export class FileService {
 		try {
 			const fileName = suggestedName || `reader_${Date.now()}.smartText`;
 			
-			// Use the simple web download approach - works on both web and mobile
-			// Create a blob from the data
-			const blob = new Blob([data], { type: 'application/octet-stream' });
-			const url = URL.createObjectURL(blob);
-			
-			// Create a temporary anchor element to trigger download
-			const link = document.createElement('a');
-			link.href = url;
-			link.download = fileName;
-			link.style.display = 'none';
-			
-			// Add to DOM, click, and remove - all in one synchronous operation
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-			
-			// Clean up the blob URL after a short delay to ensure download starts
-			setTimeout(() => {
-				URL.revokeObjectURL(url);
-			}, 100);
+			if (this.isNative && this.platform === 'android') {
+				// Use Android share intent for mobile
+				await this.saveFileAsMobileShare(data, fileName);
+			} else {
+				// Use web download approach for web
+				await this.saveFileAsWeb(data, fileName);
+			}
 			
 			// Update the file service
 			this.fileData = new File([data], fileName, { type: 'application/octet-stream' });
@@ -227,7 +215,33 @@ export class FileService {
 	}
 
 	/**
-	 * Save file as on mobile using simple web download approach
+	 * Save file as on mobile using Android share intent
+	 * @param {ArrayBuffer} data - Data to save
+	 * @param {string} fileName - Filename
+	 * @returns {Promise<void>}
+	 */
+	async saveFileAsMobileShare(data, fileName) {
+		try {
+			// Convert ArrayBuffer to base64 for sharing
+			const uint8Array = new Uint8Array(data);
+			const base64Data = btoa(String.fromCharCode(...uint8Array));
+
+			// Use Capacitor Share plugin to trigger Android share intent
+			await Share.share({
+				title: `Share ${fileName}`,
+				text: `Sharing ${fileName}`,
+				url: `data:application/octet-stream;base64,${base64Data}`,
+				dialogTitle: `Share ${fileName}`
+			});
+		} catch (error) {
+			console.error('Error sharing file via Android share intent:', error);
+			// Fallback to download if sharing fails
+			await this.saveFileAsWeb(data, fileName);
+		}
+	}
+
+	/**
+	 * Save file as on mobile using simple web download approach (fallback)
 	 * @param {ArrayBuffer} data - Data to save
 	 * @param {string} suggestedName - Suggested filename
 	 * @param {PersistenceService} persistenceService - Persistence service for mobile parent directory
@@ -305,35 +319,36 @@ export class FileService {
 	}
 
 	/**
-	 * Save file as on web using File System Access API
+	 * Save file as on web using web download approach
 	 * @param {ArrayBuffer} data - Data to save
-	 * @param {string} suggestedName - Suggested filename
+	 * @param {string} fileName - Filename
 	 * @returns {Promise<void>}
 	 */
-	async saveFileAsWeb(data, suggestedName) {
-		// Check if File System Access API is supported
-		if (!('showSaveFilePicker' in window)) {
-			throw new Error('File System Access API not supported');
+	async saveFileAsWeb(data, fileName) {
+		try {
+			// Create a blob from the data
+			const blob = new Blob([data], { type: 'application/octet-stream' });
+			const url = URL.createObjectURL(blob);
+			
+			// Create a temporary anchor element to trigger download
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = fileName;
+			link.style.display = 'none';
+			
+			// Add to DOM, click, and remove - all in one synchronous operation
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			
+			// Clean up the blob URL after a short delay to ensure download starts
+			setTimeout(() => {
+				URL.revokeObjectURL(url);
+			}, 100);
+		} catch (error) {
+			console.error('Error downloading file:', error);
+			throw error;
 		}
-
-		const fileHandle = await window.showSaveFilePicker({
-			suggestedName: suggestedName,
-			types: [{
-				description: 'SmartText Database Files',
-				accept: {
-					'application/octet-stream': ['.smartText']
-				}
-			}]
-		});
-		
-		// Create a writable stream and write the content
-		const writable = await fileHandle.createWritable();
-		await writable.write(data);
-		await writable.close();
-		
-		// Update the file handle in the service
-		this.fileHandle = fileHandle;
-		this.fileData = new File([data], fileHandle.name);
 	}
 
 	/**
