@@ -157,11 +157,7 @@ export class FileService {
 	 */
 	async saveFileAs(data, suggestedName = 'database.smartText', persistenceService = null) {
 		try {
-			alert(`DEBUG: saveFileAs called - platform: ${this.platform}, data size: ${data.byteLength} bytes`);
-			alert('DEBUG: Using universal web download approach for both web and mobile');
-			
 			const fileName = suggestedName || `reader_${Date.now()}.smartText`;
-			alert(`DEBUG: Generated fileName: ${fileName}`);
 			
 			// Use the simple web download approach - works on both web and mobile
 			// Create a blob from the data
@@ -174,22 +170,20 @@ export class FileService {
 			link.download = fileName;
 			link.style.display = 'none';
 			
-			// Add to DOM, click, and remove
+			// Add to DOM, click, and remove - all in one synchronous operation
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
 			
-			// Clean up the blob URL
-			URL.revokeObjectURL(url);
-			
-			alert(`DEBUG: Download triggered for ${fileName}`);
+			// Clean up the blob URL after a short delay to ensure download starts
+			setTimeout(() => {
+				URL.revokeObjectURL(url);
+			}, 100);
 			
 			// Update the file service
 			this.fileData = new File([data], fileName, { type: 'application/octet-stream' });
-			alert(`DEBUG: Updated fileData with new file`);
 			
 		} catch (error) {
-			alert(`DEBUG: Error in saveFileAs: ${error.message}`);
 			console.error('Error saving file as:', error);
 			throw error;
 		}
