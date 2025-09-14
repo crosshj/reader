@@ -230,12 +230,32 @@ export class FileService {
 		const base64Data = btoa(String.fromCharCode(...uint8Array));
 		alert(`DEBUG: Converted to base64, length: ${base64Data.length}`);
 
-		// Use directory picker to let user choose save location
-		alert('DEBUG: Opening directory picker for user to choose save location');
+		// Use file picker to let user choose save location
+		alert('DEBUG: Opening file picker for user to choose save location');
 		try {
-			// For now, let's use a simple approach - save to Downloads with the suggested name
-			// TODO: Implement proper directory picker using Storage Access Framework
-			await this.saveToDownloadsWithOverwriteCheck(data, fileName, base64Data);
+			// Use the file picker to let user select a directory
+			const result = await FilePicker.pickFiles({
+				multiple: false,
+				types: ['application/octet-stream', 'text/plain'],
+				readData: false // We don't need to read the file, just get the path
+			});
+
+			if (result.files && result.files.length > 0) {
+				const selectedFile = result.files[0];
+				alert(`DEBUG: User selected location: ${selectedFile.uri}`);
+				
+				// Extract directory from the selected file path
+				const filePath = selectedFile.uri || selectedFile.path || '';
+				const directory = filePath.substring(0, filePath.lastIndexOf('/'));
+				alert(`DEBUG: Extracted directory: ${directory}`);
+				
+				// Save to the selected directory
+				await this.saveToDirectory(data, fileName, base64Data, directory);
+			} else {
+				alert('DEBUG: User cancelled file picker');
+				throw new Error('User cancelled file selection');
+			}
+
 		} catch (error) {
 			alert(`DEBUG: Error in saveFileAsMobile: ${error.message}`);
 			throw error;
@@ -247,19 +267,24 @@ export class FileService {
 	}
 
 	/**
-	 * Save file to Downloads directory with overwrite check
+	 * Save file to selected directory with overwrite check
 	 * @param {ArrayBuffer} data - Data to save
 	 * @param {string} fileName - Filename
 	 * @param {string} base64Data - Base64 encoded data
+	 * @param {string} directory - Directory path
 	 * @returns {Promise<void>}
 	 */
-	async saveToDownloadsWithOverwriteCheck(data, fileName, base64Data) {
+	async saveToDirectory(data, fileName, base64Data, directory) {
 		try {
+			const fullPath = `${directory}/${fileName}`;
+			alert(`DEBUG: Saving to directory: ${directory}`);
+			alert(`DEBUG: Full path: ${fullPath}`);
+			
 			// Check if file already exists
-			alert(`DEBUG: Checking if file exists: ${fileName}`);
+			alert(`DEBUG: Checking if file exists: ${fullPath}`);
 			try {
 				await Filesystem.stat({
-					path: fileName,
+					path: fullPath,
 					directory: Directory.ExternalStorage
 				});
 				// File exists, ask user if they want to overwrite
@@ -272,17 +297,17 @@ export class FileService {
 
 			// Save the file
 			await Filesystem.writeFile({
-				path: fileName,
+				path: fullPath,
 				data: base64Data,
 				directory: Directory.ExternalStorage,
 				encoding: Encoding.UTF8
 			});
-			alert(`DEBUG: Successfully saved ${fileName} to Downloads directory`);
-			this.mobileFilePath = fileName;
+			alert(`DEBUG: Successfully saved ${fileName} to ${directory}`);
+			this.mobileFilePath = fullPath;
 		} catch (error) {
-			alert(`DEBUG: Downloads directory failed: ${error.message}`);
-			// Final fallback to Data directory
-			alert('DEBUG: Final fallback to Data directory');
+			alert(`DEBUG: Failed to save to directory ${directory}: ${error.message}`);
+			// Fallback to Data directory
+			alert('DEBUG: Fallback to Data directory');
 			await Filesystem.writeFile({
 				path: fileName,
 				data: base64Data,
