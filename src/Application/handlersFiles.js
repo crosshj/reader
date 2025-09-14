@@ -112,21 +112,16 @@ export function getHandlers(appController) {
 
 		async handleSaveFile() {
 			try {
-				alert('DEBUG: handleSaveFile called - starting save process');
 				dispatchEvent('ui:loading', { message: 'Saving file...' });
 				
 				// Get current file content from persistence service
-				alert('DEBUG: Getting current file content...');
 				const currentFileContent = await appController.persistenceService.getCurrentFileContent();
 				if (!currentFileContent) {
-					alert('DEBUG: No file content found!');
 					throw new Error('No file content to save.');
 				}
-				alert(`DEBUG: File content retrieved, size: ${currentFileContent.byteLength} bytes`);
 
 				// Always use save as flow - let user choose where to save
 				const suggestedName = appController.persistenceService.getCurrentFileName() || 'database.smartText';
-				alert(`DEBUG: Calling fileService.saveFileAs with suggestedName: ${suggestedName}`);
 				await appController.fileService.saveFileAs(currentFileContent, suggestedName, appController.persistenceService);
 				
 				// Update file data after saving
