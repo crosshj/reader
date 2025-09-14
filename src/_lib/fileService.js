@@ -4,7 +4,6 @@
  */
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
-import { FilePicker } from '@capawesome/capacitor-file-picker';
 
 export class FileService {
 	constructor() {
@@ -150,25 +149,45 @@ export class FileService {
 
 	/**
 	 * Save data to a file (creates new file if none exists)
+	 * Uses simple web download approach that works on both web and mobile
 	 * @param {ArrayBuffer} data - Data to save
 	 * @param {string} suggestedName - Suggested filename
-	 * @param {PersistenceService} persistenceService - Persistence service for mobile parent directory
+	 * @param {PersistenceService} persistenceService - Not used, kept for compatibility
 	 * @returns {Promise<void>}
 	 */
 	async saveFileAs(data, suggestedName = 'database.smartText', persistenceService = null) {
 		try {
-			alert(`DEBUG: saveFileAs called - isNative: ${this.isNative}, platform: ${this.platform}, data size: ${data.byteLength} bytes`);
-			if (this.isNative) {
-				// Mobile: Use stored parent directory for save location
-				alert('DEBUG: Using mobile saveFileAsMobile');
-				await this.saveFileAsMobile(data, suggestedName, persistenceService);
-				alert('DEBUG: saveFileAsMobile completed');
-			} else {
-				// Web: Use File System Access API save dialog
-				alert('DEBUG: Using web saveFileAsWeb');
-				await this.saveFileAsWeb(data, suggestedName);
-				alert('DEBUG: saveFileAsWeb completed');
-			}
+			alert(`DEBUG: saveFileAs called - platform: ${this.platform}, data size: ${data.byteLength} bytes`);
+			alert('DEBUG: Using universal web download approach for both web and mobile');
+			
+			const fileName = suggestedName || `reader_${Date.now()}.smartText`;
+			alert(`DEBUG: Generated fileName: ${fileName}`);
+			
+			// Use the simple web download approach - works on both web and mobile
+			// Create a blob from the data
+			const blob = new Blob([data], { type: 'application/octet-stream' });
+			const url = URL.createObjectURL(blob);
+			
+			// Create a temporary anchor element to trigger download
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = fileName;
+			link.style.display = 'none';
+			
+			// Add to DOM, click, and remove
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			
+			// Clean up the blob URL
+			URL.revokeObjectURL(url);
+			
+			alert(`DEBUG: Download triggered for ${fileName}`);
+			
+			// Update the file service
+			this.fileData = new File([data], fileName, { type: 'application/octet-stream' });
+			alert(`DEBUG: Updated fileData with new file`);
+			
 		} catch (error) {
 			alert(`DEBUG: Error in saveFileAs: ${error.message}`);
 			console.error('Error saving file as:', error);
@@ -214,7 +233,7 @@ export class FileService {
 	}
 
 	/**
-	 * Save file as on mobile using directory picker (similar to web flow)
+	 * Save file as on mobile using simple web download approach
 	 * @param {ArrayBuffer} data - Data to save
 	 * @param {string} suggestedName - Suggested filename
 	 * @param {PersistenceService} persistenceService - Persistence service for mobile parent directory
@@ -225,37 +244,29 @@ export class FileService {
 		const fileName = suggestedName || `reader_${Date.now()}.smartText`;
 		alert(`DEBUG: Generated fileName: ${fileName}`);
 		
-		// Convert ArrayBuffer to base64 for Capacitor Filesystem
-		const uint8Array = new Uint8Array(data);
-		const base64Data = btoa(String.fromCharCode(...uint8Array));
-		alert(`DEBUG: Converted to base64, length: ${base64Data.length}`);
-
-		// Use file picker to let user choose save location
-		alert('DEBUG: Opening file picker for user to choose save location');
+		// Use the simple web download approach - create blob and trigger download
+		alert('DEBUG: Using simple web download approach');
 		try {
-			// Use the file picker to let user select a directory
-			const result = await FilePicker.pickFiles({
-				multiple: false,
-				types: ['application/octet-stream', 'text/plain'],
-				readData: false // We don't need to read the file, just get the path
-			});
-
-			if (result.files && result.files.length > 0) {
-				const selectedFile = result.files[0];
-				alert(`DEBUG: User selected location: ${selectedFile.uri}`);
-				
-				// Extract directory from the selected file path
-				const filePath = selectedFile.uri || selectedFile.path || '';
-				const directory = filePath.substring(0, filePath.lastIndexOf('/'));
-				alert(`DEBUG: Extracted directory: ${directory}`);
-				
-				// Save to the selected directory
-				await this.saveToDirectory(data, fileName, base64Data, directory);
-			} else {
-				alert('DEBUG: User cancelled file picker');
-				throw new Error('User cancelled file selection');
-			}
-
+			// Create a blob from the data
+			const blob = new Blob([data], { type: 'application/octet-stream' });
+			const url = URL.createObjectURL(blob);
+			
+			// Create a temporary anchor element to trigger download
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = fileName;
+			link.style.display = 'none';
+			
+			// Add to DOM, click, and remove
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			
+			// Clean up the blob URL
+			URL.revokeObjectURL(url);
+			
+			alert(`DEBUG: Download triggered for ${fileName}`);
+			
 		} catch (error) {
 			alert(`DEBUG: Error in saveFileAsMobile: ${error.message}`);
 			throw error;
@@ -263,61 +274,9 @@ export class FileService {
 
 		// Update the file service
 		this.fileData = new File([data], fileName, { type: 'application/octet-stream' });
-		alert(`DEBUG: Updated mobileFilePath to: ${this.mobileFilePath}`);
+		alert(`DEBUG: Updated fileData with new file`);
 	}
 
-	/**
-	 * Save file to selected directory with overwrite check
-	 * @param {ArrayBuffer} data - Data to save
-	 * @param {string} fileName - Filename
-	 * @param {string} base64Data - Base64 encoded data
-	 * @param {string} directory - Directory path
-	 * @returns {Promise<void>}
-	 */
-	async saveToDirectory(data, fileName, base64Data, directory) {
-		try {
-			const fullPath = `${directory}/${fileName}`;
-			alert(`DEBUG: Saving to directory: ${directory}`);
-			alert(`DEBUG: Full path: ${fullPath}`);
-			
-			// Check if file already exists
-			alert(`DEBUG: Checking if file exists: ${fullPath}`);
-			try {
-				await Filesystem.stat({
-					path: fullPath,
-					directory: Directory.ExternalStorage
-				});
-				// File exists, ask user if they want to overwrite
-				alert(`DEBUG: File ${fileName} already exists. For now, we'll overwrite it.`);
-				// TODO: Implement proper user confirmation dialog
-			} catch (error) {
-				// File doesn't exist, that's fine
-				alert(`DEBUG: File ${fileName} doesn't exist, proceeding with save`);
-			}
-
-			// Save the file
-			await Filesystem.writeFile({
-				path: fullPath,
-				data: base64Data,
-				directory: Directory.ExternalStorage,
-				encoding: Encoding.UTF8
-			});
-			alert(`DEBUG: Successfully saved ${fileName} to ${directory}`);
-			this.mobileFilePath = fullPath;
-		} catch (error) {
-			alert(`DEBUG: Failed to save to directory ${directory}: ${error.message}`);
-			// Fallback to Data directory
-			alert('DEBUG: Fallback to Data directory');
-			await Filesystem.writeFile({
-				path: fileName,
-				data: base64Data,
-				directory: Directory.Data,
-				encoding: Encoding.UTF8
-			});
-			alert(`DEBUG: Successfully saved ${fileName} to Data directory`);
-			this.mobileFilePath = fileName;
-		}
-	}
 
 	/**
 	 * Save file to Downloads directory (fallback)
