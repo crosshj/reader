@@ -75,8 +75,8 @@ export function getHandlers(appController) {
 					message: 'Creating new file...',
 				});
 
-				const fileHandle = await appController.fileService.createFile();
-				if (fileHandle) {
+				const success = await appController.fileService.createFile();
+				if (success) {
 					// Create a barebones SQLite database
 					const dbData =
 						await appController.databaseService.createBarebonesDatabase();
@@ -115,59 +115,32 @@ export function getHandlers(appController) {
 				// Get current file content from persistence service
 				const currentFileContent = await appController.persistenceService.getCurrentFileContent();
 				if (!currentFileContent) {
-					console.warn('No file content to save.');
-					dispatchEvent('file:error', { 
-						error: 'No file content to save.', 
-						action: 'save' 
-					});
-					return;
+					throw new Error('No file content to save.');
 				}
 
-				// Get suggested filename from persistence service
+				// Always use save as flow - let user choose where to save
 				const suggestedName = appController.persistenceService.getCurrentFileName() || 'database.smartText';
+				await appController.fileService.saveFileAs(currentFileContent, suggestedName);
 				
-				// Use File System Access API to let user choose save location
-				if (typeof window.showSaveFilePicker === 'function') {
-					const fileHandle = await window.showSaveFilePicker({
-						suggestedName: suggestedName,
-						types: [{
-							description: 'SmartText Database Files',
-							accept: {
-								'application/octet-stream': ['.smartText']
-							}
-						}]
-					});
-					
-					// Create a writable stream and write the content
-					const writable = await fileHandle.createWritable();
-					await writable.write(currentFileContent);
-					await writable.close();
-					
-					
-					// Update the file handle in the service
-					appController.fileService.fileHandle = fileHandle;
-					appController.fileService.fileData = new File([currentFileContent], fileHandle.name);
-					
-					// Mark as saved in persistence service
-					appController.persistenceService.markAsSaved();
-					appController.persistenceService.setSavedFileName(fileHandle.name);
-					
-					dispatchEvent('file:saved');
-					
-					// Clear loading state and restore UI
-					dispatchEvent('ui:loading', { message: '' });
-					
-					// Trigger a database state refresh to restore the UI
-					dispatchEvent('db:state', {
-						action: 'file_saved',
-						state: appController.currentState || {},
-						metadata: appController.currentSchema ? { schema: appController.currentSchema } : {},
-						message: 'File saved successfully'
-					});
-				} else {
-					// Fallback for browsers that don't support File System Access API
-					throw new Error('File System Access API not supported. Please use a modern browser.');
-				}
+				// Update file data after saving
+				appController.fileService.updateFileData(currentFileContent);
+				
+				// Mark as saved in persistence service
+				appController.persistenceService.markAsSaved();
+				appController.persistenceService.setSavedFileName(appController.fileService.getFileData()?.name || 'database.smartText');
+				
+				dispatchEvent('file:saved');
+				
+				// Clear loading state and restore UI
+				dispatchEvent('ui:loading', { message: '' });
+				
+				// Trigger a database state refresh to restore the UI
+				dispatchEvent('db:state', {
+					action: 'file_saved',
+					state: appController.currentState || {},
+					metadata: appController.currentSchema ? { schema: appController.currentSchema } : {},
+					message: 'File saved successfully'
+				});
 			} catch (error) {
 				console.error('Save failed:', error);
 				dispatchEvent('file:error', {
