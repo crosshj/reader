@@ -25,6 +25,7 @@ export class ReaderController {
 			'#menu-edit-metadata': () => this.ui.showMetadataEditForm(),
 			'#menu-save-file': this.handleMenuSaveFile,
 			'#menu-close-file': this.handleMenuCloseFile,
+			'#menu-execute-query': () => this.ui.showQueryModal(),
 			'#add-item-btn': () => this.ui.showAddForm(),
 			'.edit-btn': (e) => this.ui.showEditForm(e.target.dataset.id),
 			'.delete-btn': (e) =>
@@ -40,6 +41,9 @@ export class ReaderController {
 				this.ui.hideMetadataEditForm(),
 			'#close-bulk-upsert-modal, #cancel-bulk-upsert': () =>
 				this.ui.hideBulkUpsertModal(),
+			'#close-query-modal, #cancel-query': () =>
+				this.ui.hideQueryModal(),
+			'#execute-query': () => this.handleExecuteQuery(this.ui),
 			// '#close-bulk-status-edit-modal, #cancel-bulk-status-edit': () =>
 			// 	this.ui.hideBulkStatusEditModal(),
 			'#retry-btn': () => this.ui.showContent(),
@@ -162,6 +166,25 @@ export class ReaderController {
 		this.ui.hideHamburgerMenu();
 		dispatchEvent('ui:closeFile');
 	};
+
+	/**
+	 * Handle execute query button click
+	 */
+	handleExecuteQuery(ui) {
+		const textarea = ui.container.querySelector('#query-textarea');
+		const query = textarea?.value?.trim();
+		
+		if (!query) {
+			alert('Please enter a query');
+			return;
+		}
+		
+		// Dispatch event with query string
+		dispatchEvent('ui:executeQuery', { query });
+		
+		// Hide modal
+		ui.hideQueryModal();
+	}
 
 	/**
 	 * Handle reader ready event - check if there's a file to restore before showing splash

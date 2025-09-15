@@ -50,6 +50,10 @@ export class ApplicationController {
 			'ui:bulkUpsert',
 			this.databaseHandlers.handleBulkUpsert
 		);
+		addEventListener(
+			'ui:executeQuery',
+			this.databaseHandlers.handleExecuteQuery
+		);
 
 		// Track database state for UI restoration
 		addEventListener('db:state', (e) => {

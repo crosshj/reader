@@ -1257,4 +1257,34 @@ export class DatabaseService {
 			'  - window.dbCleanup.removeTables() - Remove unused tables'
 		);
 	}
+
+	/**
+	 * Execute a custom SQL query
+	 * @param {string} query - SQL query to execute
+	 * @returns {Promise<Object>} Query result
+	 */
+	async executeQuery(query) {
+		if (!this.db) {
+			throw new Error('No database loaded');
+		}
+
+		try {
+			// For now, just log the query as requested
+			console.log('Executing query:', query);
+			
+			// Execute the query
+			const result = this.db.exec(query);
+			
+			// Return a structured result
+			return {
+				success: true,
+				query: query,
+				results: result,
+				timestamp: new Date().toISOString()
+			};
+		} catch (error) {
+			console.error('Query execution error:', error);
+			throw new Error(`Query execution failed: ${error.message}`);
+		}
+	}
 }

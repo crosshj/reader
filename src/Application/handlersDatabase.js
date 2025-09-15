@@ -376,5 +376,31 @@ export function getHandlers(appController) {
 				});
 			}
 		},
+
+		async handleExecuteQuery(e) {
+			const { query } = e.detail;
+			
+			try {
+				// Execute query using database service
+				const result = await appController.databaseService.executeQuery(query);
+				
+				// Log the result for now (as requested)
+				console.log('Query executed successfully:', result);
+				
+				// Dispatch success event
+				dispatchEvent('db:state', {
+					action: 'query_executed',
+					message: 'Query executed successfully',
+					queryResult: result,
+				});
+			} catch (error) {
+				console.error('Error executing query:', error);
+				dispatchEvent('db:state', {
+					action: 'error',
+					error: error.message,
+					message: `Query error: ${error.message}`,
+				});
+			}
+		},
 	};
 }

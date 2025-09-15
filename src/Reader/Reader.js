@@ -896,6 +896,92 @@ export class Reader {
 		}
 	}
 
+	showQueryModal() {
+		// Hide hamburger menu first
+		this.hideHamburgerMenu();
+
+		// Create modal overlay
+		const modal = document.createElement('div');
+		modal.className = 'query-modal-overlay';
+		modal.innerHTML = html`
+			<div class="query-modal">
+				<div class="modal-header">
+					<h3>Execute Query</h3>
+					<button
+						id="close-query-modal"
+						class="close-btn"
+					>
+						<svg
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+						>
+							<line
+								x1="18"
+								y1="6"
+								x2="6"
+								y2="18"
+							></line>
+							<line
+								x1="6"
+								y1="6"
+								x2="18"
+								y2="18"
+							></line>
+						</svg>
+					</button>
+				</div>
+				<div class="modal-content">
+					<div class="form-field">
+						<label for="query-textarea">SQL Query</label>
+						<textarea
+							id="query-textarea"
+							placeholder="Enter your SQL query here..."
+							rows="10"
+						></textarea>
+					</div>
+				</div>
+				<div class="modal-actions">
+					<button
+						id="cancel-query"
+						class="action-btn secondary"
+					>
+						Cancel
+					</button>
+					<button
+						id="execute-query"
+						class="action-btn primary"
+					>
+						Execute
+					</button>
+				</div>
+			</div>
+		`;
+
+		// Add modal to container
+		this.container.appendChild(modal);
+
+		// Animate in
+		requestAnimationFrame(() => {
+			modal.style.opacity = '1';
+			modal.style.visibility = 'visible';
+		});
+	}
+
+	hideQueryModal() {
+		const modal = this.container.querySelector('.query-modal-overlay');
+		if (modal) {
+			modal.style.opacity = '0';
+			modal.style.visibility = 'hidden';
+			setTimeout(() => {
+				modal.remove();
+			}, 300);
+		}
+	}
+
 	handleSelectedEditFormSubmit(form) {
 		const formData = new FormData(form);
 		const data = {};
@@ -1059,6 +1145,22 @@ export class Reader {
 									></path>
 								</svg>
 								<span>Edit Database Info</span>
+							</button>
+							<button
+								id="menu-execute-query"
+								class="menu-item"
+							>
+								<svg
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<polygon points="5,3 19,12 5,21"></polygon>
+								</svg>
+								<span>Execute Query</span>
 							</button>
 							<button
 								id="menu-save-file"
