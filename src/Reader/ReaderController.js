@@ -33,6 +33,7 @@ export class ReaderController {
 				this.ui.handleDeleteClick(e.target.dataset.id),
 			'#bulk-upsert-btn': () => this.ui.showBulkUpsertModal(),
 			'#selected-edit-btn': () => this.ui.showSelectedEditModal(),
+			'#selected-edit-btn-mobile': () => this.ui.showSelectedEditModal(),
 			'.filter-icon-btn': (e) =>
 				this.ui.header.toggleFilterDropdown(e.target.dataset.field),
 			'#close-selected-edit-modal, #cancel-selected-edit': () =>
