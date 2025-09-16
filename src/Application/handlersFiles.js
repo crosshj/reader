@@ -31,19 +31,15 @@ export function getHandlers(appController) {
 					
 					// No need to extract parent directory anymore - user will choose via directory picker
 					
-					// Call database handler to load the file
-					await appController.databaseHandlers.handleLoadFromFile(
-						file
-					);
+				// Call database handler to load the file
+				await appController.databaseHandlers.handleLoadFromFile(
+					file
+				);
 
-					// Save file content to app storage for persistence
-					await appController.persistenceService.saveFileContent(fileContent, file.name);
-
-					// Mark as clean since we just loaded the file
-					appController.persistenceService.markAsSaved();
-
-					// Enable save button since we now have a file handle
-					dispatchEvent('file:opened');
+				// Only save file content and mark as saved if database loaded successfully
+				// (The database handler will handle persistence on success)
+				// Enable save button since we now have a file handle
+				dispatchEvent('file:opened');
 
 					// Save file handle for persistence (only if we have a file handle)
 					if (appController.fileService.fileHandle) {

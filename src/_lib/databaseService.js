@@ -75,15 +75,7 @@ export class DatabaseService {
 			};
 		} catch (error) {
 			console.error('Error reading metadata:', error);
-			// Return default metadata if table doesn't exist
-			return {
-				version: '1.0',
-				schema: {
-					type: 'list',
-					fields: ['text'],
-					controls: ['add', 'edit', 'delete', 'bulk-upsert'],
-				},
-			};
+			throw error;
 		}
 	}
 
@@ -103,7 +95,7 @@ export class DatabaseService {
 			return result[0]?.values?.map((row) => row[0]) || [];
 		} catch (error) {
 			console.error('Error getting table names:', error);
-			return [];
+			throw error;
 		}
 	}
 

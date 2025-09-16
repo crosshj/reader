@@ -17,12 +17,12 @@ export class ReaderController {
 		addEventListener('reader:ready', () => this.handleReaderReady());
 
 		const uiClickHandlers = {
-			'#hamburger-menu': () => this.ui.toggleHamburgerMenu(),
+			'#hamburger-menu': () => this.ui.menu.toggleHamburgerMenu(),
 			'#menu-open-file': this.handleMenuOpenFile,
 			'#menu-create-file': this.handleMenuCreateFile,
 			'#open-file-btn': () => dispatchEvent('ui:openFile'),
 			'#create-file-btn': () => dispatchEvent('ui:createFile'),
-			'#menu-edit-metadata': () => this.ui.showMetadataEditForm(),
+			'#menu-edit-metadata': () => this.ui.modalMetadataEdit.show(),
 			'#menu-save-file': this.handleMenuSaveFile,
 			'#menu-close-file': this.handleMenuCloseFile,
 			'#menu-execute-query': () => this.ui.showQueryModal(),
@@ -31,25 +31,22 @@ export class ReaderController {
 			'.delete-btn': (e) =>
 				this.ui.handleDeleteClick(e.target.dataset.id),
 			'#bulk-upsert-btn': () => this.ui.showBulkUpsertModal(),
-			// '#bulk-status-edit-btn': () => this.ui.showBulkStatusEditModal(),
 			'#selected-edit-btn': () => this.ui.showSelectedEditModal(),
 			'.filter-icon-btn': (e) =>
-				this.ui.toggleFilterDropdown(e.target.dataset.field),
+				this.ui.header.toggleFilterDropdown(e.target.dataset.field),
 			'#close-selected-edit-modal, #cancel-selected-edit': () =>
 				this.ui.hideSelectedEditModal(),
 			'#close-metadata-modal, #cancel-metadata': () =>
-				this.ui.hideMetadataEditForm(),
+				this.ui.modalMetadataEdit.hide(),
 			'#close-bulk-upsert-modal, #cancel-bulk-upsert': () =>
 				this.ui.hideBulkUpsertModal(),
 			'#close-query-modal, #cancel-query': () =>
 				this.ui.hideQueryModal(),
 			'#execute-query': () => this.handleExecuteQuery(this.ui),
-			// '#close-bulk-status-edit-modal, #cancel-bulk-status-edit': () =>
-			// 	this.ui.hideBulkStatusEditModal(),
 			'#retry-btn': () => this.ui.showContent(),
 			'#retry-file-btn': () => this.ui.showContent(),
 			'#back-to-splash-btn': () => this.ui.showContent(),
-			'.sidebar-overlay': () => this.ui.hideHamburgerMenu(),
+			'.sidebar-overlay': () => this.ui.menu.hideHamburgerMenu(),
 			'.grid-row': (e) => {
 				if (e.target.matches('.action-btn')) return;
 				const row = e.target.closest('.grid-row');
@@ -67,7 +64,7 @@ export class ReaderController {
 			},
 			'#metadata-form': (e) => {
 				e.preventDefault();
-				this.ui.handleMetadataFormSubmit();
+				this.ui.modalMetadataEdit.submit();
 			},
 		});
 
@@ -130,11 +127,6 @@ export class ReaderController {
 	}
 
 	selectRow(rowId) {
-		// Clear previous selection
-		if (this.selectedRowId) {
-			this.ui.clearRowSelection();
-		}
-
 		// Set new selection
 		this.selectedRowId = rowId;
 		this.ui.selectRow(rowId);
@@ -142,28 +134,28 @@ export class ReaderController {
 		// Fire selection event
 		dispatchEvent('reader:itemSelected', {
 			itemId: rowId,
-			item: this.ui.getItemById(rowId),
+			item: this.ui.list.getItemById(rowId),
 		});
 	}
 
 	// Menu handlers that coordinate UI + events
 	handleMenuOpenFile = () => {
-		this.ui.hideHamburgerMenu();
+		this.ui.menu.hideHamburgerMenu();
 		dispatchEvent('ui:openFile');
 	};
 
 	handleMenuCreateFile = () => {
-		this.ui.hideHamburgerMenu();
+		this.ui.menu.hideHamburgerMenu();
 		dispatchEvent('ui:createFile');
 	};
 
 	handleMenuSaveFile = () => {
-		this.ui.hideHamburgerMenu();
+		this.ui.menu.hideHamburgerMenu();
 		dispatchEvent('ui:saveFile');
 	};
 
 	handleMenuCloseFile = () => {
-		this.ui.hideHamburgerMenu();
+		this.ui.menu.hideHamburgerMenu();
 		dispatchEvent('ui:closeFile');
 	};
 
