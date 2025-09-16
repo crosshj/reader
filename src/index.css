@@ -2,21 +2,24 @@
    THEME & ROOT VARS (Consistent with index.css)
    ===================== */
 :root {
-	color-scheme: light dark;
-	--bg: Canvas;
-	--fg: CanvasText;
-	--accent: LinkText;
+	color-scheme: dark;
+	--bg: #0a0a0a;
+	--fg: #ffffff;
+	--accent: #666666;
 	--muted: 0.6;
-	--card-bg: color-mix(in srgb, canvastext 1%, Canvas);
-	--card-border: rgba(255, 255, 255, 0.1);
-	--text-muted: color-mix(in srgb, canvastext 60%, transparent);
-	--text-subtle: color-mix(in srgb, canvastext 40%, transparent);
-	--text-bright: var(--fg);
-	--text-accent: color-mix(in srgb, canvastext 35%, var(--accent));
+	--card-bg: #111111;
+	--card-border: #1a1a1a;
+	--text-muted: #888888;
+	--text-subtle: #666666;
+	--text-bright: #ffffff;
+	--text-accent: #888888;
+	--bg-secondary: #0d0d0d;
+	--bg-dark: #050505;
+	--accent-color: #666666;
 	--card-radius: 16px;
 	--card-padding: 1.25em 1.5em;
 	--card-gap: 1.5em;
-	--card-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.18);
+	--card-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.4);
 	--font-body: system-ui, sans-serif;
 	--font-heading: system-ui, sans-serif;
 }

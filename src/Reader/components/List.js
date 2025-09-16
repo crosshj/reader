@@ -180,7 +180,7 @@ export class List {
 
 				<div class="list-grid-container">
 					${items.length === 0
-						? html` <p class="empty-state">No items yet</p> `
+						? html` <p class="empty-state">No items</p> `
 						: html`
 								<div
 									class="list-grid"

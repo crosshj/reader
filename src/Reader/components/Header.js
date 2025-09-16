@@ -10,7 +10,8 @@ export class Header {
 			<header class="reader-header">
 				<!-- Mobile view: Gmail-style search input -->
 				<div class="header-mobile">
-					<div class="search-input-container">
+					<div class="mobile-search">
+						<div class="search-input-container">
 						<button
 							id="hamburger-menu"
 							class="hamburger-btn search-hamburger"
@@ -67,6 +68,7 @@ export class Header {
 								<line x1="9" y1="9" x2="15" y2="15"></line>
 							</svg>
 						</button>
+						</div>
 					</div>
 				</div>
 
@@ -108,7 +110,8 @@ export class Header {
 						<h1 id="app-title">Reader</h1>
 					</div>
 					<div class="header-center">
-						<div class="search-input-container desktop-search">
+						<div class="desktop-search">
+							<div class="search-input-container">
 							<input
 								type="text"
 								id="search-input-desktop"
@@ -132,6 +135,7 @@ export class Header {
 									<line x1="9" y1="9" x2="15" y2="15"></line>
 								</svg>
 							</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -274,6 +278,16 @@ export class Header {
 		
 		if ((!desktopFilterContainer && !mobileFilterContainer) || !this.reader.currentSchema) return;
 
+		// Update mobile search placeholder with current filter info
+		const searchInput = this.reader.container.querySelector('#search-input');
+		if (searchInput) {
+			const activeFilter = this.getActiveFilterDisplay();
+			const searchPlaceholder = activeFilter
+				? `Search ${this.reader.currentSchema?.title || 'Reader'} | ${activeFilter}`
+				: `Search ${this.reader.currentSchema?.title || 'Reader'}`;
+			searchInput.placeholder = searchPlaceholder;
+		}
+
 		// Get filterable enum fields
 		const filterableFields =
 			this.reader.currentSchema.fields?.filter(
@@ -377,7 +391,7 @@ export class Header {
 	}
 
 	getCurrentFilter(fieldName) {
-		// Get from localStorage or return default (first option)
+		// Get from localStorage or return default ('all' means no filter)
 		const stored = localStorage.getItem(`filter_${fieldName}`);
 		if (stored) {
 			// Validate that the stored value is still valid
@@ -392,11 +406,8 @@ export class Header {
 			}
 		}
 
-		// Return default (first option)
-		const field = this.reader.currentSchema?.fields?.find(
-			(f) => f.name === fieldName
-		);
-		return field?.options?.[0] || 'all';
+		// Return 'all' as default (no filter applied)
+		return 'all';
 	}
 
 
@@ -449,8 +460,8 @@ export class Header {
 			const option = e.target.closest('.filter-option');
 			if (option) {
 				const value = option.dataset.value;
-                this.updateFilterIcons();
 				this.reader.setFilter(fieldName, value);
+				this.updateFilterIcons();
 				this.hideAllFilterDropdowns();
 			}
 		});
