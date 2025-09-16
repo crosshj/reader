@@ -869,7 +869,7 @@
         color: var(--accent);
     }
     
-    @media (max-width: 700px) {
+    @media (max-width: 1024px) {
         .reader-content {
             padding: 0 !important;
         }
@@ -933,7 +933,7 @@
         }
     }
     
-    @media (min-width: 701px) {
+    @media (min-width: 1025px) {
         .header-mobile {
             display: none;
         }
