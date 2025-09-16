@@ -53,7 +53,14 @@ export class ReaderController {
 				if (e.target.matches('.action-btn')) return;
 				const row = e.target.closest('.grid-row');
 				if (row) {
-					this.selectRow(row.dataset.rowId);
+					const rowId = row.dataset.rowId;
+					if (this.selectedRowId === rowId) {
+						// If already selected, deselect it
+						this.deselectRow();
+					} else {
+						// Otherwise, select it
+						this.selectRow(rowId);
+					}
 				}
 			},
 		};
@@ -138,6 +145,15 @@ export class ReaderController {
 			itemId: rowId,
 			item: this.ui.list.getItemById(rowId),
 		});
+	}
+
+	deselectRow() {
+		// Clear selection
+		this.selectedRowId = null;
+		this.ui.clearRowSelection();
+
+		// Fire deselection event
+		dispatchEvent('reader:itemDeselected');
 	}
 
 	// Menu handlers that coordinate UI + events

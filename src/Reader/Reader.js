@@ -251,8 +251,7 @@ export class Reader {
 
 
 	showDatabaseState({ action, state, metadata, message }) {
-		
-		
+
 		// Store current state and schema for editing
 		this.currentState = state;
 		this.currentSchema = metadata?.schema;
@@ -273,7 +272,6 @@ export class Reader {
 			this.header.updateFilterIcons();
 		}
 	}
-
 
 	showDynamicUI(schema, state) {
 		const content = this.container.querySelector('.reader-content');
@@ -673,7 +671,7 @@ export class Reader {
 			`.grid-row[data-row-id="${rowId}"]`
 		);
 		if (row) {
-            this.clearRowSelection();
+			this.clearRowSelection();
 			row.querySelectorAll('.grid-cell').forEach((cell) =>
 				cell.classList.add('row-selected')
 			);
