@@ -13,12 +13,12 @@ export class Reader {
 		document.body.appendChild(this.container);
 		this.currentState = null;
 		this.currentSchema = null;
-		
+
 		this.header = new Header(this);
 		this.menu = new Menu(this);
 		this.list = new List(this);
 		this.modalMetadataEdit = new ModalMetadataEdit(this);
-		
+
 		this.render();
 	}
 
@@ -249,9 +249,7 @@ export class Reader {
 		}
 	}
 
-
 	showDatabaseState({ action, state, metadata, message }) {
-
 		// Store current state and schema for editing
 		this.currentState = state;
 		this.currentSchema = metadata?.schema;
@@ -287,7 +285,7 @@ export class Reader {
 		if (schema.type === 'list') {
 			uiContent = this.list.render(schema, state);
 		} else {
-			uiContent = html` <p>Unsupported schema type: ${schema.type}</p> `;
+			uiContent = html`<p>Unsupported schema type: ${schema.type}</p>`;
 		}
 
 		content.innerHTML = html`
@@ -302,18 +300,14 @@ export class Reader {
 		`;
 	}
 
-
 	setFilter(fieldName, value) {
 		// Store in localStorage
 		localStorage.setItem(`filter_${fieldName}`, value);
-		
-        if (this.currentSchema && this.currentState) {
+
+		if (this.currentSchema && this.currentState) {
 			this.showDynamicUI(this.currentSchema, this.currentState);
 		}
 	}
-
-
-
 
 	showSelectedEditModal(itemId = null) {
 		// Hide hamburger menu first
