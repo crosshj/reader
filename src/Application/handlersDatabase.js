@@ -43,20 +43,17 @@ export function getHandlers(appController) {
 
 	return {
 		async handleLoadFromFile(file) {
-			try {
-				console.log('Attempting to load file:', file.name);
-				const arrayBuffer = await file.arrayBuffer();
-				const dbInfo = await appController.databaseService.loadFromFile(arrayBuffer);
-				
-				console.log('Database loaded successfully, dispatching state');
-				dispatchDbState('loaded', 'Database loaded successfully', null, {
+		try {
+			const arrayBuffer = await file.arrayBuffer();
+			const dbInfo = await appController.databaseService.loadFromFile(arrayBuffer);
+			
+			dispatchDbState('loaded', 'Database loaded successfully', null, {
 					version: dbInfo.version,
 					schema: dbInfo.schema,
 					tables: dbInfo.tables,
-				});
-				
-				console.log('Notifying persistence service');
-				// Only notify persistence service if database loads successfully
+			});
+			
+			// Only notify persistence service if database loads successfully
 				appController.persistenceService.handleFileOpened(file);
 				
 				// Save file content to app storage for persistence
@@ -64,10 +61,9 @@ export function getHandlers(appController) {
 				
 				// Mark as clean since we just loaded the file
 				appController.persistenceService.markAsSaved();
-			} catch (error) {
-				console.error('Error loading database:', error);
-				console.log('NOT notifying persistence service due to error');
-				// Don't notify persistence service on error - file was not successfully opened
+		} catch (error) {
+			console.error('Error loading database:', error);
+			// Don't notify persistence service on error - file was not successfully opened
 				dispatchEvent('db:state', {
 					action: 'error',
 					error: error.message,
@@ -395,10 +391,7 @@ export function getHandlers(appController) {
 				// Execute query using database service
 				const result = await appController.databaseService.executeQuery(query);
 				
-				// Log the result for now (as requested)
-				console.log('Query executed successfully:', result);
-				
-				// Dispatch success event
+			// Dispatch success event
 				dispatchEvent('db:state', {
 					action: 'query_executed',
 					message: 'Query executed successfully',

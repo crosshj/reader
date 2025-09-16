@@ -8,40 +8,132 @@ export class Header {
 	render() {
 		return html`
 			<header class="reader-header">
-				<div class="header-left">
-					<button
-						id="hamburger-menu"
-						class="hamburger-btn"
-					>
-						<svg
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
+				<!-- Mobile view: Gmail-style search input -->
+				<div class="header-mobile">
+					<div class="search-input-container">
+						<button
+							id="hamburger-menu"
+							class="hamburger-btn search-hamburger"
 						>
-							<line
-								x1="3"
-								y1="6"
-								x2="21"
-								y2="6"
-							></line>
-							<line
-								x1="3"
-								y1="12"
-								x2="21"
-								y2="12"
-							></line>
-							<line
-								x1="3"
-								y1="18"
-								x2="21"
-								y2="18"
-							></line>
-						</svg>
-					</button>
-					<h1 id="app-title">Reader</h1>
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<line
+									x1="3"
+									y1="6"
+									x2="21"
+									y2="6"
+								></line>
+								<line
+									x1="3"
+									y1="12"
+									x2="21"
+									y2="12"
+								></line>
+								<line
+									x1="3"
+									y1="18"
+									x2="21"
+									y2="18"
+								></line>
+							</svg>
+						</button>
+						<input
+							type="text"
+							id="search-input"
+							class="search-input"
+							placeholder="Search Reader"
+						/>
+						<button
+							id="clear-search"
+							class="clear-search-btn"
+							style="display: none;"
+						>
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<circle cx="12" cy="12" r="10"></circle>
+								<line x1="15" y1="9" x2="9" y2="15"></line>
+								<line x1="9" y1="9" x2="15" y2="15"></line>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Desktop view: Original layout with search -->
+				<div class="header-desktop">
+					<div class="header-left">
+						<button
+							id="hamburger-menu-desktop"
+							class="hamburger-btn"
+						>
+							<svg
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+							>
+								<line
+									x1="3"
+									y1="6"
+									x2="21"
+									y2="6"
+								></line>
+								<line
+									x1="3"
+									y1="12"
+									x2="21"
+									y2="12"
+								></line>
+								<line
+									x1="3"
+									y1="18"
+									x2="21"
+									y2="18"
+								></line>
+							</svg>
+						</button>
+						<h1 id="app-title">Reader</h1>
+					</div>
+					<div class="header-center">
+						<div class="search-input-container desktop-search">
+							<input
+								type="text"
+								id="search-input-desktop"
+								class="search-input"
+							/>
+							<button
+								id="clear-search-desktop"
+								class="clear-search-btn"
+								style="display: none;"
+							>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<circle cx="12" cy="12" r="10"></circle>
+									<line x1="15" y1="9" x2="9" y2="15"></line>
+									<line x1="9" y1="9" x2="15" y2="15"></line>
+								</svg>
+							</button>
+						</div>
+					</div>
 				</div>
 			</header>
 		`;
@@ -54,6 +146,7 @@ export class Header {
 			return;
 		}
 		
+		// Update desktop title
 		const titleElement = this.reader.container.querySelector('#app-title');
 		if (titleElement) {
 			const activeFilter = this.getActiveFilterDisplay();
@@ -62,60 +155,124 @@ export class Header {
 				: title;
 			titleElement.textContent = displayTitle;
 		}
+
+		// Update mobile search placeholder
+		const searchInput = this.reader.container.querySelector('#search-input');
+		if (searchInput) {
+			const activeFilter = this.getActiveFilterDisplay();
+			const searchPlaceholder = activeFilter
+				? `Search ${title} | ${activeFilter}`
+				: `Search ${title}`;
+			searchInput.placeholder = searchPlaceholder;
+		}
+
+		// Desktop search placeholder stays as "Search" - no need to update
 	}
 
 	showActions() {
 		const header = this.reader.container.querySelector('.reader-header');
-		if (!header || header.querySelector('.header-right')) return;
+		if (!header) return;
 
-		// Add the right side actions
-		const rightSide = document.createElement('div');
-		rightSide.className = 'header-right';
-		rightSide.innerHTML = html`
-			<button
-				id="selected-edit-btn"
-				class="selected-edit-btn"
-				style="display: none;"
-				title="Edit Selected Item"
-			>
-				<svg
-					width="20"
-					height="20"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
+		// Add the right side actions to desktop header
+		const desktopHeader = header.querySelector('.header-desktop');
+		if (desktopHeader && !desktopHeader.querySelector('.header-right')) {
+			const rightSide = document.createElement('div');
+			rightSide.className = 'header-right';
+			rightSide.innerHTML = html`
+				<button
+					id="selected-edit-btn"
+					class="selected-edit-btn"
+					style="display: none;"
+					title="Edit Selected Item"
 				>
-					<path
-						d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-					></path>
-					<path
-						d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-					></path>
-				</svg>
-			</button>
-			<div
-				id="filter-icons-container"
-				class="filter-icons-container"
-			>
-				<!-- Filter icons will be dynamically added here -->
-			</div>
-		`;
-		header.appendChild(rightSide);
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<path
+							d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+						></path>
+						<path
+							d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+						></path>
+					</svg>
+				</button>
+				<div
+					id="filter-icons-container"
+					class="filter-icons-container"
+				>
+					<!-- Filter icons will be dynamically added here -->
+				</div>
+			`;
+			desktopHeader.appendChild(rightSide);
+		}
+
+		// Add the right side actions to mobile header
+		const mobileHeader = header.querySelector('.header-mobile');
+		if (mobileHeader && !mobileHeader.querySelector('.header-right')) {
+			const rightSide = document.createElement('div');
+			rightSide.className = 'header-right';
+			rightSide.innerHTML = html`
+				<button
+					id="selected-edit-btn-mobile"
+					class="selected-edit-btn"
+					style="display: none;"
+					title="Edit Selected Item"
+				>
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<path
+							d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+						></path>
+						<path
+							d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+						></path>
+					</svg>
+				</button>
+				<div
+					id="filter-icons-container-mobile"
+					class="filter-icons-container"
+				>
+					<!-- Filter icons will be dynamically added here -->
+				</div>
+			`;
+			mobileHeader.appendChild(rightSide);
+		}
+
+		// Setup search listeners
+		this.setupSearchListeners();
 	}
 
 	hideActions() {
-		const rightSide = this.reader.container.querySelector('.header-right');
-		if (rightSide) {
-			rightSide.remove();
+		const desktopRightSide = this.reader.container.querySelector('.header-desktop .header-right');
+		if (desktopRightSide) {
+			desktopRightSide.remove();
+		}
+		const mobileRightSide = this.reader.container.querySelector('.header-mobile .header-right');
+		if (mobileRightSide) {
+			mobileRightSide.remove();
 		}
 	}
 
 	updateFilterIcons() {
-		const filterContainer = this.reader.container.querySelector(
+		const desktopFilterContainer = this.reader.container.querySelector(
 			'#filter-icons-container'
 		);
-		if (!filterContainer || !this.reader.currentSchema) return;
+		const mobileFilterContainer = this.reader.container.querySelector(
+			'#filter-icons-container-mobile'
+		);
+		
+		if ((!desktopFilterContainer && !mobileFilterContainer) || !this.reader.currentSchema) return;
 
 		// Get filterable enum fields
 		const filterableFields =
@@ -124,12 +281,13 @@ export class Header {
 			) || [];
 
 		if (filterableFields.length === 0) {
-			filterContainer.innerHTML = '';
+			if (desktopFilterContainer) desktopFilterContainer.innerHTML = '';
+			if (mobileFilterContainer) mobileFilterContainer.innerHTML = '';
 			return;
 		}
 
 		// Generate filter icons
-		filterContainer.innerHTML = filterableFields
+		const filterIconsHTML = filterableFields
 			.map((field) => {
 				const currentFilter = this.getCurrentFilter(field.name);
 				const isFiltered = currentFilter && currentFilter !== 'all';
@@ -164,22 +322,39 @@ export class Header {
 				`;
 			})
 			.join('');
+
+		// Update both containers
+		if (desktopFilterContainer) {
+			desktopFilterContainer.innerHTML = filterIconsHTML;
+		}
+		if (mobileFilterContainer) {
+			mobileFilterContainer.innerHTML = filterIconsHTML;
+		}
 	}
 
 	showSelectedEditButton() {
-		const editBtn = this.reader.container.querySelector('#selected-edit-btn');
-		if (
-			editBtn &&
-			this.reader.currentSchema?.controls?.includes('selected-edit')
-		) {
-			editBtn.style.display = 'flex';
+		const desktopEditBtn = this.reader.container.querySelector('#selected-edit-btn');
+		const mobileEditBtn = this.reader.container.querySelector('#selected-edit-btn-mobile');
+		
+		if (this.reader.currentSchema?.controls?.includes('selected-edit')) {
+			if (desktopEditBtn) {
+				desktopEditBtn.style.display = 'flex';
+			}
+			if (mobileEditBtn) {
+				mobileEditBtn.style.display = 'flex';
+			}
 		}
 	}
 
 	hideSelectedEditButton() {
-		const editBtn = this.reader.container.querySelector('#selected-edit-btn');
-		if (editBtn) {
-			editBtn.style.display = 'none';
+		const desktopEditBtn = this.reader.container.querySelector('#selected-edit-btn');
+		const mobileEditBtn = this.reader.container.querySelector('#selected-edit-btn-mobile');
+		
+		if (desktopEditBtn) {
+			desktopEditBtn.style.display = 'none';
+		}
+		if (mobileEditBtn) {
+			mobileEditBtn.style.display = 'none';
 		}
 	}
 
@@ -339,5 +514,128 @@ export class Header {
 		});
 
 		return counts;
+	}
+
+	// Search functionality
+	setSearchQuery(query) {
+		this.searchQuery = query;
+		// Trigger list refresh with search filter
+		if (this.reader.currentSchema && this.reader.currentState) {
+			this.reader.showDynamicUI(this.reader.currentSchema, this.reader.currentState);
+		}
+	}
+
+	getSearchQuery() {
+		return this.searchQuery || '';
+	}
+
+	clearSearch() {
+		this.searchQuery = '';
+		const searchInput = this.reader.container.querySelector('#search-input');
+		const desktopSearchInput = this.reader.container.querySelector('#search-input-desktop');
+		
+		if (searchInput) {
+			searchInput.value = '';
+		}
+		if (desktopSearchInput) {
+			desktopSearchInput.value = '';
+		}
+		
+		// Restore placeholders when clearing
+		const activeFilter = this.getActiveFilterDisplay();
+		const mobileSearchPlaceholder = activeFilter
+			? `Search ${this.reader.currentSchema?.title || 'Reader'} | ${activeFilter}`
+			: `Search ${this.reader.currentSchema?.title || 'Reader'}`;
+		
+		if (searchInput) {
+			searchInput.placeholder = mobileSearchPlaceholder;
+		}
+		// Desktop search has no placeholder
+		
+		this.updateClearButtonVisibility();
+		// Trigger list refresh without search filter
+		if (this.reader.currentSchema && this.reader.currentState) {
+			this.reader.showDynamicUI(this.reader.currentSchema, this.reader.currentState);
+		}
+	}
+
+	updateClearButtonVisibility() {
+		const searchInput = this.reader.container.querySelector('#search-input');
+		const clearBtn = this.reader.container.querySelector('#clear-search');
+		const desktopSearchInput = this.reader.container.querySelector('#search-input-desktop');
+		const desktopClearBtn = this.reader.container.querySelector('#clear-search-desktop');
+		
+		if (searchInput && clearBtn) {
+			clearBtn.style.display = searchInput.value.trim() ? 'flex' : 'none';
+		}
+		if (desktopSearchInput && desktopClearBtn) {
+			desktopClearBtn.style.display = desktopSearchInput.value.trim() ? 'flex' : 'none';
+		}
+	}
+
+	setupSearchListeners() {
+		const searchInput = this.reader.container.querySelector('#search-input');
+		const clearBtn = this.reader.container.querySelector('#clear-search');
+		const desktopSearchInput = this.reader.container.querySelector('#search-input-desktop');
+		const desktopClearBtn = this.reader.container.querySelector('#clear-search-desktop');
+		
+		// Helper function to sync search values between mobile and desktop
+		const syncSearchValues = (sourceInput, targetInput) => {
+			if (sourceInput && targetInput) {
+				targetInput.value = sourceInput.value;
+			}
+		};
+
+		// Mobile search input listeners
+		if (searchInput) {
+			searchInput.addEventListener('input', (e) => {
+				this.setSearchQuery(e.target.value);
+				syncSearchValues(searchInput, desktopSearchInput);
+				this.updateClearButtonVisibility();
+			});
+
+			searchInput.addEventListener('focus', () => {
+				searchInput.placeholder = '';
+			});
+
+			searchInput.addEventListener('blur', () => {
+				if (!searchInput.value.trim()) {
+					const activeFilter = this.getActiveFilterDisplay();
+					const searchPlaceholder = activeFilter
+						? `Search ${this.reader.currentSchema?.title || 'Reader'} | ${activeFilter}`
+						: `Search ${this.reader.currentSchema?.title || 'Reader'}`;
+					searchInput.placeholder = searchPlaceholder;
+				}
+			});
+		}
+
+		// Desktop search input listeners
+		if (desktopSearchInput) {
+			desktopSearchInput.addEventListener('input', (e) => {
+				this.setSearchQuery(e.target.value);
+				syncSearchValues(desktopSearchInput, searchInput);
+				this.updateClearButtonVisibility();
+			});
+
+			desktopSearchInput.addEventListener('focus', () => {
+				desktopSearchInput.placeholder = '';
+			});
+
+			desktopSearchInput.addEventListener('blur', () => {
+				// No placeholder restoration for desktop
+			});
+		}
+
+		// Clear button listeners
+		if (clearBtn) {
+			clearBtn.addEventListener('click', () => {
+				this.clearSearch();
+			});
+		}
+		if (desktopClearBtn) {
+			desktopClearBtn.addEventListener('click', () => {
+				this.clearSearch();
+			});
+		}
 	}
 }

@@ -11,7 +11,7 @@ export class List {
 		const tableName = this.reader.currentSchema.tableName || 'items';
 		let items = this.reader.currentState[tableName] || [];
 
-		// Apply filters
+		// Apply enum filters
 		const filterableFields =
 			this.reader.currentSchema.fields?.filter(
 				(field) => field.type === 'enum' && field.filterable
@@ -25,6 +25,22 @@ export class List {
 				);
 			}
 		});
+
+		// Apply search filter
+		const searchQuery = this.reader.header.getSearchQuery();
+		if (searchQuery && searchQuery.trim()) {
+			const searchTerm = searchQuery.toLowerCase().trim();
+			items = items.filter((item) => {
+				// Search across all text fields
+				return this.reader.currentSchema.fields?.some((field) => {
+					if (field.type === 'text' || field.type === 'string') {
+						const value = item[field.name];
+						return value && value.toString().toLowerCase().includes(searchTerm);
+					}
+					return false;
+				});
+			});
+		}
 
 		return items;
 	}

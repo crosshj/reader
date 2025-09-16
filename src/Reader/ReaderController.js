@@ -18,6 +18,7 @@ export class ReaderController {
 
 		const uiClickHandlers = {
 			'#hamburger-menu': () => this.ui.menu.toggleHamburgerMenu(),
+			'#hamburger-menu-desktop': () => this.ui.menu.toggleHamburgerMenu(),
 			'#menu-open-file': this.handleMenuOpenFile,
 			'#menu-create-file': this.handleMenuCreateFile,
 			'#open-file-btn': () => dispatchEvent('ui:openFile'),
