@@ -1,0 +1,73 @@
+# Reader Project - Cursor Rules
+
+## Project Overview
+This is a JavaScript-based data management application that works with .smartText database files. It's built for both web and mobile (via Capacitor) and uses SQLite with sql.js for data storage.
+
+## Architecture
+- **Component-based architecture** with clear separation between UI and controllers
+- **Controller pattern**: Each UI component has a corresponding controller that handles events and business logic
+- **File structure**: `src/Reader/` contains the main components, `src/Application/` handles app-level logic, `src/_lib/` contains shared utilities
+- **Event-driven**: Uses custom event system for communication between components
+
+## Key Technologies
+- **JavaScript ES6+** with modules (no TypeScript)
+- **Vite** for build system and dev server
+- **Capacitor** for mobile deployment (iOS/Android)
+- **SQLite** with sql.js for database operations
+- **Custom HTML template system** using template literals, like https://lit.dev/ but without the framework
+
+## Code Style & Conventions
+- **Terse, direct code** - avoid over-engineering
+- **Consistent tab indentation** (no spaces)
+- **Single blank line** between methods
+- **Clear, descriptive method names**
+- **Minimal comments** - code should be self-explanatory
+- **Follow established patterns** - don't deviate unless there's a good reason
+
+## File Naming
+- **PascalCase** for component files: `Reader.js`, `Header.js`, `Menu.js`
+- **camelCase** for utility files: `databaseService.js`, `fileService.js`
+- **kebab-case** for CSS files: `Reader.css`
+
+## Important Patterns
+- **UI classes** are pure presentation (no controller knowledge) and bound to only one controlleer co-located and named similarly
+- **Controller classes** handle all events and own their UI instance
+- **Service classes** in `_lib/` handle specific functionality (database, files, etc.)
+- **Event system** uses `dispatchEvent()` and `addEventListener()` from utils
+- **HTML templates** use the `html` template literal function
+
+## Database Schema
+- Uses **schema-driven UI generation**
+- Supports `list` type schemas with various field types (text, number, boolean, enum, datetime)
+- **SQLite** backend with dynamic table creation based on schema
+
+## Mobile Considerations
+- **Capacitor** for native mobile features
+- **Responsive design** with mobile-first approach
+- **Safe area handling** for notched devices
+- **Touch-friendly** UI elements
+
+## Key Files to Understand
+- `src/Reader/Reader.js` - Main UI component
+- `src/Reader/ReaderController.js` - Main controller
+- `src/Application/ApplicationController.js` - App-level controller
+- `src/_lib/databaseService.js` - SQLite operations
+- `src/_lib/fileService.js` - File system operations
+- `src/_lib/utils.js` - Event system and utilities
+
+## Documentation
+- `_docs/ARCHITECTURE.md` - Detailed architectural principles, controller patterns, event system, and implementation guidelines
+
+## Development Guidelines
+- **Test changes** on both web and mobile
+- **Maintain backward compatibility** with existing .smartText files
+- **Keep components focused** - single responsibility
+- **Use the established event system** for component communication
+- **Follow the existing patterns** for new features
+
+## Common Tasks
+- **Adding new field types**: Update `generateFieldInputForModal()` in Reader.js
+- **Adding new UI components**: Create in `src/Reader/components/`
+- **Adding new services**: Create in `src/_lib/`
+- **Database operations**: Use methods in `databaseService.js`
+- **File operations**: Use methods in `fileService.js`

@@ -43,7 +43,7 @@
     
     .mobile-search .search-input-container {
         flex: 1;
-        padding: 0em 0.3em;
+        padding: 0.1em 0.3em;
         gap: 0.2rem;
     }
     
@@ -921,6 +921,15 @@
         
         .reader-header {
             padding: 0.75rem 1rem;
+        }
+        
+        /* Reduce spacing between action icons in mobile header */
+        .header-mobile .header-right {
+            gap: 0rem;
+        }
+        
+        .header-mobile .filter-icons-container {
+            gap: 0.125rem;
         }
     }
     

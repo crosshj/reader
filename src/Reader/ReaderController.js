@@ -51,6 +51,8 @@ export class ReaderController {
 			'.sidebar-overlay': () => this.ui.menu.hideHamburgerMenu(),
 			'.grid-row': (e) => {
 				if (e.target.matches('.action-btn')) return;
+				// Only handle actual user clicks, not programmatic events
+				if (!e.isTrusted) return;
 				const row = e.target.closest('.grid-row');
 				if (row) {
 					const rowId = row.dataset.rowId;
@@ -151,9 +153,6 @@ export class ReaderController {
 		// Clear selection
 		this.selectedRowId = null;
 		this.ui.clearRowSelection();
-
-		// Fire deselection event
-		dispatchEvent('reader:itemDeselected');
 	}
 
 	// Menu handlers that coordinate UI + events

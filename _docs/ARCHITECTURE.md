@@ -9,7 +9,7 @@
 ## File Structure
 
 ```
-src/reader/
+src/Reader/
 ├── Component/ (generic term - examples: Reader/, FileViewer/, DataEditor/)
 │   ├── Component.js (pure UI, no controller knowledge)
 │   ├── Component.css
@@ -24,7 +24,7 @@ src/reader/
 │   ├── databaseService.js (SQLite operations using sql.js)
 │   ├── schemaService.js (UI schema parsing and validation)
 │   └── utils.js (general utility functions - addEventListener, dispatchEvent, log, etc.)
-└── reader.js (main app entry point)
+└── Reader.js (main app entry point)
 ```
 
 ## Core Architecture Principles

@@ -304,6 +304,9 @@ export class Reader {
 		// Store in localStorage
 		localStorage.setItem(`filter_${fieldName}`, value);
 
+		// Always clear selection when filter changes
+		this.controller.deselectRow();
+
 		if (this.currentSchema && this.currentState) {
 			this.showDynamicUI(this.currentSchema, this.currentState);
 		}

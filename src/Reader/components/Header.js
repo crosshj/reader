@@ -460,6 +460,8 @@ export class Header {
 			const option = e.target.closest('.filter-option');
 			if (option) {
 				const value = option.dataset.value;
+				// Hide edit button immediately when filter changes
+				this.hideSelectedEditButton();
 				this.reader.setFilter(fieldName, value);
 				this.updateFilterIcons();
 				this.hideAllFilterDropdowns();
