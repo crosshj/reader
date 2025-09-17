@@ -92,10 +92,84 @@ export class List {
 		return items.find((item) => item.id == itemId);
 	}
 
+	updateSearchFilter() {
+		// Fast filtering by toggling CSS visibility instead of DOM recreation
+		const searchQuery = this.reader.header.getSearchQuery();
+		const searchTerm = searchQuery ? searchQuery.toLowerCase().trim() : '';
+		
+		const rows = this.reader.container.querySelectorAll('.grid-row');
+		let visibleCount = 0;
+		
+		rows.forEach(row => {
+			// Search across all visible text content in the row
+			const rowText = row.textContent.toLowerCase();
+			const matches = !searchTerm || rowText.includes(searchTerm);
+			
+			if (matches) {
+				row.classList.remove('hidden');
+				visibleCount++;
+			} else {
+				row.classList.add('hidden');
+			}
+		});
+		
+		// Show/hide results message and hide old count when searching
+		this.updateResultsMessage(searchTerm, visibleCount, rows.length);
+		this.updateItemCount(searchTerm, visibleCount, rows.length);
+	}
+
+	updateResultsMessage(searchTerm, visibleCount, totalCount) {
+		let resultsMsg = this.reader.container.querySelector('.search-results-message');
+		
+		if (searchTerm) {
+			if (!resultsMsg) {
+				// Create the results message container
+				resultsMsg = document.createElement('div');
+				resultsMsg.className = 'search-results-message';
+				
+				// Insert after the grid container
+				const gridContainer = this.reader.container.querySelector('.list-ui .list-grid-container');
+				if (gridContainer) {
+					gridContainer.parentNode.insertBefore(resultsMsg, gridContainer.nextSibling);
+				}
+			}
+			
+			// Update message content based on results
+			if (visibleCount === 0) {
+				resultsMsg.innerHTML = html`
+					<div class="search-results-content has-results">
+						<span class="results-text">No results found</span>
+					</div>
+				`;
+			} else {
+				resultsMsg.innerHTML = html`
+					<div class="search-results-content has-results">
+						<span class="results-text">
+							${visibleCount} of ${totalCount} ${totalCount === 1 ? 'item' : 'items'} found
+						</span>
+					</div>
+				`;
+			}
+			
+			resultsMsg.style.display = 'block';
+		} else if (resultsMsg) {
+			resultsMsg.style.display = 'none';
+		}
+	}
+
+	updateItemCount(searchTerm, visibleCount, totalCount) {
+		// Hide the old item count when searching, show it when not searching
+		const oldCount = this.reader.container.querySelector('.list-count');
+		if (oldCount) {
+			oldCount.style.display = searchTerm ? 'none' : 'flex';
+		}
+	}
+
 	render(schema, state) {
 		const tableName = schema.tableName || 'items';
 		const allItems = state?.[tableName] || [];
-		const items = this.getFilteredItems(); // Use filtered items instead of all items
+		// Render ALL items - filtering will be done via CSS visibility toggle
+		const items = allItems;
 		
 		// Safety check: ensure items is an array
 		if (!Array.isArray(items)) {

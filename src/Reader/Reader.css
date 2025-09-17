@@ -1415,3 +1415,35 @@
         opacity: 0.9;
     }
     
+    /* Search filtering - hide rows that don't match */
+    .grid-row.hidden {
+        display: none !important;
+    }
+    
+    /* Search results message */
+    .search-results-message {
+        display: none;
+        text-align: center;
+        padding: 1rem;
+        color: var(--text-secondary);
+    }
+    
+    .search-results-content {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    
+    /* Has results state - simple style like old count */
+    .search-results-content.has-results {
+        display: flex;
+        justify-content: center;
+        padding: 1.5rem 1rem 1rem 1rem;
+    }
+    
+    .search-results-content.has-results .results-text {
+        color: var(--text-muted);
+        font-size: 1rem;
+        font-weight: 400;
+        opacity: 0.7;
+    }
+    

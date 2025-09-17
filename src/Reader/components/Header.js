@@ -1,8 +1,20 @@
-import { html } from '../../_lib/utils.js';
+import { html, smartDebounce } from '../../_lib/utils.js';
 
 export class Header {
 	constructor(reader) {
 		this.reader = reader;
+		this.searchQuery = '';
+		
+		// Create debounced search handler - best of all worlds
+		this.debouncedSearch = smartDebounce(
+			(query) => this.performSearch(query),
+			150, // 150ms delay
+			{
+				leading: false,    // Don't execute immediately
+				trailing: true,    // Execute after delay
+				maxWait: 1000      // Force execution after 1 second max
+			}
+		);
 	}
 
 	render() {
@@ -49,6 +61,8 @@ export class Header {
 							id="search-input"
 							class="search-input"
 							placeholder="Search Reader"
+							autocomplete="off"
+							spellcheck="false"
 						/>
 						<button
 							id="clear-search"
@@ -116,6 +130,8 @@ export class Header {
 								type="text"
 								id="search-input-desktop"
 								class="search-input"
+								autocomplete="off"
+								spellcheck="false"
 							/>
 							<button
 								id="clear-search-desktop"
@@ -531,10 +547,16 @@ export class Header {
 
 	// Search functionality
 	setSearchQuery(query) {
+		// Update search query immediately for visual feedback
 		this.searchQuery = query;
-		// Trigger list refresh with search filter
-		if (this.reader.currentSchema && this.reader.currentState) {
-			this.reader.showDynamicUI(this.reader.currentSchema, this.reader.currentState);
+		// Trigger debounced search operation
+		this.debouncedSearch(query);
+	}
+
+	performSearch(query) {
+		// Fast filtering by toggling CSS visibility instead of DOM recreation
+		if (this.reader.list && this.reader.list.updateSearchFilter) {
+			this.reader.list.updateSearchFilter();
 		}
 	}
 
@@ -543,6 +565,9 @@ export class Header {
 	}
 
 	clearSearch() {
+		// Cancel any pending debounced search operations
+		this.debouncedSearch.cancel();
+		
 		this.searchQuery = '';
 		const searchInput = this.reader.container.querySelector('#search-input');
 		const desktopSearchInput = this.reader.container.querySelector('#search-input-desktop');
