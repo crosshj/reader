@@ -64,14 +64,13 @@ jobs:
       run: |
         # Get commit messages since last tag or last 10 commits
         if git describe --tags --abbrev=0 >/dev/null 2>&1; then
-          echo "COMMIT_MESSAGES<<EOF" >> $GITHUB_ENV
-          git log --oneline $(git describe --tags --abbrev=0)..HEAD --pretty=format:"- %s" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          COMMIT_MESSAGES=$(git log --oneline $(git describe --tags --abbrev=0)..HEAD --pretty=format:"- %s")
         else
-          echo "COMMIT_MESSAGES<<EOF" >> $GITHUB_ENV
-          git log --oneline -10 --pretty=format:"- %s" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          COMMIT_MESSAGES=$(git log --oneline -10 --pretty=format:"- %s")
         fi
+        echo "COMMIT_MESSAGES<<EOF" >> $GITHUB_ENV
+        echo "$COMMIT_MESSAGES" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
         
     - name: Configure Android build for compatibility
       run: |
@@ -106,11 +105,8 @@ jobs:
         files: android/app/build/outputs/apk/debug/reader-app-build-${{ github.run_number }}-${{ env.BUILD_DATE }}.apk
         tag_name: v${{ github.run_number }}
         name: Reader App v${{ github.run_number }}
-        body: |
-          ## Reader - ${{ github.run_number }}
-          
-          **Build Date:** ${{ env.BUILD_DATE }}  
-          **Commit:** ${{ env.COMMIT_SHA }}  
+        body: |   
+          **Date:** ${{ env.BUILD_DATE }}  
           **Version Code:** ${{ env.VERSION_CODE }}
           
           ### Changes
