@@ -93,29 +93,28 @@ export class List {
 	}
 
 	updateSearchFilter() {
-		// Fast filtering by toggling CSS visibility instead of DOM recreation
-		const searchQuery = this.reader.header.getSearchQuery();
-		const searchTerm = searchQuery ? searchQuery.toLowerCase().trim() : '';
+		// Re-render to show current filtered results (enum + search filters)
+		if (this.reader.currentSchema && this.reader.currentState) {
+			this.reader.showDynamicUI(this.reader.currentSchema, this.reader.currentState);
+		}
+	}
+
+
+	rowMatchesSearch(rowId, searchTerm) {
+		// Find the actual item data for this row
+		const item = this.getItemById(rowId);
+		if (!item) return false;
 		
-		const rows = this.reader.container.querySelectorAll('.grid-row');
-		let visibleCount = 0;
+		// Search across all text/string fields in the actual data
+		const schema = this.reader.currentSchema;
+		const searchableFields = schema.fields?.filter(
+			(field) => field.type === 'text' || field.type === 'string'
+		) || [];
 		
-		rows.forEach(row => {
-			// Search across all visible text content in the row
-			const rowText = row.textContent.toLowerCase();
-			const matches = !searchTerm || rowText.includes(searchTerm);
-			
-			if (matches) {
-				row.classList.remove('hidden');
-				visibleCount++;
-			} else {
-				row.classList.add('hidden');
-			}
+		return searchableFields.some(field => {
+			const value = item[field.name];
+			return value && value.toString().toLowerCase().includes(searchTerm);
 		});
-		
-		// Show/hide results message and hide old count when searching
-		this.updateResultsMessage(searchTerm, visibleCount, rows.length);
-		this.updateItemCount(searchTerm, visibleCount, rows.length);
 	}
 
 	updateResultsMessage(searchTerm, visibleCount, totalCount) {
@@ -168,8 +167,8 @@ export class List {
 	render(schema, state) {
 		const tableName = schema.tableName || 'items';
 		const allItems = state?.[tableName] || [];
-		// Render ALL items - filtering will be done via CSS visibility toggle
-		const items = allItems;
+		// Use the original filtered items method that was working
+		const items = this.getFilteredItems();
 		
 		// Safety check: ensure items is an array
 		if (!Array.isArray(items)) {
