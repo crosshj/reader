@@ -350,10 +350,11 @@
 }
 
 .sidebar-header {
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	padding: 1.5rem;
+    /* display: flex; */
+    justify-content: flex-end;
+    align-items: center;
+    padding: 1.5rem;
+	display: none;
 }
 
 .sidebar-header h3 {
@@ -381,7 +382,7 @@
 
 .sidebar-content {
 	flex: 1;
-	padding: 1rem 0;
+	padding: 0.55rem 0;
 }
 
 .menu-item {
