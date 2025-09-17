@@ -19,9 +19,15 @@
     "contentInset": "automatic"
   },
   "android": {
-    "allowMixedContent": true,
-    "captureInput": true,
+    "allowMixedContent": false,
+    "captureInput": false,
     "webContentsDebuggingEnabled": true,
-    "backgroundColor": "transparent"
+    "backgroundColor": "transparent",
+    "navigationBar": {
+      "backgroundColor": "transparent"
+    },
+    "webView": {
+      "backgroundColor": "transparent"
+    }
   }
 }
