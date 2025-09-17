@@ -60,14 +60,7 @@ body {
 	overflow: hidden;
 }
 
-/* Use Capacitor's safe area handling - apply to body only */
-.platform-ios body,
-.platform-android body {
-	padding-top: env(safe-area-inset-top);
-	padding-bottom: env(safe-area-inset-bottom);
-	padding-left: env(safe-area-inset-left);
-	padding-right: env(safe-area-inset-right);
-}
+/* Safe area handling is done via JavaScript for better WebView compatibility */
 
 /* =====================
       LOADING INDICATOR

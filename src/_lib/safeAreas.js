@@ -1,10 +1,9 @@
 /**
- * Initialize safe area detection and return a promise
- * This must complete before the app starts rendering
+ * Enhanced Safe Area Detection for Capacitor Apps
+ * Optimized for edge-to-edge layout with native keyboard handling
  */
 export function initializeSafeAreas() {
     return new Promise((resolve) => {
-        // Wait for DOM to be ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 detectAndSetSafeAreas();
@@ -19,6 +18,7 @@ export function initializeSafeAreas() {
 
 /**
  * Detect safe area insets using multiple methods and set CSS variables
+ * Prioritizes Capacitor StatusBar plugin for accuracy
  */
 function detectAndSetSafeAreas() {
     let statusBarHeight = 0;
@@ -26,54 +26,66 @@ function detectAndSetSafeAreas() {
     let leftInset = 0;
     let rightInset = 0;
 
-    // Method 1: Try CSS environment variables
-    const statusBarEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)');
-    const navBarEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-bottom)');
-    const leftEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-left)');
-    const rightEnv = getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-right)');
-
-    console.log('CSS env values:', { statusBarEnv, navBarEnv, leftEnv, rightEnv });
-
-    // Method 2: Try Capacitor StatusBar plugin
-    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.StatusBar) {
-        try {
-            window.Capacitor.Plugins.StatusBar.getInfo().then(info => {
+    // Method 1: Try Capacitor StatusBar plugin first (most reliable)
+    if (window.Capacitor?.Plugins?.StatusBar) {
+        window.Capacitor.Plugins.StatusBar.getInfo()
+            .then(info => {
                 console.log('StatusBar info:', info);
                 if (info.visible) {
                     statusBarHeight = info.height || 24;
-                    updateCSSVariables();
                 }
+                // Continue with other detection methods
+                calculateSafeAreas();
+            })
+            .catch(error => {
+                console.log('StatusBar plugin error:', error);
+                // Fallback to calculation methods
+                calculateSafeAreas();
             });
-        } catch (e) {
-            console.log('StatusBar plugin error:', e);
+    } else {
+        calculateSafeAreas();
+    }
+
+    function calculateSafeAreas() {
+        // Method 2: Calculate based on screen vs viewport difference
+        const screenHeight = screen.height;
+        const viewportHeight = window.innerHeight;
+        const screenWidth = screen.width;
+        const viewportWidth = window.innerWidth;
+
+        // If viewport is smaller than screen, we have system UI
+        if (viewportHeight < screenHeight) {
+            const heightDiff = screenHeight - viewportHeight;
+            // More accurate distribution for Android
+            navBarHeight = Math.max(48, heightDiff * 0.6);
+            if (statusBarHeight === 0) {
+                statusBarHeight = Math.max(24, heightDiff * 0.4);
+            }
         }
+
+        if (viewportWidth < screenWidth) {
+            const widthDiff = screenWidth - viewportWidth;
+            leftInset = widthDiff / 2;
+            rightInset = widthDiff / 2;
+        }
+
+        // Method 3: Platform-specific fallbacks
+        const platform = window.Capacitor?.getPlatform();
+        if (platform === 'android') {
+            statusBarHeight = statusBarHeight || 24;
+            navBarHeight = navBarHeight || 48;
+        } else if (platform === 'ios') {
+            statusBarHeight = statusBarHeight || 44;
+            navBarHeight = navBarHeight || 34;
+        } else {
+            // Web fallback
+            statusBarHeight = statusBarHeight || 0;
+            navBarHeight = navBarHeight || 0;
+        }
+
+        updateCSSVariables();
     }
 
-    // Method 3: Calculate based on screen vs viewport difference
-    const screenHeight = screen.height;
-    const viewportHeight = window.innerHeight;
-    const screenWidth = screen.width;
-    const viewportWidth = window.innerWidth;
-
-    // If viewport is smaller than screen, we have system UI
-    if (viewportHeight < screenHeight) {
-        const heightDiff = screenHeight - viewportHeight;
-        // Assume bottom nav bar takes more space than top status bar
-        navBarHeight = Math.max(48, heightDiff * 0.7);
-        statusBarHeight = Math.max(24, heightDiff * 0.3);
-    }
-
-    if (viewportWidth < screenWidth) {
-        const widthDiff = screenWidth - viewportWidth;
-        leftInset = widthDiff / 2;
-        rightInset = widthDiff / 2;
-    }
-
-    // Method 4: Use fallback values
-    if (statusBarHeight === 0) statusBarHeight = 24;
-    if (navBarHeight === 0) navBarHeight = 48;
-
-    // Update CSS custom properties
     function updateCSSVariables() {
         document.documentElement.style.setProperty('--safe-area-inset-top', statusBarHeight + 'px');
         document.documentElement.style.setProperty('--safe-area-inset-bottom', navBarHeight + 'px');
@@ -87,15 +99,30 @@ function detectAndSetSafeAreas() {
             right: rightInset
         });
     }
+}
 
-    updateCSSVariables();
+/**
+ * Debounce function to prevent excessive recalculations
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
 
-    // Setup event listeners for orientation changes
-    window.addEventListener('resize', () => {
-        setTimeout(() => detectAndSetSafeAreas(), 100);
-    });
-    
-    window.addEventListener('orientationchange', () => {
-        setTimeout(() => detectAndSetSafeAreas(), 100);
-    });
+// Setup event listeners for orientation changes with debouncing
+const debouncedDetectSafeAreas = debounce(detectAndSetSafeAreas, 150);
+
+window.addEventListener('resize', debouncedDetectSafeAreas);
+window.addEventListener('orientationchange', debouncedDetectSafeAreas);
+
+// Also listen for viewport changes that might affect safe areas
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', debouncedDetectSafeAreas);
 }

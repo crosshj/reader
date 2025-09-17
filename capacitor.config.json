@@ -11,6 +11,11 @@
       "backgroundColor": "transparent",
       "overlaysWebView": true
     },
+    "Keyboard": {
+      "resize": "native",
+      "style": "dark",
+      "resizeOnFullScreen": true
+    },
     "SplashScreen": {
       "launchShowDuration": 0
     }
@@ -21,6 +26,7 @@
   "android": {
     "allowMixedContent": true,
     "captureInput": true,
-    "webContentsDebuggingEnabled": true
+    "webContentsDebuggingEnabled": true,
+    "backgroundColor": "transparent"
   }
 }

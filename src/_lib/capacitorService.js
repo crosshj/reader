@@ -5,6 +5,7 @@
 import { Capacitor } from '@capacitor/core';
 import { App } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { Keyboard } from '@capacitor/keyboard';
 import { initializeSafeAreas } from './safeAreas.js';
 
 export class CapacitorService {
@@ -19,7 +20,7 @@ export class CapacitorService {
 	}
 
 	/**
-	 * Initialize Capacitor UI components (status bar, safe areas, and platform class)
+	 * Initialize Capacitor UI components (status bar, safe areas, keyboard, and platform class)
 	 */
 	async initializeUI() {
 		// Only initialize Capacitor UI on native platforms
@@ -40,9 +41,46 @@ export class CapacitorService {
 
 			// Initialize safe area detection after status bar is configured
 			await initializeSafeAreas();
+
+			// Setup keyboard handling for native platforms
+			this.setupKeyboardHandling();
 		} else {
 			// On web, just add platform class (no safe areas needed)
 			this.addPlatformClass();
+		}
+	}
+
+	/**
+	 * Setup keyboard handling for native platforms
+	 */
+	setupKeyboardHandling() {
+		// Only setup keyboard handling on native platforms
+		if (this.platform === 'web') {
+			return;
+		}
+
+		try {
+			// Listen for keyboard events to prevent layout shifts
+			Keyboard.addListener('keyboardWillShow', (info) => {
+				console.log('Keyboard will show:', info);
+				// With native keyboard handling, we don't need to manually adjust layout
+				// The native handling should prevent flickering
+			});
+
+			Keyboard.addListener('keyboardWillHide', () => {
+				console.log('Keyboard will hide');
+				// With native keyboard handling, we don't need to manually adjust layout
+			});
+
+			Keyboard.addListener('keyboardDidShow', (info) => {
+				console.log('Keyboard did show:', info);
+			});
+
+			Keyboard.addListener('keyboardDidHide', () => {
+				console.log('Keyboard did hide');
+			});
+		} catch (error) {
+			console.warn('Failed to setup keyboard listeners:', error);
 		}
 	}
 
@@ -59,7 +97,6 @@ export class CapacitorService {
 		App.addListener('appStateChange', ({ isActive }) => {
 			// App state changed
 		});
-
 
 		// Listen for resume events (when app comes back from background)
 		App.addListener('resume', async () => {
