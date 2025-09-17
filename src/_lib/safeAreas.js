@@ -20,7 +20,7 @@ export function initializeSafeAreas() {
  * Detect safe area insets using multiple methods and set CSS variables
  * Prioritizes Capacitor StatusBar plugin for accuracy
  */
-function detectAndSetSafeAreas() {
+export function detectAndSetSafeAreas() {
     let statusBarHeight = 0;
     let navBarHeight = 0;
     let leftInset = 0;
@@ -38,7 +38,7 @@ function detectAndSetSafeAreas() {
                 calculateSafeAreas();
             })
             .catch(error => {
-                console.log('StatusBar plugin error:', error);
+                console.warn('StatusBar plugin error:', error);
                 // Fallback to calculation methods
                 calculateSafeAreas();
             });
@@ -47,57 +47,67 @@ function detectAndSetSafeAreas() {
     }
 
     function calculateSafeAreas() {
-        // Method 2: Calculate based on screen vs viewport difference
-        const screenHeight = screen.height;
-        const viewportHeight = window.innerHeight;
-        const screenWidth = screen.width;
-        const viewportWidth = window.innerWidth;
+        try {
+            // Method 2: Calculate based on screen vs viewport difference
+            const screenHeight = screen.height;
+            const viewportHeight = window.innerHeight;
+            const screenWidth = screen.width;
+            const viewportWidth = window.innerWidth;
 
-        // If viewport is smaller than screen, we have system UI
-        if (viewportHeight < screenHeight) {
-            const heightDiff = screenHeight - viewportHeight;
-            // More accurate distribution for Android
-            navBarHeight = Math.max(48, heightDiff * 0.6);
-            if (statusBarHeight === 0) {
-                statusBarHeight = Math.max(24, heightDiff * 0.4);
+            // If viewport is smaller than screen, we have system UI
+            if (viewportHeight < screenHeight) {
+                const heightDiff = screenHeight - viewportHeight;
+                // More accurate distribution for Android
+                navBarHeight = Math.max(48, heightDiff * 0.6);
+                if (statusBarHeight === 0) {
+                    statusBarHeight = Math.max(24, heightDiff * 0.4);
+                }
             }
-        }
 
-        if (viewportWidth < screenWidth) {
-            const widthDiff = screenWidth - viewportWidth;
-            leftInset = widthDiff / 2;
-            rightInset = widthDiff / 2;
-        }
+            if (viewportWidth < screenWidth) {
+                const widthDiff = screenWidth - viewportWidth;
+                leftInset = widthDiff / 2;
+                rightInset = widthDiff / 2;
+            }
 
-        // Method 3: Platform-specific fallbacks
-        const platform = window.Capacitor?.getPlatform();
-        if (platform === 'android') {
-            statusBarHeight = statusBarHeight || 24;
-            navBarHeight = navBarHeight || 48;
-        } else if (platform === 'ios') {
-            statusBarHeight = statusBarHeight || 44;
-            navBarHeight = navBarHeight || 34;
-        } else {
-            // Web fallback
-            statusBarHeight = statusBarHeight || 0;
-            navBarHeight = navBarHeight || 0;
-        }
+            // Method 3: Platform-specific fallbacks
+            const platform = window.Capacitor?.getPlatform();
+            if (platform === 'android') {
+                statusBarHeight = statusBarHeight || 24;
+                navBarHeight = navBarHeight || 48;
+            } else if (platform === 'ios') {
+                statusBarHeight = statusBarHeight || 44;
+                navBarHeight = navBarHeight || 34;
+            } else {
+                // Web fallback
+                statusBarHeight = statusBarHeight || 0;
+                navBarHeight = navBarHeight || 0;
+            }
 
-        updateCSSVariables();
+            updateCSSVariables();
+        } catch (error) {
+            console.error('Error calculating safe areas:', error);
+            // Use minimal fallback values
+            updateCSSVariables();
+        }
     }
 
     function updateCSSVariables() {
-        document.documentElement.style.setProperty('--safe-area-inset-top', statusBarHeight + 'px');
-        document.documentElement.style.setProperty('--safe-area-inset-bottom', navBarHeight + 'px');
-        document.documentElement.style.setProperty('--safe-area-inset-left', leftInset + 'px');
-        document.documentElement.style.setProperty('--safe-area-inset-right', rightInset + 'px');
-        
-        console.log('Safe area insets set:', {
-            top: statusBarHeight,
-            bottom: navBarHeight,
-            left: leftInset,
-            right: rightInset
-        });
+        try {
+            document.documentElement.style.setProperty('--safe-area-inset-top', statusBarHeight + 'px');
+            document.documentElement.style.setProperty('--safe-area-inset-bottom', navBarHeight + 'px');
+            document.documentElement.style.setProperty('--safe-area-inset-left', leftInset + 'px');
+            document.documentElement.style.setProperty('--safe-area-inset-right', rightInset + 'px');
+            
+            console.log('Safe area insets set:', {
+                top: statusBarHeight,
+                bottom: navBarHeight,
+                left: leftInset,
+                right: rightInset
+            });
+        } catch (error) {
+            console.error('Error setting CSS variables:', error);
+        }
     }
 }
 
@@ -116,13 +126,24 @@ function debounce(func, wait) {
     };
 }
 
-// Setup event listeners for orientation changes with debouncing
-const debouncedDetectSafeAreas = debounce(detectAndSetSafeAreas, 150);
+// Setup event listeners for orientation changes with debouncing (only once)
+let eventListenersAdded = false;
 
-window.addEventListener('resize', debouncedDetectSafeAreas);
-window.addEventListener('orientationchange', debouncedDetectSafeAreas);
-
-// Also listen for viewport changes that might affect safe areas
-if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', debouncedDetectSafeAreas);
+function setupEventListeners() {
+    if (eventListenersAdded) return;
+    
+    const debouncedDetectSafeAreas = debounce(detectAndSetSafeAreas, 150);
+    
+    window.addEventListener('resize', debouncedDetectSafeAreas);
+    window.addEventListener('orientationchange', debouncedDetectSafeAreas);
+    
+    // Also listen for viewport changes that might affect safe areas
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', debouncedDetectSafeAreas);
+    }
+    
+    eventListenersAdded = true;
 }
+
+// Initialize event listeners
+setupEventListeners();
