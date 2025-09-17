@@ -1,6 +1,6 @@
 /* =====================
-   THEME & ROOT VARS (Consistent with index.css)
-   ===================== */
+	THEME & ROOT VARS (Consistent with index.css)
+	===================== */
 :root {
 	color-scheme: dark;
 	--bg: #0a0a0a;
@@ -25,8 +25,8 @@
 }
 
 /* =====================
-      LAYOUT & STRUCTURE
-      ===================== */
+	LAYOUT & STRUCTURE
+	===================== */
 * {
 	box-sizing: border-box;
 }
@@ -63,8 +63,8 @@ body {
 /* Safe area handling is done via JavaScript for better WebView compatibility */
 
 /* =====================
-      LOADING INDICATOR
-      ===================== */
+	LOADING INDICATOR
+	===================== */
 .loading-indicator {
 	position: fixed;
 	top: 0;
@@ -105,8 +105,8 @@ body {
 }
 
 /* =====================
-      ERROR HANDLING
-      ===================== */
+	ERROR HANDLING
+	===================== */
 .error-container {
 	display: flex;
 	flex-direction: column;
@@ -144,8 +144,8 @@ body {
 }
 
 /* =====================
-      LOADING STATE
-      ===================== */
+	LOADING STATE
+	===================== */
 .loading-state {
 	display: flex;
 	flex-direction: column;
