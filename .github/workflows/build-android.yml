@@ -57,12 +57,35 @@ jobs:
         echo "BUILD_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
         echo "BUILD_DATE=$(date -u +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
         echo "COMMIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
+        # Generate a unique version code that's always higher
+        echo "VERSION_CODE=$(( $(date +%s) + ${{ github.run_number }} ))" >> $GITHUB_ENV
+        
+    - name: Generate commit messages
+      run: |
+        # Get commit messages since last tag or last 10 commits
+        if git describe --tags --abbrev=0 >/dev/null 2>&1; then
+          echo "COMMIT_MESSAGES<<EOF" >> $GITHUB_ENV
+          git log --oneline $(git describe --tags --abbrev=0)..HEAD --pretty=format:"- %s" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        else
+          echo "COMMIT_MESSAGES<<EOF" >> $GITHUB_ENV
+          git log --oneline -10 --pretty=format:"- %s" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        fi
+        
+    - name: Configure Android build for compatibility
+      run: |
+        cd android
+        # Ensure we use a consistent debug keystore
+        mkdir -p ~/.android
+        # Use the default debug keystore location that Android expects
+        keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
         
     - name: Build APK with unique version
       run: |
         cd android
-        # Use timestamp as version code to ensure unique builds
-        ./gradlew assembleDebug -PdevBuild=true
+        # Use the generated version code and ensure consistent signing
+        ./gradlew assembleDebug -PdevBuild=true -PversionCode=${{ env.VERSION_CODE }}
         
     - name: Rename APK with build info
       run: |
@@ -84,28 +107,14 @@ jobs:
         tag_name: v${{ github.run_number }}
         name: Reader App v${{ github.run_number }}
         body: |
-          ## Reader App - Build ${{ github.run_number }}
+          ## Reader - ${{ github.run_number }}
           
           **Build Date:** ${{ env.BUILD_DATE }}  
-          **Commit:** ${{ github.sha }}  
-          **Version Code:** Timestamp-based (always installs over existing app)
+          **Commit:** ${{ env.COMMIT_SHA }}  
+          **Version Code:** ${{ env.VERSION_CODE }}
           
-          ### Installation Instructions
-          
-          1. **Download the APK** from the assets below
-          2. **Enable "Install from unknown sources"** in your Android settings:
-             - Go to Settings → Security → Unknown Sources (or Install unknown apps)
-             - Enable for your file manager/browser
-          3. **Install the APK** - it will automatically overwrite any existing version
-          
-          ### What's New
-          - This build uses a unique version code based on build timestamp
-          - No need to uninstall previous versions
-          - Safe area insets properly configured for system bars
-          
-          ### Troubleshooting
-          - If installation fails, try: `adb install -r filename.apk`
-          - For development: Use `npm run build:android-dev` locally
+          ### Changes
+          ${{ env.COMMIT_MESSAGES }}
         draft: false
         prerelease: false
       env:

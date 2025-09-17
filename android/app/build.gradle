@@ -7,7 +7,7 @@ android {
         applicationId "com.example.reader"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode project.hasProperty('devBuild') ? (int)(System.currentTimeMillis() / 1000) : 1
+        versionCode project.hasProperty('versionCode') ? project.versionCode : (project.hasProperty('devBuild') ? (int)(System.currentTimeMillis() / 1000) : 1)
         versionName project.hasProperty('devBuild') ? "dev-" + new Date().format('yyyyMMdd-HHmmss') : "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
