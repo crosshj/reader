@@ -50,7 +50,19 @@ export class FolderService {
 	async selectFolder() {
 		try {
 			alert('DEBUG: About to call DocumentTreeAccess.pickFolder()');
-			const result = await DocumentTreeAccess.pickFolder();
+			alert(`DEBUG: DocumentTreeAccess object: ${typeof DocumentTreeAccess}`);
+			alert(`DEBUG: pickFolder method: ${typeof DocumentTreeAccess.pickFolder}`);
+			
+			// Add a timeout to prevent hanging
+			const timeoutPromise = new Promise((_, reject) => 
+				setTimeout(() => reject(new Error('pickFolder timeout after 30 seconds')), 30000)
+			);
+			
+			const result = await Promise.race([
+				DocumentTreeAccess.pickFolder(),
+				timeoutPromise
+			]);
+			
 			alert(`DEBUG: DocumentTreeAccess.pickFolder() returned: ${JSON.stringify(result)}`);
 			
 			if (result.uri) {
