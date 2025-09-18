@@ -12,13 +12,20 @@ export class FolderService {
 	async getFiles() {
 		try {
 			// Check if we have a persisted folder
+			alert('DEBUG: Checking for persisted folder...');
 			const persistedResult = await DocumentTreeAccess.getPersistedUri();
+			alert(`DEBUG: Persisted result: ${JSON.stringify(persistedResult)}`);
+			
 			if (!persistedResult.uri) {
+				alert('DEBUG: No persisted folder found');
 				return { files: null, error: 'no folder selected' };
 			}
 
+			alert('DEBUG: Found persisted folder, listing files...');
 			// Get files from the plugin (works on both web and native)
 			const result = await DocumentTreeAccess.listFiles();
+			alert(`DEBUG: List files result: ${JSON.stringify(result)}`);
+			
 			const files = result.files.map(file => ({
 				name: file.name,
 				uri: file.uri,
@@ -27,9 +34,10 @@ export class FolderService {
 				modified: new Date() // Plugin doesn't provide modification time
 			}));
 
+			alert(`DEBUG: Mapped files: ${JSON.stringify(files)}`);
 			return { files, error: null };
 		} catch (error) {
-			console.error('Error reading folder contents:', error);
+			alert(`DEBUG: Error reading folder contents: ${error.message}`);
 			return { files: null, error: `Cannot access folder: ${error.message}` };
 		}
 	}
@@ -42,13 +50,19 @@ export class FolderService {
 	async selectFolder() {
 		try {
 			const result = await DocumentTreeAccess.pickFolder();
+			
 			if (result.uri) {
+				// Add a small delay to ensure the folder selection is properly persisted
+				await new Promise(resolve => setTimeout(resolve, 500));
+				
+				// Verify the folder was persisted
+				const persistedResult = await DocumentTreeAccess.getPersistedUri();
+				
 				return { success: true, error: null };
 			} else {
 				return { success: false, error: 'No folder selected' };
 			}
 		} catch (error) {
-			console.error('Error selecting folder:', error);
 			return { success: false, error: `Failed to select folder: ${error.message}` };
 		}
 	}
