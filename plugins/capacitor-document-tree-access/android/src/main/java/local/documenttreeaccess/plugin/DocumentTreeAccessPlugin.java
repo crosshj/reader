@@ -74,8 +74,10 @@ public class DocumentTreeAccessPlugin extends Plugin {
             
             // Set a timeout to prevent hanging
             new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                if (!call.isResolved()) {
+                try {
                     call.reject("Folder selection timeout - no response after 30 seconds");
+                } catch (Exception e) {
+                    // Call might already be resolved, ignore timeout
                 }
             }, 30000); // 30 second timeout
 
