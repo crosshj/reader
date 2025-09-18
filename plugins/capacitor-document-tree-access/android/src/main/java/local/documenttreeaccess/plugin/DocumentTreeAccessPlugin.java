@@ -41,9 +41,14 @@ public class DocumentTreeAccessPlugin extends Plugin {
                 return null;
             }
 
-            return DocumentFile.fromTreeUri(context, uri);
+            DocumentFile docFile = DocumentFile.fromTreeUri(context, uri);
+            if (docFile == null) {
+                android.util.Log.e("DocumentTreeAccess", "DocumentFile.fromTreeUri returned null");
+                return null;
+            }
+            return docFile;
         } catch (Exception e) {
-            android.util.Log.e("DocumentTreeAccess", "Error getting root folder: " + e.getMessage());
+            android.util.Log.e("DocumentTreeAccess", "Error getting root folder: " + e.getMessage(), e);
             return null;
         }
     }
@@ -62,32 +67,25 @@ public class DocumentTreeAccessPlugin extends Plugin {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION |
                     Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                    Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
 
             if (intent.resolveActivity(activity.getPackageManager()) == null) {
                 call.reject("No app available to handle folder selection");
                 return;
             }
 
-            // Start the activity with timeout handling
-            startActivityForResult(call, intent, REQUEST_FOLDER);
-            
-            // Set a timeout to prevent hanging
-            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                try {
-                    call.reject("Folder selection timeout - no response after 30 seconds");
-                } catch (Exception e) {
-                    // Call might already be resolved, ignore timeout
-                }
-            }, 30000); // 30 second timeout
+            // Start the activity with string-based callback name
+            startActivityForResult(call, intent, "onFolderPicked");
 
         } catch (Exception e) {
+            android.util.Log.e("DocumentTreeAccess", "Error starting folder selection", e);
             call.reject("Error starting folder selection: " + e.getMessage());
         }
     }
 
     @ActivityCallback
-    private void onFolderPicked(PluginCall call, ActivityResult result) {
+    protected void onFolderPicked(PluginCall call, ActivityResult result) {
         try {
             if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null) {
                 call.reject("Folder selection cancelled");
@@ -131,6 +129,7 @@ public class DocumentTreeAccessPlugin extends Plugin {
             call.resolve(ret);
 
         } catch (Exception e) {
+            android.util.Log.e("DocumentTreeAccess", "Error processing folder selection", e);
             call.reject("Error processing folder selection: " + e.getMessage());
         }
     }
@@ -150,6 +149,7 @@ public class DocumentTreeAccessPlugin extends Plugin {
             ret.put("uri", uri);
             call.resolve(ret);
         } catch (Exception e) {
+            android.util.Log.e("DocumentTreeAccess", "Error getting persisted URI", e);
             call.reject("Error getting persisted URI: " + e.getMessage());
         }
     }
@@ -182,6 +182,7 @@ public class DocumentTreeAccessPlugin extends Plugin {
             result.put("files", files);
             call.resolve(result);
         } catch (Exception e) {
+            android.util.Log.e("DocumentTreeAccess", "Error listing files", e);
             call.reject("Error listing files: " + e.getMessage());
         }
     }
@@ -206,12 +207,17 @@ public class DocumentTreeAccessPlugin extends Plugin {
         if (file != null)
             file.delete(); // overwrite
         file = dir.createFile("application/octet-stream", name);
+        if (file == null) {
+            call.reject("Failed to create file");
+            return;
+        }
 
         try (OutputStream os = getContext().getContentResolver().openOutputStream(file.getUri())) {
             os.write(data.getBytes(StandardCharsets.UTF_8));
             call.resolve();
         } catch (Exception e) {
-            call.reject("Write failed", e);
+            android.util.Log.e("DocumentTreeAccess", "Write failed for file: " + name, e);
+            call.reject("Write failed for file '" + name + "': " + e.getMessage());
         }
     }
 
@@ -232,14 +238,21 @@ public class DocumentTreeAccessPlugin extends Plugin {
         }
 
         try (InputStream is = getContext().getContentResolver().openInputStream(file.getUri())) {
-            byte[] buf = new byte[(int) file.length()];
-            is.read(buf);
-            String contents = new String(buf, StandardCharsets.UTF_8);
+            // Use stream copy instead of allocating (int)file.length() to avoid OOM
+            java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
+            byte[] data = new byte[8192]; // 8KB buffer
+            int nRead;
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+            String contents = new String(buffer.toByteArray(), StandardCharsets.UTF_8);
             JSObject result = new JSObject();
             result.put("data", contents);
             call.resolve(result);
         } catch (Exception e) {
-            call.reject("Read failed", e);
+            android.util.Log.e("DocumentTreeAccess", "Read failed for file: " + name, e);
+            call.reject("Read failed for file '" + name + "': " + e.getMessage());
         }
     }
 
@@ -262,7 +275,8 @@ public class DocumentTreeAccessPlugin extends Plugin {
         if (file.delete()) {
             call.resolve();
         } else {
-            call.reject("Delete failed");
+            android.util.Log.e("DocumentTreeAccess", "Delete failed for file: " + name);
+            call.reject("Delete failed for file '" + name + "'");
         }
     }
 
