@@ -1,6 +1,8 @@
+import { DocumentTreeAccess } from 'capacitor-document-tree-access';
+
 export class FolderService {
 	constructor() {
-		this.selectedFolderHandle = null;
+		// Plugin handles persistence automatically
 	}
 
 	/**
@@ -8,46 +10,30 @@ export class FolderService {
 	 * @returns {Promise<{files: Array|null, error: string|null}>} Result object with files array and error
 	 */
 	async getFiles() {
-		if (!this.selectedFolderHandle) {
-			// Try to restore from persistence
-			await this.restoreFolderHandle();
-		}
-
-		if (!this.selectedFolderHandle) {
-			return { files: null, error: 'no folder selected' };
-		}
-
 		try {
-			return await this.getFilesFromFolder();
+			// Check if we have a persisted folder
+			const persistedResult = await DocumentTreeAccess.getPersistedUri();
+			if (!persistedResult.uri) {
+				return { files: null, error: 'no folder selected' };
+			}
+
+			// Get files from the plugin (works on both web and native)
+			const result = await DocumentTreeAccess.listFiles();
+			const files = result.files.map(file => ({
+				name: file.name,
+				uri: file.uri,
+				size: file.size,
+				type: file.type || this.getFileType(file.name),
+				modified: new Date() // Plugin doesn't provide modification time
+			}));
+
+			return { files, error: null };
 		} catch (error) {
 			console.error('Error reading folder contents:', error);
-			return { files: null, error: `Cannot access folder: ${error.message} (Error name: ${error.name}, Stack: ${error.stack})` };
+			return { files: null, error: `Cannot access folder: ${error.message}` };
 		}
 	}
 
-	async getFilesFromFolder() {
-		const files = [];
-		
-		for await (const [name, handle] of this.selectedFolderHandle.entries()) {
-			if (handle.kind === 'file' && name.endsWith('.smartText')) {
-				try {
-					const file = await handle.getFile();
-					files.push({
-						name: file.name,
-						uri: name,
-						size: file.size,
-						modified: new Date(file.lastModified),
-						type: file.type || this.getFileType(file.name)
-					});
-				} catch (fileError) {
-					// Skip files we can't read
-					console.warn(`Could not read file ${name}:`, fileError);
-				}
-			}
-		}
-
-		return { files, error: null };
-	}
 
 	/**
 	 * Select a folder for file operations
@@ -55,120 +41,18 @@ export class FolderService {
 	 */
 	async selectFolder() {
 		try {
-			// Check if File System Access API is supported
-			if (!('showDirectoryPicker' in window)) {
-				return { success: false, error: 'File System Access API (showDirectoryPicker) is not supported in this browser' };
+			const result = await DocumentTreeAccess.pickFolder();
+			if (result.uri) {
+				return { success: true, error: null };
+			} else {
+				return { success: false, error: 'No folder selected' };
 			}
-
-			// Request folder access
-			const folderHandle = await window.showDirectoryPicker();
-			this.selectedFolderHandle = folderHandle;
-			
-			// Persist the folder handle
-			await this.persistFolderHandle(folderHandle);
-			
-			return { success: true, error: null };
 		} catch (error) {
 			console.error('Error selecting folder:', error);
-			if (error.name === 'AbortError') {
-				return { success: false, error: 'No folder selected. Aborted.' };
-			}
-			return { success: false, error: `Failed to select folder: ${error.message} (Error name: ${error.name}, Stack: ${error.stack})` };
+			return { success: false, error: `Failed to select folder: ${error.message}` };
 		}
 	}
 
-	/**
-	 * Store folder handle in IndexedDB for persistence
-	 */
-	async storeFolderHandleInIndexedDB(handle) {
-		return new Promise((resolve, reject) => {
-			const request = indexedDB.open('FolderService', 1);
-			
-			request.onerror = () => reject(request.error);
-			request.onsuccess = () => {
-				const db = request.result;
-				const transaction = db.transaction(['folderHandles'], 'readwrite');
-				const store = transaction.objectStore('folderHandles');
-				
-				// Store the handle with a key
-				const putRequest = store.put(handle, 'currentFolder');
-				putRequest.onsuccess = () => resolve();
-				putRequest.onerror = () => reject(putRequest.error);
-			};
-			
-			request.onupgradeneeded = () => {
-				const db = request.result;
-				db.createObjectStore('folderHandles');
-			};
-		});
-	}
-
-	/**
-	 * Retrieve folder handle from IndexedDB
-	 */
-	async getFolderHandleFromIndexedDB() {
-		return new Promise((resolve, reject) => {
-			const request = indexedDB.open('FolderService', 1);
-			
-			request.onerror = () => reject(request.error);
-			request.onsuccess = () => {
-				const db = request.result;
-				const transaction = db.transaction(['folderHandles'], 'readonly');
-				const store = transaction.objectStore('folderHandles');
-				
-				const getRequest = store.get('currentFolder');
-				getRequest.onsuccess = () => resolve(getRequest.result);
-				getRequest.onerror = () => reject(getRequest.error);
-			};
-			
-			request.onupgradeneeded = () => {
-				const db = request.result;
-				db.createObjectStore('folderHandles');
-			};
-		});
-	}
-
-	/**
-	 * Try to restore a previously selected folder
-	 */
-	async tryRestoreWebFolder() {
-		try {
-			const handle = await this.getFolderHandleFromIndexedDB();
-			if (handle) {
-				// Verify the handle is still valid by checking permissions
-				const permission = await handle.requestPermission({ mode: 'read' });
-				if (permission === 'granted') {
-					this.selectedFolderHandle = handle;
-					return true;
-				} else {
-					// Permission was revoked, clear the stored handle
-					await this.clearStoredFolderHandle();
-					return false;
-				}
-			}
-			return false;
-		} catch (error) {
-			console.warn('Could not restore folder:', error);
-			return false;
-		}
-	}
-
-	/**
-	 * Clear stored folder handle from IndexedDB
-	 */
-	async clearStoredFolderHandle() {
-		try {
-			const request = indexedDB.open('FolderService', 1);
-			request.onsuccess = () => {
-				const db = request.result;
-				const transaction = db.transaction(['folderHandles'], 'readwrite');
-				const store = transaction.objectStore('folderHandles');
-				store.delete('currentFolder');
-			};
-		} catch (error) {
-			console.warn('Could not clear stored folder handle:', error);
-		}
-	}
 
 	/**
 	 * Read file content
@@ -176,14 +60,9 @@ export class FolderService {
 	 * @returns {Promise<string>} File content
 	 */
 	async readFile(fileName) {
-		if (!this.selectedFolderHandle) {
-			throw new Error('No folder selected');
-		}
-
 		try {
-			const fileHandle = await this.selectedFolderHandle.getFileHandle(fileName);
-			const file = await fileHandle.getFile();
-			return await file.text();
+			const result = await DocumentTreeAccess.readFile({ name: fileName });
+			return result.data;
 		} catch (error) {
 			console.error('Error reading file:', error);
 			throw error;
@@ -197,15 +76,8 @@ export class FolderService {
 	 * @returns {Promise<boolean>} Success status
 	 */
 	async writeFile(fileName, content) {
-		if (!this.selectedFolderHandle) {
-			throw new Error('No folder selected');
-		}
-
 		try {
-			const fileHandle = await this.selectedFolderHandle.getFileHandle(fileName, { create: true });
-			const writable = await fileHandle.createWritable();
-			await writable.write(content);
-			await writable.close();
+			await DocumentTreeAccess.writeFile({ name: fileName, data: content });
 			return true;
 		} catch (error) {
 			console.error('Error writing file:', error);
@@ -219,12 +91,8 @@ export class FolderService {
 	 * @returns {Promise<boolean>} Success status
 	 */
 	async deleteFile(fileName) {
-		if (!this.selectedFolderHandle) {
-			throw new Error('No folder selected');
-		}
-
 		try {
-			await this.selectedFolderHandle.removeEntry(fileName);
+			await DocumentTreeAccess.deleteFile({ name: fileName });
 			return true;
 		} catch (error) {
 			console.error('Error deleting file:', error);
@@ -246,29 +114,11 @@ export class FolderService {
 	}
 
 	/**
-	 * Persist the selected folder handle
-	 */
-	async persistFolderHandle(handle) {
-		try {
-			await this.storeFolderHandleInIndexedDB(handle);
-		} catch (error) {
-			console.warn('Could not persist folder handle:', error);
-		}
-	}
-
-	/**
-	 * Restore the selected folder handle
-	 */
-	async restoreFolderHandle() {
-		return await this.tryRestoreWebFolder();
-	}
-
-	/**
-	 * Clear the selected folder
+	 * Clear the selected folder (plugin handles persistence automatically)
 	 */
 	async clearSelectedFolder() {
-		this.selectedFolderHandle = null;
-		await this.clearStoredFolderHandle();
+		// Plugin handles persistence automatically, so we don't need to do anything here
+		// The user would need to select a new folder through the UI
 	}
 
 	/**
