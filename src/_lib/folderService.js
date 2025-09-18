@@ -1,59 +1,32 @@
 import { DocumentTreeAccess } from 'capacitor-document-tree-access';
 
 export class FolderService {
-	constructor() {
-		// Plugin handles persistence automatically
-	}
+	constructor() {}
 
-	/**
-	 * Get list of files from the currently selected folder
-	 * @returns {Promise<{files: Array|null, error: string|null}>} Result object with files array and error
-	 */
 	async getFiles() {
 		try {
-			// Check if we have a persisted folder
-			alert('DEBUG: Checking for persisted folder...');
 			const persistedResult = await DocumentTreeAccess.getPersistedUri();
-			alert(`DEBUG: Persisted result: ${JSON.stringify(persistedResult)}`);
-			
 			if (!persistedResult.uri) {
-				alert('DEBUG: No persisted folder found');
 				return { files: null, error: 'no folder selected' };
 			}
 
-			alert('DEBUG: Found persisted folder, listing files...');
-			// Get files from the plugin (works on both web and native)
 			const result = await DocumentTreeAccess.listFiles();
-			alert(`DEBUG: List files result: ${JSON.stringify(result)}`);
-			
 			const files = result.files.map(file => ({
 				name: file.name,
 				uri: file.uri,
 				size: file.size,
 				type: file.type || this.getFileType(file.name),
-				modified: new Date() // Plugin doesn't provide modification time
+				modified: new Date()
 			}));
 
-			alert(`DEBUG: Mapped files: ${JSON.stringify(files)}`);
 			return { files, error: null };
 		} catch (error) {
-			alert(`DEBUG: Error reading folder contents: ${error.message}`);
 			return { files: null, error: `Cannot access folder: ${error.message}` };
 		}
 	}
 
-
-	/**
-	 * Select a folder for file operations
-	 * @returns {Promise<{success: boolean, error: string|null}>} Result object
-	 */
 	async selectFolder() {
 		try {
-			alert('DEBUG: About to call DocumentTreeAccess.pickFolder()');
-			alert(`DEBUG: DocumentTreeAccess object: ${typeof DocumentTreeAccess}`);
-			alert(`DEBUG: pickFolder method: ${typeof DocumentTreeAccess.pickFolder}`);
-			
-			// Add a timeout to prevent hanging
 			const timeoutPromise = new Promise((_, reject) => 
 				setTimeout(() => reject(new Error('pickFolder timeout after 30 seconds')), 30000)
 			);
@@ -63,34 +36,18 @@ export class FolderService {
 				timeoutPromise
 			]);
 			
-			alert(`DEBUG: DocumentTreeAccess.pickFolder() returned: ${JSON.stringify(result)}`);
-			
 			if (result.uri) {
-				alert('DEBUG: Folder has URI, proceeding...');
-				// Add a small delay to ensure the folder selection is properly persisted
 				await new Promise(resolve => setTimeout(resolve, 500));
-				
-				// Verify the folder was persisted
 				const persistedResult = await DocumentTreeAccess.getPersistedUri();
-				alert(`DEBUG: Persistence verification: ${JSON.stringify(persistedResult)}`);
-				
 				return { success: true, error: null };
 			} else {
-				alert('DEBUG: No URI in result');
 				return { success: false, error: 'No folder selected' };
 			}
 		} catch (error) {
-			alert(`DEBUG: Error in selectFolder: ${error.message}`);
 			return { success: false, error: `Failed to select folder: ${error.message}` };
 		}
 	}
 
-
-	/**
-	 * Read file content
-	 * @param {string} fileName - Name of file to read
-	 * @returns {Promise<string>} File content
-	 */
 	async readFile(fileName) {
 		try {
 			const result = await DocumentTreeAccess.readFile({ name: fileName });
@@ -101,12 +58,6 @@ export class FolderService {
 		}
 	}
 
-	/**
-	 * Write file content
-	 * @param {string} fileName - Name of file to write
-	 * @param {string} content - Content to write
-	 * @returns {Promise<boolean>} Success status
-	 */
 	async writeFile(fileName, content) {
 		try {
 			await DocumentTreeAccess.writeFile({ name: fileName, data: content });
@@ -117,11 +68,6 @@ export class FolderService {
 		}
 	}
 
-	/**
-	 * Delete file
-	 * @param {string} fileName - Name of file to delete
-	 * @returns {Promise<boolean>} Success status
-	 */
 	async deleteFile(fileName) {
 		try {
 			await DocumentTreeAccess.deleteFile({ name: fileName });
@@ -132,11 +78,6 @@ export class FolderService {
 		}
 	}
 
-	/**
-	 * Format file size for display
-	 * @param {number} bytes - File size in bytes
-	 * @returns {string} Formatted file size
-	 */
 	formatFileSize(bytes) {
 		if (bytes === 0) return '0 Bytes';
 		const k = 1024;
@@ -145,17 +86,8 @@ export class FolderService {
 		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 	}
 
-	/**
-	 * Clear the selected folder (plugin handles persistence automatically)
-	 */
-	async clearSelectedFolder() {
-		// Plugin handles persistence automatically, so we don't need to do anything here
-		// The user would need to select a new folder through the UI
-	}
+	async clearSelectedFolder() {}
 
-	/**
-	 * Get file type based on extension
-	 */
 	getFileType(fileName) {
 		const extension = fileName.split('.').pop().toLowerCase();
 		const typeMap = {

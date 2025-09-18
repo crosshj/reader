@@ -68,7 +68,6 @@ export class FileService {
 			}
 		} catch (error) {
 			if (error.name === 'AbortError') {
-				console.log('File creation cancelled');
 				return false;
 			}
 			console.error('Error creating file:', error);
@@ -295,12 +294,9 @@ export class FileService {
 	 * @returns {Promise<void>}
 	 */
 	async saveFileAsMobile(data, suggestedName, persistenceService) {
-		alert(`DEBUG: saveFileAsMobile called with suggestedName: ${suggestedName}`);
 		const fileName = suggestedName || `reader_${Date.now()}.smartText`;
-		alert(`DEBUG: Generated fileName: ${fileName}`);
 		
 		// Use the simple web download approach - create blob and trigger download
-		alert('DEBUG: Using simple web download approach');
 		try {
 			// Create a blob from the data
 			const blob = new Blob([data], { type: 'application/octet-stream' });
@@ -320,16 +316,12 @@ export class FileService {
 			// Clean up the blob URL
 			URL.revokeObjectURL(url);
 			
-			alert(`DEBUG: Download triggered for ${fileName}`);
-			
 		} catch (error) {
-			alert(`DEBUG: Error in saveFileAsMobile: ${error.message}`);
 			throw error;
 		}
 
 		// Update the file service
 		this.fileData = new File([data], fileName, { type: 'application/octet-stream' });
-		alert(`DEBUG: Updated fileData with new file`);
 	}
 
 
@@ -348,19 +340,15 @@ export class FileService {
 				directory: Directory.ExternalStorage,
 				encoding: Encoding.UTF8
 			});
-			alert('DEBUG: Successfully saved to Downloads directory');
 			this.mobileFilePath = fileName;
 		} catch (error) {
-			alert(`DEBUG: Downloads directory failed: ${error.message}`);
 			// Final fallback to Data directory
-			alert('DEBUG: Final fallback to Data directory');
 			await Filesystem.writeFile({
 				path: fileName,
 				data: base64Data,
 				directory: Directory.Data,
 				encoding: Encoding.UTF8
 			});
-			alert('DEBUG: Successfully saved to Data directory');
 			this.mobileFilePath = fileName;
 		}
 	}

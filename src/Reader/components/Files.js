@@ -22,27 +22,21 @@ export class Files {
 	}
 
 	async onActivate() {
-		alert('DEBUG: onActivate called');
 		// Show loading spinner
 		this.showLoading();
 
-		alert('DEBUG: About to call folderService.getFiles()');
 		// Try to get files from selected folder
 		const { files, error } = await this.folderService.getFiles();
-		alert(`DEBUG: getFiles returned - files: ${files ? files.length : 'null'}, error: ${error}`);
 
 		if (error && error === 'no folder selected') {
-			alert('DEBUG: No folder selected, showing no files dialog');
 			this.showNoFilesDialog();
 			return;
 		}
 		if (error) {
-			alert(`DEBUG: Error getting files, showing error dialog: ${error}`);
 			this.showErrorDialog(error);
 			return;
 		}
 
-		alert(`DEBUG: Success! Showing ${files.length} files`);
 		this.showFilesList(files);
 	}
 
@@ -50,14 +44,19 @@ export class Files {
 		const filesContent = this.reader.container.querySelector('.files-content');
 		if (filesContent) {
 			filesContent.innerHTML = html`
-				<button id="close-files-pane" class="close-files-btn">
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<line x1="18" y1="6" x2="6" y2="18"></line>
-						<line x1="6" y1="6" x2="18" y2="18"></line>
-					</svg>
-				</button>
-				<div class="files-loading">
-					<div class="loading-spinner"></div>
+				<div class="files-list">
+					<div class="files-header">
+						<h3>Files</h3>
+						<button id="close-files-pane" class="close-files-btn">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<line x1="18" y1="6" x2="6" y2="18"></line>
+								<line x1="6" y1="6" x2="18" y2="18"></line>
+							</svg>
+						</button>
+					</div>
+					<div class="files-loading">
+						<div class="loading-spinner"></div>
+					</div>
 				</div>
 			`;
 		}
@@ -67,15 +66,15 @@ export class Files {
 		const filesContent = this.reader.container.querySelector('.files-content');
 		if (filesContent) {
 			filesContent.innerHTML = html`
-				<button id="close-files-pane" class="close-files-btn">
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<line x1="18" y1="6" x2="6" y2="18"></line>
-						<line x1="6" y1="6" x2="18" y2="18"></line>
-					</svg>
-				</button>
 				<div class="files-list">
 					<div class="files-header">
 						<h3>Files</h3>
+						<button id="close-files-pane" class="close-files-btn">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<line x1="18" y1="6" x2="6" y2="18"></line>
+								<line x1="6" y1="6" x2="18" y2="18"></line>
+							</svg>
+						</button>
 					</div>
 					<div class="files-grid">
 						${files.map(file => html`
@@ -115,13 +114,17 @@ export class Files {
 		const filesContent = this.reader.container.querySelector('.files-content');
 		if (filesContent) {
 			filesContent.innerHTML = html`
-				<button id="close-files-pane" class="close-files-btn">
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<line x1="18" y1="6" x2="6" y2="18"></line>
-						<line x1="6" y1="6" x2="18" y2="18"></line>
-					</svg>
-				</button>
-				<div class="files-splash">
+				<div class="files-list">
+					<div class="files-header">
+						<h3>Files</h3>
+						<button id="close-files-pane" class="close-files-btn">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<line x1="18" y1="6" x2="6" y2="18"></line>
+								<line x1="6" y1="6" x2="18" y2="18"></line>
+							</svg>
+						</button>
+					</div>
+					<div class="files-splash">
 					<div class="files-splash-content">
 						<div class="files-splash-icon">
 							<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -145,6 +148,7 @@ export class Files {
 						</div>
 					</div>
 				</div>
+				</div>
 			`;
 		}
 	}
@@ -154,13 +158,17 @@ export class Files {
 		const filesContent = this.reader.container.querySelector('.files-content');
 		if (filesContent) {
 			filesContent.innerHTML = html`
-				<button id="close-files-pane" class="close-files-btn">
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<line x1="18" y1="6" x2="6" y2="18"></line>
-						<line x1="6" y1="6" x2="18" y2="18"></line>
-					</svg>
-				</button>
-				<div class="files-splash">
+				<div class="files-list">
+					<div class="files-header">
+						<h3>Files</h3>
+						<button id="close-files-pane" class="close-files-btn">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<line x1="18" y1="6" x2="6" y2="18"></line>
+								<line x1="6" y1="6" x2="18" y2="18"></line>
+							</svg>
+						</button>
+					</div>
+					<div class="files-splash">
 					<div class="files-splash-content">
 						<div class="files-splash-icon">
 							<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -185,6 +193,7 @@ export class Files {
 						</div>
 					</div>
 				</div>
+				</div>
 			`;
 		}
 	}
@@ -193,16 +202,12 @@ export class Files {
 	 * Handle select folder button click
 	 */
 	async handleSelectFolder() {
-		alert('DEBUG: Starting folder selection...');
 		const { success, error } = await this.folderService.selectFolder();
-		alert(`DEBUG: Folder selection result - success: ${success}, error: ${error}`);
 		
 		if (success) {
-			alert('DEBUG: Folder selection successful, calling onActivate...');
 			// Refresh the files list after folder selection
 			await this.onActivate();
 		} else {
-			alert(`DEBUG: Folder selection failed: ${error}`);
 			// Show error dialog
 			this.showErrorDialog(error);
 		}

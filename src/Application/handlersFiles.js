@@ -140,7 +140,6 @@ export function getHandlers(appController) {
 					message: 'File saved successfully'
 				});
 			} catch (error) {
-				alert(`DEBUG: Error in handleSaveFile: ${error.message}`);
 				console.error('Save failed:', error);
 				dispatchEvent('file:error', {
 					error: error.message,

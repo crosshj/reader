@@ -30,7 +30,6 @@ export function detectAndSetSafeAreas() {
     if (window.Capacitor?.Plugins?.StatusBar) {
         window.Capacitor.Plugins.StatusBar.getInfo()
             .then(info => {
-                console.log('StatusBar info:', info);
                 if (info.visible) {
                     statusBarHeight = info.height || 24;
                 }
@@ -99,12 +98,6 @@ export function detectAndSetSafeAreas() {
             document.documentElement.style.setProperty('--safe-area-inset-left', leftInset + 'px');
             document.documentElement.style.setProperty('--safe-area-inset-right', rightInset + 'px');
             
-            console.log('Safe area insets set:', {
-                top: statusBarHeight,
-                bottom: navBarHeight,
-                left: leftInset,
-                right: rightInset
-            });
         } catch (error) {
             console.error('Error setting CSS variables:', error);
         }
