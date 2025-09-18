@@ -111,7 +111,7 @@ export class ApplicationController {
 		const result = await this.persistenceService.closeFile();
 		if (result && result.showSplash) {
 			// Dispatch event to show splash screen
-			dispatchEvent('ui:showSplash');
+			dispatchEvent('app:state', { state: 'splash' });
 		} else if (result && result.needsSave) {
 			// Dispatch event to save file first
 			dispatchEvent('ui:saveFile');

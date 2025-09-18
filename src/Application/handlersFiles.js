@@ -8,7 +8,7 @@ export function getHandlers(appController) {
 		async handleOpenFile(event) {
 			try {
 				// Show loading state
-				dispatchEvent('ui:loading', { message: 'Opening file...' });
+				dispatchEvent('app:state', { state: 'loading', message: 'Opening file...' });
 
 				let file;
 
@@ -54,14 +54,15 @@ export function getHandlers(appController) {
 					}
 				} else {
 					// Show splash screen again
-					dispatchEvent('ui:showSplash');
+					dispatchEvent('app:state', { state: 'splash' });
 				}
 			} catch (error) {
 				console.error(`Error opening file: ${error.message}`);
 				// Dispatch error event for UI to handle
-				dispatchEvent('file:error', {
+				dispatchEvent('app:state', {
+					state: 'fileError',
 					error: error.message,
-					action: 'open',
+					data: { action: 'open' },
 				});
 			}
 		},
@@ -69,7 +70,8 @@ export function getHandlers(appController) {
 		async handleCreateFile() {
 			try {
 				// Show loading state
-				dispatchEvent('ui:loading', {
+				dispatchEvent('app:state', {
+					state: 'loading',
 					message: 'Creating new file...',
 				});
 
@@ -94,21 +96,22 @@ export function getHandlers(appController) {
 					dispatchEvent('file:opened');
 				} else {
 					// Show splash screen again
-					dispatchEvent('ui:showSplash');
+					dispatchEvent('app:state', { state: 'splash' });
 				}
 			} catch (error) {
 				console.error(`Error creating file: ${error.message}`);
 				// Dispatch error event for UI to handle
-				dispatchEvent('file:error', {
+				dispatchEvent('app:state', {
+					state: 'fileError',
 					error: error.message,
-					action: 'create',
+					data: { action: 'create' },
 				});
 			}
 		},
 
 		async handleSaveFile() {
 			try {
-				dispatchEvent('ui:loading', { message: 'Saving file...' });
+				dispatchEvent('app:state', { state: 'loading', message: 'Saving file...' });
 				
 				// Get current file content from persistence service
 				const currentFileContent = await appController.persistenceService.getCurrentFileContent();
@@ -130,7 +133,7 @@ export function getHandlers(appController) {
 				dispatchEvent('file:saved');
 				
 				// Clear loading state and restore UI
-				dispatchEvent('ui:loading', { message: '' });
+				dispatchEvent('app:state', { state: 'loading', message: '' });
 				
 				// Trigger a database state refresh to restore the UI
 				dispatchEvent('db:state', {
@@ -141,12 +144,13 @@ export function getHandlers(appController) {
 				});
 			} catch (error) {
 				console.error('Save failed:', error);
-				dispatchEvent('file:error', {
+				dispatchEvent('app:state', {
+					state: 'fileError',
 					error: error.message,
-					action: 'save',
+					data: { action: 'save' },
 				});
 				// Clear loading state on error too
-				dispatchEvent('ui:loading', { message: '' });
+				dispatchEvent('app:state', { state: 'loading', message: '' });
 			}
 		},
 
@@ -158,9 +162,10 @@ export function getHandlers(appController) {
 			} catch (error) {
 				console.error('Save failed:', error);
 				// Dispatch error event for UI to handle
-				dispatchEvent('file:error', {
+				dispatchEvent('app:state', {
+					state: 'fileError',
 					error: error.message,
-					action: 'save',
+					data: { action: 'save' },
 				});
 				throw error;
 			}

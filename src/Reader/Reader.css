@@ -1030,23 +1030,7 @@
 	color: var(--text-muted);
 }
 
-.loading-spinner {
-	width: 2rem;
-	height: 2rem;
-	border: 2px solid var(--text-subtle);
-	border-top: 2px solid var(--accent);
-	border-radius: 50%;
-	animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
-}
+/* Loading spinner styles moved to index.css for consistency */
 
 .file-content {
 	display: flex;

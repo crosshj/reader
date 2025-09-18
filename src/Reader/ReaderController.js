@@ -84,6 +84,31 @@ export class ReaderController {
 			},
 		});
 
+		addEventListener('app:state', (e) => {
+			const { state, data, error, message } = e.detail;
+
+			switch (state) {
+				case 'splash':
+					this.ui.showContent();
+					break;
+				case 'loading':
+					this.ui.showLoadingState(message || 'Loading...');
+					break;
+				case 'fileError':
+					this.ui.showFileError(error, data?.action);
+					break;
+				case 'noFolder':
+					// Will be handled by new component
+					break;
+				case 'noFile':
+					// Will be handled by new component
+					break;
+				default:
+					console.warn('Unknown app state:', state);
+			}
+		});
+
+
 		addEventListener('db:state', (e) => {
 			const { action, state, metadata, message, error } = e.detail;
 
@@ -92,23 +117,6 @@ export class ReaderController {
 			} else {
 				this.ui.showDatabaseState({ action, state, metadata, message });
 			}
-		});
-
-		// File error handling
-		addEventListener('file:error', (e) => {
-			const { error, action } = e.detail;
-			this.ui.showFileError(error, action);
-		});
-
-		// Loading state handling
-		addEventListener('ui:loading', (e) => {
-			const { message } = e.detail;
-			this.ui.showLoadingState(message);
-		});
-
-		// Show splash screen
-		addEventListener('ui:showSplash', () => {
-			this.ui.showContent();
 		});
 	}
 
