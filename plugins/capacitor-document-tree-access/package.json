@@ -1,6 +1,7 @@
 {
   "name": "capacitor-document-tree-access",
   "version": "0.0.1",
+  "type": "module",
   "description": "Android-only Capacitor plugin for accessing and persisting user-selected folders using ACTION_OPEN_DOCUMENT_TREE.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -39,8 +40,8 @@
     "eslint": "eslint . --ext ts",
     "prettier": "prettier \"**/*.{css,html,ts,js,java}\" --plugin=prettier-plugin-java",
     "swiftlint": "node-swiftlint",
-    "docgen": "docgen --api DocumentTreeAccessPluginPlugin --output-readme README.md --output-json dist/docs.json",
-    "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.mjs",
+    "docgen": "docgen --api DocumentTreeAccessPlugin --output-readme README.md --output-json dist/docs.json",
+    "build": "npm run clean && tsc && rollup -c rollup.config.mjs && npm run docgen",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
     "prepublishOnly": "npm run build"
@@ -59,7 +60,7 @@
     "rimraf": "^6.0.1",
     "rollup": "^4.30.1",
     "swiftlint": "^2.0.0",
-    "typescript": "~4.1.5"
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
     "@capacitor/core": ">=7.0.0"

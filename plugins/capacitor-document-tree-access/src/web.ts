@@ -8,7 +8,7 @@ declare global {
   }
 
   interface FileSystemDirectoryHandle {
-    entries(): AsyncIterableIterator<[string, FileSystemHandle]>;
+    entries(): AsyncIterableIterator<[string, any]>;
     queryPermission(options: { mode: 'read' | 'readwrite' }): Promise<'granted' | 'denied' | 'prompt'>;
     requestPermission(options: { mode: 'read' | 'readwrite' }): Promise<'granted' | 'denied'>;
   }
@@ -76,12 +76,20 @@ export class DocumentTreeAccessWeb extends WebPlugin implements DocumentTreeAcce
     });
   }
 
+  /**
+   * Pick a folder for file operations
+   * @returns Promise<{ uri: string }>
+   */
   async pickFolder(): Promise<{ uri: string }> {
     this.dirHandle = await window.showDirectoryPicker();
     await this.saveHandle();
     return { uri: 'virtual://web-dir' };
   }
 
+  /**
+   * Get the previously selected folder URI
+   * @returns Promise<{ uri: string | null }>
+   */
   async getPersistedUri(): Promise<{ uri: string | null }> {
     if (!this.dirHandle) {
       await this.loadPersistedHandle();
@@ -89,6 +97,10 @@ export class DocumentTreeAccessWeb extends WebPlugin implements DocumentTreeAcce
     return { uri: this.dirHandle ? 'virtual://web-dir' : null };
   }
 
+  /**
+   * List files in the selected folder
+   * @returns Promise<{ files: { name: string; uri: string; type?: string; size: number }[] }>
+   */
   async listFiles(): Promise<{ files: { name: string; uri: string; type?: string; size: number }[] }> {
     if (!this.dirHandle) await this.loadPersistedHandle();
     if (!this.dirHandle) throw this.unavailable('No directory picked');
@@ -110,6 +122,11 @@ export class DocumentTreeAccessWeb extends WebPlugin implements DocumentTreeAcce
     return { files };
   }
 
+  /**
+   * Write data to a file in the selected folder
+   * @param options - The file name and data to write
+   * @returns Promise<void>
+   */
   async writeFile({ name, data }: { name: string; data: string }): Promise<void> {
     if (!this.dirHandle) await this.loadPersistedHandle();
     if (!this.dirHandle) throw this.unavailable('No directory picked');
@@ -120,6 +137,11 @@ export class DocumentTreeAccessWeb extends WebPlugin implements DocumentTreeAcce
     await writable.close();
   }
 
+  /**
+   * Read data from a file in the selected folder
+   * @param options - The file name to read
+   * @returns Promise<{ data: string }>
+   */
   async readFile({ name }: { name: string }): Promise<{ data: string }> {
     if (!this.dirHandle) await this.loadPersistedHandle();
     if (!this.dirHandle) throw this.unavailable('No directory picked');
@@ -130,6 +152,11 @@ export class DocumentTreeAccessWeb extends WebPlugin implements DocumentTreeAcce
     return { data: text };
   }
 
+  /**
+   * Delete a file from the selected folder
+   * @param options - The file name to delete
+   * @returns Promise<void>
+   */
   async deleteFile({ name }: { name: string }): Promise<void> {
     if (!this.dirHandle) await this.loadPersistedHandle();
     if (!this.dirHandle) throw this.unavailable('No directory picked');

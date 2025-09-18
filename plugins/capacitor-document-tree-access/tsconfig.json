@@ -4,7 +4,7 @@
     "declaration": true,
     "esModuleInterop": true,
     "inlineSources": true,
-    "lib": ["dom", "es2017"],
+    "lib": ["dom", "es2020"],
     "module": "esnext",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -13,8 +13,9 @@
     "outDir": "dist/esm",
     "pretty": true,
     "sourceMap": true,
-    "strict": true,
-    "target": "es2017"
+    "strict": false,
+    "target": "es2020",
+    "skipLibCheck": true
   },
   "files": ["src/index.ts"]
 }

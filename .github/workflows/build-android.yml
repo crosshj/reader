@@ -24,6 +24,9 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
+    - name: Build plugins
+      run: node plugins/build-plugins.js
+      
     - name: Build with Vite
       run: npm run build
       
