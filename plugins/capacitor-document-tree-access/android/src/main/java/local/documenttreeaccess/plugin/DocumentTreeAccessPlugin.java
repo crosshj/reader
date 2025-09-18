@@ -5,14 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.webkit.MimeTypeMap;
+
+import androidx.activity.result.ActivityResult;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.getcapacitor.*;
+import com.getcapacitor.annotation.ActivityCallback;
+import com.getcapacitor.annotation.CapacitorPlugin;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 @CapacitorPlugin(name = "DocumentTreeAccess")
 public class DocumentTreeAccessPlugin extends Plugin {
 
     private static final int REQUEST_FOLDER = 4001;
-    private PluginCall pendingCall;
 
     private DocumentFile getRootFolder() {
         Context context = getContext();
@@ -30,7 +39,6 @@ public class DocumentTreeAccessPlugin extends Plugin {
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION |
                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
                 Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        pendingCall = call;
         startActivityForResult(call, intent, REQUEST_FOLDER);
     }
 
