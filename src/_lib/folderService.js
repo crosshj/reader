@@ -21,7 +21,7 @@ export class FolderService {
 			return await this.getFilesFromFolder();
 		} catch (error) {
 			console.error('Error reading folder contents:', error);
-			return { files: null, error: `Cannot access folder: ${error.message}` };
+			return { files: null, error: `Cannot access folder: ${error.message} (Error name: ${error.name}, Stack: ${error.stack})` };
 		}
 	}
 
@@ -57,7 +57,7 @@ export class FolderService {
 		try {
 			// Check if File System Access API is supported
 			if (!('showDirectoryPicker' in window)) {
-				return { success: false, error: 'File System Access API is not supported in this browser' };
+				return { success: false, error: 'File System Access API (showDirectoryPicker) is not supported in this browser' };
 			}
 
 			// Request folder access
@@ -71,9 +71,9 @@ export class FolderService {
 		} catch (error) {
 			console.error('Error selecting folder:', error);
 			if (error.name === 'AbortError') {
-				return { success: false, error: 'no folder selected' };
+				return { success: false, error: 'No folder selected. Aborted.' };
 			}
-			return { success: false, error: `Failed to select folder: ${error.message}` };
+			return { success: false, error: `Failed to select folder: ${error.message} (Error name: ${error.name}, Stack: ${error.stack})` };
 		}
 	}
 
