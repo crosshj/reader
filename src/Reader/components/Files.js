@@ -22,21 +22,27 @@ export class Files {
 	}
 
 	async onActivate() {
+		alert('DEBUG: onActivate called');
 		// Show loading spinner
 		this.showLoading();
 
+		alert('DEBUG: About to call folderService.getFiles()');
 		// Try to get files from selected folder
 		const { files, error } = await this.folderService.getFiles();
+		alert(`DEBUG: getFiles returned - files: ${files ? files.length : 'null'}, error: ${error}`);
 
 		if (error && error === 'no folder selected') {
+			alert('DEBUG: No folder selected, showing no files dialog');
 			this.showNoFilesDialog();
 			return;
 		}
 		if (error) {
+			alert(`DEBUG: Error getting files, showing error dialog: ${error}`);
 			this.showErrorDialog(error);
 			return;
 		}
 
+		alert(`DEBUG: Success! Showing ${files.length} files`);
 		this.showFilesList(files);
 	}
 
@@ -187,13 +193,16 @@ export class Files {
 	 * Handle select folder button click
 	 */
 	async handleSelectFolder() {
+		alert('DEBUG: Starting folder selection...');
 		const { success, error } = await this.folderService.selectFolder();
+		alert(`DEBUG: Folder selection result - success: ${success}, error: ${error}`);
 		
 		if (success) {
+			alert('DEBUG: Folder selection successful, calling onActivate...');
 			// Refresh the files list after folder selection
 			await this.onActivate();
 		} else {
-			console.error('Error selecting folder:', error);
+			alert(`DEBUG: Folder selection failed: ${error}`);
 			// Show error dialog
 			this.showErrorDialog(error);
 		}
