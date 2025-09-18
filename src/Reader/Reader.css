@@ -1007,13 +1007,18 @@
 
 .reader-content {
 	flex: 1;
-	display: flex;
+	display: none; /* Hidden by default */
 	align-items: center;
 	justify-content: center;
 	padding: 1rem;
 	overflow-x: hidden;
 	overflow-y: auto;
 	background: var(--card-bg);
+}
+
+/* Pane swapping states */
+.reader-content.active {
+	display: flex;
 }
 
 .reader-loading {

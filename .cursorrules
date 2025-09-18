@@ -1,5 +1,14 @@
 # Reader Project - Cursor Rules
 
+## ⚠️ CRITICAL: CASE SENSITIVITY WARNING ⚠️
+**THIS SYSTEM IS CASE-SENSITIVE!** 
+- **NEVER** use lowercase file paths like `src/reader/reader.js` 
+- **ALWAYS** use the correct case: `src/Reader/Reader.js`
+- **DOUBLE-CHECK** all file paths before referencing them
+- **VERIFY** directory names: `Reader/` not `reader/`
+- **CONFIRM** file names: `Reader.js` not `reader.js`
+- **FAILURE TO FOLLOW CASE SENSITIVITY WILL BREAK THE BUILD**
+
 ## Project Overview
 This is a JavaScript-based data management application that works with .smartText database files. It's built for both web and mobile (via Capacitor) and uses SQLite with sql.js for data storage.
 

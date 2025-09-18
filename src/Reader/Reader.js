@@ -4,6 +4,7 @@ import { Header } from './components/Header.js';
 import { Menu } from './components/Menu.js';
 import { List } from './components/List.js';
 import { ModalMetadataEdit } from './components/ModalMetadataEdit.js';
+import { Files } from './components/Files.js';
 
 export class Reader {
 	constructor(controller) {
@@ -18,6 +19,7 @@ export class Reader {
 		this.menu = new Menu(this);
 		this.list = new List(this);
 		this.modalMetadataEdit = new ModalMetadataEdit(this);
+		this.files = new Files(this);
 
 		this.render();
 	}
@@ -25,13 +27,14 @@ export class Reader {
 	render() {
 		this.container.innerHTML = html`
 			${this.header.render()}
-			<div class="reader-content">
+			<div class="reader-content active">
 				<div class="reader-loading">
 					<div class="loading-spinner"></div>
 					<p>Loading...</p>
 				</div>
 			</div>
-			${this.menu.render()}
+			${this.files.render()}
+            ${this.menu.render()}
 		`;
 	}
 
@@ -871,4 +874,30 @@ export class Reader {
 			`;
 		}
 	}
+
+	// Pane swapping methods
+	showReaderPane = () => {
+		this.menu.hideHamburgerMenu();
+		const readerPane = this.container.querySelector('.reader-content');
+		const filesPane = this.container.querySelector('.files-content');
+		
+		if (readerPane && filesPane) {
+			readerPane.classList.add('active');
+			filesPane.classList.remove('active');
+		}
+	}
+
+	showFilesPane = () => {
+		this.menu.hideHamburgerMenu();
+		const readerPane = this.container.querySelector('.reader-content');
+		const filesPane = this.container.querySelector('.files-content');
+		
+		if (readerPane && filesPane) {
+			readerPane.classList.remove('active');
+			filesPane.classList.add('active');
+			// Trigger async events when files pane becomes active
+			this.files.onActivate();
+		}
+	}
+
 }
