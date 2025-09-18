@@ -49,20 +49,26 @@ export class FolderService {
 	 */
 	async selectFolder() {
 		try {
+			alert('DEBUG: About to call DocumentTreeAccess.pickFolder()');
 			const result = await DocumentTreeAccess.pickFolder();
+			alert(`DEBUG: DocumentTreeAccess.pickFolder() returned: ${JSON.stringify(result)}`);
 			
 			if (result.uri) {
+				alert('DEBUG: Folder has URI, proceeding...');
 				// Add a small delay to ensure the folder selection is properly persisted
 				await new Promise(resolve => setTimeout(resolve, 500));
 				
 				// Verify the folder was persisted
 				const persistedResult = await DocumentTreeAccess.getPersistedUri();
+				alert(`DEBUG: Persistence verification: ${JSON.stringify(persistedResult)}`);
 				
 				return { success: true, error: null };
 			} else {
+				alert('DEBUG: No URI in result');
 				return { success: false, error: 'No folder selected' };
 			}
 		} catch (error) {
+			alert(`DEBUG: Error in selectFolder: ${error.message}`);
 			return { success: false, error: `Failed to select folder: ${error.message}` };
 		}
 	}
