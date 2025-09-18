@@ -2,22 +2,46 @@ import Foundation
 import Capacitor
 
 /**
- * Please read the Capacitor iOS Plugin Development Guide
- * here: https://capacitorjs.com/docs/plugins/ios
+ * DocumentTreeAccessPlugin - iOS Implementation
+ * 
+ * NOTE: iOS implementation is not yet available.
+ * This plugin currently only supports Android and Web platforms.
+ * All methods return appropriate error responses indicating unsupported platform.
  */
 @objc(DocumentTreeAccessPluginPlugin)
 public class DocumentTreeAccessPluginPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "DocumentTreeAccessPluginPlugin"
     public let jsName = "DocumentTreeAccessPlugin"
     public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "pickFolder", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getPersistedUri", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "listFiles", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "writeFile", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "readFile", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "deleteFile", returnType: CAPPluginReturnPromise)
     ]
-    private let implementation = DocumentTreeAccessPlugin()
 
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
+    @objc func pickFolder(_ call: CAPPluginCall) {
+        call.reject("iOS implementation not yet available. This plugin currently only supports Android and Web platforms.")
+    }
+
+    @objc func getPersistedUri(_ call: CAPPluginCall) {
+        call.reject("iOS implementation not yet available. This plugin currently only supports Android and Web platforms.")
+    }
+
+    @objc func listFiles(_ call: CAPPluginCall) {
+        call.reject("iOS implementation not yet available. This plugin currently only supports Android and Web platforms.")
+    }
+
+    @objc func writeFile(_ call: CAPPluginCall) {
+        call.reject("iOS implementation not yet available. This plugin currently only supports Android and Web platforms.")
+    }
+
+    @objc func readFile(_ call: CAPPluginCall) {
+        call.reject("iOS implementation not yet available. This plugin currently only supports Android and Web platforms.")
+    }
+
+    @objc func deleteFile(_ call: CAPPluginCall) {
+        call.reject("iOS implementation not yet available. This plugin currently only supports Android and Web platforms.")
     }
 }

@@ -1,10 +1,8 @@
 import { registerPlugin } from '@capacitor/core';
 
-import type { DocumentTreeAccessPluginPlugin } from './definitions';
+import type { DocumentTreeAccessPlugin } from './definitions';
+import { DocumentTreeAccessWeb } from './web';
 
-const DocumentTreeAccessPlugin = registerPlugin<DocumentTreeAccessPluginPlugin>('DocumentTreeAccessPlugin', {
-  web: () => import('./web').then((m) => new m.DocumentTreeAccessPluginWeb()),
+export const DocumentTreeAccess = registerPlugin<DocumentTreeAccessPlugin>('DocumentTreeAccess', {
+  web: () => new DocumentTreeAccessWeb(),
 });
-
-export * from './definitions';
-export { DocumentTreeAccessPlugin };

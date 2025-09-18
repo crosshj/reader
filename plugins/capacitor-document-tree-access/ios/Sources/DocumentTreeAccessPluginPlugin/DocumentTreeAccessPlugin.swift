@@ -1,8 +1,6 @@
 import Foundation
 
 @objc public class DocumentTreeAccessPlugin: NSObject {
-    @objc public func echo(_ value: String) -> String {
-        print(value)
-        return value
-    }
+    // iOS implementation not yet available
+    // This plugin currently only supports Android and Web platforms
 }
