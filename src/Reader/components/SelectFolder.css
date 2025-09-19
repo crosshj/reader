@@ -1,0 +1,115 @@
+/* SelectFolder Component Styles */
+
+.select-folder-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100%;
+	padding: 2rem;
+}
+
+.select-folder-content {
+	text-align: center;
+	max-width: 500px;
+	width: 100%;
+}
+
+.select-folder-icon {
+	margin-bottom: 2rem;
+	display: flex;
+	justify-content: center;
+}
+
+.select-folder-title {
+	font-size: 2rem;
+	font-weight: 600;
+	margin-bottom: 1rem;
+	color: var(--text-primary);
+}
+
+.select-folder-description {
+	font-size: 1.1rem;
+	color: var(--text-secondary);
+	margin-bottom: 2rem;
+	line-height: 1.6;
+}
+
+.select-folder-actions {
+	margin-bottom: 3rem;
+}
+
+.select-folder-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1.5rem;
+	border: none;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	text-decoration: none;
+}
+
+.select-folder-btn.primary {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.select-folder-btn.primary:hover {
+	background-color: var(--primary-hover);
+	transform: translateY(-1px);
+}
+
+.select-folder-btn.primary:active {
+	transform: translateY(0);
+}
+
+.select-folder-features {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 1.5rem;
+	margin-top: 2rem;
+}
+
+.select-folder-features .feature {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 1rem;
+	border-radius: 8px;
+	background-color: var(--surface-color);
+	border: 1px solid var(--border-color);
+}
+
+.select-folder-features .feature svg {
+	color: var(--primary-color);
+}
+
+.select-folder-features .feature span {
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: var(--text-primary);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.select-folder-container {
+		padding: 1rem;
+	}
+	
+	.select-folder-title {
+		font-size: 1.5rem;
+	}
+	
+	.select-folder-description {
+		font-size: 1rem;
+	}
+	
+	.select-folder-features {
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+}

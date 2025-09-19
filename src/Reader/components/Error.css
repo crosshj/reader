@@ -1,0 +1,107 @@
+/* Error Component Styles */
+
+.error-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 100%;
+	padding: 2rem;
+	text-align: center;
+}
+
+.error-icon {
+	margin-bottom: 1.5rem;
+	color: var(--error-color, #ef4444);
+}
+
+.error-title {
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin-bottom: 1rem;
+	color: var(--text-primary);
+}
+
+.error-message {
+	font-size: 1rem;
+	color: var(--text-secondary);
+	margin-bottom: 2rem;
+	line-height: 1.6;
+	max-width: 500px;
+}
+
+.error-actions {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.error-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1.5rem;
+	border: none;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	text-decoration: none;
+	min-width: 120px;
+}
+
+.error-btn.primary {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.error-btn.primary:hover {
+	background-color: var(--primary-hover);
+	transform: translateY(-1px);
+}
+
+.error-btn.primary:active {
+	transform: translateY(0);
+}
+
+.error-btn.secondary {
+	background-color: var(--surface-color);
+	color: var(--text-primary);
+	border: 1px solid var(--border-color);
+}
+
+.error-btn.secondary:hover {
+	background-color: var(--surface-hover);
+	transform: translateY(-1px);
+}
+
+.error-btn.secondary:active {
+	transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.error-container {
+		padding: 1rem;
+	}
+	
+	.error-title {
+		font-size: 1.25rem;
+	}
+	
+	.error-message {
+		font-size: 0.9rem;
+	}
+	
+	.error-actions {
+		flex-direction: column;
+		align-items: center;
+	}
+	
+	.error-btn {
+		width: 100%;
+		max-width: 200px;
+	}
+}

@@ -1,0 +1,145 @@
+/* SelectFile Component Styles */
+
+.select-file-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100%;
+	padding: 2rem;
+}
+
+.select-file-content {
+	text-align: center;
+	max-width: 500px;
+	width: 100%;
+}
+
+.select-file-icon {
+	margin-bottom: 2rem;
+	display: flex;
+	justify-content: center;
+}
+
+.select-file-title {
+	font-size: 2rem;
+	font-weight: 600;
+	margin-bottom: 1rem;
+	color: var(--text-primary);
+}
+
+.select-file-description {
+	font-size: 1.1rem;
+	color: var(--text-secondary);
+	margin-bottom: 2rem;
+	line-height: 1.6;
+}
+
+.select-file-actions {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	margin-bottom: 3rem;
+	flex-wrap: wrap;
+}
+
+.select-file-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1.5rem;
+	border: none;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	text-decoration: none;
+	min-width: 160px;
+}
+
+.select-file-btn.primary {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.select-file-btn.primary:hover {
+	background-color: var(--primary-hover);
+	transform: translateY(-1px);
+}
+
+.select-file-btn.primary:active {
+	transform: translateY(0);
+}
+
+.select-file-btn.secondary {
+	background-color: var(--surface-color);
+	color: var(--text-primary);
+	border: 1px solid var(--border-color);
+}
+
+.select-file-btn.secondary:hover {
+	background-color: var(--surface-hover);
+	transform: translateY(-1px);
+}
+
+.select-file-btn.secondary:active {
+	transform: translateY(0);
+}
+
+.select-file-features {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 1.5rem;
+	margin-top: 2rem;
+}
+
+.select-file-features .feature {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 1rem;
+	border-radius: 8px;
+	background-color: var(--surface-color);
+	border: 1px solid var(--border-color);
+}
+
+.select-file-features .feature svg {
+	color: var(--primary-color);
+}
+
+.select-file-features .feature span {
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: var(--text-primary);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.select-file-container {
+		padding: 1rem;
+	}
+	
+	.select-file-title {
+		font-size: 1.5rem;
+	}
+	
+	.select-file-description {
+		font-size: 1rem;
+	}
+	
+	.select-file-actions {
+		flex-direction: column;
+		align-items: center;
+	}
+	
+	.select-file-btn {
+		width: 100%;
+		max-width: 280px;
+	}
+	
+	.select-file-features {
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+}
