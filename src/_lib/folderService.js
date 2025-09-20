@@ -49,11 +49,13 @@ export class FolderService {
 			
 			// For native platforms, extract folder name from URI
 			const uri = persistedResult.uri;
+			alert(`Extracting folder name from URI: ${uri}`);
 			
-			// Handle different URI formats
+			// Handle different URI formats and extract just the folder name
 			let folderName;
 			if (uri.includes('/')) {
-				const parts = uri.split('/');
+				const parts = uri.split('/').filter(part => part.length > 0);
+				// Get the last non-empty part
 				folderName = parts[parts.length - 1];
 			} else {
 				folderName = uri;
@@ -61,6 +63,21 @@ export class FolderService {
 			
 			// Clean up the folder name (remove any file:// prefix or other artifacts)
 			folderName = folderName.replace(/^file:\/\//, '').replace(/\/$/, '');
+			
+			// If folder name is still empty or just a path separator, try to get a meaningful name
+			if (!folderName || folderName === '' || folderName === '/') {
+				// Try to extract from the full path by looking for the last meaningful directory
+				const pathParts = uri.split('/').filter(part => part.length > 0);
+				for (let i = pathParts.length - 1; i >= 0; i--) {
+					const part = pathParts[i];
+					if (part && part !== 'content' && part !== 'tree' && !part.includes(':')) {
+						folderName = part;
+						break;
+					}
+				}
+			}
+			
+			alert(`Extracted folder name: ${folderName}`);
 			return folderName || 'Database Files';
 		} catch (error) {
 			console.error('Error getting folder name:', error);
@@ -93,11 +110,18 @@ export class FolderService {
 
 	async readFile(fileName) {
 		try {
+			alert(`FolderService: Reading file ${fileName}`);
 			const result = await DocumentTreeAccess.readFile({ name: fileName });
+			alert(`FolderService: File read result type: ${typeof result}, has data: ${result && result.data !== undefined}`);
+			
+			if (!result || result.data === undefined) {
+				throw new Error(`No data returned for file: ${fileName}`);
+			}
+			
 			return result.data;
 		} catch (error) {
-			console.error('Error reading file:', error);
-			throw error;
+			alert(`Error reading file ${fileName}: ${error.message}`);
+			throw new Error(`Failed to read file ${fileName}: ${error.message}`);
 		}
 	}
 

@@ -301,10 +301,30 @@ export class ApplicationController {
 			dispatchEvent('app:state', { state: 'loading', message: 'Opening file...' });
 			
 		// Read the file from the folder
+		alert(`Attempting to read file: ${fileName}`);
 		const fileData = await this.folderService.readFile(fileName);
+		alert(`File data received: ${typeof fileData}, isArrayBuffer: ${fileData instanceof ArrayBuffer}, isUint8Array: ${fileData instanceof Uint8Array}`);
 		
-		// The plugin should now return ArrayBuffer directly
-		const arrayBufferData = fileData;
+		// Handle different data formats that the plugin might return
+		let arrayBufferData;
+		if (fileData instanceof ArrayBuffer) {
+			arrayBufferData = fileData;
+		} else if (fileData instanceof Uint8Array) {
+			arrayBufferData = fileData.buffer;
+		} else if (typeof fileData === 'string') {
+			// If it's a base64 string, decode it
+			const binaryString = atob(fileData);
+			const bytes = new Uint8Array(binaryString.length);
+			for (let i = 0; i < binaryString.length; i++) {
+				bytes[i] = binaryString.charCodeAt(i);
+			}
+			arrayBufferData = bytes.buffer;
+		} else {
+			alert(`Unexpected file data format: ${typeof fileData}`);
+			throw new Error(`Unexpected file data format: ${typeof fileData}`);
+		}
+		
+		alert(`Converted to ArrayBuffer, size: ${arrayBufferData.byteLength} bytes`);
 		
 		// Create a file-like object that the file handler expects
 		const file = {
