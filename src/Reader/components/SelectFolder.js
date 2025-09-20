@@ -49,23 +49,6 @@ export class SelectFolder {
 							</svg>
 							Select Folder
 						</button>
-						<button
-							id="cancel-folder-btn"
-							class="select-folder-btn secondary"
-						>
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path d="M19 12H5"></path>
-								<path d="M12 19l-7-7 7-7"></path>
-							</svg>
-							Cancel
-						</button>
 					</div>
 					<div class="select-folder-features">
 						<div class="feature">

@@ -26,7 +26,6 @@ export class ReaderController {
 			'#select-folder-btn': () => dispatchEvent('ui:selectFolder'),
 			'#select-new-folder-btn': () => dispatchEvent('ui:selectFolder'),
 			'#change-folder-btn': () => dispatchEvent('ui:selectFolder'),
-			'#cancel-folder-btn': () => this.handleCancelFolderSelect(),
 			'#retry-files-btn': () => this.handleRetryFiles(),
 			'#create-file-btn': () => dispatchEvent('ui:createFile'),
 			'#open-file-btn': () => dispatchEvent('ui:openFile'),
@@ -259,28 +258,6 @@ export class ReaderController {
 		// No need to call showContent() here as it bypasses the proper state flow
 	}
 
-	async handleCancelFolderSelect() {
-		// When canceling folder selection, go back to noFile state with current folder data
-		try {
-			const filesResult = await this.ui.folderService.getFiles();
-			const folderName = await this.ui.folderService.getFolderName();
-			
-			// Extract files array from the result object
-			const files = filesResult.files || [];
-			
-			// Dispatch app:state to show noFile with available files
-			dispatchEvent('app:state', {
-				state: 'noFile',
-				data: { files: files, folderName: folderName || '', currentFileName: '' }
-			});
-		} catch (error) {
-			// If we can't get files, show noFile state without files
-			dispatchEvent('app:state', {
-				state: 'noFile',
-				data: { files: [], folderName: '', currentFileName: '' }
-			});
-		}
-	}
 
 	async handleRetryFiles() {
 		// Retry getting files from current folder

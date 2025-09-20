@@ -134,12 +134,16 @@ export class ApplicationController {
 	 */
 	async checkFolderState() {
 		try {
+			alert('Checking folder state...');
 			const result = await this.folderService.getFiles();
+			alert(`Folder check result: ${result.error || 'success'}, files: ${result.files?.length || 0}`);
 			
 			if (result.error === 'no folder selected') {
+				alert('No folder selected, showing folder picker');
 				dispatchEvent('app:state', { state: 'noFolder' });
 				return;
 			} else if (result.error) {
+				alert(`Folder error: ${result.error}`);
 				dispatchEvent('app:state', { 
 					state: 'fileError', 
 					error: result.error,
@@ -151,11 +155,13 @@ export class ApplicationController {
 			// Folder exists, show file selection
 			const files = result.files || [];
 			const folderName = await this.folderService.getFolderName();
+			alert(`Folder found: ${folderName}, files: ${files.length}`);
 			dispatchEvent('app:state', { 
 				state: 'noFile',
 				data: { files: files, folderName: folderName }
 			});
 		} catch (error) {
+			alert(`Folder check error: ${error.message}`);
 			dispatchEvent('app:state', { 
 				state: 'fileError', 
 				error: error.message,
