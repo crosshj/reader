@@ -1,4 +1,4 @@
-import { html } from '../../../_lib/utils.js';
+import { html } from '../../_lib/utils.js';
 import './Query.css';
 
 export class QueryModal {

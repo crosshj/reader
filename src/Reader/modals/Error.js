@@ -1,5 +1,5 @@
-import { html } from '../../../_lib/utils.js';
-import { renderError } from '../Error.js';
+import { html } from '../../_lib/utils.js';
+import { renderError } from '../components/Error.js';
 import './Error.css';
 
 export class ErrorModal {
@@ -9,7 +9,6 @@ export class ErrorModal {
 
 	showDatabaseError(error) {
 		// Show error as a modal overlay
-		console.log('showDatabaseError called with:', error);
 		const errorHTML = renderError({
 			type: 'database',
 			message: error,

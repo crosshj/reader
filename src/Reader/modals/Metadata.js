@@ -1,4 +1,4 @@
-import { html, dispatchEvent } from '../../../_lib/utils.js';
+import { html, dispatchEvent } from '../../_lib/utils.js';
 
 export class MetadataModal {
 	constructor(reader) {

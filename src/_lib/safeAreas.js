@@ -23,7 +23,6 @@ export function initializeSafeAreas() {
 export function detectAndSetSafeAreas() {
     // Skip safe area detection on desktop
     if (window.innerWidth >= 1025) {
-        console.log('Desktop detected, skipping safe area detection');
         return;
     }
 

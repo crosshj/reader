@@ -49,7 +49,6 @@ export class FolderService {
 			
 			// For native platforms, extract folder name from URI
 			const uri = persistedResult.uri;
-			console.log('Folder URI:', uri); // Debug log
 			
 			// Handle different URI formats
 			let folderName;
@@ -62,8 +61,6 @@ export class FolderService {
 			
 			// Clean up the folder name (remove any file:// prefix or other artifacts)
 			folderName = folderName.replace(/^file:\/\//, '').replace(/\/$/, '');
-			
-			console.log('Extracted folder name:', folderName); // Debug log
 			return folderName || 'Database Files';
 		} catch (error) {
 			console.error('Error getting folder name:', error);
@@ -96,14 +93,7 @@ export class FolderService {
 
 	async readFile(fileName) {
 		try {
-			console.log('Reading file:', fileName);
 			const result = await DocumentTreeAccess.readFile({ name: fileName });
-			console.log('Plugin result:', result);
-			console.log('Result type:', typeof result);
-			console.log('Result.data type:', typeof result.data);
-			console.log('Result.data instanceof ArrayBuffer:', result.data instanceof ArrayBuffer);
-			console.log('Result.data instanceof Uint8Array:', result.data instanceof Uint8Array);
-			console.log('Result.data constructor:', result.data?.constructor?.name);
 			return result.data;
 		} catch (error) {
 			console.error('Error reading file:', error);

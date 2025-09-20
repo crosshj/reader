@@ -302,7 +302,6 @@ export class ApplicationController {
 			
 		// Read the file from the folder
 		const fileData = await this.folderService.readFile(fileName);
-		console.log('File data type:', typeof fileData, 'Is ArrayBuffer:', fileData instanceof ArrayBuffer);
 		
 		// The plugin should now return ArrayBuffer directly
 		const arrayBufferData = fileData;

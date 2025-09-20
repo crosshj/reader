@@ -1237,26 +1237,13 @@ export class DatabaseService {
 			tables: () => {
 				if (this.isLoaded()) {
 					const tables = this.getTableNames();
-					console.log('📊 Database Tables:', tables);
 					return tables;
 				} else {
-					console.log('❌ No database loaded');
 					return [];
 				}
 			},
 		};
 
-		console.log(
-			'🔧 Database cleanup functions available on window.dbCleanup:'
-		);
-		console.log('  - window.dbCleanup.tables() - List all tables');
-		console.log('  - window.dbCleanup.stats() - Get database statistics');
-		console.log(
-			'  - window.dbCleanup.cleanup() - Clean up database (VACUUM + ANALYZE)'
-		);
-		console.log(
-			'  - window.dbCleanup.removeTables() - Remove unused tables'
-		);
 	}
 
 	/**
@@ -1270,8 +1257,6 @@ export class DatabaseService {
 		}
 
 		try {
-			// For now, just log the query as requested
-			console.log('Executing query:', query);
 			
 			// Execute the query
 			const result = this.db.exec(query);

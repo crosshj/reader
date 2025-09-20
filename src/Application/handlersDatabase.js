@@ -62,7 +62,6 @@ export function getHandlers(appController) {
 			// Mark as saved in persistence service
 			appController.persistenceService.markAsSaved();
 			
-			console.log('Database saved to file system:', fileName);
 		} catch (error) {
 			console.error('Error saving database to file system:', error);
 		}

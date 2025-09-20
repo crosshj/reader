@@ -1,4 +1,4 @@
-import { html } from '../../../_lib/utils.js';
+import { html } from '../../_lib/utils.js';
 import './BulkUpsert.css';
 
 export class BulkUpsertModal {

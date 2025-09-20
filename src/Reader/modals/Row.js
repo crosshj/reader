@@ -1,4 +1,4 @@
-import { html } from '../../../_lib/utils.js';
+import { html } from '../../_lib/utils.js';
 import './Row.css';
 
 export class RowModal {
