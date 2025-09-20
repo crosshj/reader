@@ -313,12 +313,22 @@ export class ApplicationController {
 			arrayBufferData = fileData.buffer;
 		} else if (typeof fileData === 'string') {
 			// If it's a base64 string, decode it
-			const binaryString = atob(fileData);
-			const bytes = new Uint8Array(binaryString.length);
-			for (let i = 0; i < binaryString.length; i++) {
-				bytes[i] = binaryString.charCodeAt(i);
+			try {
+				const binaryString = atob(fileData);
+				const bytes = new Uint8Array(binaryString.length);
+				for (let i = 0; i < binaryString.length; i++) {
+					bytes[i] = binaryString.charCodeAt(i);
+				}
+				arrayBufferData = bytes.buffer;
+			} catch (base64Error) {
+				// If base64 decoding fails, try treating it as raw binary data
+				alert(`Base64 decode failed, trying raw binary. Error: ${base64Error.message}`);
+				const bytes = new Uint8Array(fileData.length);
+				for (let i = 0; i < fileData.length; i++) {
+					bytes[i] = fileData.charCodeAt(i);
+				}
+				arrayBufferData = bytes.buffer;
 			}
-			arrayBufferData = bytes.buffer;
 		} else {
 			alert(`Unexpected file data format: ${typeof fileData}`);
 			throw new Error(`Unexpected file data format: ${typeof fileData}`);

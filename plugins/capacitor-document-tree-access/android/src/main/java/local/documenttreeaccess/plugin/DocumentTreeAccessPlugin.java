@@ -190,7 +190,7 @@ public class DocumentTreeAccessPlugin extends Plugin {
     @PluginMethod
     public void writeFile(PluginCall call) {
         String name = call.getString("name");
-        String data = call.getString("data"); // Expecting base64 or plain text
+        String data = call.getString("data"); // Expecting base64 encoded data
 
         if (name == null || data == null) {
             call.reject("Missing name or data");
@@ -213,7 +213,9 @@ public class DocumentTreeAccessPlugin extends Plugin {
         }
 
         try (OutputStream os = getContext().getContentResolver().openOutputStream(file.getUri())) {
-            os.write(data.getBytes(StandardCharsets.UTF_8));
+            // Decode base64 data to binary
+            byte[] binaryData = android.util.Base64.decode(data, android.util.Base64.DEFAULT);
+            os.write(binaryData);
             call.resolve();
         } catch (Exception e) {
             android.util.Log.e("DocumentTreeAccess", "Write failed for file: " + name, e);
@@ -246,9 +248,12 @@ public class DocumentTreeAccessPlugin extends Plugin {
                 buffer.write(data, 0, nRead);
             }
             buffer.flush();
-            String contents = new String(buffer.toByteArray(), StandardCharsets.UTF_8);
+            
+            // Return data as base64 - this is the standard way for Capacitor plugins
+            // to handle binary data since JSObject doesn't support byte arrays directly
+            String base64Data = android.util.Base64.encodeToString(buffer.toByteArray(), android.util.Base64.NO_WRAP);
             JSObject result = new JSObject();
-            result.put("data", contents);
+            result.put("data", base64Data);
             call.resolve(result);
         } catch (Exception e) {
             android.util.Log.e("DocumentTreeAccess", "Read failed for file: " + name, e);

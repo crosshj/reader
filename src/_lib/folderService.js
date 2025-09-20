@@ -64,6 +64,9 @@ export class FolderService {
 			// Clean up the folder name (remove any file:// prefix or other artifacts)
 			folderName = folderName.replace(/^file:\/\//, '').replace(/\/$/, '');
 			
+			// Decode URL-encoded characters
+			folderName = decodeURIComponent(folderName);
+			
 			// If folder name is still empty or just a path separator, try to get a meaningful name
 			if (!folderName || folderName === '' || folderName === '/') {
 				// Try to extract from the full path by looking for the last meaningful directory
@@ -71,7 +74,7 @@ export class FolderService {
 				for (let i = pathParts.length - 1; i >= 0; i--) {
 					const part = pathParts[i];
 					if (part && part !== 'content' && part !== 'tree' && !part.includes(':')) {
-						folderName = part;
+						folderName = decodeURIComponent(part);
 						break;
 					}
 				}
@@ -127,7 +130,21 @@ export class FolderService {
 
 	async writeFile(fileName, content) {
 		try {
-			await DocumentTreeAccess.writeFile({ name: fileName, data: content });
+			// Convert ArrayBuffer to base64 for Android plugin
+			let base64Data;
+			if (content instanceof ArrayBuffer) {
+				const bytes = new Uint8Array(content);
+				const binaryString = String.fromCharCode(...bytes);
+				base64Data = btoa(binaryString);
+			} else if (content instanceof Uint8Array) {
+				const binaryString = String.fromCharCode(...content);
+				base64Data = btoa(binaryString);
+			} else {
+				// Assume it's already base64 or plain text
+				base64Data = content;
+			}
+			
+			await DocumentTreeAccess.writeFile({ name: fileName, data: base64Data });
 			return true;
 		} catch (error) {
 			console.error('Error writing file:', error);
