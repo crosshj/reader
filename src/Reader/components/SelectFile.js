@@ -15,10 +15,6 @@ export class SelectFile {
 			.filter(file => file.name.toLowerCase().endsWith('.smarttext'))
 			.sort((a, b) => a.name.localeCompare(b.name));
 		
-		// Debug logging
-		console.log('SelectFile render - currentFileName:', currentFileName);
-		console.log('SelectFile render - files:', safeFiles.map(f => f.name));
-		console.log('SelectFile render - smartTextFiles:', smartTextFiles.map(f => f.name));
 		
 		return html`
 			<div class="files-list">

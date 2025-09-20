@@ -22,14 +22,14 @@ export class ReaderController {
 			'#menu-open-file': this.handleMenuOpenFile,
 			'#menu-create-file': this.handleMenuCreateFile,
 			'#close-files-pane': () => this.ui.showReaderPane(),
-			'#select-folder-btn': () => this.ui.files.handleSelectFolder(),
-			'#select-new-folder-btn': () => this.ui.files.handleSelectFolder(),
+			'#select-folder-btn': () => dispatchEvent('ui:selectFolder'),
+			'#select-new-folder-btn': () => dispatchEvent('ui:selectFolder'),
 			'#change-folder-btn': () => dispatchEvent('ui:selectFolder'),
 			'#cancel-folder-btn': () => this.handleCancelFolderSelect(),
-			'#retry-files-btn': () => this.ui.files.handleRetryFiles(),
-			'#create-file-btn': () => this.ui.files.handleCreateFile(),
+			'#retry-files-btn': () => this.handleRetryFiles(),
+			'#create-file-btn': () => dispatchEvent('ui:createFile'),
 			'#open-file-btn': () => dispatchEvent('ui:openFile'),
-			'#menu-edit-metadata': () => this.ui.modalMetadataEdit.show(false),
+			'#menu-edit-metadata': () => this.ui.metadataModal.show(false),
 			'#menu-execute-query': () => this.ui.showQueryModal(),
 			'#add-item-btn': () => this.ui.showAddForm(),
 			'#add-item-btn-mobile': () => this.ui.showAddForm(),
@@ -44,7 +44,7 @@ export class ReaderController {
 			'#close-selected-edit-modal, #cancel-selected-edit': () =>
 				this.ui.hideSelectedEditModal(),
 			'#close-metadata-modal, #cancel-metadata': () =>
-				this.ui.modalMetadataEdit.hide(),
+				this.ui.metadataModal.hide(),
 			'#close-bulk-upsert-modal, #cancel-bulk-upsert': () =>
 				this.ui.hideBulkUpsertModal(),
 			'#close-query-modal, #cancel-query': () =>
@@ -83,7 +83,7 @@ export class ReaderController {
 			},
 			'#metadata-form': (e) => {
 				e.preventDefault();
-				this.ui.modalMetadataEdit.submit();
+				this.ui.metadataModal.submit();
 			},
 		});
 
@@ -131,7 +131,7 @@ export class ReaderController {
 
 		addEventListener('ui:showMetadataEdit', (e) => {
 			const isNewFile = e.detail?.isNewFile || false;
-			this.ui.modalMetadataEdit.show(isNewFile);
+			this.ui.metadataModal.show(isNewFile);
 		});
 	}
 
@@ -246,25 +246,18 @@ export class ReaderController {
 	}
 
 	/**
-	 * Handle reader ready event - check if there's a file to restore before showing splash
+	 * Handle reader ready event - let ApplicationController handle initial state
 	 */
 	handleReaderReady() {
-		// Check if there's a persisted file to restore
-		const hasPersistedFile = localStorage.getItem('persistedFileContent') && localStorage.getItem('persistedFileName');
-		
-		if (hasPersistedFile) {
-			// Don't show splash screen - wait for file restoration
-			// The ApplicationController will restore the file and trigger db:state event
-		} else {
-			this.ui.showContent();
-		}
+		// The ApplicationController will handle the initial state through app:state events
+		// No need to call showContent() here as it bypasses the proper state flow
 	}
 
 	async handleCancelFolderSelect() {
 		// When canceling folder selection, go back to noFile state with current folder data
 		try {
-			const filesResult = await this.ui.files.folderService.getFiles();
-			const folderName = await this.ui.files.folderService.getFolderName();
+			const filesResult = await this.ui.folderService.getFiles();
+			const folderName = await this.ui.folderService.getFolderName();
 			
 			// Extract files array from the result object
 			const files = filesResult.files || [];
@@ -277,6 +270,28 @@ export class ReaderController {
 		} catch (error) {
 			// If we can't get files, show noFile state without files
 			dispatchEvent('app:state', {
+				state: 'noFile',
+				data: { files: [], folderName: '', currentFileName: '' }
+			});
+		}
+	}
+
+	async handleRetryFiles() {
+		// Retry getting files from current folder
+		try {
+			const filesResult = await this.ui.folderService.getFiles();
+			const folderName = await this.ui.folderService.getFolderName();
+			
+			// Extract files array from the result object
+			const files = filesResult.files || [];
+			
+			dispatchEvent('app:state', { 
+				state: 'noFile',
+				data: { files: files, folderName: folderName || '', currentFileName: '' }
+			});
+		} catch (error) {
+			// If we can't get files, still show noFile state but without files
+			dispatchEvent('app:state', { 
 				state: 'noFile',
 				data: { files: [], folderName: '', currentFileName: '' }
 			});

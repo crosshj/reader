@@ -3,12 +3,16 @@ import './Reader.css';
 import { Header } from './components/Header.js';
 import { Menu } from './components/Menu.js';
 import { List } from './components/List.js';
-import { ModalMetadataEdit } from './components/ModalMetadataEdit.js';
-import { Files } from './components/Files.js';
+import { MetadataModal } from './components/modal/Metadata.js';
 import { DataView } from './components/DataView.js';
 import { renderError } from './components/Error.js';
 import { SelectFolder } from './components/SelectFolder.js';
 import { SelectFile } from './components/SelectFile.js';
+import { RowModal } from './components/modal/Row.js';
+import { QueryModal } from './components/modal/Query.js';
+import { BulkUpsertModal } from './components/modal/BulkUpsert.js';
+import { ErrorModal } from './components/modal/Error.js';
+import { FolderService } from '../_lib/folderService.js';
 
 export class Reader {
 	constructor(controller) {
@@ -22,11 +26,15 @@ export class Reader {
 		this.header = new Header(this);
 		this.menu = new Menu(this);
 		this.list = new List(this);
-		this.modalMetadataEdit = new ModalMetadataEdit(this);
-		this.files = new Files(this);
+		this.metadataModal = new MetadataModal(this);
 		this.dataView = new DataView(this);
 		this.selectFolder = new SelectFolder();
 		this.selectFile = new SelectFile();
+		this.rowModal = new RowModal(this);
+		this.queryModal = new QueryModal(this);
+		this.bulkUpsertModal = new BulkUpsertModal(this);
+		this.errorModal = new ErrorModal(this);
+		this.folderService = new FolderService();
 
 		this.render();
 	}
@@ -39,7 +47,6 @@ export class Reader {
 					<p>Loading...</p>
 				</div>
 			</div>
-			${this.files.render()}
             ${this.menu.render()}
 		`;
 	}
@@ -53,8 +60,8 @@ export class Reader {
 		
 		// Try to get files from folder service
 		try {
-			const filesResult = await this.files.folderService.getFiles();
-			const folderName = await this.files.folderService.getFolderName();
+			const filesResult = await this.folderService.getFiles();
+			const folderName = await this.folderService.getFolderName();
 			const files = filesResult.files || [];
 			this.showSelectFile(files, folderName || '', currentFileName);
 		} catch (error) {
@@ -155,216 +162,19 @@ export class Reader {
 	}
 
 	showSelectedEditModal(itemId = null) {
-		// Hide hamburger menu first
-		this.menu.hideHamburgerMenu();
-
-		// Get the item to edit (either passed itemId or selected item)
-		const selectedItem = itemId
-			? this.dataView.getItemById(itemId)
-			: this.controller.selectedRowId
-			? this.dataView.getItemById(this.controller.selectedRowId)
-			: null;
-
-		// For add mode, we don't need an existing item
-		const isAddMode = !itemId && !this.controller.selectedRowId;
-
-		// Create modal overlay
-		const modal = document.createElement('div');
-		modal.className = 'selected-edit-modal-overlay';
-		modal.innerHTML = html`
-			<div class="selected-edit-modal">
-				<div class="modal-header">
-					<h3>${isAddMode ? 'Add Item' : 'Edit Item'}</h3>
-					<button
-						id="close-selected-edit-modal"
-						class="close-btn"
-					>
-						<svg
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<line
-								x1="18"
-								y1="6"
-								x2="6"
-								y2="18"
-							></line>
-							<line
-								x1="6"
-								y1="6"
-								x2="18"
-								y2="18"
-							></line>
-						</svg>
-					</button>
-				</div>
-				<form
-					id="selected-edit-form"
-					class="modal-content"
-				>
-					${!isAddMode
-						? html`
-								<input
-									type="hidden"
-									name="id"
-									value="${selectedItem?.id || ''}"
-								/>
-						  `
-						: ''}
-					${this.currentSchema?.fields
-						?.filter((field) => {
-							// Exclude ID field from form
-							if (field.name === 'id') return false;
-							// Exclude timestamp fields from both add and edit modes
-							if (field.name === 'created_at' || field.name === 'modified_at') return false;
-							return true;
-						})
-						?.map(
-							(field) => html`
-								<div class="form-field">
-									<label for="selected-edit-${field.name}"
-										>${field.displayName ||
-										field.name}</label
-									>
-									${this.generateFieldInputForModal(
-										field,
-										selectedItem || {}
-									)}
-								</div>
-							`
-						)
-						.join('') || ''}
-					<div class="modal-actions">
-						<button
-							type="button"
-							id="cancel-selected-edit"
-							class="btn btn-secondary"
-						>
-							Cancel
-						</button>
-						<button
-							type="submit"
-							id="save-selected-edit"
-							class="btn btn-primary"
-						>
-							Save Changes
-						</button>
-					</div>
-				</form>
-			</div>
-		`;
-
-		// Add modal to DOM
-		this.container.appendChild(modal);
-
-		// Show modal with animation
-		requestAnimationFrame(() => {
-			modal.style.opacity = '1';
-			modal.style.visibility = 'visible';
-		});
+		this.rowModal.show(itemId);
 	}
 
 	hideSelectedEditModal() {
-		const modal = this.container.querySelector(
-			'.selected-edit-modal-overlay'
-		);
-		if (modal) {
-			modal.style.opacity = '0';
-			modal.style.visibility = 'hidden';
-			setTimeout(() => {
-				modal.remove();
-			}, 300);
-		}
+		this.rowModal.hide();
 	}
 
 	showQueryModal() {
-		// Hide hamburger menu first
-		this.menu.hideHamburgerMenu();
-
-		// Create modal overlay
-		const modal = document.createElement('div');
-		modal.className = 'query-modal-overlay';
-		modal.innerHTML = html`
-			<div class="query-modal">
-				<div class="modal-header">
-					<h3>Execute Query</h3>
-					<button
-						id="close-query-modal"
-						class="close-btn"
-					>
-						<svg
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<line
-								x1="18"
-								y1="6"
-								x2="6"
-								y2="18"
-							></line>
-							<line
-								x1="6"
-								y1="6"
-								x2="18"
-								y2="18"
-							></line>
-						</svg>
-					</button>
-				</div>
-				<div class="modal-content">
-					<div class="form-field">
-						<label for="query-textarea">SQL Query</label>
-						<textarea
-							id="query-textarea"
-							placeholder="Enter your SQL query here..."
-							rows="10"
-						></textarea>
-					</div>
-				</div>
-				<div class="modal-actions">
-					<button
-						id="cancel-query"
-						class="action-btn secondary"
-					>
-						Cancel
-					</button>
-					<button
-						id="execute-query"
-						class="action-btn primary"
-					>
-						Execute
-					</button>
-				</div>
-			</div>
-		`;
-
-		// Add modal to container
-		this.container.appendChild(modal);
-
-		// Animate in
-		requestAnimationFrame(() => {
-			modal.style.opacity = '1';
-			modal.style.visibility = 'visible';
-		});
+		this.queryModal.show();
 	}
 
 	hideQueryModal() {
-		const modal = this.container.querySelector('.query-modal-overlay');
-		if (modal) {
-			modal.style.opacity = '0';
-			modal.style.visibility = 'hidden';
-			setTimeout(() => {
-				modal.remove();
-			}, 300);
-		}
+		this.queryModal.hide();
 	}
 
 	handleSelectedEditFormSubmit(form) {
@@ -398,74 +208,11 @@ export class Reader {
 	}
 
 	showBulkUpsertModal() {
-		const modal = document.createElement('div');
-		modal.className = 'bulk-upsert-modal-overlay';
-		modal.innerHTML = html`
-			<div class="bulk-upsert-modal">
-				<div class="modal-header">
-					<h3>Bulk Upsert Data</h3>
-					<button
-						id="close-bulk-upsert-modal"
-						class="close-btn"
-					>
-						&times;
-					</button>
-				</div>
-				<div class="modal-content">
-					<p>Paste your data in the format: <code>id - name</code></p>
-					<textarea
-						id="bulk-upsert-data"
-						placeholder="Paste your data here..."
-						rows="15"
-						style="width: 100%; margin: 1rem 0; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; font-size: 12px;"
-					></textarea>
-				</div>
-				<div class="modal-actions">
-					<button
-						id="cancel-bulk-upsert"
-						class="action-btn secondary"
-					>
-						Cancel
-					</button>
-					<button
-						id="process-bulk-upsert"
-						class="action-btn primary"
-					>
-						Process Data
-					</button>
-				</div>
-			</div>
-		`;
-
-		this.container.appendChild(modal);
-
-		// Add event listeners
-		modal
-			.querySelector('#close-bulk-upsert-modal')
-			.addEventListener('click', () => {
-				this.hideBulkUpsertModal();
-			});
-
-		modal
-			.querySelector('#cancel-bulk-upsert')
-			.addEventListener('click', () => {
-				this.hideBulkUpsertModal();
-			});
-
-		modal
-			.querySelector('#process-bulk-upsert')
-			.addEventListener('click', () => {
-				this.handleBulkUpsertSubmit();
-			});
+		this.bulkUpsertModal.show();
 	}
 
 	hideBulkUpsertModal() {
-		const modal = this.container.querySelector(
-			'.bulk-upsert-modal-overlay'
-		);
-		if (modal) {
-			modal.remove();
-		}
+		this.bulkUpsertModal.hide();
 	}
 
 	handleBulkUpsertSubmit() {
@@ -520,81 +267,6 @@ export class Reader {
 		// Note: Add Item button stays visible as it's not dependent on selection
 	}
 
-	generateFieldInputForModal(field, selectedItem) {
-		const fieldName = field.name;
-		const fieldValue = selectedItem[fieldName] || '';
-		const inputId = `selected-edit-${fieldName}`;
-
-		switch (field.type) {
-			case 'text':
-				return html`
-					<input
-						type="text"
-						id="${inputId}"
-						name="${fieldName}"
-						value="${fieldValue}"
-						placeholder="${field.placeholder || ''}"
-					/>
-				`;
-
-			case 'enum':
-				const options = field.options || [];
-				return html`
-					<select id="${inputId}" name="${fieldName}">
-						<option value="">Select ${field.displayName || fieldName}...</option>
-						${options.map(option => html`
-							<option value="${option}" ${fieldValue === option ? 'selected' : ''}>
-								${option}
-							</option>
-						`).join('')}
-					</select>
-				`;
-
-			case 'datetime':
-				return html`
-					<input
-						type="datetime-local"
-						id="${inputId}"
-						name="${fieldName}"
-						value="${fieldValue ? new Date(fieldValue).toISOString().slice(0, 16) : ''}"
-					/>
-				`;
-
-			case 'number':
-				return html`
-					<input
-						type="number"
-						id="${inputId}"
-						name="${fieldName}"
-						value="${fieldValue}"
-						placeholder="${field.placeholder || ''}"
-						${field.min !== undefined ? `min="${field.min}"` : ''}
-						${field.max !== undefined ? `max="${field.max}"` : ''}
-					/>
-				`;
-
-			case 'boolean':
-				return html`
-					<input
-						type="checkbox"
-						id="${inputId}"
-						name="${fieldName}"
-						${fieldValue ? 'checked' : ''}
-					/>
-				`;
-
-			default:
-				return html`
-					<input
-						type="text"
-						id="${inputId}"
-						name="${fieldName}"
-						value="${fieldValue}"
-						placeholder="${field.placeholder || ''}"
-					/>
-				`;
-		}
-	}
 
 	showAddForm() {
 		// Open the modal for adding a new item (no selected item)
@@ -617,37 +289,11 @@ export class Reader {
 
 
 	showDatabaseError(error) {
-		// Show error as a modal overlay
-		console.log('showDatabaseError called with:', error);
-		const errorHTML = renderError({
-			type: 'database',
-			message: error,
-			retryButtonId: 'retry-btn'
-		});
-		
-		const tempDiv = document.createElement('div');
-		tempDiv.innerHTML = errorHTML;
-		const errorElement = tempDiv.firstElementChild;
-		this.container.appendChild(errorElement);
-		
-		// Add direct event listeners for the error modal
-		const closeBtn = errorElement.querySelector('#error-close-btn');
-		const dismissBtn = errorElement.querySelector('#error-dismiss-btn');
-		
-		if (closeBtn) {
-			closeBtn.addEventListener('click', () => this.hideError());
-		}
-		if (dismissBtn) {
-			dismissBtn.addEventListener('click', () => this.hideError());
-		}
+		this.errorModal.showDatabaseError(error);
 	}
 
 	hideError() {
-		// Simply remove the error modal overlay
-		const errorOverlay = this.container.querySelector('#error-modal-overlay');
-		if (errorOverlay) {
-			errorOverlay.remove();
-		}
+		this.errorModal.hide();
 	}
 
 	showSelectFolder() {
@@ -705,8 +351,7 @@ export class Reader {
 		if (readerPane && filesPane) {
 			readerPane.classList.remove('active');
 			filesPane.classList.add('active');
-			// Trigger async events when files pane becomes active
-			this.files.onActivate();
+			// Files pane is now active
 		}
 	}
 

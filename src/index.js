@@ -7,6 +7,10 @@ import { ReaderController } from './Reader/ReaderController.js';
 async function startReader() {
 	const applicationController = new ApplicationController();
 	const readerController = new ReaderController();
+	
+	// Make ApplicationController globally available
+	window.appController = applicationController;
+	
 	dispatchEvent('app:init');
 }
 

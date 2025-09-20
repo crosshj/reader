@@ -1,6 +1,6 @@
-import { html, dispatchEvent } from '../../_lib/utils.js';
+import { html, dispatchEvent } from '../../../_lib/utils.js';
 
-export class ModalMetadataEdit {
+export class MetadataModal {
 	constructor(reader) {
 		this.reader = reader;
 	}
@@ -201,26 +201,43 @@ export class ModalMetadataEdit {
 			modal.classList.remove('show');
 			setTimeout(async () => {
 				modal.remove();
-				// Navigate back to file selection mode when canceling
-				// Get files from current folder to show in noFile state
-				try {
-					const filesResult = await this.reader.files.folderService.getFiles();
-					const folderName = await this.reader.files.folderService.getFolderName();
-					
-					// Extract files array from the result object
-					const files = filesResult.files || [];
-					
-					dispatchEvent('app:state', { 
-						state: 'noFile',
-						data: { files: files, folderName: folderName || '', currentFileName: '' }
-					});
-				} catch (error) {
-					// If we can't get files, still show noFile state but without files
-					dispatchEvent('app:state', { 
-						state: 'noFile',
-						data: { files: [], folderName: '', currentFileName: '' }
-					});
+				
+				// Navigation depends on the mode:
+				// - Create mode: go back to file selection (noFile) with updated file list
+				// - Edit mode: stay in current database view (no state change)
+				if (this.isNewFile) {
+					// Create mode - go back to file selection with current file info
+					try {
+						const filesResult = await this.reader.folderService.getFiles();
+						const folderName = await this.reader.folderService.getFolderName();
+						
+						// Extract files array from the result object
+						const files = filesResult.files || [];
+						
+						// Get the current file name from the app controller
+						const currentFileName = window.appController?.currentFileName || '';
+						
+						dispatchEvent('app:state', { 
+							state: 'noFile',
+							data: { 
+								files: files, 
+								folderName: folderName || '', 
+								currentFileName: currentFileName 
+							}
+						});
+					} catch (error) {
+						// If we can't get files, still show noFile state but without files
+						dispatchEvent('app:state', { 
+							state: 'noFile',
+							data: { 
+								files: [], 
+								folderName: '', 
+								currentFileName: window.appController?.currentFileName || '' 
+							}
+						});
+					}
 				}
+				// Edit mode - just close the modal and stay in current database view
 			}, 300);
 		}
 	}
@@ -253,14 +270,42 @@ export class ModalMetadataEdit {
 
 		// Check if this is a new file being created
 		if (this.isNewFile) {
-			// For new files, dispatch a special event to create and save the file
+			// For new files, set up a listener for file creation completion
+			this.setupFileCreationListener();
+			
+			// Dispatch the create file event
 			this.reader.controller.dispatchCreateNewFile(metadata);
 		} else {
 			// For existing files, just update metadata
 			this.reader.controller.dispatchUpdateMetadata(metadata);
+			this.hide(); // Edit mode - just close the modal
 		}
+	}
 
-		this.hide();
+	setupFileCreationListener() {
+		// Listen for the file creation completion
+		const handleFileCreated = (e) => {
+			if (e.detail.action === 'file_created') {
+				// File creation completed successfully, now navigate back to file selection
+				this.hide();
+				// Remove this listener since we only need it once
+				document.removeEventListener('db:state', handleFileCreated);
+			}
+		};
+
+		// Listen for file creation errors too
+		const handleFileError = (e) => {
+			if (e.detail.action === 'error' && this.isNewFile) {
+				// File creation failed, still navigate back to file selection
+				this.hide();
+				// Remove listeners
+				document.removeEventListener('db:state', handleFileCreated);
+				document.removeEventListener('db:state', handleFileError);
+			}
+		};
+
+		document.addEventListener('db:state', handleFileCreated);
+		document.addEventListener('db:state', handleFileError);
 	}
 
 	addField() {
