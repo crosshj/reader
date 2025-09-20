@@ -134,16 +134,12 @@ export class ApplicationController {
 	 */
 	async checkFolderState() {
 		try {
-			alert('Checking folder state...');
 			const result = await this.folderService.getFiles();
-			alert(`Folder check result: ${result.error || 'success'}, files: ${result.files?.length || 0}`);
 			
 			if (result.error === 'no folder selected') {
-				alert('No folder selected, showing folder picker');
 				dispatchEvent('app:state', { state: 'noFolder' });
 				return;
 			} else if (result.error) {
-				alert(`Folder error: ${result.error}`);
 				dispatchEvent('app:state', { 
 					state: 'fileError', 
 					error: result.error,
@@ -155,13 +151,11 @@ export class ApplicationController {
 			// Folder exists, show file selection
 			const files = result.files || [];
 			const folderName = await this.folderService.getFolderName();
-			alert(`Folder found: ${folderName}, files: ${files.length}`);
 			dispatchEvent('app:state', { 
 				state: 'noFile',
 				data: { files: files, folderName: folderName }
 			});
 		} catch (error) {
-			alert(`Folder check error: ${error.message}`);
 			dispatchEvent('app:state', { 
 				state: 'fileError', 
 				error: error.message,
@@ -307,9 +301,7 @@ export class ApplicationController {
 			dispatchEvent('app:state', { state: 'loading', message: 'Opening file...' });
 			
 		// Read the file from the folder
-		alert(`Attempting to read file: ${fileName}`);
 		const fileData = await this.folderService.readFile(fileName);
-		alert(`File data received: ${typeof fileData}, isArrayBuffer: ${fileData instanceof ArrayBuffer}, isUint8Array: ${fileData instanceof Uint8Array}`);
 		
 		// Handle different data formats that the plugin might return
 		let arrayBufferData;
@@ -328,7 +320,6 @@ export class ApplicationController {
 				arrayBufferData = bytes.buffer;
 			} catch (base64Error) {
 				// If base64 decoding fails, try treating it as raw binary data
-				alert(`Base64 decode failed, trying raw binary. Error: ${base64Error.message}`);
 				const bytes = new Uint8Array(fileData.length);
 				for (let i = 0; i < fileData.length; i++) {
 					bytes[i] = fileData.charCodeAt(i);
@@ -336,11 +327,8 @@ export class ApplicationController {
 				arrayBufferData = bytes.buffer;
 			}
 		} else {
-			alert(`Unexpected file data format: ${typeof fileData}`);
 			throw new Error(`Unexpected file data format: ${typeof fileData}`);
 		}
-		
-		alert(`Converted to ArrayBuffer, size: ${arrayBufferData.byteLength} bytes`);
 		
 		// Create a file-like object that the file handler expects
 		const file = {
