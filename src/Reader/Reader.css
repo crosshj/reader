@@ -1067,7 +1067,7 @@
 
 	/* Reduce vertical padding on grid cells for mobile */
 	.grid-cell {
-		padding: 0.375rem 0.5rem !important;
+		padding: 0.3rem 0.5rem;
 	}
 
 	/* Mobile modal actions - place cancel and save buttons next to each other */
