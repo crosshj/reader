@@ -15,52 +15,33 @@ export function renderError({ type = 'general', message, action, retryButtonId =
 	const errorConfig = getErrorConfig(type, action);
 	
 	return html`
-		<div class="error-container">
-			<div class="error-icon">
-				${errorConfig.icon}
-			</div>
-			<h3 class="error-title">${errorConfig.title}</h3>
-			<p class="error-message">
-				${errorConfig.messagePrefix}${message}
-			</p>
-			<div class="error-actions">
-				<button
-					id="${retryButtonId}"
-					class="error-btn primary"
-				>
-					<svg
-						width="20"
-						height="20"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-					>
-						<polyline points="23,4 23,10 17,10"></polyline>
-						<polyline points="1,20 1,14 7,14"></polyline>
-						<path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
-					</svg>
-					${errorConfig.retryText}
-				</button>
-				${backButtonId ? html`
-					<button
-						id="${backButtonId}"
-						class="error-btn secondary"
-					>
-						<svg
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<path d="M19 12H5"></path>
-							<path d="M12 19l-7-7 7-7"></path>
+		<div class="error-modal-overlay" id="error-modal-overlay">
+			<div class="error-modal" id="error-modal">
+				<div class="modal-header">
+					<h3>${errorConfig.title}</h3>
+					<button class="close-btn" id="error-close-btn" title="Dismiss error">
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<line x1="18" y1="6" x2="6" y2="18"></line>
+							<line x1="6" y1="6" x2="18" y2="18"></line>
 						</svg>
-						Back to Home
 					</button>
-				` : ''}
+				</div>
+				<div class="modal-content">
+					<div class="error-icon">
+						${errorConfig.icon}
+					</div>
+					<p class="error-message">
+						${errorConfig.messagePrefix}${message}
+					</p>
+				</div>
+				<div class="modal-actions">
+					<button
+						id="error-dismiss-btn"
+						class="btn btn-primary"
+					>
+						Dismiss
+					</button>
+				</div>
 			</div>
 		</div>
 	`;

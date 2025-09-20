@@ -1,4 +1,4 @@
-import { html } from '../../_lib/utils.js';
+import { html, dispatchEvent } from '../../_lib/utils.js';
 
 export class ModalMetadataEdit {
 	constructor(reader) {
@@ -11,9 +11,16 @@ export class ModalMetadataEdit {
 		return '';
 	}
 
-	show() {
+	show(isNewFile = false) {
 		// Hide hamburger menu first
 		this.reader.menu.hideHamburgerMenu();
+
+		// Get current schema (should be loaded from the temporary database)
+		const currentSchema = this.reader.currentSchema;
+		
+		// Store the mode and schema for later use
+		this.isNewFile = isNewFile;
+		this.currentSchema = currentSchema;
 
 		// Create modal overlay
 		const modal = document.createElement('div');
@@ -21,7 +28,7 @@ export class ModalMetadataEdit {
 		modal.innerHTML = html`
 			<div class="metadata-modal">
 				<div class="modal-header">
-					<h3>Edit Database Information</h3>
+					<h3>${isNewFile ? 'Create New Database' : 'Edit Database'}</h3>
 					<button
 						id="close-metadata-modal"
 						class="close-btn"
@@ -41,12 +48,12 @@ export class ModalMetadataEdit {
 				</div>
 				<form id="metadata-form" class="modal-content">
 					<div class="form-field">
-						<label for="metadata-title">Database Title</label>
+						<label for="metadata-title">Title</label>
 						<input
 							type="text"
 							id="metadata-title"
 							name="title"
-							value="${this.reader.currentSchema?.title || ''}"
+							value="${currentSchema?.title || ''}"
 							placeholder="Enter database title"
 						/>
 					</div>
@@ -56,7 +63,7 @@ export class ModalMetadataEdit {
 							id="metadata-description"
 							name="description"
 							placeholder="Enter database description"
-						>${this.reader.currentSchema?.description || ''}</textarea>
+						>${currentSchema?.description || ''}</textarea>
 					</div>
 					<div class="form-field">
 						<label for="metadata-table-name">Table Name</label>
@@ -64,17 +71,8 @@ export class ModalMetadataEdit {
 							type="text"
 							id="metadata-table-name"
 							name="tableName"
-							value="${this.reader.currentSchema?.tableName || 'items'}"
+							value="${currentSchema?.tableName || 'items'}"
 							placeholder="Enter table name"
-						/>
-					</div>
-					<div class="form-field">
-						<label for="metadata-show-headers">Show Headers</label>
-						<input
-							type="checkbox"
-							id="metadata-show-headers"
-							name="showHeaders"
-							${this.reader.currentSchema?.showHeaders !== false ? 'checked' : ''}
 						/>
 					</div>
 					<div class="form-field">
@@ -83,9 +81,17 @@ export class ModalMetadataEdit {
 							<label class="control-option">
 								<input
 									type="checkbox"
+									name="showHeaders"
+									${currentSchema?.showHeaders !== false ? 'checked' : ''}
+								/>
+								Show Headers
+							</label>
+							<label class="control-option">
+								<input
+									type="checkbox"
 									name="controls"
 									value="add"
-									${this.reader.currentSchema?.controls?.includes('add') ? 'checked' : ''}
+									${currentSchema?.controls?.includes('add') ? 'checked' : ''}
 								/>
 								Add
 							</label>
@@ -94,7 +100,7 @@ export class ModalMetadataEdit {
 									type="checkbox"
 									name="controls"
 									value="edit"
-									${this.reader.currentSchema?.controls?.includes('edit') ? 'checked' : ''}
+									${currentSchema?.controls?.includes('edit') ? 'checked' : ''}
 								/>
 								Edit
 							</label>
@@ -103,7 +109,7 @@ export class ModalMetadataEdit {
 									type="checkbox"
 									name="controls"
 									value="delete"
-									${this.reader.currentSchema?.controls?.includes('delete') ? 'checked' : ''}
+									${currentSchema?.controls?.includes('delete') ? 'checked' : ''}
 								/>
 								Delete
 							</label>
@@ -112,9 +118,18 @@ export class ModalMetadataEdit {
 									type="checkbox"
 									name="controls"
 									value="bulk-upsert"
-									${this.reader.currentSchema?.controls?.includes('bulk-upsert') ? 'checked' : ''}
+									${currentSchema?.controls?.includes('bulk-upsert') ? 'checked' : ''}
 								/>
 								Bulk Upsert
+							</label>
+							<label class="control-option">
+								<input
+									type="checkbox"
+									name="controls"
+									value="selected-edit"
+									${currentSchema?.controls?.includes('selected-edit') ? 'checked' : ''}
+								/>
+								Selected Edit
 							</label>
 						</div>
 					</div>
@@ -126,24 +141,24 @@ export class ModalMetadataEdit {
 						<button
 							type="button"
 							id="add-field-btn"
-							class="action-btn secondary"
+							class="btn btn-secondary"
 						>
 							Add Field
 						</button>
 					</div>
-					<div class="form-actions">
+					<div class="modal-actions">
 						<button
 							type="button"
 							id="cancel-metadata-btn"
-							class="action-btn secondary"
+							class="btn btn-secondary"
 						>
 							Cancel
 						</button>
 						<button
 							type="submit"
-							class="action-btn primary"
+							class="btn btn-primary"
 						>
-							Save Changes
+							${isNewFile ? 'Create Database' : 'Save Changes'}
 						</button>
 					</div>
 				</form>
@@ -180,12 +195,32 @@ export class ModalMetadataEdit {
 		}, 10);
 	}
 
-	hide() {
+	async hide() {
 		const modal = this.reader.container.querySelector('.metadata-modal-overlay');
 		if (modal) {
 			modal.classList.remove('show');
-			setTimeout(() => {
+			setTimeout(async () => {
 				modal.remove();
+				// Navigate back to file selection mode when canceling
+				// Get files from current folder to show in noFile state
+				try {
+					const filesResult = await this.reader.files.folderService.getFiles();
+					const folderName = await this.reader.files.folderService.getFolderName();
+					
+					// Extract files array from the result object
+					const files = filesResult.files || [];
+					
+					dispatchEvent('app:state', { 
+						state: 'noFile',
+						data: { files: files, folderName: folderName || '', currentFileName: '' }
+					});
+				} catch (error) {
+					// If we can't get files, still show noFile state but without files
+					dispatchEvent('app:state', { 
+						state: 'noFile',
+						data: { files: [], folderName: '', currentFileName: '' }
+					});
+				}
 			}, 300);
 		}
 	}
@@ -201,7 +236,7 @@ export class ModalMetadataEdit {
 			tableName: formData.get('tableName') || 'items',
 			showHeaders: formData.has('showHeaders'),
 			controls: formData.getAll('controls'),
-			fields: this.reader.currentSchema?.fields || []
+			fields: this.currentSchema?.fields || []
 		};
 
 		// Update current schema
@@ -216,8 +251,14 @@ export class ModalMetadataEdit {
 		// Update the header title
 		this.reader.header.updateTitle(metadata.title);
 
-		// Dispatch event to save metadata
-		this.reader.controller.dispatchUpdateMetadata(metadata);
+		// Check if this is a new file being created
+		if (this.isNewFile) {
+			// For new files, dispatch a special event to create and save the file
+			this.reader.controller.dispatchCreateNewFile(metadata);
+		} else {
+			// For existing files, just update metadata
+			this.reader.controller.dispatchUpdateMetadata(metadata);
+		}
 
 		this.hide();
 	}
@@ -424,5 +465,35 @@ export class ModalMetadataEdit {
 				.map(opt => opt.trim())
 				.filter(opt => opt.length > 0);
 		}
+	}
+
+	getDefaultSchema() {
+		return {
+			version: '1.0',
+			title: 'My Database',
+			type: 'list',
+			tableName: 'items',
+			description: '',
+			showHeaders: true,
+			controls: ['add', 'edit', 'delete', 'bulk-upsert', 'selected-edit'],
+			fields: [
+				{
+					name: 'id',
+					displayName: 'ID',
+					type: 'integer',
+					primaryKey: true,
+					autoIncrement: true,
+					required: false
+				},
+				{
+					name: 'text',
+					displayName: 'Text',
+					type: 'text',
+					primaryKey: false,
+					autoIncrement: false,
+					required: false
+				}
+			]
+		};
 	}
 }

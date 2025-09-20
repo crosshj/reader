@@ -22,7 +22,7 @@
 }
 
 .query-modal {
-	background-color: var(--background-color);
+	background-color: var(--card-bg);
 	border-radius: 12px;
 	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 	max-width: 600px;
@@ -38,14 +38,14 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 1.5rem;
-	border-bottom: 1px solid var(--border-color);
+	border-bottom: 1px solid var(--card-border);
 }
 
 .modal-header h3 {
 	margin: 0;
 	font-size: 1.25rem;
 	font-weight: 600;
-	color: var(--text-primary);
+	color: var(--text-bright);
 }
 
 .close-btn {
@@ -59,8 +59,8 @@
 }
 
 .close-btn:hover {
-	background-color: var(--surface-color);
-	color: var(--text-primary);
+	background-color: var(--bg-secondary);
+	color: var(--text-bright);
 }
 
 .modal-content {
@@ -77,17 +77,17 @@
 	display: block;
 	margin-bottom: 0.5rem;
 	font-weight: 500;
-	color: var(--text-primary);
+	color: var(--text-bright);
 }
 
 .form-field textarea {
 	width: 100%;
 	padding: 0.75rem;
-	border: 1px solid var(--border-color);
+	border: 1px solid var(--card-border);
 	border-radius: 6px;
 	font-size: 1rem;
-	background-color: var(--background-color);
-	color: var(--text-primary);
+	background-color: var(--card-bg);
+	color: var(--text-bright);
 	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 	resize: vertical;
 	transition: border-color 0.2s ease;
@@ -104,8 +104,8 @@
 	gap: 1rem;
 	justify-content: flex-end;
 	padding: 1.5rem;
-	border-top: 1px solid var(--border-color);
-	background-color: var(--surface-color);
+	border-top: 1px solid var(--card-border);
+	background-color: var(--bg-secondary);
 }
 
 .btn {
@@ -128,9 +128,9 @@
 }
 
 .btn-secondary {
-	background-color: var(--surface-color);
-	color: var(--text-primary);
-	border: 1px solid var(--border-color);
+	background-color: var(--bg-secondary);
+	color: var(--text-bright);
+	border: 1px solid var(--card-border);
 }
 
 .btn-secondary:hover {

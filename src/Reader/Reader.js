@@ -5,6 +5,10 @@ import { Menu } from './components/Menu.js';
 import { List } from './components/List.js';
 import { ModalMetadataEdit } from './components/ModalMetadataEdit.js';
 import { Files } from './components/Files.js';
+import { DataView } from './components/DataView.js';
+import { renderError } from './components/Error.js';
+import { SelectFolder } from './components/SelectFolder.js';
+import { SelectFile } from './components/SelectFile.js';
 
 export class Reader {
 	constructor(controller) {
@@ -20,13 +24,15 @@ export class Reader {
 		this.list = new List(this);
 		this.modalMetadataEdit = new ModalMetadataEdit(this);
 		this.files = new Files(this);
+		this.dataView = new DataView(this);
+		this.selectFolder = new SelectFolder();
+		this.selectFile = new SelectFile();
 
 		this.render();
 	}
 
 	render() {
 		this.container.innerHTML = html`
-			${this.header.render()}
 			<div class="reader-content active">
 				<div class="reader-loading">
 					<div class="loading-spinner"></div>
@@ -38,200 +44,23 @@ export class Reader {
 		`;
 	}
 
-	showContent() {
-		// Hide header actions when showing splash screen
-		this.header.hideActions();
 
-		// Hide database actions when showing splash screen
-		this.menu.hideDatabaseActions();
-
-		const content = this.container.querySelector('.reader-content');
-		content.innerHTML = html`
-			<div class="splash-container">
-				<div class="splash-content">
-					<div class="splash-icon">
-						<svg
-							width="64"
-							height="64"
-							viewBox="0 0 24 24"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<!-- White-filled document for visibility on dark backgrounds -->
-							<path
-								d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-								fill="white"
-								stroke="#666666"
-								stroke-width="1.5"
-							/>
-							<!-- Folded corner -->
-							<polyline
-								points="14,2 14,8 20,8"
-								stroke="#666666"
-								stroke-width="1.5"
-								fill="none"
-							/>
-							<!-- Document content lines -->
-							<line
-								x1="16"
-								y1="13"
-								x2="8"
-								y2="13"
-								stroke="#666666"
-								stroke-width="1.5"
-							/>
-							<line
-								x1="16"
-								y1="17"
-								x2="8"
-								y2="17"
-								stroke="#666666"
-								stroke-width="1.5"
-							/>
-							<polyline
-								points="10,9 9,9 8,9"
-								stroke="#666666"
-								stroke-width="1.5"
-								fill="none"
-							/>
-						</svg>
-					</div>
-					<h2 class="splash-title">Welcome to Reader</h2>
-					<p class="splash-description">
-						Create or open a .smartText database file to get started
-						with your data management.
-					</p>
-					<div class="splash-actions">
-						<button
-							id="open-file-btn"
-							class="splash-btn primary"
-						>
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path
-									d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-								></path>
-								<polyline points="14,2 14,8 20,8"></polyline>
-							</svg>
-							Open Existing File
-						</button>
-						<button
-							id="create-file-btn"
-							class="splash-btn secondary"
-						>
-							<svg
-								width="20"
-								height="20"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<line
-									x1="12"
-									y1="5"
-									x2="12"
-									y2="19"
-								></line>
-								<line
-									x1="5"
-									y1="12"
-									x2="19"
-									y2="12"
-								></line>
-							</svg>
-							Create New File
-						</button>
-					</div>
-					<div class="splash-features">
-						<div class="feature">
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path
-									d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"
-								></path>
-								<rect
-									x="9"
-									y="11"
-									width="6"
-									height="11"
-								></rect>
-								<path d="M9 7h6v4H9z"></path>
-							</svg>
-							<span>Dynamic UI Generation</span>
-						</div>
-						<div class="feature">
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<rect
-									x="2"
-									y="3"
-									width="20"
-									height="14"
-									rx="2"
-									ry="2"
-								></rect>
-								<line
-									x1="8"
-									y1="21"
-									x2="16"
-									y2="21"
-								></line>
-								<line
-									x1="12"
-									y1="17"
-									x2="12"
-									y2="21"
-								></line>
-							</svg>
-							<span>SQLite Database</span>
-						</div>
-						<div class="feature">
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-							>
-								<path
-									d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
-								></path>
-								<polyline
-									points="3.27,6.96 12,12.01 20.73,6.96"
-								></polyline>
-								<line
-									x1="12"
-									y1="22.08"
-									x2="12"
-									y2="12"
-								></line>
-							</svg>
-							<span>Schema-Driven</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		`;
+	async showContent() {
+		// This method is now deprecated - use showSelectFile() instead
+		// Keeping for backward compatibility but should be replaced
+		// Get current file name from app controller if available
+		const currentFileName = window.appController?.currentFileName || '';
+		
+		// Try to get files from folder service
+		try {
+			const filesResult = await this.files.folderService.getFiles();
+			const folderName = await this.files.folderService.getFolderName();
+			const files = filesResult.files || [];
+			this.showSelectFile(files, folderName || '', currentFileName);
+		} catch (error) {
+			// If we can't get files, show empty list
+			this.showSelectFile([], '', currentFileName);
+		}
 	}
 
 	showLoadingState(message = 'Loading...') {
@@ -245,9 +74,8 @@ export class Reader {
 					</div>
 				`;
 			} else {
-				// Clear loading state - restore previous content
-				// This will be handled by the normal UI flow
-				content.innerHTML = '';
+				// Clear loading state - don't clear content, let the normal UI flow handle it
+				// The database state will be shown by showDatabaseState()
 			}
 		}
 	}
@@ -277,30 +105,34 @@ export class Reader {
 	showDynamicUI(schema, state) {
 		const content = this.container.querySelector('.reader-content');
 
+		// Insert header at the beginning of the container when database is loaded
+		const existingHeader = this.container.querySelector('.reader-header');
+		if (!existingHeader) {
+			// Create a temporary div to hold the header HTML
+			const tempDiv = document.createElement('div');
+			tempDiv.innerHTML = this.header.render();
+			const headerElement = tempDiv.firstElementChild;
+			this.container.insertBefore(headerElement, this.container.firstChild);
+		}
+
+		// Show header when database is loaded
+		this.header.show();
+
 		// Show header actions when database is loaded
 		this.header.showActions();
+		
+		// Show Add Item button if add control is enabled - use setTimeout to ensure DOM is ready
+		setTimeout(() => {
+			this.header.showAddItemButton();
+		}, 0);
 
 		// Show database actions when database is loaded
 		this.menu.showDatabaseActions();
 
-		// Generate UI based on schema type
-		let uiContent;
-		if (schema.type === 'list') {
-			uiContent = this.list.render(schema, state);
-		} else {
-			uiContent = html`<p>Unsupported schema type: ${schema.type}</p>`;
-		}
+		// Generate UI using DataView component
+		const uiContent = this.dataView.render(schema, state);
 
-		content.innerHTML = html`
-			<div class="dynamic-ui-pane">
-				<div
-					id="dynamic-ui-content"
-					class="dynamic-ui-content"
-				>
-					${uiContent}
-				</div>
-			</div>
-		`;
+		content.innerHTML = uiContent;
 	}
 
 	setFilter(fieldName, value) {
@@ -311,7 +143,14 @@ export class Reader {
 		this.controller.deselectRow();
 
 		if (this.currentSchema && this.currentState) {
+			// Re-render with new filter
 			this.showDynamicUI(this.currentSchema, this.currentState);
+			// Update filter icons and search placeholders
+			this.header.updateFilterIcons();
+			// Update title with current filter information
+			if (this.currentSchema.title) {
+				this.header.updateTitle(this.currentSchema.title);
+			}
 		}
 	}
 
@@ -321,9 +160,9 @@ export class Reader {
 
 		// Get the item to edit (either passed itemId or selected item)
 		const selectedItem = itemId
-			? this.list.getItemById(itemId)
+			? this.dataView.getItemById(itemId)
 			: this.controller.selectedRowId
-			? this.list.getItemById(this.controller.selectedRowId)
+			? this.dataView.getItemById(this.controller.selectedRowId)
 			: null;
 
 		// For add mode, we don't need an existing item
@@ -667,25 +506,18 @@ export class Reader {
 	}
 
 	selectRow(rowId) {
-		const row = this.container.querySelector(
-			`.grid-row[data-row-id="${rowId}"]`
-		);
-		if (row) {
-			this.clearRowSelection();
-			row.querySelectorAll('.grid-cell').forEach((cell) =>
-				cell.classList.add('row-selected')
-			);
-			// Show edit button if selectedEdit control is enabled
-			this.header.showSelectedEditButton();
-		}
+		// Delegate to DataView component
+		this.dataView.selectRow(rowId);
+		// Show edit button if selectedEdit control is enabled
+		this.header.showSelectedEditButton();
 	}
 
 	clearRowSelection() {
-		this.container
-			.querySelectorAll('.row-selected')
-			.forEach((cell) => cell.classList.remove('row-selected'));
+		// Delegate to DataView component
+		this.dataView.clearRowSelection();
 		// Hide edit button when selection is cleared
 		this.header.hideSelectedEditButton();
+		// Note: Add Item button stays visible as it's not dependent on selection
 	}
 
 	generateFieldInputForModal(field, selectedItem) {
@@ -781,97 +613,75 @@ export class Reader {
 		}
 	}
 
+
+
+
 	showDatabaseError(error) {
-		const content = this.container.querySelector('.reader-content');
-		if (content) {
-			content.innerHTML = html`
-				<div class="error-container">
-					<div class="error-icon">
-						<svg
-							width="48"
-							height="48"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<circle cx="12" cy="12" r="10" />
-							<line x1="15" y1="9" x2="9" y2="15" />
-							<line x1="9" y1="9" x2="15" y2="15" />
-						</svg>
-					</div>
-					<h3 class="error-title">Database Error</h3>
-					<p class="error-message">${error}</p>
-					<button
-						id="retry-btn"
-						class="action-btn primary"
-					>
-						Try Again
-					</button>
-				</div>
-			`;
+		// Show error as a modal overlay
+		console.log('showDatabaseError called with:', error);
+		const errorHTML = renderError({
+			type: 'database',
+			message: error,
+			retryButtonId: 'retry-btn'
+		});
+		
+		const tempDiv = document.createElement('div');
+		tempDiv.innerHTML = errorHTML;
+		const errorElement = tempDiv.firstElementChild;
+		this.container.appendChild(errorElement);
+		
+		// Add direct event listeners for the error modal
+		const closeBtn = errorElement.querySelector('#error-close-btn');
+		const dismissBtn = errorElement.querySelector('#error-dismiss-btn');
+		
+		if (closeBtn) {
+			closeBtn.addEventListener('click', () => this.hideError());
+		}
+		if (dismissBtn) {
+			dismissBtn.addEventListener('click', () => this.hideError());
 		}
 	}
 
-	showFileError(error, action) {
+	hideError() {
+		// Simply remove the error modal overlay
+		const errorOverlay = this.container.querySelector('#error-modal-overlay');
+		if (errorOverlay) {
+			errorOverlay.remove();
+		}
+	}
+
+	showSelectFolder() {
+		// Remove header completely when showing folder selection
+		const existingHeader = this.container.querySelector('.reader-header');
+		if (existingHeader) {
+			existingHeader.remove();
+		}
+
+		// Hide database actions when showing folder selection
+		this.menu.hideDatabaseActions();
+
 		const content = this.container.querySelector('.reader-content');
 		if (content) {
-			const actionText =
-				action === 'open'
-					? 'opening'
-					: action === 'create'
-					? 'creating'
-					: 'saving';
-			content.innerHTML = html`
-				<div class="error-container">
-					<div class="error-icon">
-						<svg
-							width="48"
-							height="48"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<circle
-								cx="12"
-								cy="12"
-								r="10"
-							/>
-							<line
-								x1="15"
-								y1="9"
-								x2="9"
-								y2="15"
-							/>
-							<line
-								x1="9"
-								y1="9"
-								x2="15"
-								y2="15"
-							/>
-						</svg>
-					</div>
-					<h3 class="error-title">File Error</h3>
-					<p class="error-message">
-						Error ${actionText} file: ${error}
-					</p>
-					<div class="error-actions">
-						<button
-							id="retry-file-btn"
-							class="action-btn primary"
-						>
-							Try Again
-						</button>
-						<button
-							id="back-to-splash-btn"
-							class="action-btn secondary"
-						>
-							Back to Home
-						</button>
-					</div>
-				</div>
-			`;
+			content.innerHTML = this.selectFolder.render();
+		}
+	}
+
+	showSelectFile(files = [], folderName = '', currentFileName = '') {
+		// Ensure files is always an array
+		const safeFiles = Array.isArray(files) ? files : [];
+		
+		// Remove main header when showing file selection
+		const existingHeader = this.container.querySelector('.reader-header');
+		if (existingHeader) {
+			existingHeader.remove();
+		}
+
+		// Hide database actions when showing file selection
+		this.menu.hideDatabaseActions();
+
+		const content = this.container.querySelector('.reader-content');
+		if (content) {
+			content.innerHTML = this.selectFile.render(safeFiles, folderName, currentFileName);
 		}
 	}
 

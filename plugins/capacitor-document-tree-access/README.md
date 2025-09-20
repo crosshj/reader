@@ -19,6 +19,7 @@ npx cap sync
 * [`writeFile(...)`](#writefile)
 * [`readFile(...)`](#readfile)
 * [`deleteFile(...)`](#deletefile)
+* [Interfaces](#interfaces)
 
 </docgen-index>
 
@@ -61,12 +62,12 @@ listFiles() => Promise<{ files: { name: string; uri: string; type?: string; size
 ### writeFile(...)
 
 ```typescript
-writeFile(options: { name: string; data: string; }) => Promise<void>
+writeFile(options: { name: string; data: ArrayBuffer; }) => Promise<void>
 ```
 
-| Param         | Type                                         |
-| ------------- | -------------------------------------------- |
-| **`options`** | <code>{ name: string; data: string; }</code> |
+| Param         | Type                                                                         |
+| ------------- | ---------------------------------------------------------------------------- |
+| **`options`** | <code>{ name: string; data: <a href="#arraybuffer">ArrayBuffer</a>; }</code> |
 
 --------------------
 
@@ -74,14 +75,14 @@ writeFile(options: { name: string; data: string; }) => Promise<void>
 ### readFile(...)
 
 ```typescript
-readFile(options: { name: string; }) => Promise<{ data: string; }>
+readFile(options: { name: string; }) => Promise<{ data: ArrayBuffer; }>
 ```
 
 | Param         | Type                           |
 | ------------- | ------------------------------ |
 | **`options`** | <code>{ name: string; }</code> |
 
-**Returns:** <code>Promise&lt;{ data: string; }&gt;</code>
+**Returns:** <code>Promise&lt;{ data: <a href="#arraybuffer">ArrayBuffer</a>; }&gt;</code>
 
 --------------------
 
@@ -97,5 +98,24 @@ deleteFile(options: { name: string; }) => Promise<void>
 | **`options`** | <code>{ name: string; }</code> |
 
 --------------------
+
+
+### Interfaces
+
+
+#### ArrayBuffer
+
+Represents a raw buffer of binary data, which is used to store data for the
+different typed arrays. ArrayBuffers cannot be read from or written to directly,
+but can be passed to a typed array or DataView Object to interpret the raw
+buffer as needed.
+
+| Prop             | Type                | Description                                                                     |
+| ---------------- | ------------------- | ------------------------------------------------------------------------------- |
+| **`byteLength`** | <code>number</code> | Read-only. The length of the <a href="#arraybuffer">ArrayBuffer</a> (in bytes). |
+
+| Method    | Signature                                                                  | Description                                                     |
+| --------- | -------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **slice** | (begin: number, end?: number) =&gt; <a href="#arraybuffer">ArrayBuffer</a> | Returns a section of an <a href="#arraybuffer">ArrayBuffer</a>. |
 
 </docgen-api>

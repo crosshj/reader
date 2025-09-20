@@ -7,7 +7,7 @@
 	--fg: #ffffff;
 	--accent: #666666;
 	--muted: 0.6;
-	--card-bg: #0a0a0a;
+	--card-bg: #111;
 	--card-border: #1a1a1a;
 	--text-muted: #888888;
 	--text-subtle: #666666;
@@ -16,6 +16,9 @@
 	--bg-secondary: #0d0d0d;
 	--bg-dark: #050505;
 	--accent-color: #666666;
+	--primary-color: #3b82f6;
+	--primary-hover: #2563eb;
+	--primary-light: rgba(59, 130, 246, 0.1);
 	--card-radius: 16px;
 	--card-padding: 1.25em 1.5em;
 	--card-gap: 1.5em;
@@ -154,6 +157,7 @@ body {
 	min-height: 400px;
 	padding: 2rem;
 	text-align: center;
+	width: 100%;
 }
 
 .loading-state .loading-spinner {

@@ -89,28 +89,22 @@ export class PersistenceService {
 	 * Close current file
 	 */
 	async closeFile() {
-		const result = await this.promptSaveOrDiscard();
-		if (result && !result.needsSave) {
-			// User chose to discard changes or no changes to save
-			// Clear in-memory state
-			this.currentFile = null;
-			this.hasUnsavedChanges = false;
-			this.isDirty = false;
-			this.savedFileName = null;
-			
-			// Clear persistence layer
-			localStorage.removeItem('persistedFileContent');
-			localStorage.removeItem('persistedFileName');
-			localStorage.removeItem('persistedFileTimestamp');
-			
-			// Return signal that splash screen should be shown
-			return { showSplash: true };
-		} else if (result && result.needsSave) {
-			// User chose to save - return signal that save is needed
-			return { needsSave: true };
-		}
-		// If no result, don't close
-		return { showSplash: false };
+		// Since we have automatic saving, no need to prompt user
+		// Just clear the state and close the file
+		
+		// Clear in-memory state
+		this.currentFile = null;
+		this.hasUnsavedChanges = false;
+		this.isDirty = false;
+		this.savedFileName = null;
+		
+		// Clear persistence layer
+		localStorage.removeItem('persistedFileContent');
+		localStorage.removeItem('persistedFileName');
+		localStorage.removeItem('persistedFileTimestamp');
+		
+		// Return signal that splash screen should be shown
+		return { showSplash: true };
 	}
 
 	/**

@@ -1,7 +1,9 @@
 import { DocumentTreeAccess } from 'capacitor-document-tree-access';
 
 export class FolderService {
-	constructor() {}
+	constructor() {
+		this.storedFolderName = null; // Store folder name for web compatibility
+	}
 
 	async getFiles() {
 		try {
@@ -22,6 +24,50 @@ export class FolderService {
 			return { files, error: null };
 		} catch (error) {
 			return { files: null, error: `Cannot access folder: ${error.message}` };
+		}
+	}
+
+	async getFolderName() {
+		try {
+			// For web, we need to use the stored folder name since the URI is virtual
+			if (this.storedFolderName) {
+				return this.storedFolderName;
+			}
+
+			const persistedResult = await DocumentTreeAccess.getPersistedUri();
+			if (!persistedResult.uri) {
+				return null;
+			}
+			
+			// Check if this is the web virtual URI
+			if (persistedResult.uri === 'virtual://web-dir') {
+				// For web, we can't get the real folder name from the URI
+				// Return a generic name or try to get it from localStorage
+				const storedName = localStorage.getItem('selectedFolderName');
+				return storedName || 'Selected Folder';
+			}
+			
+			// For native platforms, extract folder name from URI
+			const uri = persistedResult.uri;
+			console.log('Folder URI:', uri); // Debug log
+			
+			// Handle different URI formats
+			let folderName;
+			if (uri.includes('/')) {
+				const parts = uri.split('/');
+				folderName = parts[parts.length - 1];
+			} else {
+				folderName = uri;
+			}
+			
+			// Clean up the folder name (remove any file:// prefix or other artifacts)
+			folderName = folderName.replace(/^file:\/\//, '').replace(/\/$/, '');
+			
+			console.log('Extracted folder name:', folderName); // Debug log
+			return folderName || 'Database Files';
+		} catch (error) {
+			console.error('Error getting folder name:', error);
+			return 'Database Files';
 		}
 	}
 
@@ -50,7 +96,14 @@ export class FolderService {
 
 	async readFile(fileName) {
 		try {
+			console.log('Reading file:', fileName);
 			const result = await DocumentTreeAccess.readFile({ name: fileName });
+			console.log('Plugin result:', result);
+			console.log('Result type:', typeof result);
+			console.log('Result.data type:', typeof result.data);
+			console.log('Result.data instanceof ArrayBuffer:', result.data instanceof ArrayBuffer);
+			console.log('Result.data instanceof Uint8Array:', result.data instanceof Uint8Array);
+			console.log('Result.data constructor:', result.data?.constructor?.name);
 			return result.data;
 		} catch (error) {
 			console.error('Error reading file:', error);

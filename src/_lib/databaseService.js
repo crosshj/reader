@@ -1,4 +1,5 @@
 import initSqlJs from 'sql.js';
+import { dispatchEvent } from './utils.js';
 
 /**
  * Database Service
@@ -421,7 +422,7 @@ export class DatabaseService {
 	 * Create a barebones SQLite database with metadata and default tables
 	 * @returns {Promise<ArrayBuffer>} Database data as ArrayBuffer
 	 */
-	async createBarebonesDatabase() {
+	async createBarebonesDatabase(appController = null) {
 		// Initialize sql.js if not already done
 		if (!this.SQL) {
 				this.SQL = await initSqlJs({
@@ -449,10 +450,13 @@ export class DatabaseService {
 		// Insert default metadata
 		const defaultSchema = {
 			version: '1.0',
-			title: 'My Database',
+			title: 'Database',
 			type: 'list',
 			tableName: 'items',
-			fields: [
+            showHeaders: false,
+			// controls: ['add', 'selectedEdit'],
+            controls: ['add'],
+            fields: [
 				{
 					name: 'id',
 					displayName: 'ID',
@@ -472,21 +476,11 @@ export class DatabaseService {
 					type: 'enum',
 					options: ['Todo', 'Doing', 'Done'],
 					defaultValue: 'Todo',
+                    filterable: true,
 				},
-				{
-					name: 'created_at',
-					displayName: 'Created',
-					type: 'datetime',
-					readOnly: true,
-				},
-				{
-					name: 'modified_at',
-					displayName: 'Modified',
-					type: 'datetime',
-					readOnly: true,
-				},
+
 			],
-			controls: ['add', 'edit', 'delete', 'bulk-upsert'],
+
 		};
 
 		const stmt = db.prepare(
@@ -519,6 +513,21 @@ export class DatabaseService {
 		// Export database as ArrayBuffer
 		const dbData = db.export();
 		db.close();
+
+		// Set the current schema in the app state for the modal to use
+		// This ensures the modal can read the default values
+		if (appController) {
+			appController.currentSchema = defaultSchema;
+			
+			// Also dispatch an event to set the reader's currentSchema
+			// This ensures the modal can read the default values
+			dispatchEvent('db:state', {
+				action: 'schema_loaded',
+				state: {},
+				metadata: { schema: defaultSchema },
+				message: 'Default schema loaded'
+			});
+		}
 
 		return dbData.buffer;
 	}

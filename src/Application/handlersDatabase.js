@@ -41,8 +41,38 @@ export function getHandlers(appController) {
 		});
 	};
 
+	/**
+	 * Save current database to file system
+	 */
+	const saveDatabaseToFileSystem = async () => {
+		try {
+			// Get current file name
+			const fileName = appController.currentFileName || appController.persistenceService.getCurrentFileName();
+			if (!fileName) {
+				console.warn('No file name available for saving');
+				return;
+			}
+
+			// Export current database
+			const dbData = appController.databaseService.exportDatabase();
+			
+			// Save to folder service
+			await appController.folderService.writeFile(fileName, dbData);
+			
+			// Mark as saved in persistence service
+			appController.persistenceService.markAsSaved();
+			
+			console.log('Database saved to file system:', fileName);
+		} catch (error) {
+			console.error('Error saving database to file system:', error);
+		}
+	};
+
 	return {
 		async handleLoadFromFile(file) {
+		// Store the previous current file name before attempting to load
+		const previousFileName = appController.currentFileName;
+		
 		try {
 			const arrayBuffer = await file.arrayBuffer();
 			const dbInfo = await appController.databaseService.loadFromFile(arrayBuffer);
@@ -52,6 +82,9 @@ export function getHandlers(appController) {
 					schema: dbInfo.schema,
 					tables: dbInfo.tables,
 			});
+			
+			// Set current file name only if database loads successfully
+			appController.currentFileName = file.name;
 			
 			// Only notify persistence service if database loads successfully
 				appController.persistenceService.handleFileOpened(file);
@@ -64,11 +97,85 @@ export function getHandlers(appController) {
 		} catch (error) {
 			console.error('Error loading database:', error);
 			// Don't notify persistence service on error - file was not successfully opened
+			
+			// Provide user-friendly error message
+			const userMessage = 'Error loading database from file';
+			
+			dispatchEvent('db:state', {
+				action: 'error',
+				error: userMessage,
+				message: userMessage,
+			});
+			
+			// Restore the previous current file name since loading failed
+			appController.currentFileName = previousFileName;
+			
+			// Get files from current folder to show in noFile state
+			try {
+				const filesResult = await appController.folderService.getFiles();
+				const folderName = await appController.folderService.getFolderName();
+				
+				// Extract files array from the result object
+				const files = filesResult.files || [];
+				
+				// Dispatch app:state to show noFile with available files
+				dispatchEvent('app:state', {
+					state: 'noFile',
+					data: { 
+						files: files, 
+						folderName: folderName || '', 
+						currentFileName: appController.currentFileName || ''
+					}
+				});
+			} catch (folderError) {
+				// If we can't get files, still show noFile state but without files
+				dispatchEvent('app:state', {
+					state: 'noFile',
+					data: { files: [], folderName: '', currentFileName: appController.currentFileName || '' }
+				});
+			}
+		}
+		},
+
+		async handleLoadFromArrayBuffer(arrayBuffer) {
+			try {
+				const dbInfo = await appController.databaseService.loadFromFile(arrayBuffer);
+				
+				dispatchDbState('loaded', 'Database loaded successfully', null, {
+					version: dbInfo.version,
+					schema: dbInfo.schema,
+					tables: dbInfo.tables,
+				});
+				
+				// Don't notify persistence service - this is for temporary databases
+			} catch (error) {
+				console.error('Error loading database from ArrayBuffer:', error);
 				dispatchEvent('db:state', {
 					action: 'error',
 					error: error.message,
 					message: `Error: ${error.message}`,
 				});
+				
+				// Get files from current folder to show in noFile state
+				try {
+					const filesResult = await appController.folderService.getFiles();
+					const folderName = await appController.folderService.getFolderName();
+					
+					// Extract files array from the result object
+					const files = filesResult.files || [];
+					
+					// Dispatch app:state to show noFile with available files
+					dispatchEvent('app:state', {
+						state: 'noFile',
+						data: { files: files, folderName: folderName || '' }
+					});
+				} catch (folderError) {
+					// If we can't get files, still show noFile state but without files
+					dispatchEvent('app:state', {
+						state: 'noFile',
+						data: { files: [], folderName: '' }
+					});
+				}
 			}
 		},
 
@@ -112,6 +219,27 @@ export function getHandlers(appController) {
 					error: error.message,
 					message: `Error: ${error.message}`,
 				});
+				
+				// Get files from current folder to show in noFile state
+				try {
+					const filesResult = await appController.folderService.getFiles();
+					const folderName = await appController.folderService.getFolderName();
+					
+					// Extract files array from the result object
+					const files = filesResult.files || [];
+					
+					// Dispatch app:state to show noFile with available files
+					dispatchEvent('app:state', {
+						state: 'noFile',
+						data: { files: files, folderName: folderName || '' }
+					});
+				} catch (folderError) {
+					// If we can't get files, still show noFile state but without files
+					dispatchEvent('app:state', {
+						state: 'noFile',
+						data: { files: [], folderName: '' }
+					});
+				}
 			}
 		},
 
@@ -132,8 +260,8 @@ export function getHandlers(appController) {
 					data
 				);
 
-				// Note: Auto-save is now handled by the persistence service
-				// when db:state events are dispatched
+				// Save to file system immediately
+				await saveDatabaseToFileSystem();
 
 				dispatchDbState(
 					'item_inserted',
@@ -179,8 +307,8 @@ export function getHandlers(appController) {
 					finalWhereClause
 				);
 
-				// Note: Auto-save is now handled by the persistence service
-				// when db:state events are dispatched
+				// Save to file system immediately
+				await saveDatabaseToFileSystem();
 
 				dispatchDbState(
 					'item_updated',
@@ -220,8 +348,8 @@ export function getHandlers(appController) {
 					whereClause
 				);
 
-				// Note: Auto-save is now handled by the persistence service
-				// when db:state events are dispatched
+				// Save to file system immediately
+				await saveDatabaseToFileSystem();
 
 				dispatchDbState(
 					'item_deleted',
@@ -265,37 +393,18 @@ export function getHandlers(appController) {
 			const { metadata } = e.detail;
 
 			try {
-
-				// Save the file to persist changes
-				const dbData = appController.databaseService.exportDatabase();
-
-				// Verify the exported data contains migrated values
-				try {
-					// Convert ArrayBuffer to string first
-					const decoder = new TextDecoder();
-					const dbDataString = decoder.decode(dbData);
-
-					// Note: dbData is binary SQLite data, not JSON
-					// We can't parse it as JSON for verification
-					// const exportedDb = JSON.parse(dbDataString);
-					// if (exportedDb.tables && exportedDb.tables.items) {
-					// 	const items = exportedDb.tables.items;
-					// 	const statusCounts = {};
-					// 	items.forEach((item) => {
-					// 		statusCounts[item.status] =
-					// 			(statusCounts[item.status] || 0) + 1;
-					// 	});
-					// }
-				} catch (e) {
-				}
-
-				// Don't save to file system here - let persistence service handle it
-				// The persistence service will automatically update when db:state event fires
-
-				// Use the existing dispatchDbState function
+				// Update the database schema
+				await appController.databaseService.updateSchema(metadata);
+				
+				// Update app state
+				appController.currentSchema = metadata;
+				
+				// Save to file system
+				await saveDatabaseToFileSystem();
+				
 				dispatchDbState(
 					'metadata_updated',
-					'Database metadata updated successfully'
+					'Database metadata updated and saved successfully'
 				);
 			} catch (error) {
 				console.error('Error updating metadata:', error);
@@ -303,6 +412,54 @@ export function getHandlers(appController) {
 					action: 'error',
 					error: error.message,
 					message: `Error updating metadata: ${error.message}`,
+				});
+			}
+		},
+
+		async handleCreateNewFile(e) {
+			const { metadata } = e.detail;
+
+			try {
+				// Derive filename from database title
+				// Remove all non-alphanumeric characters (including spaces and punctuation)
+				const cleanTitle = metadata.title.replace(/[^a-zA-Z0-9]/g, '');
+				
+				// Fallback to 'Database' if title becomes empty after cleaning
+				const baseFileName = cleanTitle || 'Database';
+				
+				// Add .smartText extension
+				const fullFileName = `${baseFileName}.smartText`;
+
+				// Save the file to persist changes
+				const dbData = appController.databaseService.exportDatabase();
+
+				// Save new file to folder service
+				await appController.folderService.writeFile(fullFileName, dbData);
+				
+				// Set as current file in app state
+				appController.currentFileName = fullFileName;
+				
+				// Mark as saved and clear new file flag
+				appController.persistenceService.markAsSaved();
+				appController.persistenceService.setSavedFileName(fullFileName);
+				appController.isNewFile = false;
+				
+				// Clear loading state and transition to dynamic UI
+				dispatchEvent('app:state', { state: 'loading', message: '' });
+				
+				// Trigger database state to show the dynamic UI with current schema
+				dispatchDbState(
+					'file_created',
+					'New file created and saved successfully',
+					appController.currentState || {},
+					{ schema: appController.currentSchema }
+				);
+			} catch (error) {
+				console.error('Error creating new file:', error);
+				dispatchEvent('db:state', {
+					action: 'error',
+					error: error.message,
+					message: `Error creating new file: ${error.message}`,
 				});
 			}
 		},
@@ -316,9 +473,8 @@ export function getHandlers(appController) {
 					tableName
 				);
 
-				// Save the file to persist changes
-				// Note: Auto-save is now handled by the persistence service
-				// when db:state events are dispatched
+				// Save to file system immediately
+				await saveDatabaseToFileSystem();
 
 				dispatchDbState(
 					'bulk_upserted',
@@ -336,10 +492,10 @@ export function getHandlers(appController) {
 
 		async handleCleanupDatabase() {
 			try {
+				const cleanupResults = await appController.databaseService.cleanupDatabase();
 
-				// Auto-save after cleanup
-				// Note: Auto-save is now handled by the persistence service
-				// when db:state events are dispatched
+				// Save to file system immediately
+				await saveDatabaseToFileSystem();
 
 				dispatchDbState(
 					'cleanup',
@@ -357,9 +513,10 @@ export function getHandlers(appController) {
 
 		async handleRemoveUnusedTables() {
 			try {
+				const cleanupResults = await appController.databaseService.removeUnusedTables();
 
-				// Note: Auto-save is now handled by the persistence service
-				// when db:state events are dispatched
+				// Save to file system immediately
+				await saveDatabaseToFileSystem();
 
 				dispatchDbState('cleanup_tables', cleanupResults.message);
 			} catch (error) {

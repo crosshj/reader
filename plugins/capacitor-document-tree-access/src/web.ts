@@ -82,6 +82,12 @@ export class DocumentTreeAccessWeb extends WebPlugin implements DocumentTreeAcce
    */
   async pickFolder(): Promise<{ uri: string }> {
     this.dirHandle = await window.showDirectoryPicker();
+
+    // Store the folder name for later retrieval
+    if (this.dirHandle?.name) {
+      localStorage.setItem('selectedFolderName', this.dirHandle.name);
+    }
+
     await this.saveHandle();
     return { uri: 'virtual://web-dir' };
   }
@@ -127,7 +133,7 @@ export class DocumentTreeAccessWeb extends WebPlugin implements DocumentTreeAcce
    * @param options - The file name and data to write
    * @returns Promise<void>
    */
-  async writeFile({ name, data }: { name: string; data: string }): Promise<void> {
+  async writeFile({ name, data }: { name: string; data: ArrayBuffer }): Promise<void> {
     if (!this.dirHandle) await this.loadPersistedHandle();
     if (!this.dirHandle) throw this.unavailable('No directory picked');
 
@@ -140,16 +146,16 @@ export class DocumentTreeAccessWeb extends WebPlugin implements DocumentTreeAcce
   /**
    * Read data from a file in the selected folder
    * @param options - The file name to read
-   * @returns Promise<{ data: string }>
+   * @returns Promise<{ data: ArrayBuffer }>
    */
-  async readFile({ name }: { name: string }): Promise<{ data: string }> {
+  async readFile({ name }: { name: string }): Promise<{ data: ArrayBuffer }> {
     if (!this.dirHandle) await this.loadPersistedHandle();
     if (!this.dirHandle) throw this.unavailable('No directory picked');
 
     const handle = await this.dirHandle.getFileHandle(name);
     const file = await handle.getFile();
-    const text = await file.text();
-    return { data: text };
+    const arrayBuffer = await file.arrayBuffer();
+    return { data: arrayBuffer };
   }
 
   /**

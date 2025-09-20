@@ -21,6 +21,12 @@ export function initializeSafeAreas() {
  * Prioritizes Capacitor StatusBar plugin for accuracy
  */
 export function detectAndSetSafeAreas() {
+    // Skip safe area detection on desktop
+    if (window.innerWidth >= 1025) {
+        console.log('Desktop detected, skipping safe area detection');
+        return;
+    }
+
     let statusBarHeight = 0;
     let navBarHeight = 0;
     let leftInset = 0;

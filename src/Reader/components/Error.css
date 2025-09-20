@@ -1,107 +1,154 @@
 /* Error Component Styles */
 
-.error-container {
+.error-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
 	display: flex;
-	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	min-height: 100%;
-	padding: 2rem;
-	text-align: center;
+	z-index: 9999;
+	opacity: 1;
+	visibility: visible;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.error-modal-overlay.show {
+	opacity: 1;
+	visibility: visible;
+}
+
+.error-modal {
+	background-color: var(--card-bg);
+	border-radius: 12px;
+	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+	max-width: 500px;
+	width: 90%;
+	max-height: 90vh;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	transform: scale(0.9);
+	transition: transform 0.3s ease;
+}
+
+.error-modal-overlay.show .error-modal {
+	transform: scale(1);
 }
 
 .error-icon {
-	margin-bottom: 1.5rem;
-	color: var(--error-color, #ef4444);
-}
-
-.error-title {
-	font-size: 1.5rem;
-	font-weight: 600;
+	display: flex;
+	justify-content: center;
 	margin-bottom: 1rem;
-	color: var(--text-primary);
+	color: var(--error-color, #ef4444);
 }
 
 .error-message {
 	font-size: 1rem;
-	color: var(--text-secondary);
-	margin-bottom: 2rem;
+	color: var(--text-bright);
 	line-height: 1.6;
-	max-width: 500px;
+	text-align: center;
+	margin: 0;
 }
 
-.error-actions {
+.error-modal .modal-header {
 	display: flex;
-	gap: 1rem;
-	justify-content: center;
-	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1.5rem;
+	border-bottom: 1px solid var(--card-border);
 }
 
-.error-btn {
-	display: inline-flex;
+.error-modal .modal-header h3 {
+	margin: 0;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--text-bright);
+}
+
+.error-modal .close-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0.5rem;
+	border-radius: 6px;
+	color: var(--text-muted);
+	transition: all 0.2s ease;
+}
+
+.error-modal .close-btn:hover {
+	background-color: var(--accent);
+	color: var(--text-bright);
+}
+
+.error-modal .modal-content {
+	flex: 1;
+	overflow-y: auto;
+	padding: 1.5rem;
+	display: flex;
+	flex-direction: column;
 	align-items: center;
-	gap: 0.5rem;
+	text-align: center;
+}
+
+.error-modal .modal-actions {
+	display: flex;
+	justify-content: center;
+	padding: 1.5rem;
+	border-top: 1px solid var(--card-border);
+	background-color: var(--card-bg);
+}
+
+.error-modal .btn {
 	padding: 0.75rem 1.5rem;
 	border: none;
-	border-radius: 8px;
+	border-radius: 6px;
 	font-size: 1rem;
 	font-weight: 500;
 	cursor: pointer;
 	transition: all 0.2s ease;
-	text-decoration: none;
-	min-width: 120px;
 }
 
-.error-btn.primary {
+.error-modal .btn-primary {
 	background-color: var(--primary-color);
 	color: white;
 }
 
-.error-btn.primary:hover {
+.error-modal .btn-primary:hover {
 	background-color: var(--primary-hover);
-	transform: translateY(-1px);
 }
 
-.error-btn.primary:active {
-	transform: translateY(0);
+.error-modal .btn-secondary {
+	background-color: var(--bg-secondary);
+	color: var(--text-bright);
+	border: 1px solid var(--card-border);
 }
 
-.error-btn.secondary {
-	background-color: var(--surface-color);
-	color: var(--text-primary);
-	border: 1px solid var(--border-color);
-}
-
-.error-btn.secondary:hover {
-	background-color: var(--surface-hover);
-	transform: translateY(-1px);
-}
-
-.error-btn.secondary:active {
-	transform: translateY(0);
+.error-modal .btn-secondary:hover {
+	background-color: var(--accent);
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
-	.error-container {
+	.error-modal {
+		width: 95%;
+		margin: 1rem;
+	}
+	
+	.modal-header,
+	.modal-content,
+	.modal-actions {
 		padding: 1rem;
 	}
 	
-	.error-title {
-		font-size: 1.25rem;
-	}
-	
-	.error-message {
-		font-size: 0.9rem;
-	}
-	
-	.error-actions {
+	.modal-actions {
 		flex-direction: column;
-		align-items: center;
 	}
 	
-	.error-btn {
+	.btn {
 		width: 100%;
-		max-width: 200px;
 	}
 }

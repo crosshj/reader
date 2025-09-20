@@ -93,9 +93,13 @@ export class List {
 	}
 
 	updateSearchFilter() {
-		// Re-render to show current filtered results (enum + search filters)
+		// Re-render only the data view to show current filtered results (enum + search filters)
 		if (this.reader.currentSchema && this.reader.currentState) {
-			this.reader.showDynamicUI(this.reader.currentSchema, this.reader.currentState);
+			const uiContent = this.reader.dataView.render(this.reader.currentSchema, this.reader.currentState);
+			const content = this.reader.container.querySelector('.reader-content');
+			if (content) {
+				content.innerHTML = uiContent;
+			}
 		}
 	}
 
@@ -197,10 +201,9 @@ export class List {
 		const showHeaders = schema.showHeaders !== false;
 
 		// Check if any controls will actually be rendered
-		const hasAddControl = schema.controls?.includes('add');
 		const hasBulkUpsertControl =
 			schema.controls?.includes('bulk-upsert') && items.length > 0;
-		const hasAnyControls = hasAddControl || hasBulkUpsertControl;
+		const hasAnyControls = hasBulkUpsertControl;
 
 		// Get fields that should be hidden because they're filtered to a specific value
 		const hiddenFields = this.getHiddenFieldsForFiltering(schema);
@@ -220,16 +223,6 @@ export class List {
 				${hasAnyControls
 					? html`
 							<div class="list-controls">
-								${hasAddControl
-									? html`
-											<button
-												id="add-item-btn"
-												class="action-btn primary"
-											>
-												Add Item
-											</button>
-									  `
-									: ''}
 								${hasBulkUpsertControl
 									? html`
 											<button

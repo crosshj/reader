@@ -66,13 +66,14 @@
 }
 
 .files-splash-btn.primary {
-	background: var(--accent);
-	color: var(--bg);
+	background: var(--primary-color);
+	color: white;
+	border-color: var(--primary-color);
 }
 
 .files-splash-btn.primary:hover {
-	background: var(--text-bright);
-	color: var(--bg);
+	background: var(--primary-hover);
+	border-color: var(--primary-hover);
 }
 
 .files-content {
@@ -113,6 +114,7 @@
 	flex: 1;
 	overflow-y: auto;
 	width: 100%;
+	min-height: 100%;
 }
 
 .files-header {

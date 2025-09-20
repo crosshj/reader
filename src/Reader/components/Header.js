@@ -176,17 +176,31 @@ export class Header {
 			titleElement.textContent = displayTitle;
 		}
 
+		// Update sidebar header title
+		const sidebarTitle = this.reader.container.querySelector('.sidebar-header h3');
+		if (sidebarTitle) {
+			sidebarTitle.textContent = title;
+		}
+
 		// Update mobile search placeholder
 		const searchInput = this.reader.container.querySelector('#search-input');
 		if (searchInput) {
 			const activeFilter = this.getActiveFilterDisplay();
 			const searchPlaceholder = activeFilter
-				? `Search ${title} | ${activeFilter}`
-				: `Search ${title}`;
+				? `Search in ${title} | ${activeFilter}`
+				: `Search in ${title} All`;
 			searchInput.placeholder = searchPlaceholder;
 		}
 
-		// Desktop search placeholder stays as "Search" - no need to update
+		// Update desktop search placeholder
+		const desktopSearchInput = this.reader.container.querySelector('#search-input-desktop');
+		if (desktopSearchInput) {
+			const activeFilter = this.getActiveFilterDisplay();
+			const searchPlaceholder = activeFilter
+				? `Search in ${activeFilter}`
+				: `Search in All`;
+			desktopSearchInput.placeholder = searchPlaceholder;
+		}
 	}
 
 	showActions() {
@@ -195,10 +209,33 @@ export class Header {
 
 		// Add the right side actions to desktop header
 		const desktopHeader = header.querySelector('.header-desktop');
-		if (desktopHeader && !desktopHeader.querySelector('.header-right')) {
+		if (desktopHeader) {
+			// Remove existing header-right if it exists to ensure fresh creation
+			const existingRightSide = desktopHeader.querySelector('.header-right');
+			if (existingRightSide) {
+				existingRightSide.remove();
+			}
 			const rightSide = document.createElement('div');
 			rightSide.className = 'header-right';
 			rightSide.innerHTML = html`
+				<button
+					id="add-item-btn"
+					class="add-item-btn"
+					style="display: none;"
+					title="Add New Item"
+				>
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<line x1="12" y1="5" x2="12" y2="19"></line>
+						<line x1="5" y1="12" x2="19" y2="12"></line>
+					</svg>
+				</button>
 				<button
 					id="selected-edit-btn"
 					class="selected-edit-btn"
@@ -218,7 +255,7 @@ export class Header {
 						></path>
 						<path
 							d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-						></path>
+						</path>
 					</svg>
 				</button>
 				<div
@@ -233,10 +270,33 @@ export class Header {
 
 		// Add the right side actions to mobile header
 		const mobileHeader = header.querySelector('.header-mobile');
-		if (mobileHeader && !mobileHeader.querySelector('.header-right')) {
+		if (mobileHeader) {
+			// Remove existing header-right if it exists to ensure fresh creation
+			const existingRightSide = mobileHeader.querySelector('.header-right');
+			if (existingRightSide) {
+				existingRightSide.remove();
+			}
 			const rightSide = document.createElement('div');
 			rightSide.className = 'header-right';
 			rightSide.innerHTML = html`
+				<button
+					id="add-item-btn-mobile"
+					class="add-item-btn"
+					style="display: none;"
+					title="Add New Item"
+				>
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<line x1="12" y1="5" x2="12" y2="19"></line>
+						<line x1="5" y1="12" x2="19" y2="12"></line>
+					</svg>
+				</button>
 				<button
 					id="selected-edit-btn-mobile"
 					class="selected-edit-btn"
@@ -299,9 +359,19 @@ export class Header {
 		if (searchInput) {
 			const activeFilter = this.getActiveFilterDisplay();
 			const searchPlaceholder = activeFilter
-				? `Search ${this.reader.currentSchema?.title || 'Reader'} | ${activeFilter}`
-				: `Search ${this.reader.currentSchema?.title || 'Reader'}`;
+				? `Search in ${this.reader.currentSchema?.title || 'Reader'} | ${activeFilter}`
+				: `Search in ${this.reader.currentSchema?.title || 'Reader'} All`;
 			searchInput.placeholder = searchPlaceholder;
+		}
+
+		// Update desktop search placeholder
+		const desktopSearchInput = this.reader.container.querySelector('#search-input-desktop');
+		if (desktopSearchInput) {
+			const activeFilter = this.getActiveFilterDisplay();
+			const searchPlaceholder = activeFilter
+				? `Search in ${activeFilter}`
+				: `Search in All`;
+			desktopSearchInput.placeholder = searchPlaceholder;
 		}
 
 		// Get filterable enum fields
@@ -362,6 +432,32 @@ export class Header {
 		}
 	}
 
+	showAddItemButton() {
+		const desktopAddBtn = this.reader.container.querySelector('#add-item-btn');
+		const mobileAddBtn = this.reader.container.querySelector('#add-item-btn-mobile');
+		
+		if (this.reader.currentSchema?.controls?.includes('add')) {
+			if (desktopAddBtn) {
+				desktopAddBtn.style.display = 'flex';
+			}
+			if (mobileAddBtn) {
+				mobileAddBtn.style.display = 'flex';
+			}
+		}
+	}
+
+	hideAddItemButton() {
+		const desktopAddBtn = this.reader.container.querySelector('#add-item-btn');
+		const mobileAddBtn = this.reader.container.querySelector('#add-item-btn-mobile');
+		
+		if (desktopAddBtn) {
+			desktopAddBtn.style.display = 'none';
+		}
+		if (mobileAddBtn) {
+			mobileAddBtn.style.display = 'none';
+		}
+	}
+
 	showSelectedEditButton() {
 		const desktopEditBtn = this.reader.container.querySelector('#selected-edit-btn');
 		const mobileEditBtn = this.reader.container.querySelector('#selected-edit-btn-mobile');
@@ -369,9 +465,19 @@ export class Header {
 		if (this.reader.currentSchema?.controls?.includes('selected-edit')) {
 			if (desktopEditBtn) {
 				desktopEditBtn.style.display = 'flex';
+				// Move to first position
+				const desktopHeaderRight = this.reader.container.querySelector('.header-desktop .header-right');
+				if (desktopHeaderRight) {
+					desktopHeaderRight.insertBefore(desktopEditBtn, desktopHeaderRight.firstChild);
+				}
 			}
 			if (mobileEditBtn) {
 				mobileEditBtn.style.display = 'flex';
+				// Move to first position
+				const mobileHeaderRight = this.reader.container.querySelector('.header-mobile .header-right');
+				if (mobileHeaderRight) {
+					mobileHeaderRight.insertBefore(mobileEditBtn, mobileHeaderRight.firstChild);
+				}
 			}
 		}
 	}
@@ -582,18 +688,42 @@ export class Header {
 		// Restore placeholders when clearing
 		const activeFilter = this.getActiveFilterDisplay();
 		const mobileSearchPlaceholder = activeFilter
-			? `Search ${this.reader.currentSchema?.title || 'Reader'} | ${activeFilter}`
-			: `Search ${this.reader.currentSchema?.title || 'Reader'}`;
+			? `Search in ${this.reader.currentSchema?.title || 'Reader'} | ${activeFilter}`
+			: `Search in ${this.reader.currentSchema?.title || 'Reader'} All`;
+		const desktopSearchPlaceholder = activeFilter
+			? `Search in ${activeFilter}`
+			: `Search in All`;
 		
 		if (searchInput) {
 			searchInput.placeholder = mobileSearchPlaceholder;
 		}
-		// Desktop search has no placeholder
+		if (desktopSearchInput) {
+			desktopSearchInput.placeholder = desktopSearchPlaceholder;
+		}
 		
 		this.updateClearButtonVisibility();
 		// Trigger list refresh without search filter
 		if (this.reader.currentSchema && this.reader.currentState) {
-			this.reader.showDynamicUI(this.reader.currentSchema, this.reader.currentState);
+			// Just refresh the data view, don't recreate the entire UI
+			const uiContent = this.reader.dataView.render(this.reader.currentSchema, this.reader.currentState);
+			const content = this.reader.container.querySelector('.reader-content');
+			if (content) {
+				content.innerHTML = uiContent;
+			}
+		}
+	}
+
+	show() {
+		const header = this.reader.container.querySelector('.reader-header');
+		if (header) {
+			header.style.display = 'block';
+		}
+	}
+
+	hide() {
+		const header = this.reader.container.querySelector('.reader-header');
+		if (header) {
+			header.style.display = 'none';
 		}
 	}
 
@@ -640,8 +770,8 @@ export class Header {
 				if (!searchInput.value.trim()) {
 					const activeFilter = this.getActiveFilterDisplay();
 					const searchPlaceholder = activeFilter
-						? `Search ${this.reader.currentSchema?.title || 'Reader'} | ${activeFilter}`
-						: `Search ${this.reader.currentSchema?.title || 'Reader'}`;
+						? `Search in ${this.reader.currentSchema?.title || 'Reader'} | ${activeFilter}`
+						: `Search in ${this.reader.currentSchema?.title || 'Reader'} All`;
 					searchInput.placeholder = searchPlaceholder;
 				}
 			});
@@ -660,7 +790,13 @@ export class Header {
 			});
 
 			desktopSearchInput.addEventListener('blur', () => {
-				// No placeholder restoration for desktop
+				if (!desktopSearchInput.value.trim()) {
+					const activeFilter = this.getActiveFilterDisplay();
+					const searchPlaceholder = activeFilter
+						? `Search in ${activeFilter}`
+						: `Search in All`;
+					desktopSearchInput.placeholder = searchPlaceholder;
+				}
 			});
 		}
 

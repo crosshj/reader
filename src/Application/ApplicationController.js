@@ -3,6 +3,7 @@ import { FileService } from '../_lib/fileService.js';
 import { DatabaseService } from '../_lib/databaseService.js';
 import { CapacitorService } from '../_lib/capacitorService.js';
 import { PersistenceService } from '../_lib/persistenceService.js';
+import { FolderService } from '../_lib/folderService.js';
 import { getHandlers as getFileHandlers } from './handlersFiles.js';
 import { getHandlers as getDatabaseHandlers } from './handlersDatabase.js';
 
@@ -12,10 +13,13 @@ export class ApplicationController {
 		this.databaseService = new DatabaseService();
 		this.capacitorService = new CapacitorService();
 		this.persistenceService = new PersistenceService(this.databaseService);
+		this.folderService = new FolderService();
 		this.fileHandlers = getFileHandlers(this);
 		this.databaseHandlers = getDatabaseHandlers(this);
 		this.currentState = null;
 		this.currentSchema = null;
+		this.currentFileName = null;
+		this.isNewFile = false;
 		this.setupEventListeners();
 	}
 
@@ -26,8 +30,6 @@ export class ApplicationController {
 		// File operation event handlers
 		addEventListener('ui:openFile', this.fileHandlers.handleOpenFile);
 		addEventListener('ui:createFile', this.fileHandlers.handleCreateFile);
-		addEventListener('ui:saveFile', this.fileHandlers.handleSaveFile);
-		addEventListener('ui:closeFile', this.handleCloseFile.bind(this));
 
 		// Database operation event handlers
 		addEventListener(
@@ -47,6 +49,10 @@ export class ApplicationController {
 			this.databaseHandlers.handleUpdateMetadata
 		);
 		addEventListener(
+			'ui:createNewFile',
+			this.databaseHandlers.handleCreateNewFile
+		);
+		addEventListener(
 			'ui:bulkUpsert',
 			this.databaseHandlers.handleBulkUpsert
 		);
@@ -54,6 +60,11 @@ export class ApplicationController {
 			'ui:executeQuery',
 			this.databaseHandlers.handleExecuteQuery
 		);
+
+		// Folder operation event handlers
+		addEventListener('ui:selectFolder', this.handleSelectFolder.bind(this));
+		addEventListener('ui:getFiles', this.handleGetFiles.bind(this));
+		addEventListener('ui:openFileFromFolder', this.handleOpenFileFromFolder.bind(this));
 
 		// Track database state for UI restoration
 		addEventListener('db:state', (e) => {
@@ -104,29 +115,58 @@ export class ApplicationController {
 		};
 	}
 
-	/**
-	 * Handle close file request
-	 */
-	async handleCloseFile() {
-		const result = await this.persistenceService.closeFile();
-		if (result && result.showSplash) {
-			// Dispatch event to show splash screen
-			dispatchEvent('app:state', { state: 'splash' });
-		} else if (result && result.needsSave) {
-			// Dispatch event to save file first
-			dispatchEvent('ui:saveFile');
-		}
-	}
 
 	/**
 	 * Handle reader ready event - restore file after UI is ready
 	 */
 	async onReaderReady() {
-		await this.tryRestoreLastFile();
+		// First try to restore a file
+		const fileRestored = await this.tryRestoreLastFile();
+		
+		// If no file was restored, check folder state
+		if (!fileRestored) {
+			await this.checkFolderState();
+		}
+	}
+
+	/**
+	 * Check the current folder state and dispatch appropriate app state
+	 */
+	async checkFolderState() {
+		try {
+			const result = await this.folderService.getFiles();
+			
+			if (result.error === 'no folder selected') {
+				dispatchEvent('app:state', { state: 'noFolder' });
+				return;
+			} else if (result.error) {
+				dispatchEvent('app:state', { 
+					state: 'fileError', 
+					error: result.error,
+					data: { action: 'checking folder' }
+				});
+				return;
+			}
+
+			// Folder exists, show file selection
+			const files = result.files || [];
+			const folderName = await this.folderService.getFolderName();
+			dispatchEvent('app:state', { 
+				state: 'noFile',
+				data: { files: files, folderName: folderName }
+			});
+		} catch (error) {
+			dispatchEvent('app:state', { 
+				state: 'fileError', 
+				error: error.message,
+				data: { action: 'checking folder' }
+			});
+		}
 	}
 
 	/**
 	 * Try to restore the last opened file
+	 * @returns {Promise<boolean>} True if a file was restored, false otherwise
 	 */
 	async tryRestoreLastFile() {
 		// Try to restore from app storage first (works on all platforms)
@@ -134,20 +174,20 @@ export class ApplicationController {
 		if (restored && restored.success) {
 			// Handle the restored file using the file handler
 			await this.fileHandlers.handleOpenFile({ detail: { file: restored.file } });
-			return;
+			return true;
 		}
 
 		// Fallback to web file handle restoration (web only)
 		const platform = this.capacitorService.getPlatform();
 		
 		if (platform !== 'web') {
-			return;
+			return false;
 		}
 
 		try {
 			const serialized = localStorage.getItem('lastFileHandle');
 			if (!serialized) {
-				return;
+				return false;
 			}
 
 			const handleData = JSON.parse(serialized);
@@ -163,9 +203,126 @@ export class ApplicationController {
 			
 			// Dispatch file open event to load the file
 			dispatchEvent('ui:openFile', { file });
+			return true;
 		} catch (error) {
 			// Clear invalid handle
 			localStorage.removeItem('lastFileHandle');
+			return false;
+		}
+	}
+
+	/**
+	 * Handle folder selection
+	 */
+	async handleSelectFolder() {
+		try {
+			dispatchEvent('app:state', { state: 'loading', message: 'Loading folder...' });
+			
+			const result = await this.folderService.selectFolder();
+			
+			if (result.success) {
+				// Folder selected successfully - now check for files and saved file
+				await this.checkFolderState();
+			} else {
+				// Folder selection was canceled - go back to noFile state with current folder data
+				try {
+					const filesResult = await this.folderService.getFiles();
+					const folderName = await this.folderService.getFolderName();
+					
+					// Extract files array from the result object
+					const files = filesResult.files || [];
+					
+					dispatchEvent('app:state', {
+						state: 'noFile',
+						data: { files: files, folderName: folderName || '', currentFileName: this.currentFileName || '' }
+					});
+				} catch (error) {
+					// If we can't get files, show noFile state without files
+					dispatchEvent('app:state', {
+						state: 'noFile',
+						data: { files: [], folderName: '', currentFileName: this.currentFileName || '' }
+					});
+				}
+			}
+		} catch (error) {
+			dispatchEvent('app:state', { 
+				state: 'fileError', 
+				error: error.message,
+				data: { action: 'selecting folder' }
+			});
+		}
+	}
+
+	/**
+	 * Handle getting files from selected folder
+	 */
+	async handleGetFiles() {
+		try {
+			dispatchEvent('app:state', { state: 'loading', message: 'Loading files...' });
+			
+			const result = await this.folderService.getFiles();
+			
+			if (result.error) {
+				if (result.error === 'no folder selected') {
+					dispatchEvent('app:state', { state: 'noFolder' });
+				} else {
+					dispatchEvent('app:state', { 
+						state: 'fileError', 
+						error: result.error,
+						data: { action: 'loading files' }
+					});
+				}
+		} else {
+			const folderName = await this.folderService.getFolderName();
+			dispatchEvent('app:state', { 
+				state: 'noFile',
+				data: { files: result.files, folderName: folderName, currentFileName: this.currentFileName || '' }
+			});
+		}
+		} catch (error) {
+			dispatchEvent('app:state', { 
+				state: 'fileError', 
+				error: error.message,
+				data: { action: 'loading files' }
+			});
+		}
+	}
+
+	/**
+	 * Handle opening a file from the folder (SelectFile component)
+	 */
+	async handleOpenFileFromFolder(event) {
+		try {
+			const { fileName } = event.detail;
+			if (!fileName) {
+				throw new Error('No file name provided');
+			}
+
+			dispatchEvent('app:state', { state: 'loading', message: 'Opening file...' });
+			
+		// Read the file from the folder
+		const fileData = await this.folderService.readFile(fileName);
+		console.log('File data type:', typeof fileData, 'Is ArrayBuffer:', fileData instanceof ArrayBuffer);
+		
+		// The plugin should now return ArrayBuffer directly
+		const arrayBufferData = fileData;
+		
+		// Create a file-like object that the file handler expects
+		const file = {
+			name: fileName,
+			type: 'application/octet-stream',
+			arrayBuffer: async () => arrayBufferData
+		};
+		
+		// Load the file using the existing file handler
+		await this.fileHandlers.handleOpenFile({ detail: { file } });
+		} catch (error) {
+			console.error('Error opening file from folder:', error);
+			dispatchEvent('app:state', { 
+				state: 'fileError', 
+				error: error.message,
+				data: { action: 'opening file' }
+			});
 		}
 	}
 }

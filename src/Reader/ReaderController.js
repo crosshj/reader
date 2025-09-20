@@ -21,18 +21,18 @@ export class ReaderController {
 			'#hamburger-menu-desktop': () => this.ui.menu.toggleHamburgerMenu(),
 			'#menu-open-file': this.handleMenuOpenFile,
 			'#menu-create-file': this.handleMenuCreateFile,
-			'#menu-experiment': () => this.ui.showFilesPane(),
 			'#close-files-pane': () => this.ui.showReaderPane(),
 			'#select-folder-btn': () => this.ui.files.handleSelectFolder(),
 			'#select-new-folder-btn': () => this.ui.files.handleSelectFolder(),
+			'#change-folder-btn': () => dispatchEvent('ui:selectFolder'),
+			'#cancel-folder-btn': () => this.handleCancelFolderSelect(),
 			'#retry-files-btn': () => this.ui.files.handleRetryFiles(),
 			'#create-file-btn': () => this.ui.files.handleCreateFile(),
 			'#open-file-btn': () => dispatchEvent('ui:openFile'),
-			'#menu-edit-metadata': () => this.ui.modalMetadataEdit.show(),
-			'#menu-save-file': this.handleMenuSaveFile,
-			'#menu-close-file': this.handleMenuCloseFile,
+			'#menu-edit-metadata': () => this.ui.modalMetadataEdit.show(false),
 			'#menu-execute-query': () => this.ui.showQueryModal(),
 			'#add-item-btn': () => this.ui.showAddForm(),
+			'#add-item-btn-mobile': () => this.ui.showAddForm(),
 			'.edit-btn': (e) => this.ui.showEditForm(e.target.dataset.id),
 			'.delete-btn': (e) =>
 				this.ui.handleDeleteClick(e.target.dataset.id),
@@ -49,10 +49,13 @@ export class ReaderController {
 				this.ui.hideBulkUpsertModal(),
 			'#close-query-modal, #cancel-query': () =>
 				this.ui.hideQueryModal(),
+			'#error-close-btn': () => this.ui.hideError(),
+			'#error-dismiss-btn': () => this.ui.hideError(),
 			'#execute-query': () => this.handleExecuteQuery(this.ui),
-			'#retry-btn': () => this.ui.showContent(),
-			'#retry-file-btn': () => this.ui.showContent(),
-			'#back-to-splash-btn': () => this.ui.showContent(),
+			'#select-folder-btn': () => dispatchEvent('ui:selectFolder'),
+			'#open-file-btn': () => dispatchEvent('ui:openFile'),
+			'#create-file-btn': () => dispatchEvent('ui:createFile'),
+			'.file-item': (e) => this.handleFileItemClick(e),
 			'.sidebar-overlay': () => this.ui.menu.hideHamburgerMenu(),
 			'.grid-row': (e) => {
 				if (e.target.matches('.action-btn')) return;
@@ -95,13 +98,16 @@ export class ReaderController {
 					this.ui.showLoadingState(message || 'Loading...');
 					break;
 				case 'fileError':
-					this.ui.showFileError(error, data?.action);
+					// Handle file errors by showing noFile state
+					this.ui.showSelectFile(data?.files || [], data?.folderName || '', data?.currentFileName || '');
 					break;
 				case 'noFolder':
-					// Will be handled by new component
+					this.ui.showSelectFolder();
 					break;
 				case 'noFile':
-					// Will be handled by new component
+					// Clear loading state first
+					dispatchEvent('app:state', { state: 'loading', message: '' });
+					this.ui.showSelectFile(data?.files || [], data?.folderName || '', data?.currentFileName || '');
 					break;
 				default:
 					console.warn('Unknown app state:', state);
@@ -115,8 +121,17 @@ export class ReaderController {
 			if (error) {
 				this.ui.showDatabaseError(error);
 			} else {
+				// Clear loading state when database is successfully loaded
+				if (action === 'loaded' || action === 'file_opened' || action === 'file_created') {
+					dispatchEvent('app:state', { state: 'loading', message: '' });
+				}
 				this.ui.showDatabaseState({ action, state, metadata, message });
 			}
+		});
+
+		addEventListener('ui:showMetadataEdit', (e) => {
+			const isNewFile = e.detail?.isNewFile || false;
+			this.ui.modalMetadataEdit.show(isNewFile);
 		});
 	}
 
@@ -141,6 +156,10 @@ export class ReaderController {
 
 	dispatchUpdateMetadata(metadata) {
 		dispatchEvent('ui:updateMetadata', { metadata });
+	}
+
+	dispatchCreateNewFile(metadata) {
+		dispatchEvent('ui:createNewFile', { metadata });
 	}
 
 	dispatchBulkUpsert(items) {
@@ -171,7 +190,7 @@ export class ReaderController {
 	// Menu handlers that coordinate UI + events
 	handleMenuOpenFile = () => {
 		this.ui.menu.hideHamburgerMenu();
-		dispatchEvent('ui:openFile');
+		dispatchEvent('ui:getFiles');
 	};
 
 	handleMenuCreateFile = () => {
@@ -179,15 +198,6 @@ export class ReaderController {
 		dispatchEvent('ui:createFile');
 	};
 
-	handleMenuSaveFile = () => {
-		this.ui.menu.hideHamburgerMenu();
-		dispatchEvent('ui:saveFile');
-	};
-
-	handleMenuCloseFile = () => {
-		this.ui.menu.hideHamburgerMenu();
-		dispatchEvent('ui:closeFile');
-	};
 
 	/**
 	 * Handle execute query button click
@@ -209,6 +219,33 @@ export class ReaderController {
 	}
 
 	/**
+	 * Handle file item click in SelectFile component
+	 */
+	handleFileItemClick(e) {
+		const fileItem = e.target.closest('.file-item');
+		if (!fileItem) return;
+
+		// Check if it's the change folder item
+		if (fileItem.classList.contains('change-folder-item')) {
+			dispatchEvent('ui:selectFolder');
+			return;
+		}
+
+		// Check if it's the create file item
+		if (fileItem.classList.contains('create-file-item')) {
+			dispatchEvent('ui:createFile');
+			return;
+		}
+
+		// Get the file name from data attribute
+		const fileName = fileItem.dataset.fileName;
+		if (!fileName) return;
+
+		// Dispatch event to open the file
+		dispatchEvent('ui:openFileFromFolder', { fileName });
+	}
+
+	/**
 	 * Handle reader ready event - check if there's a file to restore before showing splash
 	 */
 	handleReaderReady() {
@@ -222,4 +259,28 @@ export class ReaderController {
 			this.ui.showContent();
 		}
 	}
+
+	async handleCancelFolderSelect() {
+		// When canceling folder selection, go back to noFile state with current folder data
+		try {
+			const filesResult = await this.ui.files.folderService.getFiles();
+			const folderName = await this.ui.files.folderService.getFolderName();
+			
+			// Extract files array from the result object
+			const files = filesResult.files || [];
+			
+			// Dispatch app:state to show noFile with available files
+			dispatchEvent('app:state', {
+				state: 'noFile',
+				data: { files: files, folderName: folderName || '', currentFileName: '' }
+			});
+		} catch (error) {
+			// If we can't get files, show noFile state without files
+			dispatchEvent('app:state', {
+				state: 'noFile',
+				data: { files: [], folderName: '', currentFileName: '' }
+			});
+		}
+	}
+
 }
