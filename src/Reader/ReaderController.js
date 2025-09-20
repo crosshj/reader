@@ -2,6 +2,7 @@ import {
 	dispatchEvent,
 	addEventListener,
 	setupEventUtilities,
+	isMobile,
 } from '../_lib/utils.js';
 import { Reader } from './Reader.js';
 
@@ -173,6 +174,11 @@ export class ReaderController {
 		// Set new selection
 		this.selectedRowId = rowId;
 		this.ui.selectRow(rowId);
+
+		// On mobile, show edit modal immediately when row is selected
+		if (isMobile() && this.ui.currentSchema?.controls?.includes('selected-edit')) {
+			this.ui.showSelectedEditModal(rowId);
+		}
 
 		// Fire selection event
 		dispatchEvent('reader:itemSelected', {

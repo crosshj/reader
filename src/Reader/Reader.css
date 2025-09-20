@@ -1069,6 +1069,99 @@
 	.grid-cell {
 		padding: 0.375rem 0.5rem !important;
 	}
+
+	/* Mobile modal actions - place cancel and save buttons next to each other */
+	.selected-edit-modal .modal-actions {
+		flex-direction: row;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		padding: 1rem;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.selected-edit-modal .modal-actions .btn {
+		flex: 0 0 auto;
+		min-width: 60px;
+		max-width: 120px;
+		padding: 0.5rem 1rem;
+		font-size: 0.9rem;
+	}
+
+	/* Mobile metadata modal actions - place cancel and save buttons next to each other */
+	.metadata-modal .modal-actions {
+		flex-direction: row;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		padding: 1rem;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.metadata-modal .modal-actions .btn {
+		flex: 0 0 auto;
+		min-width: 60px;
+		max-width: 120px;
+		padding: 0.5rem 1rem;
+		font-size: 0.9rem;
+	}
+
+	/* Remove mobile tap highlight and prevent bright flash */
+	.grid-row {
+		-webkit-tap-highlight-color: transparent;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+
+	.grid-row:active {
+		background: transparent !important;
+	}
+
+	.grid-row:active .grid-cell {
+		background: transparent !important;
+	}
+
+	/* Disable row selection highlighting on mobile only */
+	.grid-cell.row-selected {
+		background: transparent;
+	}
+
+	.grid-row:hover .grid-cell.row-selected {
+		background: transparent;
+	}
+
+	.grid-cell.row-selected:hover {
+		background: transparent;
+	}
+
+	/* Disable hover effects on mobile */
+	.grid-row:hover .grid-cell {
+		background: transparent;
+	}
+}
+
+/* Mobile-specific styles for actual mobile devices */
+@media (max-width: 768px) {
+	/* Disable hover effects on mobile */
+	.grid-row:hover .grid-cell {
+		background: transparent !important;
+	}
+
+	.grid-row:hover .grid-cell.row-selected {
+		background: transparent !important;
+	}
+
+	.grid-cell.row-selected {
+		background: transparent !important;
+	}
+
+	.grid-cell.row-selected:hover {
+		background: transparent !important;
+	}
 }
 
 @media (min-width: 1025px) {
@@ -1094,6 +1187,24 @@
 	.grid-cell {
 		padding: 0.5rem 0.5rem !important;
 	}
+
+	/* Ensure desktop hover effects work properly */
+	.grid-row:hover .grid-cell {
+		background: rgba(255, 255, 255, 0.04) !important;
+	}
+
+	.grid-row:hover .grid-cell.row-selected {
+		background: rgba(255, 255, 255, 0.16) !important;
+	}
+
+	.grid-cell.row-selected {
+		background: rgba(255, 255, 255, 0.12) !important;
+	}
+
+	.grid-cell.row-selected:hover {
+		background: rgba(255, 255, 255, 0.16) !important;
+	}
+
 }
 
 .test-sections {

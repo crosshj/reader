@@ -134,7 +134,7 @@ export class MetadataModal {
 						</div>
 					</div>
 					<div class="form-field">
-						<label>Fields Configuration</label>
+						<label>Fields</label>
 						<div id="fields-container">
 							${this.generateFieldsConfig()}
 						</div>
@@ -158,7 +158,7 @@ export class MetadataModal {
 							type="submit"
 							class="btn btn-primary"
 						>
-							${isNewFile ? 'Create Database' : 'Save Changes'}
+							${isNewFile ? 'Create Database' : 'Save'}
 						</button>
 					</div>
 				</form>

@@ -162,6 +162,20 @@ export function smartDebounce(fn, delay, options = {}) {
 }
 
 /**
+ * Check if the current device is mobile
+ * @returns {boolean}
+ */
+export function isMobile() {
+	// Check if we're on a native mobile platform (iOS/Android)
+	if (window.Capacitor?.getPlatform && window.Capacitor.getPlatform() !== 'web') {
+		return true;
+	}
+	
+	// Fallback: Check viewport width (mobile-first approach)
+	return window.innerWidth < 768;
+}
+
+/**
  * Sets up event binding utilities on a UI component
  * @param {Object} ui - UI component instance
  */

@@ -100,7 +100,7 @@ export class RowModal {
 							id="save-selected-edit"
 							class="btn btn-primary"
 						>
-							Save Changes
+							Save
 						</button>
 					</div>
 				</form>

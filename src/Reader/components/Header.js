@@ -1,4 +1,4 @@
-import { html, smartDebounce } from '../../_lib/utils.js';
+import { html, smartDebounce, isMobile } from '../../_lib/utils.js';
 
 export class Header {
 	constructor(reader) {
@@ -471,12 +471,17 @@ export class Header {
 					desktopHeaderRight.insertBefore(desktopEditBtn, desktopHeaderRight.firstChild);
 				}
 			}
+			// Hide mobile edit button on mobile devices since edit modal opens immediately
 			if (mobileEditBtn) {
-				mobileEditBtn.style.display = 'flex';
-				// Move to first position
-				const mobileHeaderRight = this.reader.container.querySelector('.header-mobile .header-right');
-				if (mobileHeaderRight) {
-					mobileHeaderRight.insertBefore(mobileEditBtn, mobileHeaderRight.firstChild);
+				if (isMobile()) {
+					mobileEditBtn.style.display = 'none';
+				} else {
+					mobileEditBtn.style.display = 'flex';
+					// Move to first position
+					const mobileHeaderRight = this.reader.container.querySelector('.header-mobile .header-right');
+					if (mobileHeaderRight) {
+						mobileHeaderRight.insertBefore(mobileEditBtn, mobileHeaderRight.firstChild);
+					}
 				}
 			}
 		}
