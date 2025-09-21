@@ -532,6 +532,7 @@
 	overflow-y: auto !important;
 	min-height: 0 !important;
 	max-height: calc(90vh - 140px) !important;
+    padding: 0 !important;
 }
 
 .metadata-modal .modal-actions {
