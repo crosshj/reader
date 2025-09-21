@@ -1,8 +1,11 @@
 import { DocumentTreeAccess } from 'capacitor-document-tree-access';
+import { Capacitor } from '@capacitor/core';
 
 export class FolderService {
 	constructor() {
 		this.storedFolderName = null; // Store folder name for web compatibility
+		this.isNative = Capacitor.isNativePlatform();
+		this.platform = Capacitor.getPlatform();
 	}
 
 	async getFiles() {
@@ -94,6 +97,8 @@ export class FolderService {
 				throw new Error(`No data returned for file: ${fileName}`);
 			}
 			
+			// Return data as-is - let ApplicationController handle the conversion
+			// This maintains backward compatibility with existing code
 			return result.data;
 		} catch (error) {
 			throw new Error(`Failed to read file ${fileName}: ${error.message}`);
@@ -102,21 +107,27 @@ export class FolderService {
 
 	async writeFile(fileName, content) {
 		try {
-			// Convert ArrayBuffer to base64 for Android plugin
-			let base64Data;
-			if (content instanceof ArrayBuffer) {
-				const bytes = new Uint8Array(content);
-				const binaryString = String.fromCharCode(...bytes);
-				base64Data = btoa(binaryString);
-			} else if (content instanceof Uint8Array) {
-				const binaryString = String.fromCharCode(...content);
-				base64Data = btoa(binaryString);
+			let dataToWrite;
+			
+			if (this.isNative && this.platform === 'android') {
+				// Android: Convert ArrayBuffer to base64
+				if (content instanceof ArrayBuffer) {
+					const bytes = new Uint8Array(content);
+					const binaryString = String.fromCharCode(...bytes);
+					dataToWrite = btoa(binaryString);
+				} else if (content instanceof Uint8Array) {
+					const binaryString = String.fromCharCode(...content);
+					dataToWrite = btoa(binaryString);
+				} else {
+					// Assume it's already base64 or plain text
+					dataToWrite = content;
+				}
 			} else {
-				// Assume it's already base64 or plain text
-				base64Data = content;
+				// Web: Use binary data directly
+				dataToWrite = content;
 			}
 			
-			await DocumentTreeAccess.writeFile({ name: fileName, data: base64Data });
+			await DocumentTreeAccess.writeFile({ name: fileName, data: dataToWrite });
 			return true;
 		} catch (error) {
 			console.error('Error writing file:', error);
