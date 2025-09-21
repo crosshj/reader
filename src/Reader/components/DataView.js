@@ -27,7 +27,7 @@ export class DataView {
 		`;
 	}
 
-	// Simple delegation methods - no state management
+	// Row selection methods moved from Reader.js
 	selectRow(rowId) {
 		const row = document.querySelector(`.grid-row[data-row-id="${rowId}"]`);
 		if (row) {
@@ -36,12 +36,16 @@ export class DataView {
 				cell.classList.add('row-selected')
 			);
 		}
+		// Show edit button when row is selected
+		this.reader.header.showSelectedEditButton();
 	}
 
 	clearRowSelection() {
 		document
 			.querySelectorAll('.row-selected')
 			.forEach((cell) => cell.classList.remove('row-selected'));
+		// Hide edit button when selection is cleared
+		this.reader.header.hideSelectedEditButton();
 	}
 
 	getItemById(itemId) {

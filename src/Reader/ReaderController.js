@@ -15,7 +15,6 @@ export class ReaderController {
 	}
 
 	setupEventListeners() {
-		addEventListener('reader:ready', () => this.handleReaderReady());
 
 		const uiClickHandlers = {
 			'#hamburger-menu': () => this.ui.menu.toggleHamburgerMenu(),
@@ -30,25 +29,25 @@ export class ReaderController {
 			'#create-file-btn': () => dispatchEvent('ui:createFile'),
 			'#open-file-btn': () => dispatchEvent('ui:openFile'),
 			'#menu-edit-metadata': () => this.ui.metadataModal.show(false),
-			'#menu-execute-query': () => this.ui.showQueryModal(),
-			'#add-item-btn': () => this.ui.showAddForm(),
-			'#add-item-btn-mobile': () => this.ui.showAddForm(),
-			'.edit-btn': (e) => this.ui.showEditForm(e.target.dataset.id),
-			'.delete-btn': (e) =>
+			'#menu-execute-query': () => this.ui.queryModal.show(),
+			'#add-item-btn': () => this.ui.rowModal.show(null),
+			'#add-item-btn-mobile': () => this.ui.rowModal.show(null),
+			'.edit-icon': (e) => this.ui.rowModal.show(e.target.dataset.id),
+			'.delete-icon': (e) =>
 				this.ui.handleDeleteClick(e.target.dataset.id),
-			'#bulk-upsert-btn': () => this.ui.showBulkUpsertModal(),
-			'#selected-edit-btn': () => this.ui.showSelectedEditModal(),
-			'#selected-edit-btn-mobile': () => this.ui.showSelectedEditModal(),
+			'#bulk-upsert-btn': () => this.ui.bulkUpsertModal.show(),
+			'#selected-edit-btn': () => this.ui.rowModal.show(),
+			'#selected-edit-btn-mobile': () => this.ui.rowModal.show(),
 			'.filter-icon-btn': (e) =>
 				this.ui.header.toggleFilterDropdown(e.target.dataset.field),
 			'#close-selected-edit-modal, #cancel-selected-edit': () =>
-				this.ui.hideSelectedEditModal(),
+				this.ui.rowModal.hide(),
 			'#close-metadata-modal, #cancel-metadata': () =>
 				this.ui.metadataModal.hide(),
 			'#close-bulk-upsert-modal, #cancel-bulk-upsert': () =>
-				this.ui.hideBulkUpsertModal(),
+				this.ui.bulkUpsertModal.hide(),
 			'#close-query-modal, #cancel-query': () =>
-				this.ui.hideQueryModal(),
+				this.ui.queryModal.hide(),
 			'#error-close-btn': () => this.ui.hideError(),
 			'#error-dismiss-btn': () => this.ui.hideError(),
 			'#execute-query': () => this.handleExecuteQuery(this.ui),
@@ -58,7 +57,7 @@ export class ReaderController {
 			'.file-item': (e) => this.handleFileItemClick(e),
 			'.sidebar-overlay': () => this.ui.menu.hideHamburgerMenu(),
 			'.grid-row': (e) => {
-				if (e.target.matches('.action-btn')) return;
+				if (e.target.matches('.action-icon')) return;
 				// Only handle actual user clicks, not programmatic events
 				if (!e.isTrusted) return;
 				const row = e.target.closest('.grid-row');
@@ -79,7 +78,7 @@ export class ReaderController {
 		this.ui.bind('submit', {
 			'#selected-edit-form': (e) => {
 				e.preventDefault();
-				this.ui.handleSelectedEditFormSubmit(e.target);
+				this.ui.rowModal.handleFormSubmit(e.target);
 			},
 			'#metadata-form': (e) => {
 				e.preventDefault();
@@ -116,6 +115,7 @@ export class ReaderController {
 
 
 		addEventListener('db:state', (e) => {
+            console.log('db:state', e.detail);
 			const { action, state, metadata, message, error } = e.detail;
 
 			if (error) {
@@ -172,24 +172,24 @@ export class ReaderController {
 	selectRow(rowId) {
 		// Set new selection
 		this.selectedRowId = rowId;
-		this.ui.selectRow(rowId);
+		this.ui.dataView.selectRow(rowId);
 
 		// On mobile, show edit modal immediately when row is selected
 		if (isMobile() && this.ui.currentSchema?.controls?.includes('selected-edit')) {
-			this.ui.showSelectedEditModal(rowId);
+			this.ui.rowModal.show(rowId);
 		}
 
 		// Fire selection event
 		dispatchEvent('reader:itemSelected', {
 			itemId: rowId,
-			item: this.ui.list.getItemById(rowId),
+			item: this.ui.dataView.getItemById(rowId),
 		});
 	}
 
 	deselectRow() {
 		// Clear selection
 		this.selectedRowId = null;
-		this.ui.clearRowSelection();
+		this.ui.dataView.clearRowSelection();
 	}
 
 	// Menu handlers that coordinate UI + events
@@ -250,15 +250,6 @@ export class ReaderController {
 		// Dispatch event to open the file
 		dispatchEvent('ui:openFileFromFolder', { fileName });
 	}
-
-	/**
-	 * Handle reader ready event - let ApplicationController handle initial state
-	 */
-	handleReaderReady() {
-		// The ApplicationController will handle the initial state through app:state events
-		// No need to call showContent() here as it bypasses the proper state flow
-	}
-
 
 	async handleRetryFiles() {
 		// Retry getting files from current folder

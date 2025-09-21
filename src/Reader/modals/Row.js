@@ -125,6 +125,29 @@ export class RowModal {
 		}
 	}
 
+	// Form submission handler moved from Reader.js
+	handleFormSubmit(form) {
+		const formData = new FormData(form);
+		const data = {};
+
+		for (const [key, value] of formData.entries()) {
+			data[key] = value;
+		}
+
+		const itemId = data.id;
+
+		if (itemId) {
+			delete data.id;
+			this.reader.controller.dispatchUpdateData(data, itemId);
+		} else {
+			this.reader.controller.dispatchInsertData(data);
+		}
+
+		this.hide();
+		this.reader.controller.selectedRowId = null;
+		this.reader.header.hideSelectedEditButton();
+	}
+
 
 
 	generateFieldInput(field, selectedItem, isFirstField = false) {

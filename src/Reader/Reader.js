@@ -5,7 +5,6 @@ import { Menu } from './components/Menu.js';
 import { List } from './components/List.js';
 import { MetadataModal } from './modals/Metadata.js';
 import { DataView } from './components/DataView.js';
-import { renderError } from './components/Error.js';
 import { SelectFolder } from './components/SelectFolder.js';
 import { SelectFile } from './components/SelectFile.js';
 import { RowModal } from './modals/Row.js';
@@ -127,106 +126,6 @@ export class Reader {
 		}
 	}
 
-	showSelectedEditModal(itemId = null) {
-		this.rowModal.show(itemId);
-	}
-
-	hideSelectedEditModal() {
-		this.rowModal.hide();
-	}
-
-	showQueryModal() {
-		this.queryModal.show();
-	}
-
-	hideQueryModal() {
-		this.queryModal.hide();
-	}
-
-	handleSelectedEditFormSubmit(form) {
-		const formData = new FormData(form);
-		const data = {};
-
-		for (const [key, value] of formData.entries()) {
-			data[key] = value;
-		}
-
-		const itemId = data.id;
-
-		if (itemId) {
-			delete data.id;
-			this.controller.dispatchUpdateData(data, itemId);
-		} else {
-			this.controller.dispatchInsertData(data);
-		}
-
-		this.hideSelectedEditModal();
-		this.controller.selectedRowId = null;
-		this.header.hideSelectedEditButton();
-	}
-
-	showBulkUpsertModal() {
-		this.bulkUpsertModal.show();
-	}
-
-	hideBulkUpsertModal() {
-		this.bulkUpsertModal.hide();
-	}
-
-	handleBulkUpsertSubmit() {
-		const formField = document.querySelector('form-field');
-		const textarea = formField?.querySelector('textarea');
-		const data = textarea?.value?.trim();
-
-		if (!data) {
-			alert('Please enter some data to process.');
-			return;
-		}
-
-		const items = data
-			.split('\n')
-			.filter((line) => line.trim())
-			.map((line) => {
-				const match = line.match(/^(\d+)\s*-\s*(.+)$/);
-				if (match) {
-					const [, id, name] = match;
-					return {
-						id: parseInt(id),
-						text: name.trim(),
-						status: 'Todo',
-					};
-				}
-				return null;
-			})
-			.filter((item) => item !== null);
-
-		if (items.length === 0) {
-			alert('No valid data found. Please use the format: id - name');
-			return;
-		}
-
-		this.controller.dispatchBulkUpsert(items);
-		this.hideBulkUpsertModal();
-	}
-
-	selectRow(rowId) {
-		this.dataView.selectRow(rowId);
-		this.header.showSelectedEditButton();
-	}
-
-	clearRowSelection() {
-		this.dataView.clearRowSelection();
-		this.header.hideSelectedEditButton();
-	}
-
-	showAddForm() {
-		this.showSelectedEditModal(null);
-	}
-
-	showEditForm(itemId) {
-		this.showSelectedEditModal(itemId);
-	}
-
 	handleDeleteClick(itemId) {
 		if (confirm('Are you sure you want to delete this item?')) {
 			this.controller.dispatchDeleteData(itemId);
@@ -281,16 +180,4 @@ export class Reader {
 			filesPane.classList.remove('active');
 		}
 	}
-
-	showFilesPane = () => {
-		this.menu.hideHamburgerMenu();
-		const readerPane = this.container.querySelector('.reader-content');
-		const filesPane = this.container.querySelector('.files-content');
-
-		if (readerPane && filesPane) {
-			readerPane.classList.remove('active');
-			filesPane.classList.add('active');
-		}
-	}
-
 }

@@ -61,7 +61,7 @@
 .list-grid {
 	display: grid;
 	background: var(--card-bg);
-	overflow: hidden;
+	overflow: visible; /* Allow absolutely positioned icons to be visible */
 	gap: 0;
 }
 
@@ -76,6 +76,8 @@
 	text-overflow: ellipsis;
 	line-height: 1.2;
 	font-size: 0.9rem;
+	display: flex;
+	align-items: center;
 }
 
 .grid-header.text-column {
@@ -133,12 +135,55 @@
 .actions-cell {
 	white-space: nowrap;
 	justify-content: flex-start;
+	display: flex;
+	gap: 0.75rem;
+	align-items: center;
 }
 
 .actions-cell .action-btn {
 	padding: 0.25rem 0.5rem;
 	font-size: 0.75rem;
 	margin-right: 0.25rem;
+}
+
+.action-icon {
+	position: relative;
+	width: 16px;
+	height: 12px;
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 4px;
+	transition: background-color 0.2s ease;
+}
+
+.action-icon-bg {
+	position: absolute;
+	top: -4px;
+	left: -4px;
+	right: -4px;
+	bottom: -4px;
+	border-radius: 4px;
+	background-color: transparent;
+	transition: background-color 0.2s ease;
+	pointer-events: none;
+}
+
+.action-icon svg {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+	width: 16px;
+	height: 16px;
+	opacity: 0.7;
+}
+
+/* Desktop hover effects for action icons */
+@media (min-width: 1025px) {
+	.action-icon:hover .action-icon-bg {
+		background-color: color-mix(in srgb, var(--card-bg) 60%, white 40%);
+	}
 }
 
 .empty-state {

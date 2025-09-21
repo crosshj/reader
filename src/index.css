@@ -25,6 +25,15 @@
 	--card-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.4);
 	--font-body: system-ui, sans-serif;
 	--font-heading: system-ui, sans-serif;
+	--sidebar-width: 280px;
+	--sidebar-bg: #1e1e1e;
+}
+
+/* Desktop-specific variable overrides */
+@media (min-width: 1025px) {
+	:root {
+		--card-bg: #141414; /* Brighter card background on desktop */
+	}
 }
 
 /* =====================

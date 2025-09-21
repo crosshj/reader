@@ -88,23 +88,26 @@ export class BulkUpsertModal {
 			return;
 		}
 
-		// Parse the data
-		const lines = data.split('\n').filter(line => line.trim());
-		const items = [];
-
-		for (const line of lines) {
-			const parts = line.split(' - ');
-			if (parts.length >= 2) {
-				const id = parts[0].trim();
-				const name = parts[1].trim();
-				if (id && name) {
-					items.push({ id, name });
+		// Parse the data using the same format as Reader.js
+		const items = data
+			.split('\n')
+			.filter((line) => line.trim())
+			.map((line) => {
+				const match = line.match(/^(\d+)\s*-\s*(.+)$/);
+				if (match) {
+					const [, id, name] = match;
+					return {
+						id: parseInt(id),
+						text: name.trim(),
+						status: 'Todo',
+					};
 				}
-			}
-		}
+				return null;
+			})
+			.filter((item) => item !== null);
 
 		if (items.length === 0) {
-			alert('No valid data found. Please check your format.');
+			alert('No valid data found. Please use the format: id - name');
 			return;
 		}
 
