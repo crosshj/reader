@@ -115,7 +115,7 @@ export class ReaderController {
 
 
 		addEventListener('db:state', (e) => {
-            console.log('db:state', e.detail);
+			// console.log('db:state', e.detail);
 			const { action, state, metadata, message, error } = e.detail;
 
 			if (error) {
@@ -282,22 +282,46 @@ export class ReaderController {
 	 * Handle keyboard navigation for row selection
 	 */
 	handleKeyboardNavigation(e) {
-		// Only handle arrow keys when a row is selected and no modal is open
-		if (!this.selectedRowId || this.isModalOpen()) {
+		// Only handle arrow keys, enter key, and escape key
+		if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown' && e.key !== 'Enter' && e.key !== 'Escape') {
 			return;
 		}
 
-		// Only handle up/down arrow keys
-		if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') {
+		// Handle Escape key - close any open modal
+		if (e.key === 'Escape') {
+			if (this.isModalOpen()) {
+				e.preventDefault();
+				this.closeActiveModal();
+			}
 			return;
 		}
 
-		// Prevent default scrolling behavior
+		// Handle Enter key - open edit modal if row is selected and edit is enabled
+		if (e.key === 'Enter') {
+			if (this.selectedRowId && this.ui.currentSchema?.controls?.includes('edit') && !this.isModalOpen()) {
+				e.preventDefault();
+				this.ui.rowModal.show(this.selectedRowId);
+			}
+			return;
+		}
+
+		if (this.isModalOpen()) {
+			return;
+		}
+
+		// Prevent default scrolling behavior for arrow keys
 		e.preventDefault();
 
 		// Get all visible rows
 		const rows = this.ui.dataView.getVisibleRows();
 		if (!rows || rows.length === 0) {
+			return;
+		}
+
+		// If no row is selected, select the first row
+		if (!this.selectedRowId) {
+			const firstRowId = rows[0].dataset.rowId;
+			this.selectRow(firstRowId);
 			return;
 		}
 
@@ -326,10 +350,27 @@ export class ReaderController {
 	 */
 	isModalOpen() {
 		return this.ui.container.querySelector('.query-modal-overlay') ||
-			   this.ui.container.querySelector('.row-modal-overlay') ||
+			   this.ui.container.querySelector('.selected-edit-modal-overlay') ||
 			   this.ui.container.querySelector('.metadata-modal-overlay') ||
 			   this.ui.container.querySelector('.bulk-upsert-modal-overlay') ||
 			   this.ui.container.querySelector('.error-modal-overlay');
+	}
+
+	/**
+	 * Close the currently active modal
+	 */
+	closeActiveModal() {
+		if (this.ui.container.querySelector('.query-modal-overlay')) {
+			this.ui.queryModal.hide();
+		} else if (this.ui.container.querySelector('.selected-edit-modal-overlay')) {
+			this.ui.rowModal.hide();
+		} else if (this.ui.container.querySelector('.metadata-modal-overlay')) {
+			this.ui.metadataModal.hide();
+		} else if (this.ui.container.querySelector('.bulk-upsert-modal-overlay')) {
+			this.ui.bulkUpsertModal.hide();
+		} else if (this.ui.container.querySelector('.error-modal-overlay')) {
+			this.ui.errorModal.hide();
+		}
 	}
 
 }

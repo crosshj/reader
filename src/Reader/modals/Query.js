@@ -80,6 +80,8 @@ GROUP BY status;"
 		requestAnimationFrame(() => {
 			modal.style.opacity = '1';
 			modal.style.visibility = 'visible';
+			// Focus the first input field after modal is visible
+			this.focusFirstInput(modal);
 		});
 	}
 
@@ -91,6 +93,17 @@ GROUP BY status;"
 			setTimeout(() => {
 				modal.remove();
 			}, 300);
+		}
+	}
+
+	focusFirstInput(modal) {
+		// Find the first focusable input element in the modal
+		const firstInput = modal.querySelector('input:not([type="hidden"]), select, textarea');
+		if (firstInput) {
+			// Use setTimeout to ensure the modal is fully rendered
+			setTimeout(() => {
+				firstInput.focus();
+			}, 50);
 		}
 	}
 }

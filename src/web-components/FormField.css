@@ -71,8 +71,29 @@ form-field input[type="checkbox"] {
 	-moz-appearance: auto;
 }
 
+/* Select wrapper for positioning the arrow */
+form-field .select-wrapper {
+	position: relative;
+	display: inline-block;
+	width: 100%;
+}
+
 form-field select {
 	cursor: pointer;
+	padding-right: 28px; /* Extra space for dropdown arrow */
+	appearance: none;
+	width: 100%;
+	color: currentColor;
+}
+
+/* Inline SVG arrow */
+form-field .select-arrow {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none;
+	color: currentColor;
 }
 
 /* Ensure consistent alignment for checkbox labels */

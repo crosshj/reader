@@ -67,6 +67,11 @@ export class BulkUpsertModal {
 			.addEventListener('click', () => {
 				this.processBulkUpsert();
 			});
+
+		// Focus the first input field after modal is added to DOM
+		setTimeout(() => {
+			this.focusFirstInput(modal);
+		}, 50);
 	}
 
 	hide() {
@@ -114,5 +119,16 @@ export class BulkUpsertModal {
 		// Dispatch the bulk upsert event
 		this.reader.controller.dispatchBulkUpsert(items);
 		this.hide();
+	}
+
+	focusFirstInput(modal) {
+		// Find the first focusable input element in the modal
+		const firstInput = modal.querySelector('input:not([type="hidden"]), select, textarea');
+		if (firstInput) {
+			// Use setTimeout to ensure the modal is fully rendered
+			setTimeout(() => {
+				firstInput.focus();
+			}, 50);
+		}
 	}
 }

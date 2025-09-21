@@ -548,7 +548,9 @@ export class Header {
 	}
 
 	showFilterDropdown(fieldName) {
-		const field = this.reader.currentSchema.fields?.find(
+		if (!this.reader.currentSchema?.fields) return;
+		
+		const field = this.reader.currentSchema.fields.find(
 			(f) => f.name === fieldName
 		);
 		if (!field || field.type !== 'enum' || !field.filterable) return;

@@ -178,6 +178,8 @@ export class MetadataModal {
 		// Show modal with animation
 		setTimeout(() => {
 			modal.classList.add('show');
+			// Focus the first input field after modal is visible
+			this.focusFirstInput(modal);
 		}, 10);
 	}
 
@@ -510,5 +512,16 @@ export class MetadataModal {
 				}
 			]
 		};
+	}
+
+	focusFirstInput(modal) {
+		// Find the first focusable input element in the modal
+		const firstInput = modal.querySelector('input:not([type="hidden"]), select, textarea');
+		if (firstInput) {
+			// Use setTimeout to ensure the modal is fully rendered
+			setTimeout(() => {
+				firstInput.focus();
+			}, 50);
+		}
 	}
 }

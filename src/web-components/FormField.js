@@ -55,36 +55,42 @@ export class FormField extends HTMLElement {
 		const inputId = `field-${field.name}`;
 
 		switch (field.type) {
-					case 'text':
-						return html`
-							<div class="form-field">
-								<label for="${inputId}">${field.displayName || field.name}</label>
-								<input
-									type="text"
-									id="${inputId}"
-									name="${field.name}"
-									value="${value || ''}"
-									placeholder="${field.placeholder || ''}"
-									${disabled ? 'disabled' : ''}
-									${autofocus ? 'autofocus' : ''}
-								/>
-								${field.helpText ? html`<small class="form-field-help">${field.helpText}</small>` : ''}
-							</div>
-						`;
+			case 'text':
+				return html`
+					<div class="form-field">
+						<label for="${inputId}">${field.displayName || field.name}</label>
+						<input
+							type="text"
+							id="${inputId}"
+							name="${field.name}"
+							value="${value || ''}"
+							placeholder="${field.placeholder || ''}"
+							spellcheck="false"
+							${disabled ? 'disabled' : ''}
+							${autofocus ? 'autofocus' : ''}
+						/>
+						${field.helpText ? html`<small class="form-field-help">${field.helpText}</small>` : ''}
+					</div>
+				`;
 
 			case 'enum':
 				const options = field.options || [];
 				return html`
 					<div class="form-field">
 						<label for="${inputId}">${field.displayName || field.name}</label>
-						<select id="${inputId}" name="${field.name}" ${disabled ? 'disabled' : ''} ${autofocus ? 'autofocus' : ''}>
-							<option value="">Select ${field.displayName || field.name}...</option>
-							${options.map(option => html`
-								<option value="${option}" ${value === option ? 'selected' : ''}>
-									${option}
-								</option>
-							`).join('')}
-						</select>
+						<div class="select-wrapper">
+							<select id="${inputId}" name="${field.name}" ${disabled ? 'disabled' : ''} ${autofocus ? 'autofocus' : ''}>
+								<option value="">Select ${field.displayName || field.name}...</option>
+								${options.map(option => html`
+									<option value="${option}" ${value === option ? 'selected' : ''}>
+										${option}
+									</option>
+								`).join('')}
+							</select>
+							<svg class="select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<polyline points="6,9 12,15 18,9"></polyline>
+							</svg>
+						</div>
 						${field.helpText ? html`<small class="form-field-help">${field.helpText}</small>` : ''}
 					</div>
 				`;
@@ -160,6 +166,7 @@ export class FormField extends HTMLElement {
 							name="${field.name}"
 							placeholder="${field.placeholder || ''}"
 							rows="${field.rows || 3}"
+							spellcheck="false"
 							${disabled ? 'disabled' : ''}
 							${autofocus ? 'autofocus' : ''}
 						>${value || ''}</textarea>
@@ -177,6 +184,7 @@ export class FormField extends HTMLElement {
 							name="${field.name}"
 							value="${value || ''}"
 							placeholder="${field.placeholder || ''}"
+							spellcheck="false"
 							${disabled ? 'disabled' : ''}
 							${autofocus ? 'autofocus' : ''}
 						/>
