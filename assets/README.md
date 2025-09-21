@@ -37,6 +37,20 @@ assets/
    npm run generate:assets
    ```
 
+### Simple Icons Only (No Adaptive/Round Icons)
+
+If you want only simple icons without adaptive or round variants:
+
+1. Replace `assets/icon.png` with your new icon (1024x1024 PNG recommended)
+2. Run the simple icon generation:
+   ```bash
+   npm run generate:simple-icons
+   ```
+3. Optionally run the full asset generation for splash screens:
+   ```bash
+   npm run generate:assets
+   ```
+
 ### Advanced Usage (Custom Assets)
 
 You can provide specific assets for different platforms and use cases:

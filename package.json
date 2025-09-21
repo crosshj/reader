@@ -21,6 +21,7 @@
     "run:android-device": "npm run build && npx cap run android --target=device",
     "build:android-release": "npm run build && npx cap sync android && cd android && ./gradlew assembleRelease",
     "generate:assets": "npx @capacitor/assets generate",
+    "generate:simple-icons": "node generate-simple-icons.js",
     "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "keywords": [],
