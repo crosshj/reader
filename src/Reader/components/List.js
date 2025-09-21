@@ -182,6 +182,16 @@ export class List {
 		}
 		const fields = schema.fields || [];
 
+		// Check if we have a group field for generation grouping
+		const groupField = fields.find(field => field.name === 'group' && field.type === 'enum');
+		const hasGroupField = !!groupField;
+
+		// Process items with generation grouping if group field exists
+		let processedItems = items;
+		if (hasGroupField) {
+			processedItems = this.processItemsWithGrouping(items, groupField);
+		}
+
 		// Filter out read-only and auto-increment fields for the form
 		const editableFields = fields.filter(
 			(field) => !field.readOnly && !field.autoIncrement
@@ -203,7 +213,7 @@ export class List {
 
 		// Check if any controls will actually be rendered
 		const hasBulkUpsertControl =
-			schema.controls?.includes('bulk-upsert') && items.length > 0;
+			schema.controls?.includes('bulk-upsert') && processedItems.length > 0;
 		const hasAnyControls = hasBulkUpsertControl;
 
 		// Get fields that should be hidden because they're filtered to a specific value
@@ -212,7 +222,7 @@ export class List {
 		// Create grid template: text columns get more space, others get fixed width
 		// Only include visible fields in the grid template
 		const visibleFields = fields.filter(
-			(field) => !hiddenFields.has(field.name)
+			(field) => !hiddenFields.has(field.name) && !field.hidden
 		);
 		const gridTemplate = visibleFields
 			.map((field) => (field.type === 'text' ? '1fr' : 'auto'))
@@ -246,7 +256,7 @@ export class List {
 					: ''}
 
 				<div class="list-grid-container">
-					${items.length === 0
+					${processedItems.length === 0
 						? html` <p class="empty-state">No items</p> `
 						: html`
 								<div
@@ -286,105 +296,16 @@ export class List {
 										: ''}
 
 									<!-- Data rows -->
-									${items
+									${processedItems
 										.map(
-											(item) => html`
-												<div
-													class="grid-row"
-													data-row-id="${item.id}"
-												>
-													${visibleFields
-														.map(
-															(field) => html`
-																<div
-																	class="grid-cell ${field.name}-column"
-																>
-																	${field.type ===
-																	'datetime'
-																		? this.formatDate(
-																				item[
-																					field
-																						.name
-																				]
-																		  )
-																		: item[
-																				field
-																					.name
-																		  ] ||
-																		  ''}
-																</div>
-															`
-														)
-														.join('')}
-													${schema.controls?.includes(
-														'edit'
-													) ||
-													schema.controls?.includes(
-														'delete'
-													)
-														? html`
-																<div
-																	class="grid-cell actions-cell"
-																>
-																	${schema.controls?.includes(
-																		'edit'
-																	)
-																		? html`
-																				<span
-																					class="action-icon edit-icon"
-																					data-id="${item.id}"
-																					title="Edit item"
-																				>
-																					<span class="action-icon-bg"></span>
-																					<svg
-																						width="16"
-																						height="16"
-																						viewBox="0 0 24 24"
-																						fill="none"
-																						stroke="currentColor"
-																						stroke-width="2"
-																					>
-																						<path
-																							d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
-																						></path>
-																						<path
-																							d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
-																						></path>
-																					</svg>
-																				</span>
-																			`
-																		: ''}
-																	${schema.controls?.includes(
-																		'delete'
-																	)
-																		? html`
-																				<span
-																					class="action-icon delete-icon"
-																					data-id="${item.id}"
-																					title="Delete item"
-																				>
-																					<span class="action-icon-bg"></span>
-																					<svg
-																						width="16"
-																						height="16"
-																						viewBox="0 0 24 24"
-																						fill="none"
-																						stroke="currentColor"
-																						stroke-width="2"
-																					>
-																						<polyline points="3,6 5,6 21,6"></polyline>
-																						<path d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
-																						<line x1="10" y1="11" x2="10" y2="17"></line>
-																						<line x1="14" y1="11" x2="14" y2="17"></line>
-																					</svg>
-																				</span>
-																		  `
-																		: ''}
-																</div>
-														  `
-														: ''}
-												</div>
-											`
+											(item) => {
+												// Check if this is a summary row
+												if (item.isSummaryRow) {
+													return this.renderSummaryRow(item, visibleFields, hasActions);
+												}
+												// Regular data row
+												return this.renderDataRow(item, visibleFields, hasActions, schema);
+											}
 										)
 										.join('')}
 								</div>
@@ -400,6 +321,115 @@ export class List {
 						  `
 						: ''}
 				</div>
+			</div>
+		`;
+	}
+
+	processItemsWithGrouping(items, groupField) {
+		// Sort items by generation group first, then by ID
+		const sortedItems = [...items].sort((a, b) => {
+			const aGroup = a[groupField.name] || 'Unknown';
+			const bGroup = b[groupField.name] || 'Unknown';
+			if (aGroup !== bGroup) {
+				return aGroup.localeCompare(bGroup, undefined, { numeric: true });
+			}
+			return a.id - b.id;
+		});
+
+		const processedItems = [];
+		let currentGroup = null;
+		let groupCount = 0;
+
+		for (let i = 0; i < sortedItems.length; i++) {
+			const item = sortedItems[i];
+			const itemGroup = item[groupField.name] || 'Unknown';
+
+			// Check if we've moved to a new group
+			if (currentGroup !== null && itemGroup !== currentGroup) {
+				// Add summary row for the previous group if it had items
+				if (groupCount > 0) {
+					processedItems.push({
+						isSummaryRow: true,
+						group: currentGroup,
+						count: groupCount,
+						groupDisplayName: groupField.displayName || 'Generation'
+					});
+				}
+				groupCount = 0;
+			}
+
+			// Set current group
+			if (currentGroup === null) {
+				currentGroup = itemGroup;
+			}
+
+			// Add the item
+			processedItems.push(item);
+			groupCount++;
+
+			// Update current group
+			currentGroup = itemGroup;
+		}
+
+		// Add summary row for the last group if it had items
+		if (groupCount > 0) {
+			processedItems.push({
+				isSummaryRow: true,
+				group: currentGroup,
+				count: groupCount,
+				groupDisplayName: groupField.displayName || 'Generation'
+			});
+		}
+
+		return processedItems;
+	}
+
+	renderSummaryRow(summaryItem, visibleFields, hasActions) {
+		const totalColumns = visibleFields.length + (hasActions ? 1 : 0);
+		return html`
+			<div class="grid-row summary-row" data-summary-group="${summaryItem.group}" style="grid-column: 1 / -1;">
+				<div class="summary-cell-full">
+					${summaryItem.count} ${summaryItem.count === 1 ? 'item' : 'items'}
+				</div>
+			</div>
+		`;
+	}
+
+	renderDataRow(item, visibleFields, hasActions, schema) {
+		return html`
+			<div class="grid-row" data-row-id="${item.id}">
+				${visibleFields.map(field => html`
+					<div class="grid-cell ${field.name}-column">
+						${field.type === 'datetime' ? 
+							this.formatDate(item[field.name]) : 
+							item[field.name] || ''
+						}
+					</div>
+				`).join('')}
+				${hasActions ? html`
+					<div class="grid-cell actions-cell">
+						${schema.controls?.includes('edit') ? html`
+							<span class="action-icon edit-icon" data-id="${item.id}" title="Edit item">
+								<span class="action-icon-bg"></span>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+									<path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+								</svg>
+							</span>
+						` : ''}
+						${schema.controls?.includes('delete') ? html`
+							<span class="action-icon delete-icon" data-id="${item.id}" title="Delete item">
+								<span class="action-icon-bg"></span>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+									<polyline points="3,6 5,6 21,6"></polyline>
+									<path d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
+									<line x1="10" y1="11" x2="10" y2="17"></line>
+									<line x1="14" y1="11" x2="14" y2="17"></line>
+								</svg>
+							</span>
+						` : ''}
+					</div>
+				` : ''}
 			</div>
 		`;
 	}

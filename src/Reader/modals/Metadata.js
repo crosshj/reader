@@ -242,13 +242,16 @@ export class MetadataModal {
 		if (formData.has('control-selected-edit')) controls.push('selected-edit');
 		if (formData.has('control-bulk-upsert')) controls.push('bulk-upsert');
 
+		// Process field property changes
+		const updatedFields = this.processFieldPropertyChanges(formData);
+
 		const metadata = {
 			title: formData.get('title') || '',
 			description: formData.get('description') || '',
 			tableName: formData.get('tableName') || 'items',
 			showHeaders: formData.has('showHeaders'),
 			controls: controls,
-			fields: this.currentSchema?.fields || []
+			fields: updatedFields
 		};
 
 		// Log the transformed data being sent to backend
@@ -342,6 +345,45 @@ export class MetadataModal {
 		}
 	}
 
+	processFieldPropertyChanges(formData) {
+		const fields = this.currentSchema?.fields || [];
+		
+		return fields.map((field, index) => {
+			const updatedField = { ...field };
+			
+			// Process field properties from form data
+			const fieldPrefix = `field-`;
+			
+			// Update field name
+			const newName = formData.get(`${fieldPrefix}name-${index}`);
+			if (newName) updatedField.name = newName;
+			
+			// Update display name
+			const newDisplayName = formData.get(`${fieldPrefix}displayName-${index}`);
+			if (newDisplayName) updatedField.displayName = newDisplayName;
+			
+			// Update field type
+			const newType = formData.get(`${fieldPrefix}type-${index}`);
+			if (newType) updatedField.type = newType;
+			
+			// Update boolean properties
+			updatedField.required = formData.has(`${fieldPrefix}required-${index}`);
+			updatedField.readOnly = formData.has(`${fieldPrefix}readOnly-${index}`);
+			updatedField.primaryKey = formData.has(`${fieldPrefix}primaryKey-${index}`);
+			updatedField.hidden = formData.has(`${fieldPrefix}hidden-${index}`);
+			updatedField.filterable = formData.has(`${fieldPrefix}filterable-${index}`);
+			updatedField.showAllOption = formData.has(`${fieldPrefix}showAllOption-${index}`);
+			
+			// Update enum options
+			const newOptions = formData.get(`${fieldPrefix}options-${index}`);
+			if (newOptions && field.type === 'enum') {
+				updatedField.options = newOptions.split(',').map(opt => opt.trim()).filter(opt => opt.length > 0);
+			}
+			
+			return updatedField;
+		});
+	}
+
 	generateFieldsConfig() {
 		const fields = this.reader.currentSchema?.fields || [];
 
@@ -363,21 +405,21 @@ export class MetadataModal {
 							<div class="field-config-row">
 								<div class="field-config-col">
 									<form-field
-										field='{"name": "field-name", "type": "text", "displayName": "Name"}'
+										field='{"name": "field-name-${index}", "type": "text", "displayName": "Name"}'
 										value="${field.name}"
 										mode="edit">
 									</form-field>
 								</div>
 								<div class="field-config-col">
 									<form-field
-										field='{"name": "field-displayName", "type": "text", "displayName": "Display Name"}'
+										field='{"name": "field-displayName-${index}", "type": "text", "displayName": "Display Name"}'
 										value="${field.displayName || field.name}"
 										mode="edit">
 									</form-field>
 								</div>
 								<div class="field-config-col">
 									<form-field
-										field='{"name": "field-type", "type": "enum", "displayName": "Type", "options": ["text", "integer", "datetime", "enum"]}'
+										field='{"name": "field-type-${index}", "type": "enum", "displayName": "Type", "options": ["text", "integer", "datetime", "enum"]}'
 										value="${field.type}"
 										mode="edit">
 									</form-field>
@@ -386,56 +428,63 @@ export class MetadataModal {
 							<div class="field-config-row">
 								<div class="field-config-col">
 									<form-field
-										field='{"name": "field-required", "type": "boolean", "displayName": "Required"}'
+										field='{"name": "field-required-${index}", "type": "boolean", "displayName": "Required"}'
 										value="${field.required ? 'true' : 'false'}"
 										mode="edit">
 									</form-field>
 								</div>
 								<div class="field-config-col">
 									<form-field
-										field='{"name": "field-readOnly", "type": "boolean", "displayName": "Read Only"}'
+										field='{"name": "field-readOnly-${index}", "type": "boolean", "displayName": "Read Only"}'
 										value="${field.readOnly ? 'true' : 'false'}"
 										mode="edit">
 									</form-field>
 								</div>
 								<div class="field-config-col">
 									<form-field
-										field='{"name": "field-primaryKey", "type": "boolean", "displayName": "Primary Key"}'
+										field='{"name": "field-primaryKey-${index}", "type": "boolean", "displayName": "Primary Key"}'
 										value="${field.primaryKey ? 'true' : 'false'}"
 										mode="edit">
 									</form-field>
 								</div>
+							</div>
+							<div class="field-config-row">
+								<div class="field-config-col">
+									<form-field
+										field='{"name": "field-hidden-${index}", "type": "boolean", "displayName": "Hidden from View"}'
+										value="${field.hidden ? 'true' : 'false'}"
+										mode="edit">
+									</form-field>
+								</div>
+								<div class="field-config-col">
+									<form-field
+										field='{"name": "field-filterable-${index}", "type": "boolean", "displayName": "Enable Filter Icon"}'
+										value="${field.filterable ? 'true' : 'false'}"
+										mode="edit">
+									</form-field>
+								</div>
+								${field.filterable
+									? html`
+										<div class="field-config-col">
+											<form-field
+												field='{"name": "field-showAllOption-${index}", "type": "boolean", "displayName": "Show All Option"}'
+												value="${field.showAllOption !== false ? 'true' : 'false'}"
+												mode="edit">
+											</form-field>
+										</div>
+									`
+									: ''}
 							</div>
 							${field.type === 'enum'
 								? html`
 										<div class="field-config-row">
 											<div class="field-config-col full-width">
 												<form-field
-													field='{"name": "field-options", "type": "text", "displayName": "Options (comma-separated)", "placeholder": "Option1, Option2, Option3", "helpText": "First option will be the default filter value"}'
+													field='{"name": "field-options-${index}", "type": "text", "displayName": "Options (comma-separated)", "placeholder": "Option1, Option2, Option3", "helpText": "First option will be the default filter value"}'
 													value="${field.options?.join(', ') || ''}"
 													mode="edit">
 												</form-field>
 											</div>
-										</div>
-										<div class="field-config-row">
-											<div class="field-config-col">
-												<form-field
-													field='{"name": "field-filterable", "type": "boolean", "displayName": "Enable Filter Icon"}'
-													value="${field.filterable ? 'true' : 'false'}"
-													mode="edit">
-												</form-field>
-											</div>
-											${field.filterable
-												? html`
-													<div class="field-config-col">
-														<form-field
-															field='{"name": "field-showAllOption", "type": "boolean", "displayName": "Show All Option"}'
-															value="${field.showAllOption !== false ? 'true' : 'false'}"
-															mode="edit">
-														</form-field>
-													</div>
-												`
-												: ''}
 										</div>
 								  `
 								: ''}

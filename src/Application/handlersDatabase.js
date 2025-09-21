@@ -24,9 +24,11 @@ export function getHandlers(appController) {
 
 		// Get current metadata if not provided
 		if (!metadata) {
+			// Force refresh schema from database instead of using cached version
+			const freshMetadata = appController.databaseService.getMetadata();
 			metadata = {
-				version: appController.databaseService.getVersion(),
-				schema: appController.databaseService.getSchema(),
+				version: freshMetadata.version,
+				schema: freshMetadata.schema,
 			};
 		}
 
@@ -582,12 +584,13 @@ export function getHandlers(appController) {
 					console.log('No results returned');
 				}
 				
-			// Dispatch success event
-				dispatchEvent('db:state', {
-					action: 'query_executed',
-					message: 'Query executed successfully',
-					queryResult: result,
-				});
+			// Dispatch success event with refreshed state and schema
+				await dispatchDbState(
+					'query_executed',
+					'Query executed successfully',
+					null, // Will refresh state
+					null  // Will refresh metadata/schema
+				);
 			} catch (error) {
 				console.error('❌ Query Error:', error.message);
 				dispatchEvent('db:state', {
