@@ -181,6 +181,16 @@
 
 /* Desktop hover effects for action icons */
 @media (min-width: 1025px) {
+	/* Hide action icons by default on desktop */
+	.action-icon {
+		visibility: hidden;
+	}
+	
+	/* Show action icons only on row hover */
+	.grid-row:hover .action-icon {
+		visibility: visible;
+	}
+	
 	.action-icon:hover .action-icon-bg {
 		background-color: color-mix(in srgb, var(--card-bg) 60%, white 40%);
 	}
