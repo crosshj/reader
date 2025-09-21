@@ -1,4 +1,4 @@
-import { html } from '../../_lib/utils.js';
+import { html, isMobile } from '../../_lib/utils.js';
 import { List } from './List.js';
 import './DataView.css';
 
@@ -29,6 +29,11 @@ export class DataView {
 
 	// Row selection methods moved from Reader.js
 	selectRow(rowId) {
+		// Only allow row selection on desktop
+		if (isMobile()) {
+			return;
+		}
+		
 		const row = document.querySelector(`.grid-row[data-row-id="${rowId}"]`);
 		if (row) {
 			this.clearRowSelection();

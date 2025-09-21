@@ -119,17 +119,19 @@
 	background: rgba(255, 255, 255, 0.04);
 }
 
-/* Row selection - VS Code style */
-.grid-row:hover .grid-cell.row-selected {
-	background: rgba(255, 255, 255, 0.16);
-}
+/* Row selection - VS Code style (Desktop only) */
+@media (min-width: 1025px) {
+	.grid-row:hover .grid-cell.row-selected {
+		background: rgba(255, 255, 255, 0.16);
+	}
 
-.grid-cell.row-selected {
-	background: rgba(255, 255, 255, 0.12);
-}
+	.grid-cell.row-selected {
+		background: rgba(255, 255, 255, 0.12);
+	}
 
-.grid-cell.row-selected:hover {
-	background: rgba(255, 255, 255, 0.16);
+	.grid-cell.row-selected:hover {
+		background: rgba(255, 255, 255, 0.16);
+	}
 }
 
 .actions-cell {
@@ -186,8 +188,9 @@
 		visibility: hidden;
 	}
 	
-	/* Show action icons only on row hover */
-	.grid-row:hover .action-icon {
+	/* Show action icons on row hover or when row is selected */
+	.grid-row:hover .action-icon,
+	.grid-row:has(.grid-cell.row-selected) .action-icon {
 		visibility: visible;
 	}
 	
@@ -222,11 +225,14 @@
 	font-size: 0.8rem;
 }
 
-.grid-cell.id-column.row-selected {
-	color: #e0e0e0;
-	font-weight: 600;
-	text-shadow: none;
-	vertical-align: baseline;
+/* Desktop only - selected row styling */
+@media (min-width: 1025px) {
+	.grid-cell.id-column.row-selected {
+		color: #e0e0e0;
+		font-weight: 600;
+		text-shadow: none;
+		vertical-align: baseline;
+	}
 }
 
 .item-form {
@@ -327,18 +333,6 @@
 		background: transparent !important;
 	}
 
-	/* Disable row selection highlighting on mobile only */
-	.grid-cell.row-selected {
-		background: transparent;
-	}
-
-	.grid-row:hover .grid-cell.row-selected {
-		background: transparent;
-	}
-
-	.grid-cell.row-selected:hover {
-		background: transparent;
-	}
 
 	/* Disable hover effects on mobile */
 	.grid-row:hover .grid-cell {
@@ -455,15 +449,4 @@
 		background: rgba(255, 255, 255, 0.04) !important;
 	}
 
-	.grid-row:hover .grid-cell.row-selected {
-		background: rgba(255, 255, 255, 0.16) !important;
-	}
-
-	.grid-cell.row-selected {
-		background: rgba(255, 255, 255, 0.12) !important;
-	}
-
-	.grid-cell.row-selected:hover {
-		background: rgba(255, 255, 255, 0.16) !important;
-	}
 }
