@@ -48,7 +48,11 @@ export class QueryModal {
 				<div class="modal-content">
 					<form-field
 						field='{"name": "query", "type": "textarea", "displayName": "SQL Query", "placeholder": "Enter your SQL query here...", "rows": 10}'
-						value=""
+						value="SELECT 
+    status,
+    COUNT(*) as count
+FROM items 
+GROUP BY status;"
 						mode="edit">
 					</form-field>
 				</div>

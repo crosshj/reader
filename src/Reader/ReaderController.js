@@ -133,6 +133,11 @@ export class ReaderController {
 			const isNewFile = e.detail?.isNewFile || false;
 			this.ui.metadataModal.show(isNewFile);
 		});
+
+		// Add keyboard navigation for row selection
+		document.addEventListener('keydown', (e) => {
+			this.handleKeyboardNavigation(e);
+		});
 	}
 
 	// Controller methods for UI to call
@@ -221,7 +226,7 @@ export class ReaderController {
 		dispatchEvent('ui:executeQuery', { query });
 		
 		// Hide modal
-		ui.hideQueryModal();
+		ui.queryModal.hide();
 	}
 
 	/**
@@ -271,6 +276,60 @@ export class ReaderController {
 				data: { files: [], folderName: '', currentFileName: '' }
 			});
 		}
+	}
+
+	/**
+	 * Handle keyboard navigation for row selection
+	 */
+	handleKeyboardNavigation(e) {
+		// Only handle arrow keys when a row is selected and no modal is open
+		if (!this.selectedRowId || this.isModalOpen()) {
+			return;
+		}
+
+		// Only handle up/down arrow keys
+		if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') {
+			return;
+		}
+
+		// Prevent default scrolling behavior
+		e.preventDefault();
+
+		// Get all visible rows
+		const rows = this.ui.dataView.getVisibleRows();
+		if (!rows || rows.length === 0) {
+			return;
+		}
+
+		// Find current row index
+		const currentIndex = rows.findIndex(row => row.dataset.rowId === this.selectedRowId);
+		if (currentIndex === -1) {
+			return;
+		}
+
+		let newIndex;
+		if (e.key === 'ArrowUp') {
+			newIndex = currentIndex - 1;
+		} else { // ArrowDown
+			newIndex = currentIndex + 1;
+		}
+
+		// Check bounds
+		if (newIndex >= 0 && newIndex < rows.length) {
+			const newRowId = rows[newIndex].dataset.rowId;
+			this.selectRow(newRowId);
+		}
+	}
+
+	/**
+	 * Check if any modal is currently open
+	 */
+	isModalOpen() {
+		return this.ui.container.querySelector('.query-modal-overlay') ||
+			   this.ui.container.querySelector('.row-modal-overlay') ||
+			   this.ui.container.querySelector('.metadata-modal-overlay') ||
+			   this.ui.container.querySelector('.bulk-upsert-modal-overlay') ||
+			   this.ui.container.querySelector('.error-modal-overlay');
 	}
 
 }

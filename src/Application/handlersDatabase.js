@@ -559,6 +559,29 @@ export function getHandlers(appController) {
 				// Execute query using database service
 				const result = await appController.databaseService.executeQuery(query);
 				
+				// Log clean query results to console
+				console.log(`🔍 Query:\n${query}`);
+				
+				if (result.results && result.results.length > 0) {
+					result.results.forEach((resultSet, index) => {
+						if (resultSet.values && resultSet.values.length > 0) {
+							// Create a clean table display
+							const tableData = resultSet.values.map(row => {
+								const rowObj = {};
+								resultSet.columns.forEach((col, i) => {
+									rowObj[col] = row[i];
+								});
+								return rowObj;
+							});
+							console.table(tableData);
+						} else {
+							console.log('No data returned');
+						}
+					});
+				} else {
+					console.log('No results returned');
+				}
+				
 			// Dispatch success event
 				dispatchEvent('db:state', {
 					action: 'query_executed',
@@ -566,7 +589,7 @@ export function getHandlers(appController) {
 					queryResult: result,
 				});
 			} catch (error) {
-				console.error('Error executing query:', error);
+				console.error('❌ Query Error:', error.message);
 				dispatchEvent('db:state', {
 					action: 'error',
 					error: error.message,

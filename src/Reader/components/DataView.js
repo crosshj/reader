@@ -56,4 +56,9 @@ export class DataView {
 	getItemById(itemId) {
 		return this.list.getItemById(itemId);
 	}
+
+	getVisibleRows() {
+		// Get all visible grid rows in the current data view
+		return Array.from(document.querySelectorAll('.grid-row'));
+	}
 }
