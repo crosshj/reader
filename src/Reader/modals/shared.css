@@ -1,0 +1,132 @@
+/* Shared Modal Styles */
+.modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 1.5rem;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+	margin: 0;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--text-primary);
+}
+
+.modal-content {
+	flex: 1;
+	overflow-y: auto;
+	min-height: 0; /* Allow flex item to shrink below content size */
+	max-height: calc(90vh - 120px); /* Subtract space for header and actions */
+}
+
+/* FormField spacing handled by component itself */
+
+/* Section spacing in modals */
+.modal-content .section {
+	padding-block: 0;
+	padding-inline: 1.5rem;
+}
+
+/* Modal actions don't need section padding */
+.modal-content .modal-actions {
+	padding: 1.5rem;
+}
+
+/* Section headers in modals */
+.modal-content .section > h4 {
+	margin: 0 0 0.75rem 0;
+	margin-top: 1.5rem;
+	font-weight: 600;
+	font-size: 1rem;
+	color: var(--text-bright);
+}
+
+.modal-content .section:first-child > h4 {
+	margin-top: 0;
+}
+
+.modal-actions {
+	display: flex;
+	gap: 1rem;
+	justify-content: flex-end;
+	padding: 1.5rem;
+	border-top: 1px solid var(--border-color);
+	background-color: var(--card-bg);
+	flex-shrink: 0; /* Prevent actions from shrinking */
+}
+
+.btn {
+	padding: 0.75rem 1.5rem;
+	border: none;
+	border-radius: 6px;
+	font-size: 1rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.btn-primary {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+.btn-primary:hover {
+	background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+	background-color: var(--surface-color);
+	color: var(--text-primary);
+	border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+	background-color: var(--surface-hover);
+}
+
+/* Mobile modal styles */
+@media (max-width: 1024px) {
+	/* Reduce modal padding for mobile */
+	.modal-content {
+		padding: 0.75rem !important; /* Reduced from 1.5rem */
+	}
+
+	.modal-actions {
+		padding: 0.75rem !important; /* Reduced from 1.5rem */
+	}
+
+	/* Reduce section spacing in modals */
+	.modal-content .section {
+		padding-inline: 0.75rem !important; /* Reduced from 1.5rem */
+	}
+
+	.modal-content .section > h4 {
+		margin-top: 0.75rem !important; /* Reduced from 1.5rem */
+		margin-bottom: 0.5rem !important; /* Reduced from 0.75rem */
+		font-size: 0.9rem !important; /* Reduced from 1rem */
+	}
+}
+
+@media (max-width: 768px) {
+	/* Ultra-compact modals */
+	.modal-content {
+		padding: 0.5rem !important;
+	}
+
+	.modal-actions {
+		padding: 0.5rem !important;
+	}
+
+	/* Minimal section spacing */
+	.modal-content .section {
+		padding-inline: 0.5rem !important;
+	}
+
+	.modal-content .section > h4 {
+		margin-top: 0.5rem !important;
+		margin-bottom: 0.25rem !important;
+		font-size: 0.85rem !important;
+	}
+}

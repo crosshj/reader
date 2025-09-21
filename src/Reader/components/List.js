@@ -1,4 +1,5 @@
 import { html } from '../../_lib/utils.js';
+import './List.css';
 
 export class List {
 	constructor(reader) {

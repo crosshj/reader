@@ -1,0 +1,184 @@
+/* Metadata Modal Styles */
+.metadata-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.metadata-modal-overlay.show {
+	opacity: 1;
+	visibility: visible;
+}
+
+.metadata-modal {
+	background-color: var(--card-bg);
+	border-radius: 12px;
+	box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+	max-width: 600px;
+	width: 90%;
+	max-height: 90vh;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.metadata-modal .modal-content {
+	flex: 1 !important;
+	overflow-y: auto !important;
+	min-height: 0 !important;
+	max-height: calc(90vh - 140px) !important;
+    padding: 0 !important;
+}
+
+.metadata-modal .modal-actions {
+	flex-shrink: 0 !important;
+	background-color: var(--card-bg) !important;
+	border-top: 1px solid var(--border-color);
+	position: sticky !important;
+	bottom: 0 !important;
+}
+
+/* Field Configuration Styles */
+.field-config {
+	border: 1px solid var(--card-border);
+	border-radius: 8px;
+	margin-bottom: 1rem;
+	background: var(--bg-secondary);
+}
+
+.field-config-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.75rem 1rem;
+	background: var(--bg-secondary);
+	border-bottom: 1px solid var(--card-border);
+}
+
+.field-name {
+	font-weight: 600;
+	color: var(--text-bright);
+}
+
+.remove-field-btn {
+	background: #dc2626;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	font-size: 16px;
+	line-height: 1;
+}
+
+.remove-field-btn:hover {
+	background: #b91c1c;
+}
+
+.field-config-body {
+	padding: 1rem;
+}
+
+.field-config-row {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+
+.field-config-row:last-child {
+	margin-bottom: 0;
+}
+
+.field-config-col.full-width {
+	grid-column: 1 / -1; /* Span all columns */
+}
+
+.field-config-col label {
+	display: block;
+	margin-bottom: 0.25rem;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: var(--text-muted);
+}
+
+.field-config-col input,
+.field-config-col select {
+	width: 100%;
+	padding: 0.5rem;
+	border: 1px solid var(--card-border);
+	border-radius: 4px;
+	background: var(--card-bg);
+	color: var(--text-bright);
+	font-size: 0.875rem;
+}
+
+.field-config-col input[type='checkbox'] {
+	width: auto;
+	margin-right: 0.5rem;
+}
+
+.field-config-col label input[type='checkbox'] {
+	display: inline;
+	width: auto;
+	margin-right: 0.5rem;
+}
+
+/* Controls Configuration Styles */
+.controls-config {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	padding: 1rem;
+	background: var(--bg-secondary);
+	border: 1px solid var(--card-border);
+	border-radius: 8px;
+}
+
+.control-option {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.875rem;
+	color: var(--text-bright);
+	cursor: pointer;
+}
+
+.control-option input[type='checkbox'] {
+	width: auto;
+	margin: 0;
+}
+
+/* Mobile metadata modal actions - place cancel and save buttons next to each other */
+@media (max-width: 1024px) {
+	.metadata-modal .modal-actions {
+		flex-direction: row;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		padding: 1rem;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.metadata-modal .modal-actions .btn {
+		flex: 0 0 auto;
+		min-width: 60px;
+		max-width: 120px;
+		padding: 0.5rem 1rem;
+		font-size: 0.9rem;
+	}
+}

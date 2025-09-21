@@ -1,4 +1,5 @@
 import { html, smartDebounce, isMobile } from '../../_lib/utils.js';
+import './Header.css';
 
 export class Header {
 	constructor(reader) {

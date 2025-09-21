@@ -1,4 +1,5 @@
 import { html } from '../../_lib/utils.js';
+import './shared.css';
 import './Query.css';
 
 export class QueryModal {

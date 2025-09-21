@@ -1,4 +1,6 @@
 import { html, dispatchEvent } from '../../_lib/utils.js';
+import './shared.css';
+import './Metadata.css';
 
 export class MetadataModal {
 	constructor(reader) {

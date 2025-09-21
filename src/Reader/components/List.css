@@ -1,0 +1,414 @@
+/* List Component Styles */
+.list-ui {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.list-controls {
+	display: flex;
+	gap: 0.75rem;
+	margin-bottom: 0.75rem;
+}
+
+.action-btn {
+	padding: 0.5rem 1rem;
+	border: 1px solid;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 0.875rem;
+	font-weight: 500;
+	transition: all 0.2s;
+}
+
+.action-btn.primary {
+	background: var(--primary-color);
+	color: white;
+	border-color: var(--primary-color);
+}
+
+.action-btn.primary:hover {
+	background: var(--primary-hover);
+	border-color: var(--primary-hover);
+}
+
+.action-btn.secondary {
+	background: var(--card-bg);
+	color: var(--text-bright);
+	border-color: var(--card-border);
+}
+
+.action-btn.secondary:hover {
+	background: var(--card-border);
+}
+
+.action-btn.danger {
+	background: #ef4444;
+	color: white;
+	border-color: #dc2626;
+}
+
+.action-btn.danger:hover {
+	background: #dc2626;
+	border-color: #b91c1c;
+}
+
+.list-grid-container {
+	overflow-x: auto;
+	width: 100%;
+}
+
+.list-grid {
+	display: grid;
+	background: var(--card-bg);
+	overflow: hidden;
+	gap: 0;
+}
+
+.grid-header {
+	padding: 0.125rem 0.75rem;
+	text-align: left;
+	font-weight: 600;
+	color: var(--text-bright);
+	background: var(--card-border);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 1.2;
+	font-size: 0.9rem;
+}
+
+.grid-header.text-column {
+	max-width: none;
+}
+
+.grid-cell {
+	padding: 0.25rem 0.5rem;
+	color: var(--text-bright);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: flex;
+	align-items: center;
+	line-height: 0.925;
+	font-size: 0.875rem;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+		'Helvetica Neue', Arial, sans-serif;
+}
+
+.grid-cell.text-column {
+	max-width: none;
+}
+
+.grid-cell.id-column {
+	justify-content: flex-end;
+	color: #8a8a8a;
+	font-size: 0.8rem;
+	padding-right: 0.5rem;
+	font-weight: 400;
+}
+
+/* Row highlighting on hover - using display: contents wrapper */
+.grid-row {
+	display: contents;
+}
+
+.grid-row:hover .grid-cell {
+	background: rgba(255, 255, 255, 0.04);
+}
+
+/* Row selection - VS Code style */
+.grid-row:hover .grid-cell.row-selected {
+	background: rgba(255, 255, 255, 0.16);
+}
+
+.grid-cell.row-selected {
+	background: rgba(255, 255, 255, 0.12);
+}
+
+.grid-cell.row-selected:hover {
+	background: rgba(255, 255, 255, 0.16);
+}
+
+.actions-cell {
+	white-space: nowrap;
+	justify-content: flex-start;
+}
+
+.actions-cell .action-btn {
+	padding: 0.25rem 0.5rem;
+	font-size: 0.75rem;
+	margin-right: 0.25rem;
+}
+
+.empty-state {
+	text-align: center;
+	color: var(--text-muted);
+	font-style: italic;
+	padding: 2rem;
+}
+
+.list-count {
+	display: flex;
+	justify-content: center;
+	padding: 1.5rem 1rem 1rem 1rem;
+}
+
+.count-text {
+	color: var(--text-muted);
+	font-size: 1rem;
+	font-weight: 400;
+	opacity: 0.7;
+}
+
+.grid-cell.id-column {
+	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro',
+		monospace;
+	font-size: 0.8rem;
+}
+
+.grid-cell.id-column.row-selected {
+	color: #e0e0e0;
+	font-weight: 600;
+	text-shadow: none;
+	vertical-align: baseline;
+}
+
+.item-form {
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
+	border-radius: 8px;
+	padding: 1.5rem;
+	margin-top: 1rem;
+}
+
+.item-form h4 {
+	margin: 0 0 1rem 0;
+	color: var(--text-bright);
+}
+
+/* Form field styles now handled by FormField web component */
+
+.form-actions {
+	display: flex;
+	gap: 0.75rem;
+	margin-top: 1.5rem;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 1024px) {
+	.list-grid {
+		border-radius: 0;
+	}
+}
+
+@media (max-width: 768px) {
+	/* Mobile grid cells - readable fonts with tight spacing for good density */
+	.grid-cell {
+		padding: 0.15rem 0.3rem !important; /* Comfortable padding with good density */
+		font-size: 0.9rem !important; /* Keep readable font size */
+		line-height: 1.2 !important; /* Comfortable line height */
+		font-weight: 300 !important; /* Lighter font weight like reference app */
+	}
+
+	/* ID column - readable font with comfortable spacing */
+	.grid-cell.id-column {
+		font-size: 0.8rem !important; /* Keep readable font size */
+		padding-right: 0.3rem !important; /* Comfortable padding */
+		font-weight: 300 !important; /* Lighter font weight */
+	}
+
+	/* Grid headers - readable fonts with comfortable spacing */
+	.grid-header {
+		padding: 0.2rem 0.3rem !important; /* Comfortable padding */
+		font-size: 0.9rem !important; /* Keep readable font size */
+		line-height: 1.2 !important; /* Comfortable line height */
+		font-weight: 400 !important; /* Slightly heavier for headers but still light */
+	}
+
+	/* Compact list controls */
+	.list-controls {
+		margin-bottom: 0.5rem !important; /* Reduced from 0.75rem */
+		gap: 0.5rem !important; /* Reduced from 0.75rem */
+	}
+
+	/* Smaller action buttons */
+	.action-btn {
+		padding: 0.25rem 0.5rem !important; /* Reduced from 0.5rem 1rem */
+		font-size: 0.75rem !important; /* Reduced from 0.875rem */
+	}
+
+	/* Reduce list count padding */
+	.list-count {
+		padding: 0.75rem 0.5rem 0.5rem 0.5rem !important; /* Reduced from 1.5rem 1rem 1rem 1rem */
+	}
+
+	.count-text {
+		font-size: 0.8rem !important; /* Reduced from 1rem */
+	}
+
+	/* Compact form fields */
+	.item-form {
+		padding: 0.75rem !important; /* Reduced from 1.5rem */
+		margin-top: 0.5rem !important; /* Reduced from 1rem */
+	}
+
+	/* Remove mobile tap highlight and prevent bright flash */
+	.grid-row {
+		-webkit-tap-highlight-color: transparent;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+
+	.grid-row:active {
+		background: transparent !important;
+	}
+
+	.grid-row:active .grid-cell {
+		background: transparent !important;
+	}
+
+	/* Disable row selection highlighting on mobile only */
+	.grid-cell.row-selected {
+		background: transparent;
+	}
+
+	.grid-row:hover .grid-cell.row-selected {
+		background: transparent;
+	}
+
+	.grid-cell.row-selected:hover {
+		background: transparent;
+	}
+
+	/* Disable hover effects on mobile */
+	.grid-row:hover .grid-cell {
+		background: transparent;
+	}
+}
+
+@media (max-width: 480px) {
+	/* Extra small screens - readable fonts with tight spacing for good density */
+	.grid-cell {
+		padding: 0.1rem 0.25rem !important; /* Tight but comfortable padding */
+		font-size: 0.9rem !important; /* Keep readable font size */
+		line-height: 1.1 !important; /* Comfortable line height */
+		font-weight: 300 !important; /* Lighter font weight like reference app */
+	}
+
+	.grid-cell.id-column {
+		font-size: 0.8rem !important; /* Keep readable ID font size */
+		padding-right: 0.25rem !important; /* Comfortable padding */
+		font-weight: 300 !important; /* Lighter font weight */
+	}
+
+	/* Compact headers for small screens */
+	.grid-header {
+		padding: 0.15rem 0.25rem !important; /* Comfortable padding */
+		font-size: 0.9rem !important; /* Keep readable font size */
+		line-height: 1.1 !important; /* Comfortable line height */
+		font-weight: 400 !important; /* Slightly heavier for headers but still light */
+	}
+
+	/* Compact list controls */
+	.list-controls {
+		margin-bottom: 0.25rem !important;
+		gap: 0.25rem !important;
+	}
+
+	/* Tiny action buttons */
+	.action-btn {
+		padding: 0.2rem 0.4rem !important;
+		font-size: 0.7rem !important;
+	}
+
+	/* Minimal count padding */
+	.list-count {
+		padding: 0.5rem 0.25rem 0.25rem 0.25rem !important;
+	}
+
+	.count-text {
+		font-size: 0.75rem !important;
+	}
+
+	/* Compact forms */
+	.item-form {
+		padding: 0.5rem !important;
+		margin-top: 0.25rem !important;
+	}
+}
+
+/* =====================
+	SEARCH RESULTS
+	===================== */
+/* Search filtering - hide rows that don't match */
+.grid-row.hidden {
+	display: none !important;
+}
+
+/* Search results message */
+.search-results-message {
+	display: none;
+	text-align: center;
+	padding: 1rem;
+	color: var(--text-secondary);
+}
+
+.search-results-content {
+	max-width: 400px;
+	margin: 0 auto;
+}
+
+/* Has results state - simple style like old count */
+.search-results-content.has-results {
+	display: flex;
+	justify-content: center;
+	padding: 1.5rem 1rem 1rem 1rem;
+}
+
+.search-results-content.has-results .results-text {
+	color: var(--text-muted);
+	font-size: 1rem;
+	font-weight: 400;
+	opacity: 0.7;
+}
+
+/* Mobile responsive search results */
+@media (max-width: 768px) {
+	/* Compact search results */
+	.search-results-content.has-results {
+		padding: 0.75rem 0.5rem 0.5rem 0.5rem !important; /* Reduced from 1.5rem 1rem 1rem 1rem */
+	}
+
+	.results-text {
+		font-size: 0.8rem !important; /* Reduced from 1rem */
+	}
+}
+
+@media (min-width: 1025px) {
+	/* Reduce vertical padding on grid cells for desktop */
+	.grid-cell {
+		padding: 0.5rem 0.5rem !important;
+	}
+
+	/* Ensure desktop hover effects work properly */
+	.grid-row:hover .grid-cell {
+		background: rgba(255, 255, 255, 0.04) !important;
+	}
+
+	.grid-row:hover .grid-cell.row-selected {
+		background: rgba(255, 255, 255, 0.16) !important;
+	}
+
+	.grid-cell.row-selected {
+		background: rgba(255, 255, 255, 0.12) !important;
+	}
+
+	.grid-cell.row-selected:hover {
+		background: rgba(255, 255, 255, 0.16) !important;
+	}
+}

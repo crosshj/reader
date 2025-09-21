@@ -1,1 +1,82 @@
-/* EditModal Component Styles */
+/* Selected Edit Modal Styles */
+.selected-edit-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.selected-edit-modal-overlay.show {
+	opacity: 1;
+	visibility: visible;
+}
+
+.selected-edit-modal {
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
+	border-radius: 8px;
+	width: 90%;
+	max-width: 500px;
+	max-height: 80vh;
+	overflow: hidden;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.selected-edit-modal .modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1.5rem;
+	border-bottom: 1px solid var(--card-border);
+}
+
+.selected-edit-modal .modal-header h3 {
+	margin: 0;
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--text-bright);
+}
+
+.selected-edit-modal .modal-content {
+	padding: 1.5rem;
+	max-height: 60vh;
+	overflow-y: auto;
+}
+
+.selected-edit-modal .modal-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.75rem;
+	margin-top: 1.5rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--card-border);
+}
+
+/* Mobile modal actions - place cancel and save buttons next to each other */
+@media (max-width: 1024px) {
+	.selected-edit-modal .modal-actions {
+		flex-direction: row;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		padding: 1rem;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.selected-edit-modal .modal-actions .btn {
+		flex: 0 0 auto;
+		min-width: 60px;
+		max-width: 120px;
+		padding: 0.5rem 1rem;
+		font-size: 0.9rem;
+	}
+}

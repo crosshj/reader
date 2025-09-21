@@ -1,4 +1,5 @@
 import { html } from '../../_lib/utils.js';
+import './Menu.css';
 
 export class Menu {
 	constructor(reader) {

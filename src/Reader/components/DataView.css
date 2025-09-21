@@ -15,14 +15,19 @@
 
 /* Dynamic UI Pane Styles */
 .dynamic-ui-pane {
-	height: 100%;
 	display: flex;
 	flex-direction: column;
+	background: var(--card-bg);
+	border-radius: 6px;
+	overflow: hidden;
+	height: 100%;
+	width: 100%;
 }
 
 .dynamic-ui-content {
 	flex: 1;
-	overflow: auto;
+	padding: 1rem 1rem;
+	overflow-y: auto;
 }
 
 /* List UI Styles */
@@ -183,9 +188,23 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+	.dynamic-ui-pane {
+		border-radius: 0;
+	}
+
+	.dynamic-ui-content {
+		padding: 0.5rem;
+	}
+}
+
 @media (max-width: 768px) {
 	.data-view-content {
 		padding: 0.5rem;
+	}
+	
+	.dynamic-ui-content {
+		padding: 0.25rem !important; /* Reduced from 0.5rem */
 	}
 	
 	.list-controls {
@@ -205,5 +224,12 @@
 	
 	.grid-cell.actions-cell {
 		gap: 0.25rem;
+	}
+}
+
+@media (max-width: 480px) {
+	/* Minimal dynamic UI padding */
+	.dynamic-ui-content {
+		padding: 0.125rem !important;
 	}
 }

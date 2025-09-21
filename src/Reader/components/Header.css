@@ -1,0 +1,443 @@
+/* Header Component Styles */
+.reader-header {
+	padding: 0.5rem 0.5rem;
+	background: var(--card-bg);
+	position: relative;
+	height: 60px;
+	min-height: 60px;
+	flex-shrink: 0;
+}
+
+.reader-header h1 {
+	margin: 0;
+	font-size: 1.125rem;
+	font-weight: 600;
+	color: var(--text-bright);
+}
+
+/* Mobile header - Gmail style */
+.header-mobile {
+	display: none;
+}
+
+/* Desktop header - Original layout */
+.header-desktop {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	position: relative;
+}
+
+.header-center {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	max-width: 500px;
+}
+
+.header-left {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding-right: 250px; /* Ensure space for centered search */
+	z-index: 1;
+}
+
+.header-right {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	z-index: 1;
+}
+
+/* Search Input Styles */
+.search-input-container {
+	display: flex;
+	align-items: center;
+	background: color-mix(in srgb, var(--card-bg) 85%, white 15%);
+	border: none;
+	border-radius: 24px;
+	transition: all 0.2s ease;
+	position: relative;
+	min-width: 0; /* Allow flex shrinking */
+	flex-shrink: 1; /* Allow container to shrink if needed */
+}
+
+.search-input-container:focus-within {
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile search container - tighter spacing and full width */
+.mobile-search {
+	flex: 1;
+	display: flex;
+}
+
+.mobile-search .search-input-container {
+	flex: 1;
+	padding: 0.1em 0.3em;
+	gap: 0.2rem;
+	min-height: 2.5rem; /* Ensure enough height for larger font */
+}
+
+/* Desktop search container - more generous spacing */
+.desktop-search .search-input-container {
+	padding: 0.5em 1em;
+	background: #1f1f1f; /* Fallback for browsers that don't support color-mix */
+	background: color-mix(in srgb, var(--card-bg) 85%, white 15%);
+}
+
+.desktop-search {
+	width: 100%;
+	min-width: 300px;
+	max-width: 500px;
+}
+
+.desktop-search .search-hamburger,
+.desktop-search .clear-search-btn {
+	height: 2rem;
+	width: 2rem;
+}
+
+.desktop-search .clear-search-btn {
+	right: 0.4rem;
+}
+
+.search-hamburger {
+	background: none;
+	border: none;
+	color: #9aa0a6;
+	cursor: pointer;
+	padding: 0.125rem;
+	border-radius: 50%;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 1.5rem;
+	width: 1.5rem;
+	flex-shrink: 0;
+}
+
+.search-hamburger:hover {
+	background: rgba(255, 255, 255, 0.08);
+	color: #e8eaed;
+}
+
+.search-input {
+	background: none;
+	border: none;
+	color: #e8eaed;
+	font-size: 0.9rem;
+	flex: 1;
+	outline: none;
+	padding: 0;
+	font-weight: 400;
+	min-width: 0; /* Allow input to shrink */
+	width: 100%; /* Take full width of container */
+}
+
+.search-input::placeholder {
+	color: #9aa0a6;
+	font-weight: 400;
+}
+
+.clear-search-btn {
+	background: none;
+	border: none;
+	color: #9aa0a6;
+	cursor: pointer;
+	padding: 0.125rem;
+	border-radius: 50%;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 1.5rem;
+	width: 1.5rem;
+	flex-shrink: 0;
+	position: absolute;
+	right: 0.5rem;
+}
+
+.clear-search-btn:hover {
+	background: rgba(255, 255, 255, 0.08);
+	color: #e8eaed;
+}
+
+/* Button Styles */
+.selected-edit-btn {
+	background: none;
+	border: none;
+	color: var(--text-bright);
+	cursor: pointer;
+	padding: 0.5rem;
+	border-radius: 4px;
+	transition: background-color 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 2.5rem;
+	width: 2.5rem;
+}
+
+.selected-edit-btn:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.selected-edit-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.add-item-btn {
+	background: none;
+	border: none;
+	color: var(--text-bright);
+	cursor: pointer;
+	padding: 0.5rem;
+	border-radius: 4px;
+	transition: background-color 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 0.5rem;
+}
+
+.add-item-btn:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.add-item-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.hamburger-btn {
+	background: none;
+	border: none;
+	color: var(--text-bright);
+	cursor: pointer;
+	padding: 0.5rem;
+	border-radius: 4px;
+	transition: background-color 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 2.5rem;
+	width: 2.5rem;
+}
+
+.hamburger-btn:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+/* Desktop Layout */
+@media (min-width: 1025px) {
+	/* Make header background match page background on desktop */
+	.reader-header {
+		background: var(--bg) !important;
+	}
+	
+	/* Make search input background brighter than card background on desktop */
+	.search-input-container {
+		background: #1f1f1f !important; /* Fallback for browsers that don't support color-mix */
+		background: color-mix(in srgb, var(--card-bg) 97%, white) !important;
+	}
+	
+	/* Hide header when Files view is visible */
+	.reader-container:has(.reader-content:has(.files-list)) .reader-header {
+		display: none !important;
+	}
+	
+	.header-mobile {
+		display: none;
+	}
+
+	.header-desktop {
+		display: flex;
+	}
+
+	/* Hide hamburger menu on desktop since sidebar is always visible */
+	.hamburger-btn {
+		display: none;
+	}
+}
+
+/* Mobile Layout */
+@media (max-width: 1024px) {
+	/* Increase header height to accommodate larger search input */
+	.reader-header {
+		height: 56px !important;
+		min-height: 56px !important;
+		padding: 0.5rem 0.75rem !important;
+		background: var(--bg) !important; /* Match page background on mobile */
+	}
+
+	/* Mobile header styles */
+	.header-mobile {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		width: 100%;
+	}
+
+	.header-desktop {
+		display: none;
+	}
+
+	.search-input-container {
+		width: 100%;
+		margin: 0;
+	}
+
+	.reader-header {
+		padding: 0.75rem 1rem;
+	}
+
+	/* Reduce spacing between action icons in mobile header */
+	.header-mobile .header-right {
+		gap: 0rem;
+	}
+
+	.header-mobile .filter-icons-container {
+		gap: 0.125rem;
+	}
+}
+
+@media (max-width: 768px) {
+	/* Compact search input */
+	.search-input {
+		font-size: 0.9rem; /* Slightly bigger for better readability */
+	}
+}
+
+@media (max-width: 480px) {
+	/* Even more compact header */
+	.reader-header {
+		height: 52px !important;
+		min-height: 52px !important;
+		padding: 0.375rem 0.5rem !important;
+		background: var(--bg) !important; /* Match page background on mobile */
+	}
+
+	/* Compact search */
+	.search-input {
+		font-size: 0.85rem; /* Slightly smaller than 1024px but still readable */
+	}
+}
+
+/* =====================
+	FILTER DROPDOWN
+	===================== */
+.filter-dropdown-backdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.filter-dropdown-backdrop.show {
+	opacity: 1;
+	visibility: visible;
+}
+
+.filter-dropdown {
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
+	border-radius: 6px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	min-width: 200px;
+	max-width: 300px;
+	max-height: 300px;
+	overflow-y: auto;
+	z-index: 1001;
+	position: relative;
+}
+
+.filter-option {
+	padding: 0.75rem 1rem;
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	transition: background-color 0.2s;
+	border-bottom: 1px solid var(--card-border);
+}
+
+.filter-option:last-child {
+	border-bottom: none;
+}
+
+.filter-option:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+	cursor: pointer;
+}
+
+.filter-option.active,
+.filter-option.selected {
+	background-color: rgba(255, 255, 255, 0.15);
+	color: white;
+	font-weight: 500;
+}
+
+.filter-option .count {
+	font-size: 0.875rem;
+	opacity: 0.7;
+}
+
+.filter-option.active .count,
+.filter-option.selected .count {
+	opacity: 0.9;
+}
+
+/* =====================
+	FILTER ICONS
+	===================== */
+.filter-icons-container {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.filter-icon-btn {
+	background: none;
+	border: none;
+	color: var(--text-bright);
+	cursor: pointer;
+	padding: 0.5rem;
+	border-radius: 4px;
+	transition: all 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 2.5rem;
+	width: 2.5rem;
+	position: relative;
+}
+
+.filter-icon-btn svg {
+	pointer-events: none;
+}
+
+.filter-icon-btn:hover {
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	border-radius: 4px;
+}
+
+.filter-icon-btn.active {
+	color: var(--text-bright);
+}
