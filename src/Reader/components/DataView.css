@@ -199,12 +199,11 @@
 	}
 	
 	.grid-cell {
-		padding: 0.25rem 0.5rem !important;
+		padding: 0.1rem 0.5rem;
 		font-size: 0.875rem;
 	}
 	
 	.grid-cell.actions-cell {
-		flex-direction: column;
 		gap: 0.25rem;
 	}
 }
