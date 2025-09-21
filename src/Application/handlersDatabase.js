@@ -73,7 +73,28 @@ export function getHandlers(appController) {
 		const previousFileName = appController.currentFileName;
 		
 		try {
-			const arrayBuffer = await file.arrayBuffer();
+			let arrayBuffer;
+			if (file.arrayBuffer) {
+				// File picker path - get binary data directly
+				arrayBuffer = await file.arrayBuffer();
+			} else {
+				// Folder service path - need to handle base64 data
+				const fileData = await appController.folderService.readFile(file.name || file);
+				
+				if (typeof fileData === 'string') {
+					// Convert base64 string back to ArrayBuffer
+					const binaryString = atob(fileData);
+					const bytes = new Uint8Array(binaryString.length);
+					for (let i = 0; i < binaryString.length; i++) {
+						bytes[i] = binaryString.charCodeAt(i);
+					}
+					arrayBuffer = bytes.buffer;
+				} else {
+					// Already binary data
+					arrayBuffer = fileData;
+				}
+			}
+			
 			const dbInfo = await appController.databaseService.loadFromFile(arrayBuffer);
 			
 			dispatchDbState('loaded', 'Database loaded successfully', null, {
@@ -327,16 +348,7 @@ export function getHandlers(appController) {
 			try {
 				// Extract parameters from event detail or use defaults
 				const tableName = event?.detail?.tableName || 'items';
-
-				// Get the last item ID instead of hardcoded ID
-				const lastItem =
-					appController.databaseService.queryTable(tableName);
-				if (!lastItem || lastItem.length === 0) {
-					throw new Error('No items to delete');
-				}
-				const lastId = lastItem[lastItem.length - 1].id;
-				const whereClause = `id = ${lastId}`;
-
+				const whereClause = event?.detail?.whereClause || '1=0'; // Safe default that deletes nothing
 
 				if (!appController.databaseService.isLoaded()) {
 					throw new Error('No database loaded');

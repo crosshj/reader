@@ -32,8 +32,8 @@ export class DatabaseService {
 				});
 			}
 
-			// Load the database
-			this.db = new this.SQL.Database(new Uint8Array(fileData));
+		// Load the database
+		this.db = new this.SQL.Database(new Uint8Array(fileData));
 
 			// Get version and schema from metadata table
 			const metadata = this.getMetadata();

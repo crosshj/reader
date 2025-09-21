@@ -279,7 +279,6 @@ export class List {
 													? html`<div
 															class="grid-header actions-header"
 													  >
-															Actions
 													  </div>`
 													: ''}
 										  `
