@@ -44,6 +44,39 @@ for (const [density, size] of Object.entries(androidSizes)) {
     }
 }
 
+// Remove any existing splash screens and create empty splash drawable
+console.log('🗑️  Removing splash screens...');
+try {
+    execSync('find android/app/src/main/res -name "splash*" -delete', { stdio: 'pipe' });
+    console.log('✅ Removed splash screen files');
+} catch (error) {
+    console.log('⚠️  Some splash screen cleanup failed (this is usually fine)');
+}
+
+// Create empty splash drawable to prevent errors
+console.log('📄 Creating empty splash drawable...');
+const splashDrawableContent = `<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@android:color/white" />
+</shape>`;
+
+const splashDrawablePath = path.join(__dirname, 'android', 'app', 'src', 'main', 'res', 'drawable', 'splash.xml');
+fs.writeFileSync(splashDrawablePath, splashDrawableContent);
+console.log('✅ Created empty splash drawable');
+
+// Fix styles.xml to remove splash screen theme
+console.log('🎨 Fixing Android styles.xml...');
+const stylesPath = path.join(__dirname, 'android', 'app', 'src', 'main', 'res', 'values', 'styles.xml');
+if (fs.existsSync(stylesPath)) {
+    let stylesContent = fs.readFileSync(stylesPath, 'utf8');
+    // Replace Theme.SplashScreen with Theme.AppCompat.DayNight.NoActionBar
+    stylesContent = stylesContent.replace(/parent="Theme\.SplashScreen"/g, 'parent="Theme.AppCompat.DayNight.NoActionBar"');
+    // Replace splash drawable with transparent background
+    stylesContent = stylesContent.replace(/android:background">@drawable\/splash/g, 'android:background">@android:color/transparent');
+    fs.writeFileSync(stylesPath, stylesContent);
+    console.log('✅ Fixed styles.xml to remove splash screen theme');
+}
+
 // Clean up any adaptive icon references
 console.log('🧹 Cleaning up adaptive icon references...');
 try {
@@ -58,4 +91,4 @@ try {
 }
 
 console.log('✅ Simple icon generation complete!');
-console.log('📝 Note: Run "npm run generate:assets" for splash screens and other assets.');
+console.log('📝 App icons generated without adaptive/round variants. Splash screens disabled.');

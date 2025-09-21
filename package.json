@@ -20,7 +20,6 @@
     "run:android-dev": "npm run build && npx cap run android --target=emulator",
     "run:android-device": "npm run build && npx cap run android --target=device",
     "build:android-release": "npm run build && npx cap sync android && cd android && ./gradlew assembleRelease",
-    "generate:assets": "npx @capacitor/assets generate",
     "generate:simple-icons": "node generate-simple-icons.js",
     "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
@@ -43,7 +42,6 @@
   "devDependencies": {
     "@babel/core": "^7.23.0",
     "@babel/preset-env": "^7.23.0",
-    "@capacitor/assets": "^3.0.5",
     "babel-jest": "^30.0.3",
     "jest": "^30.0.3",
     "jest-environment-jsdom": "^30.0.3",

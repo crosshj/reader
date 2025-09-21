@@ -29,12 +29,12 @@ assets/
 
 ## Usage
 
-### Basic Usage (Icon Only)
+### Basic Usage (Simple Icons Only)
 
 1. Replace `assets/icon.png` with your new icon (1024x1024 PNG recommended)
-2. Run the generation script:
+2. Run the simple icon generation:
    ```bash
-   npm run generate:assets
+   npm run generate:simple-icons
    ```
 
 ### Simple Icons Only (No Adaptive/Round Icons)
@@ -46,10 +46,16 @@ If you want only simple icons without adaptive or round variants:
    ```bash
    npm run generate:simple-icons
    ```
-3. Optionally run the full asset generation for splash screens:
+   This will generate:
+   - Simple Android icons (no adaptive/round variants)
+   - Remove splash screens (app starts directly)
+   - Clean up any adaptive icon references
+
+3. For iOS and PWA assets, you can manually run:
    ```bash
-   npm run generate:assets
+   npx @capacitor/assets generate
    ```
+   (Note: This will create adaptive icons and splash screens that you'll need to clean up)
 
 ### Advanced Usage (Custom Assets)
 
@@ -91,6 +97,6 @@ You can provide specific assets for different platforms and use cases:
 
 ## Tools Used
 
-- `@capacitor/assets` - Official Capacitor asset generation tool
-- Generates all required sizes and formats automatically
-- Maintains proper transparency and color profiles
+- **Custom script** (`generate-simple-icons.js`) - Generates simple Android icons only
+- **ImageMagick** - For image resizing and processing
+- **Manual cleanup** - Removes adaptive icons, round icons, and splash screens

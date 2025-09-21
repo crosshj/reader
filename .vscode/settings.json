@@ -1,0 +1,30 @@
+{
+  "files.exclude": {
+    "android/**": true,
+    "ios/**": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.gradle": true,
+    "**/build": true
+  },
+  "search.exclude": {
+    "android/**": true,
+    "ios/**": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.gradle": true,
+    "**/build": true
+  },
+  "files.watcherExclude": {
+    "android/**": true,
+    "ios/**": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.gradle": true,
+    "**/build": true
+  },
+  "java.compile.nullAnalysis.mode": "disabled",
+  "java.configuration.updateBuildConfiguration": "disabled",
+  "java.autobuild.enabled": false,
+  "java.maxConcurrentBuilds": 1
+}

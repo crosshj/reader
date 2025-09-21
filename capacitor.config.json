@@ -12,7 +12,11 @@
       "overlaysWebView": true
     },
     "SplashScreen": {
-      "launchShowDuration": 0
+      "launchShowDuration": 0,
+      "launchAutoHide": true,
+      "showSpinner": false,
+      "splashFullScreen": false,
+      "splashImmersive": true
     },
     "DocumentTreeAccess": {
       "ios": {
