@@ -96,5 +96,16 @@ try {
     console.log('⚠️  Some cleanup operations failed (this is usually fine)');
 }
 
+// Fix AndroidManifest.xml to remove roundIcon references
+console.log('📱 Fixing AndroidManifest.xml...');
+const manifestPath = path.join(__dirname, 'android', 'app', 'src', 'main', 'AndroidManifest.xml');
+if (fs.existsSync(manifestPath)) {
+    let manifestContent = fs.readFileSync(manifestPath, 'utf8');
+    // Remove roundIcon references
+    manifestContent = manifestContent.replace(/android:roundIcon="@mipmap\/ic_launcher_round"\s*/g, '');
+    fs.writeFileSync(manifestPath, manifestContent);
+    console.log('✅ Fixed AndroidManifest.xml to remove roundIcon references');
+}
+
 console.log('✅ Simple icon generation complete!');
 console.log('📝 App icons generated without adaptive/round variants. Splash screens disabled.');
