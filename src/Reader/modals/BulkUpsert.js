@@ -22,12 +22,11 @@ export class BulkUpsertModal {
 				</div>
 				<div class="modal-content">
 					<p>Paste your data in the format: <code>id - name</code></p>
-					<textarea
-						id="bulk-upsert-data"
-						placeholder="Paste your data here..."
-						rows="15"
-						style="width: 100%; margin: 1rem 0; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; font-family: monospace; font-size: 12px;"
-					></textarea>
+					<form-field
+						field='{"name": "bulk-upsert-data", "type": "textarea", "displayName": "Bulk Data", "placeholder": "Paste your data here...", "rows": 15}'
+						value=""
+						mode="edit">
+					</form-field>
 				</div>
 				<div class="modal-actions">
 					<button
@@ -79,8 +78,9 @@ export class BulkUpsertModal {
 	}
 
 	processBulkUpsert() {
-		const textarea = this.reader.container.querySelector('#bulk-upsert-data');
-		const data = textarea.value.trim();
+		const formField = this.reader.container.querySelector('form-field');
+		const textarea = formField?.querySelector('textarea');
+		const data = textarea?.value?.trim();
 
 		if (!data) {
 			alert('Please enter some data to process.');

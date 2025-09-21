@@ -174,8 +174,9 @@ export class Reader {
 	}
 
 	handleBulkUpsertSubmit() {
-		const textarea = document.querySelector('#bulk-upsert-data');
-		const data = textarea.value.trim();
+		const formField = document.querySelector('form-field');
+		const textarea = formField?.querySelector('textarea');
+		const data = textarea?.value?.trim();
 
 		if (!data) {
 			alert('Please enter some data to process.');

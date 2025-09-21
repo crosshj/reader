@@ -1,0 +1,156 @@
+/* FormField Web Component Styles */
+form-field {
+	display: block;
+	width: 100%;
+	margin-bottom: 1rem;
+}
+
+form-field:last-child {
+	margin-bottom: 0;
+}
+
+form-field .form-field {
+	margin-bottom: 1rem;
+}
+
+form-field .form-field:last-child {
+	margin-bottom: 0;
+}
+
+form-field .form-field label {
+	display: block;
+	margin-bottom: 0.5rem;
+	font-weight: 500;
+	color: var(--text-bright);
+	font-size: 0.875rem;
+}
+
+form-field input,
+form-field select,
+form-field textarea {
+	width: 100%;
+	padding: 8px 12px;
+	border: 1px solid var(--card-border);
+	border-radius: 4px;
+	font-size: 14px;
+	font-family: inherit;
+	background: var(--bg);
+	color: var(--text-bright);
+	transition: border-color 0.2s ease;
+	box-sizing: border-box;
+}
+
+form-field textarea {
+	resize: vertical;
+	min-height: 60px;
+	line-height: 1.4;
+}
+
+form-field input:focus,
+form-field select:focus,
+form-field textarea:focus {
+	outline: none;
+	border-color: var(--primary-color, #007bff);
+	box-shadow: 0 0 0 2px var(--primary-color-alpha, rgba(0, 123, 255, 0.25));
+}
+
+form-field input:disabled,
+form-field select:disabled,
+form-field textarea:disabled {
+	background-color: #f5f5f5;
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+form-field input[type="checkbox"] {
+	width: auto;
+	margin: 0;
+	/* Use default browser checkbox styling to match Controls section */
+	appearance: auto;
+	-webkit-appearance: auto;
+	-moz-appearance: auto;
+}
+
+form-field select {
+	cursor: pointer;
+}
+
+/* Ensure consistent alignment for checkbox labels */
+form-field label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+	line-height: 1.4;
+}
+
+/* When checkbox is inside a label, ensure proper alignment */
+form-field label input[type="checkbox"] {
+	margin-right: 0;
+	margin-top: 0;
+	flex-shrink: 0;
+}
+
+/* For field configuration checkboxes, match the control-option style */
+form-field .field-config-col label {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.875rem;
+	cursor: pointer;
+}
+
+form-field .field-config-col input[type="checkbox"] {
+	width: auto;
+	margin: 0;
+}
+
+/* Mode-specific styles */
+form-field[mode="display"] input,
+form-field[mode="display"] select,
+form-field[mode="display"] textarea {
+	background-color: #f8f9fa;
+	border-color: #e9ecef;
+	cursor: default;
+}
+
+form-field[mode="display"] input:focus,
+form-field[mode="display"] select:focus,
+form-field[mode="display"] textarea:focus {
+	border-color: #e9ecef;
+	box-shadow: none;
+}
+
+/* Display mode specific styles */
+form-field .form-field-display {
+	display: block;
+	padding: 8px 12px;
+	color: #333;
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+/* Help text styling */
+form-field .form-field-help {
+	display: block;
+	margin-top: 0.25rem;
+	font-size: 0.75rem;
+	color: var(--text-muted, #888);
+	line-height: 1.3;
+}
+
+/* Control option styling for boolean fields */
+form-field .control-option {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.875rem;
+	cursor: pointer;
+	line-height: 1.4;
+	color: var(--text-bright);
+}
+
+/* Boolean fields should not have extra form-field wrapper spacing */
+form-field:has(.control-option) {
+	margin-bottom: 0;
+}

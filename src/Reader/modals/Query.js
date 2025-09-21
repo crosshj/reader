@@ -45,14 +45,11 @@ export class QueryModal {
 					</button>
 				</div>
 				<div class="modal-content">
-					<div class="form-field">
-						<label for="query-textarea">SQL Query</label>
-						<textarea
-							id="query-textarea"
-							placeholder="Enter your SQL query here..."
-							rows="10"
-						></textarea>
-					</div>
+					<form-field
+						field='{"name": "query", "type": "textarea", "displayName": "SQL Query", "placeholder": "Enter your SQL query here...", "rows": 10}'
+						value=""
+						mode="edit">
+					</form-field>
 				</div>
 				<div class="modal-actions">
 					<button

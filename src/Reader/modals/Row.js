@@ -76,14 +76,8 @@ export class RowModal {
 							return true;
 						})
 						?.map(
-							(field) => html`
-								<div class="form-field">
-									<label for="selected-edit-${field.name}"
-										>${field.displayName ||
-										field.name}</label
-									>
-									${this.generateFieldInput(field, selectedItem || {})}
-								</div>
+							(field, index) => html`
+								${this.generateFieldInput(field, selectedItem || {}, index === 0)}
 							`
 						)
 						.join('') || ''}
@@ -130,79 +124,20 @@ export class RowModal {
 		}
 	}
 
-	generateFieldInput(field, selectedItem) {
-		const fieldName = field.name;
-		const fieldValue = selectedItem[fieldName] || '';
-		const inputId = `selected-edit-${fieldName}`;
 
-		switch (field.type) {
-			case 'text':
-				return html`
-					<input
-						type="text"
-						id="${inputId}"
-						name="${fieldName}"
-						value="${fieldValue}"
-						placeholder="${field.placeholder || ''}"
-					/>
-				`;
 
-			case 'enum':
-				const options = field.options || [];
-				return html`
-					<select id="${inputId}" name="${fieldName}">
-						<option value="">Select ${field.displayName || fieldName}...</option>
-						${options.map(option => html`
-							<option value="${option}" ${fieldValue === option ? 'selected' : ''}>
-								${option}
-							</option>
-						`).join('')}
-					</select>
-				`;
-
-			case 'datetime':
-				return html`
-					<input
-						type="datetime-local"
-						id="${inputId}"
-						name="${fieldName}"
-						value="${fieldValue ? new Date(fieldValue).toISOString().slice(0, 16) : ''}"
-					/>
-				`;
-
-			case 'number':
-				return html`
-					<input
-						type="number"
-						id="${inputId}"
-						name="${fieldName}"
-						value="${fieldValue}"
-						placeholder="${field.placeholder || ''}"
-						${field.min !== undefined ? `min="${field.min}"` : ''}
-						${field.max !== undefined ? `max="${field.max}"` : ''}
-					/>
-				`;
-
-			case 'boolean':
-				return html`
-					<input
-						type="checkbox"
-						id="${inputId}"
-						name="${fieldName}"
-						${fieldValue ? 'checked' : ''}
-					/>
-				`;
-
-			default:
-				return html`
-					<input
-						type="text"
-						id="${inputId}"
-						name="${fieldName}"
-						value="${fieldValue}"
-						placeholder="${field.placeholder || ''}"
-					/>
-				`;
-		}
+	generateFieldInput(field, selectedItem, isFirstField = false) {
+		// Use the FormField web component instead of manual field generation
+		const fieldValue = selectedItem[field.name] || '';
+		
+		return html`
+			<form-field
+				field='${JSON.stringify(field)}'
+				value="${fieldValue}"
+				mode="edit"
+				data-field-name="${field.name}"
+				${isFirstField ? 'autofocus' : ''}>
+			</form-field>
+		`;
 	}
 }

@@ -355,48 +355,7 @@
 	overflow-y: auto;
 }
 
-.selected-edit-modal .form-field {
-	margin-bottom: 1rem;
-}
-
-.selected-edit-modal .form-field label {
-	display: block;
-	margin-bottom: 0.5rem;
-	font-weight: 500;
-	color: var(--text-bright);
-}
-
-.selected-edit-modal .form-field input {
-	width: 100%;
-	padding: 0.75rem;
-	border: 1px solid var(--card-border);
-	border-radius: 4px;
-	background: var(--bg);
-	color: var(--text);
-	font-size: 0.875rem;
-}
-
-.selected-edit-modal .form-field input:focus {
-	outline: none;
-	border-color: var(--accent);
-	box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
-}
-
-.selected-edit-modal .form-field select {
-	width: 100%;
-	padding: 0.75rem;
-	border: 1px solid var(--card-border);
-	border-radius: 4px;
-	background: var(--bg);
-	color: var(--text);
-	font-size: 0.875rem;
-}
-
-.selected-edit-modal .form-field select:focus {
-	outline: none;
-	border-color: var(--accent);
-	box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
-}
+/* Selected edit modal form fields now handled by FormField web component */
 
 .selected-edit-modal .modal-actions {
 	display: flex;
@@ -567,6 +526,21 @@
 	flex-direction: column;
 }
 
+.metadata-modal .modal-content {
+	flex: 1 !important;
+	overflow-y: auto !important;
+	min-height: 0 !important;
+	max-height: calc(90vh - 140px) !important;
+}
+
+.metadata-modal .modal-actions {
+	flex-shrink: 0 !important;
+	background-color: var(--card-bg) !important;
+	border-top: 1px solid var(--border-color);
+	position: sticky !important;
+	bottom: 0 !important;
+}
+
 /* Field Configuration Styles */
 .field-config {
 	border: 1px solid var(--card-border);
@@ -580,7 +554,7 @@
 	justify-content: space-between;
 	align-items: center;
 	padding: 0.75rem 1rem;
-	background: var(--card-border);
+	background: var(--bg-secondary);
 	border-bottom: 1px solid var(--card-border);
 }
 
@@ -613,7 +587,8 @@
 }
 
 .field-config-row {
-	display: flex;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
 	gap: 1rem;
 	margin-bottom: 1rem;
 }
@@ -623,11 +598,11 @@
 }
 
 .field-config-col {
-	flex: 1;
+	/* Grid items don't need flex properties */
 }
 
 .field-config-col.full-width {
-	flex: 1 1 100%;
+	grid-column: 1 / -1; /* Span all columns */
 }
 
 .field-config-col label {
@@ -689,7 +664,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 1.5rem;
+	padding: 1rem 1.5rem;
 	border-bottom: 1px solid var(--border-color);
 }
 
@@ -703,46 +678,34 @@
 .modal-content {
 	flex: 1;
 	overflow-y: auto;
+	min-height: 0; /* Allow flex item to shrink below content size */
+	max-height: calc(90vh - 120px); /* Subtract space for header and actions */
+}
+
+/* FormField spacing handled by component itself */
+
+/* Section spacing in modals */
+.modal-content .section {
+	padding-block: 0;
+	padding-inline: 1.5rem;
+}
+
+/* Modal actions don't need section padding */
+.modal-content .modal-actions {
 	padding: 1.5rem;
 }
 
-.modal-content .form-field {
-	margin-bottom: 1.5rem;
+/* Section headers in modals */
+.modal-content .section > h4 {
+	margin: 0 0 0.75rem 0;
+	margin-top: 1.5rem;
+	font-weight: 600;
+	font-size: 1rem;
+	color: var(--text-bright);
 }
 
-.modal-content .form-field:last-child {
-	margin-bottom: 0;
-}
-
-.modal-content label {
-	display: block;
-	margin-bottom: 0.5rem;
-	font-weight: 500;
-	color: var(--text-primary);
-}
-
-.modal-content input,
-.modal-content textarea {
-	width: 100%;
-	padding: 0.75rem;
-	background: var(--card-bg);
-	border: 1px solid var(--border-color);
-	border-radius: 6px;
-	color: var(--text-primary);
-	font-size: 0.875rem;
-	transition: border-color 0.2s;
-}
-
-.modal-content input:focus,
-.modal-content textarea:focus {
-	outline: none;
-	border-color: var(--primary-color);
-	box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.modal-content textarea {
-	resize: vertical;
-	min-height: 80px;
+.modal-content .section:first-child > h4 {
+	margin-top: 0;
 }
 
 .modal-actions {
@@ -751,7 +714,8 @@
 	justify-content: flex-end;
 	padding: 1.5rem;
 	border-top: 1px solid var(--border-color);
-	background-color: var(--surface-color);
+	background-color: var(--card-bg);
+	flex-shrink: 0; /* Prevent actions from shrinking */
 }
 
 .btn {
@@ -831,6 +795,11 @@
 	font-size: 0.875rem;
 }
 
+.bulk-upsert-modal .modal-content form-field textarea {
+	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+	font-size: 12px;
+}
+
 /* Query Modal Styles */
 .query-modal-overlay {
 	position: fixed;
@@ -871,7 +840,11 @@
 	transform: scale(1);
 }
 
-.query-modal .modal-content textarea {
+.query-modal .modal-content {
+	padding: 1.5rem;
+}
+
+.query-modal .modal-content form-field textarea {
 	min-height: 200px;
 	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 	font-size: 0.875rem;
@@ -1524,34 +1497,7 @@
 	color: var(--text-bright);
 }
 
-.form-field {
-	margin-bottom: 1rem;
-}
-
-.form-field label {
-	display: block;
-	margin-bottom: 0.5rem;
-	font-weight: 600;
-	color: var(--text-bright);
-}
-
-.form-field input,
-.form-field select {
-	width: 100%;
-	padding: 0.5rem;
-	border: 1px solid var(--card-border);
-	border-radius: 4px;
-	background: var(--bg);
-	color: var(--text-bright);
-	font-size: 0.875rem;
-}
-
-.form-field input:focus,
-.form-field select:focus {
-	outline: none;
-	border-color: #3b82f6;
-	box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
+/* Form field styles now handled by FormField web component */
 
 .form-actions {
 	display: flex;

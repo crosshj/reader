@@ -1,6 +1,9 @@
 import './index.css';
 import { dispatchEvent } from './_lib/utils.js';
 
+// Register all web components first
+import './web-components.js';
+
 import { ApplicationController } from './Application/ApplicationController.js';
 import { ReaderController } from './Reader/ReaderController.js';
 

@@ -208,7 +208,8 @@ export class ReaderController {
 	 * Handle execute query button click
 	 */
 	handleExecuteQuery(ui) {
-		const textarea = ui.container.querySelector('#query-textarea');
+		const formField = ui.container.querySelector('form-field');
+		const textarea = formField?.querySelector('textarea');
 		const query = textarea?.value?.trim();
 		
 		if (!query) {

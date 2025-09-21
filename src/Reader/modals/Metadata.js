@@ -47,94 +47,78 @@ export class MetadataModal {
 					</button>
 				</div>
 				<form id="metadata-form" class="modal-content">
-					<div class="form-field">
-						<label for="metadata-title">Title</label>
-						<input
-							type="text"
-							id="metadata-title"
-							name="title"
+					<div class="section">
+						<form-field
+							field='{"name": "title", "type": "text", "displayName": "Title", "placeholder": "Enter database title"}'
 							value="${currentSchema?.title || ''}"
-							placeholder="Enter database title"
-						/>
-					</div>
-					<div class="form-field">
-						<label for="metadata-description">Description</label>
-						<textarea
-							id="metadata-description"
-							name="description"
-							placeholder="Enter database description"
-						>${currentSchema?.description || ''}</textarea>
-					</div>
-					<div class="form-field">
-						<label for="metadata-table-name">Table Name</label>
-						<input
-							type="text"
-							id="metadata-table-name"
-							name="tableName"
+							mode="edit">
+						</form-field>
+						<form-field
+							field='{"name": "description", "type": "textarea", "displayName": "Description", "placeholder": "Enter database description", "rows": 3}'
+							value="${currentSchema?.description || ''}"
+							mode="edit">
+						</form-field>
+						<form-field
+							field='{"name": "tableName", "type": "text", "displayName": "Table Name", "placeholder": "Enter table name"}'
 							value="${currentSchema?.tableName || 'items'}"
-							placeholder="Enter table name"
-						/>
+							mode="edit">
+						</form-field>
 					</div>
-					<div class="form-field">
-						<label>Controls</label>
-						<div class="controls-config">
-							<label class="control-option">
-								<input
-									type="checkbox"
-									name="showHeaders"
-									${currentSchema?.showHeaders !== false ? 'checked' : ''}
-								/>
-								Show Headers
-							</label>
-							<label class="control-option">
-								<input
-									type="checkbox"
-									name="controls"
-									value="add"
-									${currentSchema?.controls?.includes('add') ? 'checked' : ''}
-								/>
-								Add
-							</label>
-							<label class="control-option">
-								<input
-									type="checkbox"
-									name="controls"
-									value="edit"
-									${currentSchema?.controls?.includes('edit') ? 'checked' : ''}
-								/>
-								Edit
-							</label>
-							<label class="control-option">
-								<input
-									type="checkbox"
-									name="controls"
-									value="delete"
-									${currentSchema?.controls?.includes('delete') ? 'checked' : ''}
-								/>
-								Delete
-							</label>
-							<label class="control-option">
-								<input
-									type="checkbox"
-									name="controls"
-									value="bulk-upsert"
-									${currentSchema?.controls?.includes('bulk-upsert') ? 'checked' : ''}
-								/>
-								Bulk Upsert
-							</label>
-							<label class="control-option">
-								<input
-									type="checkbox"
-									name="controls"
-									value="selected-edit"
-									${currentSchema?.controls?.includes('selected-edit') ? 'checked' : ''}
-								/>
-								Selected Edit
-							</label>
+					<div class="section">
+						<h4>Controls</h4>
+						<div class="field-config">
+							<div class="field-config-body">
+								<div class="field-config-row">
+									<div class="field-config-col">
+										<form-field
+											field='{"name": "control-add", "type": "boolean", "displayName": "Add"}'
+											value="${currentSchema?.controls?.includes('add') ? 'true' : 'false'}"
+											mode="edit">
+										</form-field>
+									</div>
+									<div class="field-config-col">
+										<form-field
+											field='{"name": "control-edit", "type": "boolean", "displayName": "Edit"}'
+											value="${currentSchema?.controls?.includes('edit') ? 'true' : 'false'}"
+											mode="edit">
+										</form-field>
+									</div>
+									<div class="field-config-col">
+										<form-field
+											field='{"name": "control-delete", "type": "boolean", "displayName": "Delete"}'
+											value="${currentSchema?.controls?.includes('delete') ? 'true' : 'false'}"
+											mode="edit">
+										</form-field>
+									</div>
+								</div>
+								<div class="field-config-row">
+									<div class="field-config-col">
+										<form-field
+											field='{"name": "control-selected-edit", "type": "boolean", "displayName": "Selected Edit"}'
+											value="${currentSchema?.controls?.includes('selected-edit') ? 'true' : 'false'}"
+											mode="edit">
+										</form-field>
+									</div>
+									<div class="field-config-col">
+										<form-field
+											field='{"name": "control-bulk-upsert", "type": "boolean", "displayName": "Bulk Upsert"}'
+											value="${currentSchema?.controls?.includes('bulk-upsert') ? 'true' : 'false'}"
+											mode="edit">
+										</form-field>
+									</div>
+									<div class="field-config-col">
+										<form-field
+											field='{"name": "showHeaders", "type": "boolean", "displayName": "Show Headers"}'
+											value="${currentSchema?.showHeaders !== false ? 'true' : 'false'}"
+											mode="edit">
+										</form-field>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div class="form-field">
-						<label>Fields</label>
+					<div class="section">
+						<h4>Fields</h4>
 						<div id="fields-container">
 							${this.generateFieldsConfig()}
 						</div>
@@ -247,14 +231,24 @@ export class MetadataModal {
 		const formData = new FormData(form);
 
 		// Get basic metadata
+		const controls = [];
+		if (formData.has('control-add')) controls.push('add');
+		if (formData.has('control-edit')) controls.push('edit');
+		if (formData.has('control-delete')) controls.push('delete');
+		if (formData.has('control-selected-edit')) controls.push('selected-edit');
+		if (formData.has('control-bulk-upsert')) controls.push('bulk-upsert');
+
 		const metadata = {
 			title: formData.get('title') || '',
 			description: formData.get('description') || '',
 			tableName: formData.get('tableName') || 'items',
 			showHeaders: formData.has('showHeaders'),
-			controls: formData.getAll('controls'),
+			controls: controls,
 			fields: this.currentSchema?.fields || []
 		};
+
+		// Log the transformed data being sent to backend
+		console.log('Metadata form submit - data being sent to backend:', metadata);
 
 		// Update current schema
 		if (this.reader.currentSchema) {
@@ -364,107 +358,81 @@ export class MetadataModal {
 						<div class="field-config-body">
 							<div class="field-config-row">
 								<div class="field-config-col">
-									<label>Name</label>
-									<input
-										type="text"
-										name="field-name-${index}"
+									<form-field
+										field='{"name": "field-name", "type": "text", "displayName": "Name"}'
 										value="${field.name}"
-									/>
+										mode="edit">
+									</form-field>
 								</div>
 								<div class="field-config-col">
-									<label>Display Name</label>
-									<input
-										type="text"
-										name="field-displayName-${index}"
+									<form-field
+										field='{"name": "field-displayName", "type": "text", "displayName": "Display Name"}'
 										value="${field.displayName || field.name}"
-									/>
+										mode="edit">
+									</form-field>
 								</div>
 								<div class="field-config-col">
-									<label>Type</label>
-									<select name="field-type-${index}">
-										<option value="text" ${field.type === 'text' ? 'selected' : ''}>Text</option>
-										<option value="integer" ${field.type === 'integer' ? 'selected' : ''}>Integer</option>
-										<option value="datetime" ${field.type === 'datetime' ? 'selected' : ''}>DateTime</option>
-										<option value="enum" ${field.type === 'enum' ? 'selected' : ''}>Enum</option>
-									</select>
+									<form-field
+										field='{"name": "field-type", "type": "enum", "displayName": "Type", "options": ["text", "integer", "datetime", "enum"]}'
+										value="${field.type}"
+										mode="edit">
+									</form-field>
 								</div>
 							</div>
 							<div class="field-config-row">
 								<div class="field-config-col">
-									<label>
-										<input
-											type="checkbox"
-											name="field-required-${index}"
-											${field.required ? 'checked' : ''}
-										/>
-										Required
-									</label>
+									<form-field
+										field='{"name": "field-required", "type": "boolean", "displayName": "Required"}'
+										value="${field.required ? 'true' : 'false'}"
+										mode="edit">
+									</form-field>
 								</div>
 								<div class="field-config-col">
-									<label>
-										<input
-											type="checkbox"
-											name="field-readOnly-${index}"
-											${field.readOnly ? 'checked' : ''}
-										/>
-										Read Only
-									</label>
+									<form-field
+										field='{"name": "field-readOnly", "type": "boolean", "displayName": "Read Only"}'
+										value="${field.readOnly ? 'true' : 'false'}"
+										mode="edit">
+									</form-field>
 								</div>
 								<div class="field-config-col">
-									<label>
-										<input
-											type="checkbox"
-											name="field-primaryKey-${index}"
-											${field.primaryKey ? 'checked' : ''}
-										/>
-										Primary Key
-									</label>
+									<form-field
+										field='{"name": "field-primaryKey", "type": "boolean", "displayName": "Primary Key"}'
+										value="${field.primaryKey ? 'true' : 'false'}"
+										mode="edit">
+									</form-field>
 								</div>
 							</div>
 							${field.type === 'enum'
 								? html`
 										<div class="field-config-row">
 											<div class="field-config-col full-width">
-												<label>Options (comma-separated)</label>
-												<input
-													type="text"
-													name="field-options-${index}"
+												<form-field
+													field='{"name": "field-options", "type": "text", "displayName": "Options (comma-separated)", "placeholder": "Option1, Option2, Option3", "helpText": "First option will be the default filter value"}'
 													value="${field.options?.join(', ') || ''}"
-													placeholder="Option1, Option2, Option3"
-												/>
-												<small class="field-help">
-													First option will be the default filter value
-												</small>
+													mode="edit">
+												</form-field>
 											</div>
 										</div>
 										<div class="field-config-row">
 											<div class="field-config-col">
-												<label>
-													<input
-														type="checkbox"
-														name="field-filterable-${index}"
-														${field.filterable ? 'checked' : ''}
-													/>
-													Enable Filter Icon
-												</label>
+												<form-field
+													field='{"name": "field-filterable", "type": "boolean", "displayName": "Enable Filter Icon"}'
+													value="${field.filterable ? 'true' : 'false'}"
+													mode="edit">
+												</form-field>
 											</div>
-										</div>
-										${field.filterable
-											? html`
-													<div class="field-config-row">
-														<div class="field-config-col">
-															<label>
-													<input
-														type="checkbox"
-														name="field-showAllOption-${index}"
-														${field.showAllOption !== false ? 'checked' : ''}
-													/>
-													Show "All" option in filter dropdown
-															</label>
-														</div>
+											${field.filterable
+												? html`
+													<div class="field-config-col">
+														<form-field
+															field='{"name": "field-showAllOption", "type": "boolean", "displayName": "Show All Option"}'
+															value="${field.showAllOption !== false ? 'true' : 'false'}"
+															mode="edit">
+														</form-field>
 													</div>
-											  `
-											: ''}
+												`
+												: ''}
+										</div>
 								  `
 								: ''}
 						</div>
