@@ -1249,7 +1249,7 @@
 	.grid-cell {
 		padding: 0.1rem 0.25rem !important; /* Tight but comfortable padding */
 		font-size: 0.9rem !important; /* Keep readable font size */
-		line-height: 1.15 !important; /* Comfortable line height */
+		line-height: 1.1 !important; /* Comfortable line height */
 		font-weight: 300 !important; /* Lighter font weight like reference app */
 	}
 
@@ -1263,7 +1263,7 @@
 	.grid-header {
 		padding: 0.15rem 0.25rem !important; /* Comfortable padding */
 		font-size: 0.9rem !important; /* Keep readable font size */
-		line-height: 1.15 !important; /* Comfortable line height */
+		line-height: 1.1 !important; /* Comfortable line height */
 		font-weight: 400 !important; /* Slightly heavier for headers but still light */
 	}
 
