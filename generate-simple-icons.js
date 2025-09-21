@@ -44,5 +44,18 @@ for (const [density, size] of Object.entries(androidSizes)) {
     }
 }
 
+// Clean up any adaptive icon references
+console.log('🧹 Cleaning up adaptive icon references...');
+try {
+    // Remove adaptive icon directories and files
+    execSync('rm -rf android/app/src/main/res/mipmap-anydpi-v26', { stdio: 'pipe' });
+    execSync('find android/app/src/main/res -name "*_foreground.png" -delete', { stdio: 'pipe' });
+    execSync('find android/app/src/main/res -name "*_background.png" -delete', { stdio: 'pipe' });
+    execSync('find android/app/src/main/res -name "*_round.png" -delete', { stdio: 'pipe' });
+    console.log('✅ Cleaned up adaptive icon files');
+} catch (error) {
+    console.log('⚠️  Some cleanup operations failed (this is usually fine)');
+}
+
 console.log('✅ Simple icon generation complete!');
 console.log('📝 Note: Run "npm run generate:assets" for splash screens and other assets.');
