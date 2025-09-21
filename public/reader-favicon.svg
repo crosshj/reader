@@ -3,13 +3,13 @@
     <path
         d="M576 96H224a64 64 0 0 0-64 64v640a64 64 0 0 0 64 64h544a64 64 0 0 0 64-64V352l-256-256H576z"
         fill="white"
-        stroke="#666666"
+        stroke="#000000"
         stroke-width="48"
     />
     <!-- Folded corner - exactly aligned with document border -->
     <polyline 
         points="576,96 576,352 832,352"
-        stroke="#666666"
+        stroke="#000000"
         stroke-width="48"
         fill="none"
         stroke-linecap="round"
@@ -21,7 +21,7 @@
         y1="544"
         x2="288"
         y2="544"
-        stroke="#666666"
+        stroke="#000000"
         stroke-width="48"
     />
     <line
@@ -29,12 +29,12 @@
         y1="704"
         x2="288"
         y2="704"
-        stroke="#666666"
+        stroke="#000000"
         stroke-width="48"
     />
     <polyline 
         points="288, 384, 450 ,384"
-        stroke="#666666"
+        stroke="#000000"
         stroke-width="48"
         fill="none"
     />

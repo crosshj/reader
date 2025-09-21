@@ -68,6 +68,12 @@ console.log('✅ Created empty splash drawable');
 console.log('🎨 Fixing Android styles.xml...');
 const stylesPath = path.join(__dirname, 'android', 'app', 'src', 'main', 'res', 'values', 'styles.xml');
 if (fs.existsSync(stylesPath)) {
+    // Create backup outside of Android resources directory
+    const backupPath = path.join(__dirname, 'android', 'app', 'src', 'main', 'res', 'values', 'styles.xml.backup');
+    if (fs.existsSync(backupPath)) {
+        fs.unlinkSync(backupPath);
+    }
+    
     let stylesContent = fs.readFileSync(stylesPath, 'utf8');
     // Replace Theme.SplashScreen with Theme.AppCompat.DayNight.NoActionBar
     stylesContent = stylesContent.replace(/parent="Theme\.SplashScreen"/g, 'parent="Theme.AppCompat.DayNight.NoActionBar"');
