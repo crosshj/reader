@@ -64,24 +64,7 @@ const splashDrawablePath = path.join(__dirname, 'android', 'app', 'src', 'main',
 fs.writeFileSync(splashDrawablePath, splashDrawableContent);
 console.log('✅ Created empty splash drawable');
 
-// Fix styles.xml to remove splash screen theme
-console.log('🎨 Fixing Android styles.xml...');
-const stylesPath = path.join(__dirname, 'android', 'app', 'src', 'main', 'res', 'values', 'styles.xml');
-if (fs.existsSync(stylesPath)) {
-    // Create backup outside of Android resources directory
-    const backupPath = path.join(__dirname, 'android', 'app', 'src', 'main', 'res', 'values', 'styles.xml.backup');
-    if (fs.existsSync(backupPath)) {
-        fs.unlinkSync(backupPath);
-    }
-    
-    let stylesContent = fs.readFileSync(stylesPath, 'utf8');
-    // Replace Theme.SplashScreen with Theme.AppCompat.DayNight.NoActionBar
-    stylesContent = stylesContent.replace(/parent="Theme\.SplashScreen"/g, 'parent="Theme.AppCompat.DayNight.NoActionBar"');
-    // Replace splash drawable with transparent background
-    stylesContent = stylesContent.replace(/android:background">@drawable\/splash/g, 'android:background">@android:color/transparent');
-    fs.writeFileSync(stylesPath, stylesContent);
-    console.log('✅ Fixed styles.xml to remove splash screen theme');
-}
+// Note: styles.xml modifications removed since we're using regular theme instead of launch theme
 
 // Clean up any adaptive icon references
 console.log('🧹 Cleaning up adaptive icon references...');
