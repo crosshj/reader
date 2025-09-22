@@ -1,4 +1,4 @@
-import { html } from '../../_lib/utils.js';
+import { html, isMobile } from '../../_lib/utils.js';
 import './shared.css';
 import './Query.css';
 
@@ -97,6 +97,9 @@ GROUP BY status;"
 	}
 
 	focusFirstInput(modal) {
+		// Don't auto-focus on mobile
+		if (isMobile()) return;
+		
 		// Find the first focusable input element in the modal
 		const firstInput = modal.querySelector('input:not([type="hidden"]), select, textarea');
 		if (firstInput) {

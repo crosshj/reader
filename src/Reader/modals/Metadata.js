@@ -1,4 +1,4 @@
-import { html, dispatchEvent } from '../../_lib/utils.js';
+import { html, dispatchEvent, isMobile } from '../../_lib/utils.js';
 import './shared.css';
 import './Metadata.css';
 
@@ -564,6 +564,9 @@ export class MetadataModal {
 	}
 
 	focusFirstInput(modal) {
+		// Don't auto-focus on mobile
+		if (isMobile()) return;
+		
 		// Find the first focusable input element in the modal
 		const firstInput = modal.querySelector('input:not([type="hidden"]), select, textarea');
 		if (firstInput) {
