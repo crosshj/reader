@@ -151,9 +151,10 @@ export class DatabaseService {
 			const values = Object.values(data);
 			const placeholders = values.map(() => '?').join(', ');
 
-			const sql = `INSERT INTO ${tableName} (${columns.join(
-				', '
-			)}) VALUES (${placeholders})`;
+			// Escape column names to handle SQL reserved keywords
+			const escapedColumns = columns.map(col => `\`${col}\``).join(', ');
+
+			const sql = `INSERT INTO ${tableName} (${escapedColumns}) VALUES (${placeholders})`;
 			const stmt = this.db.prepare(sql);
 			stmt.run(values);
 
@@ -192,8 +193,9 @@ export class DatabaseService {
 				}
 			}
 
+			// Escape column names to handle SQL reserved keywords
 			const setClause = Object.keys(data)
-				.map((key) => `${key} = ?`)
+				.map((key) => `\`${key}\` = ?`)
 				.join(', ');
 			const values = Object.values(data);
 
@@ -749,7 +751,7 @@ export class DatabaseService {
 	async migrateEnumData(tableName, fieldName, oldOptions, newOptions) {
 		try {
 			// Get all items from database
-			const itemsQuery = `SELECT id, ${fieldName} FROM ${tableName}`;
+			const itemsQuery = `SELECT id, \`${fieldName}\` FROM ${tableName}`;
 			const itemsResult = this.db.exec(itemsQuery);
 			const items = itemsResult?.[0]?.values || [];
 
@@ -786,7 +788,7 @@ export class DatabaseService {
 
 					if (newValue) {
 						updateStatements.push(
-							`UPDATE ${tableName} SET ${fieldName} = '${newValue}' WHERE id = ${id}`
+							`UPDATE ${tableName} SET \`${fieldName}\` = '${newValue}' WHERE id = ${id}`
 						);
 					}
 				}
@@ -882,7 +884,7 @@ export class DatabaseService {
 
 					// Try a different approach - check if we can insert a test value
 					try {
-						const testQuery = `INSERT INTO ${tableName} (${fieldName}) VALUES ('TEST_VALUE')`;
+						const testQuery = `INSERT INTO ${tableName} (\`${fieldName}\`) VALUES ('TEST_VALUE')`;
 						this.db.exec(testQuery);
 					} catch (testError) {
 						if (testError.message.includes('CHECK constraint')) {
@@ -1153,8 +1155,8 @@ export class DatabaseService {
 				throw new Error(`No primary key found for table ${tableName}`);
 			}
 
-			// Prepare field names for the upsert statement
-			const fieldNames = fields.map((field) => field.name).join(', ');
+			// Prepare field names for the upsert statement (escape for SQL reserved keywords)
+			const fieldNames = fields.map((field) => `\`${field.name}\``).join(', ');
 
 			// Process each item and build individual upsert queries
 			for (const item of items) {
@@ -1199,14 +1201,14 @@ export class DatabaseService {
 				const updateClause = updateFields
 					.map((field) => {
 						const fieldValue = valueStrings[fields.indexOf(field)];
-						return `${field.name} = ${fieldValue}`;
+						return `\`${field.name}\` = ${fieldValue}`;
 					})
 					.join(', ');
 
 				const upsertQuery = `
 					INSERT INTO ${tableName} (${fieldNames})
 					VALUES (${valueStrings.join(', ')})
-					ON CONFLICT(${primaryKeyField.name}) DO UPDATE SET
+					ON CONFLICT(\`${primaryKeyField.name}\`) DO UPDATE SET
 					${updateClause}
 				`;
 

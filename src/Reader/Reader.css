@@ -78,5 +78,6 @@
 @media (max-width: 1024px) {
 	.reader-content {
 		padding: 0 !important;
+		background: transparent !important;
 	}
 }

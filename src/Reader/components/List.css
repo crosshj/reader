@@ -59,6 +59,14 @@
 	padding-bottom: 33vh;
 }
 
+/* Mobile padding adjustments */
+@media (max-width: 1024px) {
+	.list-grid-container {
+		padding-top: 0.5rem;
+		padding-bottom: 2rem;
+	}
+}
+
 .list-grid {
 	display: grid;
 	background: var(--card-bg);
@@ -261,6 +269,7 @@
 @media (max-width: 1024px) {
 	.list-grid {
 		border-radius: 0;
+		background: transparent !important;
 	}
 }
 
@@ -271,6 +280,11 @@
 		font-size: 0.9rem !important; /* Keep readable font size */
 		line-height: 1.2 !important; /* Comfortable line height */
 		font-weight: 300 !important; /* Lighter font weight like reference app */
+	}
+
+	/* Make grid rows transparent on mobile */
+	.grid-row {
+		background: transparent !important;
 	}
 
 	/* ID column - readable font with comfortable spacing */
@@ -499,6 +513,11 @@
 	/* Reduce vertical padding on grid cells for desktop */
 	.grid-cell {
 		padding: 0.5rem 0.5rem !important;
+	}
+
+	/* Reduce bottom padding on desktop */
+	.list-grid-container {
+		padding-bottom: 2rem;
 	}
 
 	/* Ensure desktop hover effects work properly */
