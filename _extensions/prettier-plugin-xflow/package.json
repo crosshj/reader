@@ -1,0 +1,10 @@
+{
+  "name": "prettier-plugin-xflow",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "peerDependencies": {
+    "prettier": "^3.0.0"
+  }
+}
+  

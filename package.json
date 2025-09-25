@@ -45,6 +45,8 @@
     "babel-jest": "^30.0.3",
     "jest": "^30.0.3",
     "jest-environment-jsdom": "^30.0.3",
+    "prettier": "^3.6.2",
+    "prettier-plugin-xflow": "file:./_extensions/prettier-plugin-xflow",
     "vite": "^7.0.4"
   }
 }

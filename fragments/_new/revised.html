@@ -1,0 +1,42 @@
+<x-page>
+  <script
+    type="x-flow"
+    key="userLogin"
+  >
+    if (global.user === undefined) {
+      setData('loginError', 'Please log in first');
+      navigate('/login');
+    } else {
+      query('sp_GetUserData');
+      navigate('/dashboard');
+    }
+  </script>
+
+  <script key="userLogin">
+    if (global.user === undefined) {
+      setData('loginError', 'Please log in first');
+      navigate('/login');
+    } else {
+      query('sp_GetUserData');
+      navigate('/dashboard');
+    }
+  </script>
+
+  <x-navbar label="Features / Flows / Alert">
+    <x-box
+      display="flex"
+      justifyContent="flex-end"
+      alignItems="center"
+      gap="2"
+    >
+      <x-button
+        href="/features"
+        label="back"
+      />
+    </x-box>
+  </x-navbar>
+
+  <x-content>
+    <x-typography variant="h2"> Contents </x-typography>
+  </x-content>
+</x-page>

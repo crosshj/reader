@@ -1,0 +1,25 @@
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "plugins": ["prettier-plugin-xflow"],
+  "overrides": [
+    {
+      "files": "*.xml",
+      "options": {
+        "parser": "html",
+        "singleAttributePerLine": true
+      }
+    },
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "xflow-html",
+        "singleAttributePerLine": true
+      }
+    }
+  ]
+}
