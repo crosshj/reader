@@ -1,0 +1,42 @@
+{
+  "scopeName": "injection.x-flow-js-html",
+  "injectionSelector": "L:text.html.basic,L:text.html",
+  "patterns": [
+    {
+      "begin": "<x-flow",
+      "end": "</x-flow>",
+      "beginCaptures": {
+        "0": { "name": "entity.name.tag.html" }
+      },
+      "endCaptures": {
+        "0": { "name": "entity.name.tag.html" }
+      },
+      "patterns": [
+        {
+          "match": "\\s+([a-zA-Z][a-zA-Z0-9-]*)",
+          "captures": {
+            "1": { "name": "entity.other.attribute-name.html" }
+          }
+        },
+        {
+          "match": "=",
+          "name": "punctuation.separator.key-value.html"
+        },
+        {
+          "match": "\\\"[^\\\"]*\\\"",
+          "name": "string.quoted.double.html"
+        },
+        {
+          "match": "'[^']*'",
+          "name": "string.quoted.single.html"
+        },
+        {
+          "begin": ">",
+          "end": "(?=</x-flow>)",
+          "contentName": "source.js",
+          "patterns": [{ "include": "source.js" }]
+        }
+      ]
+    }
+  ]
+}

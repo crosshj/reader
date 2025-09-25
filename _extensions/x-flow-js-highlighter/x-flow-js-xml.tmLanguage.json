@@ -1,0 +1,25 @@
+{
+  "scopeName": "injection.x-flow-js-xml",
+  "injectionSelector": "L:text.xml",
+  "patterns": [
+    {
+      "begin": "<x-flow",
+      "end": "</x-flow>",
+      "beginCaptures": {
+        "0": { "name": "meta.tag.xml" }
+      },
+      "endCaptures": {
+        "0": { "name": "meta.tag.xml" }
+      },
+      "contentName": "source.js",
+      "patterns": [{ "include": "source.js" }]
+    }
+  ]
+}
+
+
+
+
+
+
+
