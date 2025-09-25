@@ -1,16 +1,13 @@
 <x-page>
-  <script
-    type="x-flow"
-    key="userLogin"
-  >
+  <x-flow key="foo">
     if (global.user === undefined) {
-      setData('loginError', 'Please log in first');
-      navigate('/login');
+        setData('loginError', 'Please log in first');
+        navigate('/login');
     } else {
-      query('sp_GetUserData');
-      navigate('/dashboard');
+        query('sp_GetUserData');
+                navigate('/dashboard');
     }
-  </script>
+  </x-flow>
 
   <script key="userLogin">
     if (global.user === undefined) {
