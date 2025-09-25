@@ -1,0 +1,134 @@
+Page (107):
+  Data (296)
+  Flow (211):
+    SetData (176)
+    Query (88)
+    Confirm (64)
+    Navigate (40)
+    Refresh (18)
+    LocalData (25)
+    Insert (5)
+    TriggerFlow (2)
+  PageContent (104):
+    Typography (568)
+    Box (426)
+    Button (243)
+    TextField (200)
+    IconButton (77)
+    Spacing (53)
+    NestedTable (52):
+      Column (401)
+      Level (46):
+        Header (27)
+      Nest (23)
+      Addon (20)
+      RowModifier (3)
+      Total (2)
+      RowAction (3)
+    Link (40)
+    Checkbox (29)
+    Alert (23)
+    Card (21):
+      DataViz (13):
+        XAxis (13)
+        Bar (13)
+        YAxis (13)
+        Tooltip (7)
+        CartesianGrid (4)
+        Legend (3)
+        LabelList (3)
+        Line (3)
+        Area (2)
+        Scatter (1)
+    Divider (20)
+    Step (19)
+    Switch (9)
+    Subscribe (15)
+    Input (14)
+    Chip (11)
+    Label (10)
+    CodeBlock (9)
+    Dialog (8)
+    LinkMenu (7)
+    Fragment (6)
+    Icon (6)
+    Action (6)
+    Stack (5)
+    JsonView (5)
+    MUI (5)
+    Autocomplete (4)
+    Map (4)
+    Signature (4)
+    Dashboard (3)
+    Validate (3)
+    FilePicker (3)
+    String (3)
+    Logo (3)
+    Pagination (2)
+    Gantt (1)
+    Kanban (1)
+    SidebarContent (1)
+    TimeClockPage (1)
+    OptionList (1)
+    ActionsControl (1)
+    Pill (1)
+    Labellist (1)
+    Schema (1):
+      Object (1)
+      Number (1)
+      Date (1)
+  PageNavBar (102)
+  Trigger (14)
+  Subscribe (15)
+SidebarMenu (37)
+GridContainer (30)
+Tabs (2):
+  Tab (4)
+TabContainer (2):
+  Tab (4)
+PageFragment (7)
+
+# Cross-cutting Components (used across multiple parent contexts)
+CrossCutting:
+  Box (426):
+    Parents: PageContent, PageNavBar, Button, Typography, TextField, CodeBlock, Column, Alert, Card, Checkbox, Chip, Dialog, Divider, GridContainer, IconButton, JsonView, Link, Logo, Map, Query, SetData, Signature, Spacing, Switch, TabContainer
+  Typography (568):
+    Parents: PageContent, PageNavBar, Box, Button, Card, Case, Checkbox, Column, Data, Dialog, Divider, GridContainer, Icon, IconButton, Level, Radio, Spacing, Step, Switch, TextField
+  Button (243):
+    Parents: PageContent, PageNavBar, Box, Typography, TextField, CodeBlock, Column, Alert, Checkbox, Divider, Icon, Input, JsonView, Link, Navigate, SetData, Signature, Stack
+  Column (401):
+    Parents: NestedTable, Addon, Button, Case, Checkbox, CodeBlock, Header, IconButton, Level, Link, Radio, TextField, Typography
+  Case (105):
+    Parents: Flow, Button, Column, Confirm, LocalData, Navigate, Pill, Query, Refresh, SetData, Validate
+    Children:
+      BreakFlow (5)
+  TextField (200):
+    Parents: PageContent, Box, Typography, CodeBlock, Column, Data, GridContainer, IconButton, Input, Signature, Spacing, Stack
+  Spacing (53):
+    Parents: PageContent, Box, Typography, TextField, Button, Case, CodeBlock, Column, Dashboard, Divider, Input, Link, Stack
+  SetData (176):
+    Parents: Flow, Case, Confirm, LocalData, Query, Refresh
+  NestedTable (52):
+    Parents: PageContent, Box, Typography, TextField, CodeBlock, Link, Spacing
+  Data (296):
+    Parents: Page, Box, CodeBlock, PageFragment, SetData, SidebarContent
+  Query (88):
+    Parents: Flow, Case, Confirm, Insert, Navigate, SetData
+  IconButton (77):
+    Parents: PageContent, Box, Typography, Button, Case, Column, Input
+  Link (40):
+    Parents: PageContent, Box, Typography, Column, IconButton, Level, Map
+  Alert (23):
+    Parents: PageContent, Box, CodeBlock, Query, Spacing
+  CodeBlock (9):
+    Parents: PageContent, Box, Typography, Link, Spacing
+  Checkbox (29):
+    Parents: PageContent, Box, Typography, CodeBlock, Column
+  Navigate (40):
+    Parents: Flow, Case, LocalData, Query
+  GridContainer (30):
+    Parents: PageContent, Box, Button, Spacing, Switch
+  Divider (20):
+    Parents: PageContent, Box, Typography, Button, Spacing, Switch
+  Switch (9):
+    Parents: PageContent, Box, Typography, CodeBlock, Column, Data
