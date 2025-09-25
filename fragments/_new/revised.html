@@ -1,39 +1,29 @@
 <x-page>
-  <x-flow key="foo">
-    if (global.user === undefined) {
-        setData('loginError', 'Please log in first');
-        navigate('/login');
-    } else {
-        query('sp_GetUserData');
-                navigate('/dashboard');
-    }
-  </x-flow>
+	<x-flow key="login">
+		if (global.user === undefined) {
+		  setData('loginError', 'Please log in first');
+		  navigate('/login');
+		} else {
+		  query('sp_GetUserData');
+		  navigate('/dashboard');
+		}
+	</x-flow>
 
-  <script key="userLogin">
-    if (global.user === undefined) {
-      setData('loginError', 'Please log in first');
-      navigate('/login');
-    } else {
-      query('sp_GetUserData');
-      navigate('/dashboard');
-    }
-  </script>
+	<x-navbar label="Features / Example">
+		<x-box
+			display="flex"
+			justifyContent="flex-end"
+			alignItems="center"
+			gap="2"
+		>
+			<x-button
+				href="/features"
+				label="back"
+			/>
+		</x-box>
+	</x-navbar>
 
-  <x-navbar label="Features / Flows / Alert">
-    <x-box
-      display="flex"
-      justifyContent="flex-end"
-      alignItems="center"
-      gap="2"
-    >
-      <x-button
-        href="/features"
-        label="back"
-      />
-    </x-box>
-  </x-navbar>
-
-  <x-content>
-    <x-typography variant="h2"> Contents </x-typography>
-  </x-content>
+	<x-content>
+		<x-typography variant="h2"> Contents </x-typography>
+	</x-content>
 </x-page>

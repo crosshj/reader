@@ -1,0 +1,25 @@
+<svg width="215" height="320" viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .label {
+      font-family: sans-serif;
+      font-weight: bold;
+      font-size: 32px;
+      fill: black;
+      text-anchor: middle;
+    }
+    .nx {
+      font-family: sans-serif;
+      font-weight: bold;
+      font-size: 64px;
+      fill: white;
+      text-anchor: middle;
+    }
+  </style>
+  <g style="" transform="matrix(1.358567, 0, 0, 1.575747, -54.830521, -1.114638)">
+    <path d="M 59.979 53.28 L 188.768 53.28 L 182.667 158.888 L 124.196 179.874 L 66.05 159.77 L 59.979 53.28 Z" style="fill: rgb(230, 77, 37);"></path>
+    <path d="M 126.374 167.181 L 173.366 152.245 L 177.619 61.69 L 127.127 61.695 L 126.374 167.181 Z" style="fill: rgb(245, 132, 72);"></path>
+  </g>
+  <text class="nx" x="119.599" y="211.113" style="white-space: pre; font-size: 106.4px;" transform="matrix(0.968645, 0, 0, 1, -2.823795, 4.199664)">NX</text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 128px; font-weight: 700; white-space: pre;" x="-8.329" y="2.007"><tspan x="232.069" y="222.725" style="font-size: 128px; word-spacing: 0px;">HTML</tspan></text>
+  <text style="fill: rgb(255, 255, 255); font-family: Arial, sans-serif; font-size: 128px; font-weight: 700; white-space: pre;" x="598.051" y="223.229"><tspan style="fill-opacity: 0.54; font-weight: 400; font-size: 128px; word-spacing: 0px;">Next</tspan></text>
+</svg>

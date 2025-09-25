@@ -1,0 +1,90 @@
+<x-page>
+	<x-data
+		name="activePath"
+		defaultValue=""
+	></x-data>
+
+	<x-data
+		name="pageContent"
+		defaultValue=""
+	></x-data>
+
+	<x-data
+		name="pathData"
+		route="/framework/#/:rest*"
+	></x-data>
+
+	<x-subscribe
+		path="pathData"
+		handler="pathChange"
+	></x-subscribe>
+
+	<x-flow key="pathChange">
+		// de-dupe path change events
+		if (global_pathData.rest === global_activePath) {
+		  return;
+		}
+		setData('activePath', global_pathData.rest || 'dashboard');
+		setData('pageContent', '');
+		query('ui.sp_UIContextGetComponentsByUserID', {
+		  fragment: global_activePath
+		}, 'pageContent');
+	</x-flow>
+
+	<x-box
+		sx:position="absolute"
+		sx:top="0"
+		sx:left="0"
+		sx:display="grid"
+		sx:gridTemplateColumns="auto 1fr"
+		sx:gridTemplateRows="auto 1fr"
+		sx:height="100vh"
+		sx:width="100vw"
+		className="standardLayoutContainer"
+		class="standardLayoutContainer"
+	>
+		<x-box
+			sx:background="red"
+			sx:gridColumn="1/span 2"
+			sx:height="0px"
+			sx:width="100%"
+		></x-box>
+
+		<x-include
+			href="./menu.html"
+			sx:background="var(--palettePrimaryMain)"
+			sx:width="260px"
+			sx:height="100%"
+		></x-include>
+
+		<x-box
+			sx:background="var(--paletteBackgroundDefault)"
+			sx:height="100%"
+			sx:width="100%"
+			sx:overflow="hidden"
+			sx:display="block"
+		>
+			<x-box
+				sx:display="WHEN global_pageContent THEN none ELSE flex"
+				width="100%"
+				height="100%"
+				background="inherit"
+				alignItems="center"
+				justifyContent="center"
+			>
+				<x-box
+					sx:width="55px"
+					sx:height="55px"
+					sx:backgroundImage="url(/loading.svg)"
+					sx:backgroundSize="cover"
+					sx:opacity="0.1"
+				></x-box>
+			</x-box>
+			<x-fragment
+				contents="global_pageContent"
+				showLoading="false"
+				sx:height="300px"
+			></x-fragment>
+		</x-box>
+	</x-box>
+</x-page>

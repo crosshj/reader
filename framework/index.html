@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>Framework</title>
+		<link
+			rel="stylesheet"
+			href="./framework.css"
+		/>
+	</head>
+
+	<body style="opacity: 0"></body>
+
+	<script type="module">
+		import { loadFragment, initializeFramework } from './framework.js';
+		// Ensure components are registered before loading fragment
+		initializeFramework();
+
+		// Wait for DOM to be ready
+		document.addEventListener('DOMContentLoaded', async () => {
+			try {
+				// Load the fragment
+				await loadFragment('../fragments/layout/standard.html');
+
+				// Wait 0.5 seconds before showing content
+				await new Promise((resolve) => setTimeout(resolve, 500));
+
+				// Show the body after loading is complete
+				document.body.style.opacity = '1';
+			} catch (error) {
+				console.error('Failed to load framework:', error);
+				document.body.innerHTML =
+					'<div style="padding: 20px; color: red;">Failed to load framework</div>';
+				document.body.style.opacity = '1';
+			}
+		});
+	</script>
+</html>
