@@ -1,0 +1,173 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='tablesWithFormsData'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresTablesWithFormsData'
+    />
+
+    <Data
+        name='nestedTableExample3'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableAddShifts'
+    />
+
+    <!--DATA_COLOR -->
+    <Data
+        name="colorOptions"
+        getData="featuresPropsDynamic"
+        defaultValue='no_default'
+    />
+    <Data name="colorSelectedValues" />
+
+    <!--DATA_SHAPE -->
+    <Data name="shapeOptions" defaultValue='[]' />
+    <Data name="shapeSelectedValues" />
+
+    <!--DATA_TEXTURE-->
+    <Data name="textureOptions" defaultValue='[]' />
+    <Data name="textureSelectedValues" />
+
+    <!--COLOR<=>SHAPE SUBSCRIBE-->
+    <Subscribe
+        path="colorSelectedValues"
+        handler="getShapeFlow"
+    />
+    <Flow key="getShapeFlow">
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresPropsDynamic"
+            param_color='global_colorSelectedValues[flowArgs.index]'
+        >
+            <SetData name='global_shapeOptions[flowArgs.index]' data='results' />
+
+            <!-- cleanup dependent children -->
+            <SetData name='global_textureOptions[flowArgs.index]' data='undefined' />
+
+            <SetData name='global_shapeSelectedValues[flowArgs.index]' data='undefined' />
+            <SetData name='global_textureSelectedValues[flowArgs.index]' data='undefined' />
+        </Query>
+    </Flow>
+
+    <!-- SHAPE=TEXTURE SUBSCRIBE-->
+    <Subscribe
+        path='shapeSelectedValues'
+        handler='getTextureFlow'
+    />
+    <Flow key="getTextureFlow">
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresPropsDynamic"
+            param_shape='global_shapeSelectedValues[flowArgs.index]'
+        >
+            <SetData name='global_textureOptions[flowArgs.index]' data='results' />
+
+            <SetData name='global_textureSelectedValues[flowArgs.index]' data='undefined' />
+        </Query>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Tables / Forms">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box sx="py:2">
+            <Markdown>
+                related: [props/dynamicBind](/features/props/dynamicBind)
+            </Markdown>
+        </Box>
+
+        <NestedTable
+            source='tablesWithFormsData'
+            collapsible='false'
+            indented='false'
+        >
+            <Column label='' labelHidden>
+                <Typography debug>{{row_index}}</Typography>
+            </Column>
+            <Column label='NAME'>
+                <TextField
+                    xs='3'
+                    value="row_name"
+                />
+            </Column>
+            <Column label='COLOR'>
+                <TextField
+                    select
+                    xs='6'
+                    value="global_colorSelectedValues[row_index]"
+                    options="global_colorOptions"
+                />
+            </Column>
+            <Column label='SHAPE'>
+                <TextField
+                    select
+                    xs='6'
+                    value="global_shapeSelectedValues[row_index]"
+                    options="global_shapeOptions[row_index]"
+                />
+            </Column>
+            <Column label='TEXTURE'>
+                <TextField
+                    select
+                    xs='6'
+                    value="global_textureSelectedValues[row_index]"
+                    options="global_textureOptions[row_index]"
+                />
+            </Column>
+        </NestedTable>
+
+
+        <Spacing space='2' />
+        <Alert label='Example 3 Description:'>
+            This table demonstrates the following:
+                - ...
+        </Alert>
+        <Spacing space='2' />
+        <Card
+            label='Example 3:'
+            showMenu='false'
+            collapsible='true'
+            collapsed='false'
+        >
+            <Typography variant='h1'>
+                Editable Cells
+            </Typography>
+            <Spacing space='2' />
+            <NestedTable
+                source="nestedTableExample3"
+            >
+                <Column
+                    key="shiftsShift"
+                    label="Shift"
+                    variant='input2'
+                />
+                <Column
+                    key="shiftsSupervisor"
+                    label="Supervisor"
+                />
+                <Column
+                    key='shiftsStartTime'
+                    label='Start Time'
+                />
+                <Column
+                    key='shiftsExpectedHours'
+                    label='Expected Hours'
+                />
+            </NestedTable>
+        </Card>
+
+    </PageContent>
+</Page>

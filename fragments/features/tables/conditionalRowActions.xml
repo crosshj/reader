@@ -1,0 +1,183 @@
+<Page>
+    <!-- DATA -->
+    <!-- <Data
+        getData='ui.sp_GetResourceListViews'
+        param_ListViewName='static_jobOrdersChild_applications' />
+    <Data
+        name='jobOrdersChild_applicationsfull'
+        proc='ui.sp_GetOptionLists'
+        procArg='jobOrdersChild_applications'
+    /> -->
+
+     <Data
+        name="mocked"
+        getData='ui.sp_GetResourceListViews'
+        param_ListViewName='static_jobOrdersChildApplication_applications'
+    />
+
+    <!-- FLOWS -->
+
+    <!-- MODAL WINDOWS -->
+    <!-- INTAKE -->
+    <Dialog
+        useData='IntakeInterestForm_show'
+        hideCloseButton='false'
+        height='375'
+        width='1000'
+    >
+        <Typography variant='h1'>
+            I am an interest form.
+        </Typography>
+    </Dialog>
+    <Dialog
+        useData='IntakeScheduleInterview_show'
+        hideCloseButton='true'
+        height='375'
+        width='1000'
+    >
+        <Typography variant='h1'>
+            I am an interview form.
+        </Typography>
+    </Dialog>
+    <Dialog
+        useData='IntakeDetailsForm_show'
+        hideCloseButton='true'
+        height='375'
+        width='1000'
+    >
+        <Typography variant='h1'>
+            I am a details form.
+        </Typography>
+    </Dialog>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Tables / Conditional Row Actions'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+
+            <Markdown>
+                Notice that some rows show icons and others do not.
+                This is conditional row "icons" not necessarily "actions", but the concept applies to actions as well?
+            </Markdown>
+
+
+            <!-- <Typography variant='h2'>
+                Application
+            </Typography> -->
+            <!-- <Box
+                display='flex'
+                justifyContent='space-between'
+                gap='2'
+                sx='py:2'
+            >
+                <Input
+                    label='Search'
+                    useData='childApplicationsSearch'
+                />
+                <IconButton
+                    icon='Menu'
+                    color='grey700'
+                />
+            </Box> -->
+
+            
+            <NestedTable source='mocked'>
+                <Nest>
+                    <Level
+                        param='appStepID.hidden'
+                        name='appStepName'
+                    />
+                </Nest>
+                <Column
+                    key='appStatus'
+                    label='Status'
+                    variant='icon'
+                >
+                    <Case
+                        when='Warning'
+                        icon='Warning'
+                        color='amber800'
+                    />
+                    <Case
+                        when='Complete'
+                        icon='CheckCircle'
+                        color='green800'
+                    />
+                </Column>
+                <Column
+                    key='appSubStepName'
+                    label='Name'
+                />
+                <Column
+                    key='appUserType'
+                    label='User Type Required'
+                />
+                <Column variant='actions'>
+                    <RowAction
+                        icon='OpenInNewRounded'
+                        color='grey700'
+                        useData='applicationCurrent'
+                        useFlow='openModal'
+                    />
+                </Column>
+            </NestedTable>
+           
+
+            <!-- <NestedTable
+                source='mocked'
+                collapsible="false"
+            >
+                <Nest>
+                    <Level
+                        param='appStepID.hidden'
+                        name='appStepName'
+                    />
+                </Nest>
+                <Column
+                    key='appStatus'
+                    label='Status'
+                    variant='icon'
+                >
+                    <Case
+                        when='Warning'
+                        icon='Warning'
+                        color='amber800'
+                    />
+                    <Case
+                        when='Complete'
+                        icon='CheckCircle'
+                        color='green800'
+                    />
+                </Column>
+                <Column
+                    key='appSubStepName'
+                    label='Name'
+                />
+                <Column
+                    key='appUserType'
+                    label='User Type Required'
+                />
+                <Column label='actions' labelHidden align='right'>
+                    <IconButton
+                        icon='OpenInNewRounded'
+                        color='grey700'
+                        useData='applicationCurrent'
+                        useFlow='openModal'
+                    />
+                </Column>
+            </NestedTable> -->
+    </PageContent>
+</Page>

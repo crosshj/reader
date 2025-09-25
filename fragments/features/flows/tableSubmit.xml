@@ -1,0 +1,110 @@
+<Page>
+    <!-- DATA -->
+
+    <!-- FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Flows / Table Submit'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <GridContainer>
+            <Box
+                display='flex'
+                flexDirection='column'
+                alignItems='flex-start'
+                sx='py:2'
+                xs='12'
+            >
+                <Typography variant='h2'>Select Application Steps</Typography>
+                <Spacing space='2'/>
+                <NestedTable
+                    source='AllSteps'
+                    indented='false'
+                    collapsible='false'
+                >
+                    <Column 
+                        label='Checkbox'
+                        labelHidden
+                        width='min-content'
+                    >
+                        <Checkbox
+                            index='{{row_StepID}}'
+                            useData='selectedSteps'
+                            checked='{{global_selectedSteps INCLUDES row_StepID}}'
+                        />
+                    </Column>
+                    <Column 
+                        label='Step Name'
+                        width='max-content'
+                    >
+                        <Typography>{{row_StepName}}</Typography>
+                    </Column>
+                </NestedTable>
+                <Button
+                    label='Apply Steps'
+                    flow='createTemplate'
+                />
+            </Box>
+            <Box
+                display='flex'
+                flexDirection='column'
+                alignItems='flex-start'
+                sx='py:2'
+                xs='12'
+            >
+                <Typography variant='h2'>Select Application Substeps</Typography>
+                <Spacing space='2'/>
+                <TextField
+                    label='Application Template ID'
+                    value='global_manualAppTemplateID'
+                    fullWidth
+                />
+                <Spacing space='2'/>
+                <NestedTable
+                    source='AllSubSteps'
+                    indented='false'
+                >
+                    <Nest>
+                        <Level param='StepID'>
+                            <Typography>{{row_StepName}}</Typography>
+                        </Level>
+                    </Nest>
+                    <Column 
+                        label='Checkbox'
+                        labelHidden
+                        width='min-content'
+                    >
+                        <Checkbox
+                            index='{{row_SubStepID}}'
+                            useData='selectedSubSteps'
+                            checked='{{global_selectedSubSteps INCLUDES row_SubStepID}}'
+                        />
+                    </Column>
+                    <Column 
+                        label='Name'
+                        width='max-content'
+                    >
+                        <Typography>{{row_SubStepName}}</Typography>
+                    </Column>
+                </NestedTable>
+                <Button
+                    label='Apply Substeps'
+                    flow='applySubSteps'
+                />
+            </Box>
+        </GridContainer>
+    </PageContent>
+</Page>

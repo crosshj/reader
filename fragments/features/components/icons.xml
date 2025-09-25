@@ -1,0 +1,167 @@
+<Page>
+    <!-- <Data
+        name="featuresMUIIconList"
+        getData='featuresMuiIconsList'
+        defaultValue='{"items":undefined}'
+    /> -->
+    <Data
+        name="featuresMUIIconList"
+        defaultValue='{"items":undefined}'
+    />
+
+    <Trigger handler="loadIconsList" />
+    <Flow key="loadIconsList" debug>
+        <Query
+            exec='ui.sp_GetResourceListViews'
+            param_ListViewName='static_featuresMuiIconsList'
+        >
+            <SetData
+                name='global_featuresMUIIconList'
+                data='results'
+            />
+        </Query>
+    </Flow>
+
+    <PageNavBar label="Features / Components / MUI Icons">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <PageContent>
+        <Markdown>
+            ### Font-based Icons
+            You can use almost anything from [here](https://mui.com/material-ui/material-icons/) using this pattern.
+
+            Below is an example of one icon using this pattern.  Search the above page for more.
+            ```xml
+                <Icon
+                    icon="AcUnit"
+                    fontSize="large"
+                    color="#f00"
+                />
+            ```
+        </Markdown>
+
+        <Icon
+            icon="AcUnit"
+            fontSize="large"
+            color="#f00"
+        />
+
+        <Markdown>
+            ### Custom Icons
+
+            These icons were added to framework because they were not found in font-based or MUI SVG icons.
+
+            Below is the complete list of custom icons we support.
+            ```xml
+                <Icon
+                    icon="LowPriority"
+                    fontSize="large"
+                    color="{{ this currently won't work }}"
+                />
+            ```
+        </Markdown>
+        <Box
+            className="icons-container"
+            sx:mt="30px"
+            sx:mb="20px"
+        >
+            <Box
+                display="grid"
+                rowGap="80px"
+                columnGap="16px"
+                gridTemplateColumns="repeat(auto-fill, 185px)"
+                gridAutoRows="75px"
+                sx:background="inherit"
+                sx:minHeight="20px"
+                sx:minWidth="20px"
+            >
+                <Map items="global_featuresMUIIconList.custom">
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="space-between"
+                    >
+                        <Icon icon="{{item_name}}" fontSize="large"/>
+                        <Typography>{{item_name}}</Typography>
+                    </Box>
+                </Map>
+            </Box>
+        </Box>
+
+
+        <Markdown>
+            ### SVG Icons
+
+            Here are all the icons that are currently built into Hominid lib.
+
+            These are used in tables almost exclusively in tables where column is variant="icon".
+            We limit the number of fonts imported here to reduce bundle size.
+            Prefer font-based, this is a target for deprecation.
+
+            ```xml
+                <Column
+                    key='status'
+                    variant="icon"
+                    label='status'
+                    labelHidden
+                >
+                    <Case
+                        when='complete'
+                        icon='CheckCircle'
+                        color='green800'
+                    />
+                    <Case
+                        when='error'
+                        icon='Error'
+                        color='amber800'
+                    />
+                    <Case
+                        when='unknown'
+                        icon='Cancel'
+                        color='red800'
+                    />
+                </Column>
+            ```
+        </Markdown>
+        <Box
+            className="icons-container"
+            sx:mt="30px"
+            sx:mb="300px"
+        >
+            <Box
+                display="grid"
+                rowGap="80px"
+                columnGap="16px"
+                gridTemplateColumns="repeat(auto-fill, 185px)"
+                gridAutoRows="75px"
+                sx:background="inherit"
+                sx:minHeight="20px"
+                sx:minWidth="20px"
+            >
+                <Map items="global_featuresMUIIconList.svg">
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="space-between"
+                    >
+                        <Icon icon="{{item_name}}" fontSize="large" />
+                        <Typography>{{item_name}}</Typography>
+                    </Box>
+                </Map>
+            </Box>
+        </Box>
+    </PageContent>
+</Page>

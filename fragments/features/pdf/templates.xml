@@ -1,0 +1,144 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data name="docTypeID" defaultValue="10" />
+    <Data name="effStartDT" defaultValue="1900-12-31T05:00:00.000Z" />
+    <Data name="effEndDT" defaultValue="2400-12-31T05:00:00.000Z" />
+    <Data name="templateKey" defaultValue="DirectDeposit-2023" />
+    <Data name="fieldsResults" defaultValue="false" />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key="filesSetData" debug>
+        <SetData
+            name="uploadResults"
+            data=''
+        />
+        <SetData
+            name="flowArgs.dataName"
+            data='flowArgs.files'
+        />
+    </Flow>
+
+    <Flow key="submitFiles">
+        <SetData
+            name="uploadResults"
+            data='loading...'
+        />
+        <Query
+            proc="ui.sp_Upsert"
+            call="documentUpload"
+            flatParams="false"
+            param_files='global_selectedFiles'
+            param_documentType='static_pdfTemplate'
+            param_docTypeID='global_docTypeID'
+            param_effStartDT='global_effStartDT'
+            param_effEndDT='global_effEndDT'
+            out_uploadResults='results._'
+        />
+    </Flow>
+
+    <Flow key="getFields">
+        <SetData name="fieldsResults" data="loading..."/>
+        <Query
+            proc="ui.sp_Upsert"
+            call="pdfGetXML"
+            param_templateKey="global_templateKey"
+            out_fieldsResults="results"
+        />
+    </Flow>
+
+    <PageNavBar label="Features / PDF / Templates">
+      <Box
+          display='flex'
+          justifyContent="flex-end"
+          alignItems="center"
+          gap="2"
+      >
+          <Button href="/features" label="back"/>
+      </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            This page includes various tools for working with PDF Templates.
+
+            ### Upload PDF Template
+
+            NOTE:  Make sure your file is named correctly!  The `templateKey` is derived from file name, eg. `DirectDeposit-2023.pdf` results in a template key of `DirectDeposit-2023`
+        </Markdown>
+        <Box
+            display='flex'
+            flexDirection="column"
+            justifyContent="flex-start"
+            gap="2"
+        >
+            <TextField
+                label="Type Id"
+                value="global_docTypeID"
+            />
+            <TextField
+                label="Start Date"
+                type="date"
+                value="global_effStartDT"
+                sx="minWidth:25ch"
+            />
+            <TextField
+                label="End Date"
+                type="date"
+                value="global_effEndDT"
+                sx="minWidth:25ch"
+            />
+            <FilePicker
+                dataName="selectedFiles"
+                selectFileFn="runFlow_filesSetData"
+                label="Select File"
+            />
+            <Button
+                label="Upload"
+                href="flow:submitFiles"
+                sx:ml="auto"
+                sx:mt="1em"
+            />
+            <Typography
+                textContent="global_uploadResults"
+                sx:ml="auto"
+            />
+        </Box>
+
+        <Markdown>
+            ### Get Fields from Template Document
+
+            use this for building a form after you have uploaded the document
+        </Markdown>
+        <Box
+            display='flex'
+            flexDirection="column"
+            justifyContent="flex-start"
+            gap="2"
+            sx:mb="300px"
+        >
+            <TextField
+                label="Template Key"
+                value="global_templateKey"
+            />
+            <Button
+                label="Get Fields"
+                href="flow:getFields"
+                sx:ml="auto"
+                sx:mt="1em"
+            />
+            <Box 
+                sx:display="WHEN global_fieldsResults THEN block ELSE none"
+                fontFamily="monospace"
+                tabSize="4"
+                fontSize="0.8rem"
+                sx:backgroundColor="grey.100"
+                padding="1em"
+                borderRadius="15px"
+                textContent="global_fieldsResults"
+                whiteSpace="pre"
+            />
+        </Box>
+    </PageContent>
+</Page>

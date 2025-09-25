@@ -1,0 +1,131 @@
+<Page key="featuresComponentsFragment">
+    <!-- #region PAGE DATA -->
+    <Data
+        name="section1"
+        getData="ui.sp_UIContextGetComponentsByUserID"
+        param_fragment="static_featuresComponentsFragmentEmbed1"
+    />
+    <Data
+        name="section2"
+        getData="ui.sp_UIContextGetComponentsByUserID"
+        param_fragment="static_featuresComponentsFragmentEmbed2"
+    />
+    <Data
+        name="embedded"
+        getData="ui.sp_UIContextGetComponentsByUserID"
+        param_fragment="static_featuresComponentsFragmentEmbed1"
+    />
+    <Data
+        name="slowEmbedded"
+        getData="ui.sp_UIContextGetComponentsByUserID"
+        param_fragment="static_featuresComponentsLongRunningFragment"
+        param_delayMs="static_5000"
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key="setSection1">
+        <SetData
+            name="global_embedded" 
+            data="global_section1"
+        />
+    </Flow>
+    <Flow key="setSection2">
+        <SetData
+            name="global_embedded" 
+            data="global_section2" 
+        />
+    </Flow>
+
+    <Flow key="showLoading" debug>
+        <Case when="flowArgs_loadSlow IS true" debug>
+            <SetData
+                name="global_slowEmbedded" 
+                data=""
+            />
+            <Refresh data="slowEmbedded" />
+        </Case>
+        <Case when="flowArgs_loadSlow IS false" debug>
+            <SetData
+                name="global_slowEmbedded" 
+                data="global_section1"
+            />
+        </Case>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Fragment">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            ```xml
+                <Data
+                    name="embedded"
+                    getData="ui.sp_UIContextGetComponentsByUserID"
+                    param_fragment="static_featuresComponentsFragmentEmbed1"
+                />
+                <Fragment contents="global_embedded"/>
+            ```
+            The components that follow are not directly defined in the XML for this page.  Instead, they are embedded here using a Fragment element.
+
+            BONUS: You can use the two buttons to switch between two different context items.
+            BONUS2: Use Javascript mock to build a page, see `mocks_json/features/components/longRunningFragment.js`
+
+            ---
+        </Markdown>
+        <Button href="flow:setSection1" label="Section 1" sx:marginRight="1em" sx:marginBottom="1em"/>
+        <Button href="flow:setSection2" label="Section 2" sx:marginBottom="1em"/>
+        <Fragment contents="global_embedded"/>
+
+        <Markdown>
+            ### Loading Indicator
+            ```xml
+                <Data
+                    name="slowEmbedded"
+                    getData="ui.sp_UIContextGetComponentsByUserID"
+                    param_fragment="static_featuresComponentsLongRunningFragment"
+                    param_delayMs="static_5000"
+                />
+
+                <Fragment contents="global_slowEmbedded"/>
+
+                <!-- versus -->
+
+                <Fragment contents="global_slowEmbedded" showLoading="false"/>
+            ```
+            ---
+        </Markdown>
+        <Button
+            href="flow:showLoading"
+            flowArgs:loadSlow='true'
+            label="LOAD SLOW"
+            sx:marginRight="1em" sx:marginBottom="1em"
+        />
+        <Button
+            href="flow:showLoading"
+            flowArgs:loadSlow='false'
+            label="LOAD FAST"
+            sx:marginBottom="1em"
+        />
+        <Markdown>#### WITH Loading Indicator</Markdown>
+        <Fragment contents="global_slowEmbedded"/>
+
+        <Markdown>#### WITHOUT Loading Indicator</Markdown>
+        <Fragment contents="global_slowEmbedded" showLoading="false"/>
+
+        <Box _for="spacing" mb="300px" />
+    </PageContent>
+</Page>

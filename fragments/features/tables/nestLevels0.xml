@@ -1,0 +1,161 @@
+<Page>
+    <!-- #region Data -->
+    <Data
+        name='nestedTableData'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTable'
+    />
+    <Data
+        name='nestedTableExample2'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableMultiChipCol'
+    />
+    <!-- #endregion Data -->
+
+    <!-- #region Flows -->
+    <!-- #endregion Flows -->
+
+    <!-- #region Navigation -->
+    <PageNavBar label="Features / Tables / Nest Levels 0">
+        <Box
+            display="flex"
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+    <!-- #endregion Navigation -->
+
+    <!-- #region Content -->
+    <PageContent>
+
+        
+        <Alert label='Example 1'>
+            If a table has no nesting, you shouldn't have to specify a dummy level.  
+            The table should default to that behavior if no nest is defined in the config.
+        </Alert>
+        <Box my="2">
+            <CodeBlock>
+                <NestedTable>
+                    <!-- no <Nest> here! -->
+                    <!-- columns... -->
+                </NestedTable>
+            </CodeBlock>
+        </Box>
+        <NestedTable
+            source="nestedTableData"
+        >
+            <Column
+                variant="icon"
+                label='...'
+                labelHidden
+            >
+                <Case
+                    when=''
+                    icon='CircleRounded'
+                />
+            </Column>
+            <Column
+                key="FirstName"
+                label="First"
+            />
+            <Column
+                key="LastName"
+                label="Last"
+            />
+            <Column
+                key="Address1"
+                label="Address 1"
+            />
+            <Column
+                key="Address2"
+                label="Address 2"
+            />
+            <Column
+                key="City"
+                label="City"
+            />
+            <Column
+                key="State"
+                label="State"
+            />
+            <Column
+                key="ZipCode"
+                label="Zip"
+            />
+        </NestedTable>
+
+
+        <Alert label='Example 2'>
+            This table demonstrates the following:
+                - No nesting
+                - Button columns
+        </Alert>
+        <Box my="2">
+            <CodeBlock key="nestedTableExample2-block">
+                <NestedTable source="nestedTableExample2">
+                    <Nest>
+                        <Level
+                            param='*'
+                        />
+                    </Nest>
+                    <!-- columns... -->
+                </NestedTable>
+            </CodeBlock>
+        </Box>
+
+        <NestedTable
+            source="nestedTableExample2"
+        >
+            <Nest>
+                <Level
+                    param='*'
+                />
+            </Nest>
+            <Column
+                key="positionName"
+                label="Position Name"
+            />
+            <Column
+                key="positionReq"
+                label="Requirements"
+            />
+            <Column
+                key='positionDesc'
+                label='Description'
+            />
+            <Column
+                key='positionSelect'
+                label='...'
+                labelHidden
+                variant='secondary'
+                route=''
+                param=''
+                content='SELECT'
+            />
+            <Column label='actions' labelHidden align='right'>
+                <IconButton
+                    icon='OpenInNewRounded'
+                    color='grey700'
+                    useData=''
+                    useFlow=''
+                />
+                <IconButton
+                    icon='PersonAddAlt1'
+                    color='grey700'
+                    useData=''
+                    useFlow=''
+                />
+            </Column>
+        </NestedTable>
+
+
+
+    </PageContent>
+    <!-- #endregion Content -->
+</Page>

@@ -1,0 +1,162 @@
+<Page key='root.featuresComponentsRadioButton'>
+    <!-- DATA -->
+    <Data
+        name='tableData'
+        getData='featuresExtensibleColsData'
+        param_qty="static_3"
+    />
+    <Data
+        name='soloRadio'
+        defaultValue="0"
+    />
+    <Data
+        name='selectedRow'
+        defaultValue="2"
+    />
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / RadioButton">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <!-- https://mui.com/material-ui/react-radio-button/#standalone-radio-buttons -->
+        <Box sx="py:2" marginBottom="4">
+            <Typography variant="h2" marginBottom="4">
+                Global Context
+            </Typography>
+
+            <Typography useData="soloRadio" whiteSpace="pre-wrap">
+                OUTSIDE TABLE: {{global_soloRadio}}
+            </Typography>
+            <CodeBlock>
+                <Data
+                    name='soloRadio'
+                    defaultValue="2"
+                />
+            </CodeBlock>
+
+            <Typography useData="selectedRow" whiteSpace="pre-wrap" marginTop="4">
+                INSIDE TABLE: {{global_selectedRow}}
+            </Typography>
+            <CodeBlock>
+                <Data
+                    name='selectedRow'
+                    defaultValue="1"
+                />
+            </CodeBlock>
+        </Box>
+
+        <Box sx="py:2" marginBottom="4">
+            <Typography variant="h2" marginBottom="4">
+                Radio
+            </Typography>
+
+            <Box sx="p:0" display="flex" alignItems="center">
+                <Radio
+                    value="0"
+                    useData="soloRadio"
+                />
+                <Typography>Zero</Typography>
+            </Box>
+            <Box sx="p:0" display="flex" alignItems="center">
+                <Radio
+                    value="1"
+                    useData="soloRadio"
+                />
+                <Typography>One</Typography>
+            </Box>
+            <Box sx="p:0" display="flex" alignItems="center">
+                <Radio
+                    value="2"
+                    useData="soloRadio"
+                />
+                <Typography>Two</Typography>
+            </Box>
+
+            <Typography marginTop="4">
+                Here's how you can achieve the above outside a table.
+            </Typography>
+            <CodeBlock>
+                <Box sx="p:0" display="flex" alignItems="center">
+                    <Radio
+                        value="0"
+                        useData="soloRadio"
+                    />
+                    <Typography>Zero</Typography>
+                </Box>
+                <Box sx="p:0" display="flex" alignItems="center">
+                    <Radio
+                        value="1"
+                        useData="soloRadio"
+                    />
+                    <Typography>One</Typography>
+                </Box>
+                <Box sx="p:0" display="flex" alignItems="center">
+                    <Radio
+                        value="2"
+                        useData="soloRadio"
+                    />
+                    <Typography>Two</Typography>
+                </Box>
+            </CodeBlock>
+
+            <Typography marginTop="4">
+                Note, this would usually be used inside a table like this
+            </Typography>
+            <CodeBlock>
+                <Column label='Radio' width="min-content" labelHidden >
+                    <Radio
+                        value="{{row_myID}}"
+                        useData="selectedRow"
+                    />
+                </Column>
+            </CodeBlock>
+        </Box>
+
+        <Typography variant="h2">
+            Nested Table
+        </Typography>
+        <Typography whiteSpace="pre-wrap" my="4">
+            As you check/uncheck the Radio Buttons in this basic NestedTable, you will see Global Context reflects this.
+        </Typography>
+        <NestedTable
+            source='tableData'
+            collapsible="false"
+            indented="false"
+        >
+            <Column label='Radio' width="min-content" labelHidden >
+                <Radio
+                    value="{{row_myID}}"
+                    useData="selectedRow"
+                />
+            </Column>
+            <Column label='ID' width="min-content">
+                <Typography>{{row_myID}}</Typography>
+            </Column>
+            <Column label='First'>
+                <Typography>{{row_firstName}}</Typography>
+            </Column>
+            <Column label='Last' >
+                <Typography>{{row_lastName}}</Typography>
+            </Column>
+            <Column label='Description' >
+                <Typography>{{row_description}}</Typography>
+            </Column>
+        </NestedTable>
+    </PageContent>
+</Page>

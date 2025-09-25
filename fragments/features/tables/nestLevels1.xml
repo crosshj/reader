@@ -1,0 +1,181 @@
+<Page>
+    <!-- #region Data -->
+    <Data name='paybillParentInvoicesCreateInvoices'
+        getData='featuresTestCollapsibleStar'
+    />
+    <Data
+        name='nestedTableExample1'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableOrders'
+    />  
+    <Data
+        name='nestedTableStyles'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableMultiChipCol'
+    />  
+    <!-- #endregion Data -->
+
+    <!-- #region Flows -->
+
+    <!-- #endregion Flows -->
+
+    <!-- #region Navigation -->
+    <PageNavBar label='Features / Tables / Nest Levels 1'>
+        <Box 
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button 
+                href="/features"
+                label="back" 
+            />
+        </Box>
+    </PageNavBar>
+    <!-- #endregion Navigation -->
+
+    <!-- #region Content -->
+    <PageContent>
+        <Markdown>
+            #### Single Nest Level
+            This table demonstrates the following:
+                - 2 Levels of nesting where the nesting parameter and visible value are different
+                - Status column using icons
+                - Action column with multiple actions
+
+            ```xml
+            <NestedTable source="nestedTableExample1">
+                <Nest>
+                    <Level param='BranchClientID'>
+                        <Typography>
+                            {{row_BranchClientName}}
+                        </Typography>
+                    </Level>
+                </Nest>
+                <!-- columns... -->
+            </NestedTable>
+            ```
+            #### Example
+        </Markdown>
+
+        <NestedTable source='paybillParentInvoicesCreateInvoices'
+            collapsible
+        >
+            <Nest>
+                <Level param='BranchClientID'>
+                    <Typography>
+                        {{row_BranchClientName}}
+                    </Typography>
+                </Level>
+            </Nest>
+            <Column label="Client ID">
+                <Typography>
+                    {{row_BranchClientID}}
+                </Typography>
+            </Column>
+            <Column label="Job Site"
+                width='max-content'>
+                <Typography>
+                    {{row_JobSiteName}}
+                </Typography>
+            </Column>
+            <Column label='Invoice Date'>
+                <Typography>
+                    {{row_InvoiceDate:date}}
+                </Typography>
+            </Column>
+            <Column label='Due Date'>
+                <Typography>
+                    {{row_DueDate:date}}
+                </Typography>
+            </Column>
+            <Column label='Terms'>
+                <Typography>
+                    {{row_InvoiceTerms}}
+                </Typography>
+            </Column>
+            <Column label='actions'
+                labelHidden
+                align='right'>
+                <IconButton icon='EditRounded'
+                    color='grey700'
+                    useData="paybillParentInvoice_current"
+                    useFlow="paybillParentInvoiceEditOpen" />
+            </Column>
+        </NestedTable>
+
+
+        <!-- Style stuff -->
+        <Markdown>
+            #### Single Nest Level
+            This table demonstrates the following:
+                - nesting with custom header (column-aligned)
+                - how to properly do "indent"
+
+            ```xml
+            <NestedTable>
+                <Nest>
+                    <Level param='positionName'>
+                        <Header>
+                            <Column span="3">
+                                <Typography>{{row_positionName}}</Typography>
+                            </Column>
+                        </Header>
+                    </Level>
+                </Nest>
+                <!-- columns... -->
+            </NestedTable>
+            ```
+            #### Example
+        </Markdown>
+        <NestedTable
+            source="nestedTableStyles"
+            collapsible
+        >
+            <Nest>
+                <Level
+                    param='positionName'
+                >
+                    <Header>
+                        <Column span="3">
+                            <Typography>{{row_positionName}}</Typography>
+                        </Column>
+                    </Header>
+                </Level>
+            </Nest>
+            <Column
+                width="2em"
+                borderBottom="0px"
+            />
+            <Column
+                key="positionReq"
+                label="Requirements Requires Then"
+                textWrap="wrap"
+                paddingLeft="0.5em"
+            />
+            <Column
+                key='positionDesc'
+                label='Description Describes It Long Column Header Just To Show Off TextWrap'
+                textWrap="balance"
+            />
+            <Column label="actions" labelHidden align='right' paddingRight="0">
+                <IconButton
+                    icon='OpenInNewRounded'
+                    color='grey700'
+                    useData=''
+                    useFlow=''
+                />
+                <IconButton
+                    icon='PersonAddAlt1'
+                    color='grey700'
+                    useData=''
+                    useFlow=''
+                />
+            </Column>
+        </NestedTable>
+
+
+    </PageContent>
+    <!-- #endregion Content -->
+</Page>

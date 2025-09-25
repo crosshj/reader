@@ -1,0 +1,146 @@
+<Page key='root.featuresTablesMultiSelect'>
+    <!-- DATA -->
+    <Data
+        name='tableData'
+        getData='featuresExtensibleColsData'
+        param_qty="static_3"
+    />
+    <Data
+        name='selectedRows'
+        defaultValue="[1,2]"
+        debug
+    />
+    <Data
+        name='soloCheckbox'
+        defaultValue="true"
+    />
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Tables / Multi-Select">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box sx="py:2" marginBottom="4">
+            <Typography variant="h2" marginBottom="4">
+                Global Context
+            </Typography>
+
+            <Typography useData="soloCheckbox" whiteSpace="pre-wrap">
+                OUTSIDE TABLE: {{global_soloCheckbox}}
+            </Typography>
+            <CodeBlock>
+                <Data
+                    name='soloCheckbox'
+                    defaultValue="true"
+                />
+            </CodeBlock>
+
+            <Typography useData="selectedRows" whiteSpace="pre-wrap" marginTop="4">
+                INSIDE TABLE: {{global_selectedRows}}
+            </Typography>
+            <CodeBlock>
+                <Data
+                    name='selectedRows'
+                    defaultValue="[1,2]"
+                />
+            </CodeBlock>
+        </Box>
+
+        <Box sx="py:2" marginBottom="4">
+            <Typography variant="h2" marginBottom="4">
+                Checkbox
+            </Typography>
+
+            <Box sx="p:0" display="flex" alignItems="center">
+                <Checkbox
+                    useData="soloCheckbox"
+                />
+                <Typography>
+                    A checkbox outside a table context
+                </Typography>
+            </Box>
+            <CodeBlock>
+                <Checkbox
+                    checked='global_soloCheckbox'
+                    useData="soloCheckbox"
+                />
+            </CodeBlock>
+
+            <Box sx="p:0" display="flex" alignItems="center" marginTop="4">
+                <Checkbox
+                    index="1"
+                    useData="selectedRows"
+                    checked="{{ global_selectedRows INCLUDES static_1 }}"
+                />
+                <Typography>
+                    A table-type checkbox used outside a table
+                </Typography>
+            </Box>
+            <CodeBlock>
+                <Checkbox
+                    index="1"
+                    useData="selectedRows"
+                    checked="{{ global_selectedRows INCLUDES static_1 }}"
+                />
+            </CodeBlock>
+
+            <Typography marginTop="4">
+                Note, this would usually be used inside a table like this
+            </Typography>
+            <CodeBlock>
+                <Checkbox
+                    index="{{ row_myID }}"
+                    useData="selectedRows"
+                    checked="{{ global_selectedRows INCLUDES row_myID }}"
+                />
+            </CodeBlock>
+        </Box>
+
+        <Typography variant="h2">
+            Nested Table
+        </Typography>
+        <Typography whiteSpace="pre-wrap" my="4">
+            As you check/uncheck the Checkboxes in this basic NestedTable, you will see Global Context reflects this.
+        </Typography>
+        <NestedTable
+            source='tableData'
+            collapsible="false"
+            indented="false"
+        >
+            <Column label='Checkbox' width="min-content" labelHidden >
+                <Checkbox
+                    index="{{row_myID}}"
+                    useData="selectedRows"
+                    checked="{{ global_selectedRows INCLUDES row_myID }}"
+                />
+            </Column>
+            <Column label='ID' width="min-content">
+                <Typography>{{row_myID}}</Typography>
+            </Column>
+            <Column label='First'>
+                <Typography>{{row_firstName}}</Typography>
+            </Column>
+            <Column label='Last' >
+                <Typography>{{row_lastName}}</Typography>
+            </Column>
+            <Column label='Description' >
+                <Typography>{{row_description}}</Typography>
+            </Column>
+        </NestedTable>
+    </PageContent>
+</Page>

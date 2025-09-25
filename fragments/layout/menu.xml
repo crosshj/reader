@@ -1,0 +1,119 @@
+<PageFragment>
+
+    <Data
+        name="projectManagementMenuItems"
+        defaultValue='[
+            { "label": "Home",             "icon": "Home",              "path": "dashboard"   },
+            { "label": "Issues",           "icon": "ListAlt",           "path": "issues"      },
+            { "label": "Board",            "icon": "ViewKanban",        "path": "board"       },
+            { "label": "Gantt Chart",      "icon": "Analytics",         "path": "gantt"       },
+            { "label": "Wiki",             "icon": "MenuBook",          "path": "wiki"        },
+            { "label": "Files",            "icon": "DriveFolderUpload", "path": "files"       },
+            { "label": "Project Settings", "icon": "AccountTree",       "path": "projectSettings" },
+            { "label": "Features",         "icon": "Settings",          "path": "features"    }
+        ]'
+    />
+
+    <Data
+        name="ecommerceAdminMenuItems"
+        defaultValue='[
+            { "label": "Dashboard", "icon": "Dashboard",     "path": "/"           },
+            { "label": "Orders",    "icon": "ShoppingCart",  "path": "/orders"     },
+            { "label": "Products",  "icon": "Inventory",     "path": "/products"   },
+            { "label": "Customers", "icon": "People",        "path": "/customers"  },
+            { "label": "Analytics", "icon": "BarChart",      "path": "/analytics"  },
+            { "label": "Marketing", "icon": "Campaign",      "path": "/marketing"  },
+            { "label": "Settings",  "icon": "Settings",      "path": "/settings"   }
+        ]'
+    />
+
+    <Data
+        name="lmsMenuItems"
+        defaultValue='[
+            { "label": "Dashboard",   "icon": "Dashboard",    "path": "/"             },
+            { "label": "Courses",     "icon": "School",       "path": "/courses"      },
+            { "label": "Assignments", "icon": "Assignment",   "path": "/assignments"  },
+            { "label": "Grades",      "icon": "Grade",        "path": "/grades"       },
+            { "label": "Discussions", "icon": "Forum",        "path": "/discussions"  },
+            { "label": "Calendar",    "icon": "Event",        "path": "/calendar"     },
+            { "label": "Resources",   "icon": "LibraryBooks", "path": "/resources"    },
+            { "label": "Settings",    "icon": "Settings",     "path": "/settings"     }
+        ]'
+    />
+
+    <Data
+        name="healthcareDashboardMenuItems"
+        defaultValue='[
+            { "label": "Overview",     "icon": "Dashboard",      "path": "/"             },
+            { "label": "Patients",     "icon": "LocalHospital",  "path": "/patients"     },
+            { "label": "Appointments", "icon": "CalendarToday",  "path": "/appointments" },
+            { "label": "Records",      "icon": "Description",    "path": "/records"      },
+            { "label": "Billing",      "icon": "RequestQuote",   "path": "/billing"      },
+            { "label": "Reports",      "icon": "Assessment",     "path": "/reports"      },
+            { "label": "Settings",     "icon": "Settings",       "path": "/settings"     }
+        ]'
+    />
+
+    <Data
+        name="gameAnalyticsMenuItems"
+        defaultValue='[
+            { "label": "Overview",   "icon": "Dashboard",       "path": "/"           },
+            { "label": "Players",    "icon": "PeopleAlt",       "path": "/players"    },
+            { "label": "Sessions",   "icon": "AccessTime",      "path": "/sessions"   },
+            { "label": "Economy",    "icon": "MonetizationOn",  "path": "/economy"    },
+            { "label": "Events",     "icon": "EventNote",       "path": "/events"     },
+            { "label": "Retention",  "icon": "TrendingUp",      "path": "/retention"  },
+            { "label": "Settings",   "icon": "Settings",        "path": "/settings"   }
+        ]'
+    />
+
+    <Box
+        sx:background="var(--palettePrimaryMain)"
+        sx:width="260px"
+        sx:p="3"
+        sx:pt="1"
+    >
+         <Link
+            href="/_layout"
+            underline="none"
+        >
+            <Box
+                sx:width="100%"
+                sx:height="55px"
+                sx:backgroundImage='url(/logoWithNameNX.svg)'
+                sx:backgroundSize='cover'
+                sx:backgroundPosition='center'
+                sx:backgroundRepeat='no-repeat'
+                sx:mb="2.5"
+            />
+        </Link>
+        <Box
+            display="flex"
+            flexDirection="column"
+            sx:gap="1.25"
+            sx:ml="-2px"
+        >
+            <Map items="global_projectManagementMenuItems">
+                <Link
+                    href="/_layout/{{item_path}}"
+                    underline="none"
+                >
+                    <Box
+                        className="WHEN global_activePath IS item_path THEN 'standardMenuItem active' ELSE standardMenuItem"
+                    >
+                        <Icon
+                            icon="{{item_icon}}"
+                            color="var(--palettePrimaryContrast)"
+                        />
+                        <Typography
+                            sx:color="var(--palettePrimaryContrast)"
+                        >
+                            {{item_label}}
+                        </Typography>
+                    </Box>
+                </Link>
+            </Map>
+        </Box>
+    </Box>
+
+</PageFragment>

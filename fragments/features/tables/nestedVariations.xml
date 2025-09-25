@@ -1,0 +1,55 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='nestedTableExample1'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableOrders'
+    />  
+    <Data
+        name='nestedTableExample2'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableMultiChipCol'
+    />  
+    <Data
+        name='nestedTableExample3'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableAddShifts'
+    />
+
+    <Data
+        name='paybillParentInvoicesCreateInvoices'
+        getData='featuresTestCollapsibleStar'
+    />
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Tables / Nested Variations'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT-->
+    <PageContent>
+        <Typography variant='h2'>
+            The purpose of this page is to showcase all of the different things that are possible with nested table.
+            It should serve as a reference and documentation.
+        </Typography>
+        <Spacing space='2' />
+        <Divider />
+
+
+        <!-- ??? what happened to this ??? -->
+
+    </PageContent>
+</Page>

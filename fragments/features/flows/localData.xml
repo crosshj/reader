@@ -1,0 +1,264 @@
+<Page>
+    <!-- DATA -->
+    <Data name='withObject'     defaultValue='{"myObjectKey":"Hey! I come from withObject"}' />
+    <Data name='withArray'      defaultValue='[{"key":"Hey! I come from myArray 0"},{"key":"Hey! I come from myArray 1"}]' />
+    <Data name='withStaticNull' defaultValue='static_null' />
+    <Data name='withNumber'     defaultValue='123123' />
+    <!-- FLOWS -->
+    <!-- LOCAL DATA WITH STATIC VALUE  -->
+    <Flow key='withStaticValue'>   
+      <Confirm title='before defining data'>
+        value: {{ flowArgs.myNewValue }} (should be empty)
+      </Confirm>
+
+      <LocalData name='myNewValue' data='static_100' />
+
+      <Confirm title='after defining data'>
+        value: {{ flowArgs.myNewValue }} (should be 100)
+      </Confirm>
+
+      <SetData name='myNewValueFromLocalData' data='flowArgs.myNewValue' />
+    </Flow>
+
+    <!-- LOCAL DATA WITH ROUTE VALUE  -->
+    <Flow key='withRouteValue' >
+      <LocalData
+        debug
+        name='route'
+        route='/features/flows/localData{/}?:myID?'
+      />
+
+      <Confirm title='hey'>
+        This was parsed from route: {{ flowArgs.route.myID }}
+      </Confirm>
+    </Flow>
+
+    <Flow key='modifyRouteParam'>
+      <Navigate route='/features/flows/localData/87' />
+    </Flow>
+
+    <Flow key='withGlobalValue'>
+      <LocalData
+        name='myNestedProp.value'
+        data='static_1111'
+      />
+
+      <LocalData name='fromGlobal' data='global_withObject:object' />
+      <LocalData name='canIUseStaticNull' data='global_withStaticNull'/>
+      <LocalData name='whatAboutNumbers' data='global_withNumber:number'/>
+
+      <Confirm title='value from global object'>
+        nestedProp: {{ flowArgs.myNestedProp.value }}
+        obj: {{ flowArgs.fromGlobal.myObjectKey }}
+        static null: {{ flowArgs.canIUseStaticNull }}
+        number: {{ flowArgs.whatAboutNumbers }}
+      </Confirm>
+
+      <LocalData
+        name='fromGlobalWithDefault'
+        data='global_pathThatDoesNotExist, static_9999'
+      />
+
+      <LocalData
+        name='fromGlobalWithNullDefault'
+        data='global_pathThatDoesNotExist, static_null'
+      />
+
+      <Confirm title='using default values (multiple paths)'>
+        You can also use "default" values (multiple paths),
+        which looks for the first "valid" (NOT undefined) value.
+        
+        number as default: {{ flowArgs.fromGlobalWithDefault }}
+        null as default: {{ flowArgs.fromGlobalWithNullDefault }}
+      </Confirm>
+    </Flow>
+
+    <Flow key='withMixedValues'>   
+      <LocalData name='index' data='static_0:number' />
+      
+      <Confirm title='index updated'>
+        index: {{ flowArgs.index }}
+      </Confirm>
+      
+      <LocalData
+        name='canIUseMixedValues'
+        data='global_withArray[flowArgs.index].key'
+      />
+      <Confirm title='(with mixed values)'>
+        value: {{ flowArgs.canIUseMixedValues }}
+      </Confirm>
+      
+
+      <LocalData name='index' data='static_1:number' />
+      <Confirm title='index updated'>
+        new index: {{ flowArgs.index }}
+      </Confirm>
+
+      <LocalData
+        name='canIUseMixedValues'
+        data='global_withArray[flowArgs.index].key'
+      />
+      <Confirm title='with mixed values (round 2, using same name)'>
+        new value: {{ flowArgs.canIUseMixedValues }}
+      </Confirm>
+  </Flow>
+    <!-- FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Flows / Local Data">
+      <Box
+          display='flex'
+          justifyContent="flex-end"
+          alignItems="center"
+          gap="2"
+      >
+          <Button href="/features" label="back"/>
+      </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+      <Markdown>
+        ### Local Data is a way of modifying/defining data inside a flow, through flowArgs.
+
+        #### It is available only within the flow scope, i.e it isn't stored on global state, hence the name "Local Data".
+
+        - [X] set static value
+        - [X] use route params `/features/flows/localData{/}?:myID?`
+        - [X] use global data
+        - [X] mix global data and flowArgs, i.e `global_optionsList[flowArgs.index].label`
+      </Markdown>
+
+      <Divider light='true' />
+
+      <!-- LOCAL DATA WITH STATIC VALUE  -->
+      <Box display='flex' alignItems='center' sx:my="2">
+        <IconButton
+          disabled
+          icon='CheckCircleRounded'
+          color='green800'
+        />
+        <Typography variant="h4" whiteSpace="pre-wrap">
+          Set Static Value
+        </Typography>
+      </Box>
+      <CodeBlock>
+        <Flow key='withStaticValue'>   
+          <LocalData name='myNewValue' data='static_100' />
+        </Flow>
+      </CodeBlock>
+      <Button
+        sx:my='2'
+        href='flow:withStaticValue'
+      >
+        Trigger 'withStaticValue'
+      </Button>
+
+      <Divider light='true' />
+
+      <Box display='flex' alignItems='center' sx:my="2">
+        <IconButton
+          disabled
+          icon='CheckCircleRounded'
+          color='green800'
+        />
+        <Typography variant="h4" whiteSpace="pre-wrap">
+          With new value from route params
+        </Typography>
+      </Box>
+      <CodeBlock>
+        <Flow key='modifyRouteParam'>
+          <Navigate route='/features/flows/localData/87' />
+        </Flow>
+        <Flow key='withRouteValue' >
+          <LocalData
+            debug
+            name='route'
+            route='/features/flows/localData{/}?:myID?'
+          />
+
+          <Confirm title='hey'>
+            This was parsed from route: {{ flowArgs.route.myID }}
+          </Confirm>
+        </Flow>
+      </CodeBlock>
+
+      <Box
+        display='flex'
+        gap="2"
+        sx:my='2'
+      >
+        <Button href='flow:modifyRouteParam'>1. Change route</Button>
+        <Button href='flow:withRouteValue'>  2. Trigger 'withRouteValue'</Button>
+      </Box>
+
+      <Divider light='true' />
+
+      <Box display='flex' alignItems='center' sx:my="2">
+        <IconButton
+          disabled
+          icon='CheckCircleRounded'
+          color='green800'
+        />
+        <Typography variant="h4" whiteSpace="pre-wrap">
+          With global values
+        </Typography>
+      </Box>
+      <CodeBlock>
+        <Flow key='withGlobalValue'>
+          <LocalData
+            name='fromGlobal'
+            data='global_withObject:object'
+          />
+          <LocalData
+            name='whatAboutNumbers'
+            data='global_withNumber:number'
+          />
+
+          <LocalData
+            name='fromGlobalWithDefault'
+            data='global_pathThatDoesNotExist, static_9999'
+          />
+
+          <LocalData
+            name='fromGlobalWithNullDefault'
+            data='global_pathThatDoesNotExist, static_null'
+          />
+        </Flow>
+      </CodeBlock>
+      <Button
+        sx:my='2'
+        href='flow:withGlobalValue'
+      >
+        Trigger 'withGlobalValue'
+      </Button>
+
+      <Divider light='true' />
+
+      <Box display='flex' alignItems='center' sx:my="2">
+        <IconButton
+          disabled
+          icon='CheckCircleRounded'
+          color='green800'
+        />
+        <Typography variant="h4" whiteSpace="pre-wrap">
+          Mixed values, with global and flowArgs
+        </Typography>
+      </Box>
+      <CodeBlock>
+        <Flow key='withMixedValues'>
+          <LocalData
+            name='canIUseMixedValues'
+            data='global_withArray[flowArgs.index].key'
+          />
+        </Flow>
+      </CodeBlock>
+      <Button
+        sx:my='2'
+        href='flow:withMixedValues'
+      >
+        Trigger 'withMixedValues'
+      </Button>
+
+    </PageContent>
+</Page>

@@ -1,0 +1,61 @@
+<Page>
+    <Data
+        name='firstNameParam' 
+        defaultValue=''
+    />
+    <Data
+        name='lastNameParam'
+        defaultValue=''
+    />
+    <Data
+        name='talentList'
+        getData='dbo.sp_aaaTempTalentSearch'
+        param_talentFirstName='global_firstNameParam'
+        param_talentLastName='global_lastNameParam'
+    />
+
+    <PageNavBar
+        key="pageHeader"
+        label="Dashboard"
+    />
+    <PageContent key="pageContent">
+        <Dashboard key="dashboard" />
+        <Spacing space='2'/>
+        <GridContainer>
+            <Typography xs='12'>Search</Typography>
+            <TextField 
+                label='First Name'
+                value='global_firstNameParam'
+                fullWidth
+                xs='4'
+            />
+            <TextField 
+                label='Last Name'
+                value='global_lastNameParam'
+                fullWidth
+                xs='4'
+            />
+            <TextField
+                label='Talent ID'
+                value='global_talentList.0.talentID'
+                fullWidth
+                xs='4'
+            />
+        </GridContainer>
+<!--         <Spacing space='2'/>
+        <NestedTable source='talentList' collapsible='false' indented='false'>
+            <Column 
+                label='Talent ID'
+                width='min-content'
+            >
+                <Typography>{{row_talentID}}</Typography>
+            </Column>
+            <Column 
+                label='First Name'
+                width='max-content'
+            >
+                <Link href='/talentTalentProfile/{{row_talentID}}' underline='hover'>{{row_firstName}} {{row_lastName}}</Link>
+            </Column>
+        </NestedTable> -->
+    </PageContent>
+</Page>

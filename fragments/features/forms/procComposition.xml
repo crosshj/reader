@@ -1,0 +1,153 @@
+<Page>
+  <!--
+My logic here is as follows...
+
+- First, we need to read any sources for option lists before reading in their selected value
+- Then we need to read in the data from the DB using data retrieved from the URL
+- If we set the defaultValue of the local form data to the DB data, hopefully this will trigger the local data to update when the DB calls are made
+
+Questions:
+- How do we read our Data in the correct order?
+- Is there a way to tell certain things to happen when a page loads?
+
+If we were able to tell yesno and ID to be retrieved first, then the dependencies should take care of the rest?
+
+-->
+  
+    <!-- DATA -->
+    <Data
+        name="AssignedBranchList"
+        getData="ui.sp_OLYesNo"
+    />
+    <Data
+        name='routeParams'
+        route='/features/forms/procComposition{/}?:id?'
+        defaultValue='{ "id": "998" }'
+    />
+    <Data
+        getData="featuresForm1"
+        param_id="global_routeParams.id"
+    />
+    <Data
+        getData="featuresForm2"
+        param_id="global_routeParams.id"
+        debug
+    />
+
+    <!-- FLOWS -->
+    <Flow key='submitData'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='ui.sp_updateUser'
+            param_language='global_featuresForm1.language'
+            param_firstName='global_featuresForm1.firstName'
+            param_lastName='global_featuresForm1.lastName'
+        />
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='ui.sp_updateAssignments'
+            param_assignedBranch='global_featuresForm2.assignedBranch'
+            param_assignedSalesperson='global_featuresForm2.assignedSalesperson'
+        />
+        <Confirm
+            title='Success'
+            alertText="Okay"
+        >
+            Submitted the following:
+
+            ID: {{routeParams.id}}
+            featuresForm1.language: {{featuresForm1.language}}
+            featuresForm1.firstName: {{featuresForm1.firstName}}
+            featuresForm1.lastName: {{featuresForm1.lastName}}
+            featuresForm2.assignedBranch: {{featuresForm2.assignedBranch}}
+            featuresForm2.assignedSalesperson: {{featuresForm2.assignedSalesperson}}
+        </Confirm>
+    </Flow>
+
+    <Flow key='showData'>
+        <Confirm
+            title='Show data'
+            alertText="Dismiss"
+        >
+            ID: {{routeParams.id}}
+            featuresForm1.language: {{featuresForm1.language}}
+            featuresForm1.firstName: {{featuresForm1.firstName}}
+            featuresForm1.lastName: {{featuresForm1.lastName}}
+            featuresForm2.assignedBranch: {{featuresForm2.assignedBranch}}
+            featuresForm2.assignedSalesperson: {{featuresForm2.assignedSalesperson}}
+        </Confirm>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Forms / Stored Procedure Composition">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Alert>
+            There are pages which include multiple inputs which are sourced from many stored procs.
+            We need to be able to read and write to multiple procs.
+
+            Below, we have numerous inputs bound to different data sources.
+            We need to read and write to each of these differing data stores.
+        </Alert>
+
+        <Box py="2" />
+
+        <GridContainer>
+            <Typography>
+                ID: {{global_routeParams.id}}
+            </Typography>
+            <TextField
+                label='Language (form1)'
+                value="global_featuresForm1.language"
+                xs='12'
+            />
+            <TextField
+                label='First Name (form1)'
+                value="global_featuresForm1.firstName"
+                xs='6'
+            />
+            <TextField
+                label='Last Name (form1)'
+                value="global_featuresForm1.lastName"
+                xs='6'
+            />
+            <TextField
+                select
+                label='Assigned Branch (form2)'
+                value="global_featuresForm2.assignedBranch"
+                options="global_AssignedBranchList"
+                xs='6'
+            />
+            <TextField
+                label='Assigned Salesperson (form2)'
+                value="global_featuresForm2.assignedSalesperson"
+                xs='6'
+            />
+
+
+            <Button
+                label='Show Data'
+                flow='showData'
+                xs='3'
+            />
+            <Button
+                label='Submit'
+                flow='submitData'
+                xs='3'
+            />
+        </GridContainer>
+    </PageContent>
+</Page>

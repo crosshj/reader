@@ -1,0 +1,72 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key='goBack'>
+        <Navigate route='/features' />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Deprecated'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                flow="goBack"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+       <Markdown>
+        Here's a list of features / patterns which are marked for removal.
+        
+        Expect the following for items included here:
+            - a description of the pattern / feature
+            - what should be used instead
+            - examples of both the old and new way
+            - some indication of the extent and/or priority of deprecation
+
+        ## SX props aka Namespaced Props
+        see [MUI sx Prop Docs](https://mui.com/system/getting-started/the-sx-prop/)
+
+        For certain MUI components, an `sx` prop is required.  This is valid JSX (React), but not valid XML (AW Framework).
+        ```jsx
+            <ReactComponent
+                sx={{ prop1:true, prop2:false }}
+            />
+        ```
+
+        We used to get around this using a comma/colon-delimited string which we gave special treatment, aka the `sx` prop. See below.   
+
+        This is not compatible with using `WHEN` syntax in props, so we take advantage of XML's namespace convention, ie. `namespace:prop`.
+
+        We now do a transform of ***any*** property name (not just `sx`) which results in several props in a namespace being squashed together into one object.
+
+        NOTE: this applies to visual components like `Box` or `IconButton`, but it has not yet been applied to non-visual components like `Data` or `Flows`.
+
+        #### OLD WAY:
+        *this will still work, but is not compatible with WHEN props, for example*
+        ```xml
+            <AWFrameworkComponent
+                sx="prop1:true,prop2:false"
+            />
+        ```
+
+        #### NEW WAY:
+        *compatible with WHEN props and is probably easier to read*
+        ```xml
+            <AWFrameworkComponent
+                sx:prop1="true"
+                sx:prop2="false"
+            />
+        ```
+       </Markdown>
+    </PageContent>
+</Page>

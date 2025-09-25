@@ -1,0 +1,64 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key="changeTheme">
+        <SetData name='global_theme' data='flowArgs.theme' />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Components / Button'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="Back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box className="flex-row items-center" gap="1">
+            <Typography textContent="THEME: "/>
+            <Button textContent="Light" href="flow:changeTheme" flowArgs:theme="light" />
+            <Button textContent="Dark" href="flow:changeTheme" flowArgs:theme="dark" />
+            <Button textContent="green" href="flow:changeTheme" flowArgs:theme="green" />
+            <Button textContent="Orange" href="flow:changeTheme" flowArgs:theme="orange" />
+        </Box>
+        <Markdown>
+            [MUI Button Docs](https://mui.com/material-ui/react-button/)
+
+            ```xml
+                <Button
+                    label='Primary Button'
+                    variant='primary'
+                />
+                <Button
+                    label='Outlined Button'
+                    variant="outlined"
+                />
+                <Button variant="text">
+                    Text Button
+                </Button>
+            ```
+            ### Live Examples 
+        </Markdown>
+        <Box display="flex" flexDirection="column" gap="1em">
+            <Button
+                label='Primary Button'
+                variant='primary'
+            />
+            <Button
+                label='Outlined Button'
+                variant="outlined"
+            />
+            <Button variant="text">Text Button</Button>
+        </Box>
+    </PageContent>
+</Page>

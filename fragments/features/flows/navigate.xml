@@ -1,0 +1,216 @@
+<Page key='childStandalonePills'>
+    <!-- DATA -->
+    <Data
+        name='newTalent'
+        defaultValue='{ "firstName": "testFirst", "lastName": "userLast", "email": "", "phone": "555-555-555" }'
+    />
+    <Data
+        name='TalentId'
+        defaultValue='---'
+    />
+
+    <!-- FLOWS -->
+    <Flow key='goToTalent'>
+        <Navigate route='talent/childHome' />
+    </Flow>
+    <Flow key='createTalentWithRoute'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='dbo.sp_TalentCreateNew'
+            param_firstName='global_newTalent.firstName'
+            param_lastName='global_newTalent.lastName'
+            param_email='global_newTalent.email'
+            param_phone='global_newTalent.phone'
+            out_TalentId='results[0].talentID'
+        />
+        <Confirm title='User Created'>
+            User was created (or already existed) with this ID: {{TalentId}}
+            Confirming here will navigate to that talent's page: talentTalentProfile/{{TalentId}}.
+        </Confirm>
+        <Navigate route='talentTalentProfile/{{TalentId}}' />
+    </Flow>
+
+    <Flow key='createTalentWithPath'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='dbo.sp_TalentCreateNew'
+            param_firstName='global_newTalent.firstName'
+            param_lastName='global_newTalent.lastName'
+            param_email='global_newTalent.email'
+            param_phone='global_newTalent.phone'
+            out_TalentId='results[0].talentID'
+        />
+        <Confirm title='User Created'>
+            User was created (or already existed) with this ID: {{TalentId}}
+            Confirming here will navigate to that talent's page: talentTalentProfile/{{TalentId}}.
+        </Confirm>
+        <Navigate path='talentTalentProfile/{{TalentId}}' />
+    </Flow>
+
+    <Flow key='gotoFeaturesFlows'>
+        <Navigate route='features/flows/home'/>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Flows / Navigate">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box marginBottom="4" display="flex" gap="1">
+            <Typography>See also </Typography>
+            <Link href="/features/data/pathBased">Features / Data / Path-based</Link>
+        </Box>
+        <Box
+            display='flex'
+            flexDirection="column"
+            justifyContent="flex-end"
+            gap="2"
+            marginBottom="8"
+        >
+            <Typography variant="h2">Basic Navigation</Typography>
+            <Typography>
+                This example shows a basic navigation step based on page name, in this case "talent/childHome".
+            </Typography>
+            <CodeBlock>
+                <Flow key='goToTalent'>
+                    <Navigate route='talent/home' />
+                </Flow>
+                <Button
+                    label='Go to Talent page'
+                    href='flow:goToTalent'
+                />
+            </CodeBlock>
+            <Button
+                label='Go to Talent page'
+                href='flow:goToTalent'
+            />
+        </Box>
+
+        <Box
+            display='flex'
+            flexDirection="column"
+            justifyContent="flex-end"
+            gap="2"
+            marginBottom="8"
+        >
+            <Typography variant="h2">Data for Following Examples</Typography>
+            <Typography whiteSpace="pre-wrap">
+                These fields are sent to a stored procedure called: dbo.sp_TalentCreateNew,
+                The output of this request has an id which is stored globally as: TalentId
+                This variable is used by the navigation step detailed below.
+            </Typography>
+            <Input
+                label='First Name'
+                useData='newTalent.firstName'
+            />
+            <Input
+                label='Last Name'
+                useData='newTalent.lastName'
+            />
+            <Input
+                label='Email'
+                useData='newTalent.email'
+            />
+            <Input
+                label='Phone'
+                useData='newTalent.phone'
+            />
+            <TextField
+                label="Talent Id"
+                value="global_TalentId"
+                sx="minWidth:25ch"
+                disabled
+            />
+        </Box>
+
+        <Box
+            display='flex'
+            flexDirection="column"
+            justifyContent="flex-end"
+            gap="2"
+            marginBottom="8"
+        >
+            <Typography variant="h2">Navigation with Route + Param</Typography>
+            <Typography whiteSpace="pre-wrap">
+                In the following example, we illustrate navigating using route and a param from a global Data object.
+            </Typography>
+            <CodeBlock>
+                <Flow key='createTalentWithRoute'>
+                    <Query
+                        proc='ui.sp_Upsert'
+                        procArgs='dbo.sp_TalentCreateNew'
+                        param_firstName='global_newTalent.firstName'
+                        param_lastName='global_newTalent.lastName'
+                        param_email='global_newTalent.email'
+                        param_phone='global_newTalent.phone'
+                        out_TalentId='results[0].talentID'
+                    />
+                    <Navigate route='talent/TalentProfile/{{TalentId}}' />
+                </Flow>
+                <Button
+                    label='Create Talent'
+                    flow='createTalentWithRoute'
+                />
+            </CodeBlock>
+            <Button
+                label='Create Talent'
+                flow='createTalentWithRoute'
+            />
+        </Box>
+
+        <Box
+            display='flex'
+            flexDirection="column"
+            justifyContent="flex-end"
+            gap="2"
+            marginBottom="8"
+        >
+            <Typography variant="h2">Navigation with Path + Param</Typography>
+            <Typography
+                whiteSpace="pre-wrap"
+                useData="TalentId"
+            >
+                NOTE: the usecase for this is somewhat limited for this and we may deprecate this in the future.  In most cases, you should use navigate with a route versus a path.
+
+                Similar to the previous example, path can be specified with params.
+                This is different in the sense that you must also have a Data element registered on the current page that is listening for path changes.
+                Here, we don't have a route listener, so you will see the URL change, but the page itself will not change.
+            </Typography>
+            <CodeBlock>
+                <Flow key='createTalentWithRoute'>
+                    <Query
+                        proc='ui.sp_Upsert'
+                        procArgs='dbo.sp_TalentCreateNew'
+                        param_firstName='global_newTalent.firstName'
+                        param_lastName='global_newTalent.lastName'
+                        param_email='global_newTalent.email'
+                        param_phone='global_newTalent.phone'
+                        out_TalentId='results[0].talentID'
+                    />
+                    <Navigate path='talent/talentProfile/{{TalentId}}' />
+                </Flow>
+                <Button
+                    label='Create Talent'
+                    flow='createTalentWithRoute'
+                />
+            </CodeBlock>
+            <Button
+                label='Create Talent'
+                flow='createTalentWithPath'
+            />
+        </Box>
+
+    </PageContent>
+</Page>

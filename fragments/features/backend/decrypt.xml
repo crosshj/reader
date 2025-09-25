@@ -1,0 +1,62 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='tableData'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresCrypto'
+    />
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Backend / Decrypt">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+
+    <!-- PAGE CONTENT-->
+    <PageContent>
+        <Markdown>
+            #### Decrypted Row Items
+
+            All rows should have a value for `Secret` column which is a de-crypted version of what comes from database as `Secret_Encrypted`
+
+            First row simulates an error in encryted value stored in DB and should result in a blank.
+            
+            De-cryption is automatic based on the column name extension `_Encrypted`
+
+            ##### Example
+        </Markdown>
+        <NestedTable
+            source="tableData"
+            collapsible='false'
+            indented="false"
+        >
+            <Column
+                key="FirstName"
+                label="First"
+                width="min-content"
+            />
+            <Column
+                key="LastName"
+                label="Last"
+                width="min-content"
+            />
+            <Column
+                key="Secret"
+                label="Secret"
+            />
+        </NestedTable>
+    </PageContent>
+</Page>

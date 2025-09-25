@@ -1,0 +1,91 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name="encyptSomeValues"
+        defaultValue='{
+            "fooString": "foo",
+            "longBlankString": "           "
+        }'
+    />
+
+    <!-- FLOWS -->
+    <Flow key='queryWithParamToEncrypt'>
+        <SetData name="global_queryWithParamToEncryptLoading" data="true" />
+        <Query
+            exec='featuresMirrorRequest'
+            param_encryptMe_Encrypted="global_encyptSomeValues.fooString"
+            param_blank_Encrypted="global_encyptSomeValues.longBlankString:forceString"
+            param_dontEncryptMe="global_encyptSomeValues.fooString"
+            out_queryWithParamToEncryptResults='results'
+        />
+        <SetData name="global_queryWithParamToEncryptLoading" data="false" />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Backend / Encrypt">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+
+    <!-- PAGE CONTENT-->
+    <PageContent>
+        <Markdown>
+            #### Encrypt Params
+
+            ##### Flow Example
+            ```xml
+            <Flow key='queryWithParamToEncrypt'>
+                <Query
+                    exec='featuresMirrorRequest'
+                    param_encryptMe_Encrypted="global_encyptSomeValues.fooString"
+                    param_blank_Encrypted="global_encyptSomeValues.longBlankString:forceString"
+                    param_dontEncryptMe="global_encyptSomeValues.fooString"
+                    out_queryWithParamToEncryptResults='results'
+                />
+            </Flow>
+            ```
+        </Markdown>
+        <Button
+            label='Query with Param To Encrypt'
+            flow='queryWithParamToEncrypt'
+        />
+        <Typography
+            display="WHEN global_queryWithParamToEncryptLoading IS true THEN block ELSE none"
+            textContent="loading..."
+            marginTop="1em"
+        />
+        <Box
+            display="WHEN global_queryWithParamToEncryptLoading ISNOT true THEN block ELSE none"
+        >
+            <Box 
+                display="WHEN global_queryWithParamToEncryptResults ISNOT undefined THEN block ELSE none"
+                marginTop="1em"
+            >
+                <Markdown>
+                    NOTE: results won't be decrypted because auto-decrypt only works on data that is formatted like database rows
+                </Markdown>
+                <JsonView
+                    src="global_queryWithParamToEncryptResults"
+                    dark="WHEN theme_mode IS NOT light"
+                />
+            </Box>
+        </Box>
+
+        <Markdown>
+            ##### Data Example
+
+            Data component does not support params with `_Encrypted` extension.
+        </Markdown>
+
+    </PageContent>
+</Page>

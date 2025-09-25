@@ -1,0 +1,159 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data name="currentUser" />
+    <Data
+        name='routeParams'
+        route='/apply/:jobOrderID'
+        defaultValue='{ "jobOrderID": "" }'
+    />
+    <Data
+        name="user"
+        defaultValue='{
+            "json":{
+                "firstName": "",
+                "lastName": "",
+            },
+            "email":"",
+            "loading": true
+        }'
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Trigger handler="handleLoggedInUser" />
+    <Flow key="handleLoggedInUser">
+        <Query
+            exec='me'
+            out_currentUser="results[0]"
+            softError
+        />
+
+        <Case when='global_currentUser IS undefined'>
+            <SetData
+                name='global_user.loading'
+                data='static_false'
+            />
+        </Case>
+
+        <Case when='HASROLES(Talent)'>
+            <!-- @Anna, just sending logged-in Talent to /applications page for now versus specific application page
+            <Navigate
+                hard="true"
+                route='/applications/{{global_routeParams.jobOrderID}}'
+            />
+            -->
+            <Navigate
+                hard="true"
+                route='/talentApplicationsDetailWrapper/{{global_routeParams.jobOrderID}}'
+            />
+        </Case>
+
+        <!-- TODO: what if logged in as another type of user? -->
+    </Flow>
+
+    <Flow key='beginRegistration'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='dbo.sp_PreUserUpsert'
+            param_JsonData='global_user.json:stringify'
+            param_emailAddress='global_user.email'
+        />
+        <LocalData
+            name='loginHint'
+            data='global_user.email:encodeURIComponent'
+        />
+        <Navigate
+            hard="true"
+            route='/api/auth/register'
+            query:preUser="static_true"
+            query:jobOrderID="global_routeParams.jobOrderID"
+            query:email="global_user.email"
+            query:login_hint="flowArgs.loginHint"
+            query:firstName="global_user.json.firstName"
+            query:lastName="global_user.json.lastName"
+            query:returnTo="/talentApplicationsDetailWrapper/{{global_routeParams.jobOrderID}}"        />
+    </Flow>
+
+    <!-- PAGE CONTENT -->
+    <Box
+        width="100vw"
+        height="100vh"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        mt="-2em"
+    >
+        <Logo width="172px" />
+        <Box
+            backgroundColor="white"
+            p="3"
+            borderRadius="5px"
+            mt="1em"
+            sx:display="DEBUG WHEN global_user.loading THEN block ELSE none"
+        >
+            <Markdown>
+                Loading...
+            </Markdown>
+        </Box>
+        <Box
+            backgroundColor="white"
+            p="3"
+            minWidth:md="600px"
+            maxWidth="90%"
+            borderRadius="5px"
+            mt="1em"
+            sx:display="WHEN global_user.loading ISNOT true THEN block ELSE none"
+        >
+            <Typography
+                variant="h2"
+                textContent="Apply Now"
+                mt="2"
+            />
+            <Markdown>
+                Welcome, please provide the following information to begin the application process.
+            </Markdown>
+
+            <Box
+                gap="2"
+                display="flex"
+                flexDirection="column"
+                alignItems="flex-start"
+                mt="4"
+                mb="2"
+            >
+                <TextField
+                    label="First Name"
+                    value="global_user.json.firstName"
+                />
+                <TextField
+                    label="Last Name"
+                    value="global_user.json.lastName"
+                />
+                <TextField
+                    label="Email"
+                    value="global_user.email"
+                />
+                <Button
+                    href="flow:beginRegistration"
+                    variant="primary"
+                    textContent="Continue"
+                    sx:margin="auto"
+                    sx:mt="2"
+                />
+
+                <!-- trying to figure out what's up with logged in user -->
+                <!-- <Button
+                    href="flow:handleLoggedInUser"
+                    variant="primary"
+                    textContent="BLEH"
+                    sx:margin="auto"
+                    sx:mt="2"
+                /> -->
+
+
+            </Box>
+        </Box>
+    </Box>
+
+</Page>

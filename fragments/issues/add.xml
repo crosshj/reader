@@ -1,0 +1,112 @@
+<Page>
+	<Data
+		name="newIssue"
+		defaultValue="{}"
+	/>
+	<Data
+		name="issuePrioritySelect"
+		defaultValue='[{ "value": "High", "label": "High"}, { "value": "Medium", "label": "Medium"}, { "value": "Low", "label": "Low"}]'
+	/>
+	<Flow key="submitIssue">
+		<!-- prettier-ignore -->
+		<Confirm title="Submit this issue?">
+			Name: {{ newIssue.name }}
+			Priority: {{ newIssue.priority }}
+			Department: {{ newIssue.department }}
+		</Confirm>
+	</Flow>
+
+    <PageNavBar label="Issues / Add">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/issues"
+                label="Cancel"
+            />
+            <Button
+                href="flow:submitIssue"
+                label="Submit"
+                variant="primary"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box
+            display="flex"
+            flexDirection="column"
+            gap="2"
+            sx:mb="200px"
+            sx:mt="1em"
+            sx:width="100%"
+            sx:maxWidth="800px"
+            sx:mx="auto"
+        >
+            <Markdown>
+                - **Name**: Start by giving a brief, descriptive title to the issue.  
+                - **Priority**: Select the urgency level of the issue, which helps us in timely triage.  
+                - **Department**: Indicate the department or team this issue impacts or is responsible for addressing it.  
+                - **Description**: Offer a clear and concise explanation of the issue. The more specific you are, the better we can understand and address the problem.  
+                - **Steps To Reproduce**: List down the actions that lead to the issue. Numbered steps are preferred for clarity.  
+                - **Expected Behavior**: Describe what should have occurred if the issue had not arisen.  
+                - **Actual Behavior**: Explain what actually happened, noting any unexpected behavior.
+            </Markdown>
+            
+            <TextField
+                value="global_newIssue.name"
+                label="Name"
+                autoComplete="off"
+            />
+            <TextField
+                label="Priority"
+                value="global_newIssue.priority"
+                options="global_issuePrioritySelect"
+                select
+            />
+            <TextField
+                value="global_newIssue.department"
+                label="Department"
+                autoComplete="off"
+            />
+            <TextField
+                value="global_newIssue.description"
+                label="Description"
+                multiline
+                minRows="2"
+                autoComplete="off"
+            />
+            <TextField
+                value="global_newIssue.steps"
+                label="Steps To Reproduce"
+                multiline
+                minRows="5"
+                autoComplete="off"
+            />
+            <TextField
+                value="global_newIssue.expected"
+                label="Expected Behavior"
+                multiline
+                minRows="2"
+            />
+            <TextField
+                value="global_newIssue.actual"
+                label="Actual Behavior"
+                multiline
+                minRows="2"
+            />
+            <!-- <Button
+                label="Submit"
+                href="flow:submitIssue"
+                sx:mx="auto"
+                sx:width="100%"
+                sx:maxWidth="200px"
+                sx:mt="1em"
+            /> -->
+        </Box>
+    </PageContent>
+</Page>

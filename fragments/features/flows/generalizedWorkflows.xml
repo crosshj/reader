@@ -1,0 +1,63 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <!-- #endregion PAGE DATA -->
+
+    <!-- #region PAGE FLOWS -->
+    <Flow key='workflowBegin'>
+        <Query
+            call='workflowGetExistentOrCreateNew'
+            param_processName='static_GeneralizedWorkflow'
+            param_controlIdStrategy='static_userIDbranchID'
+        >
+            <SetData name='global_WorkflowBeginData' data='results[0]' />
+            <SetData name='global_WorkflowData' data='results[0].ParentExtended' />
+            <SetData name='global_WorkflowStep' data='results[0].stepNumber' />
+        </Query>
+
+        <Navigate
+            route='/features/flows/generalizedWorkflowStepper'
+        />
+    </Flow>
+    <!-- #endregion PAGE FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label= 'Generalized Workflows'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Typography whiteSpace="pre-wrap" fontFamily="monospace">
+            - Clicking BEGIN below will take you to the stepper page and also initiate the workflow.
+        </Typography>
+        <Spacing space='2'/>
+        <CodeBlock>
+            <Flow key='workflowBegin'>
+                <Query
+                    call='workflowGetExistentOrCreateNew'
+                    param_processName='static_GeneralizedWorkflow'
+                    param_controlId='static_212121'
+                >
+                    <SetData name='global_WorkflowBeginData' data='results[0]' />
+                    <SetData name='global_WorkflowData' data='results[0].ParentExtended' />
+                    <SetData name='global_WorkflowStep' data='results[0].stepNumber' />
+                </Query>
+            </Flow>
+        </CodeBlock>
+        <Button
+            label='Begin'
+            variant='primary'
+            href='flow:workflowBegin'
+        />
+    </PageContent>
+</Page>

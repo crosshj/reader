@@ -1,0 +1,94 @@
+<Page key="featuresComponentsMap">
+    <!-- #region PAGE DATA -->
+    <Data
+        name='sourceArray'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableLevels3Complex'
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Map">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            ```xml
+                <Map items="global_sourceArray">
+                    <Box>
+                        <Box>
+                            <Box>
+                                <Typography>{{item_myIndex}}</Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+                    <Typography>{{item_myIndex}}</Typography> <!-- use an underscore -->
+                    <Typography>{{item.myIndex}}</Typography> <!-- use a period -->
+                </Map>
+            ```
+            Map is similar to NestedTable in that it allows you to repeat its children multiple times depending on the number of items in some array.
+
+            Unlike NestedTable columns, it should be safe to nest elements deeply (and still use item properties).
+
+            You can include as many child items as you like within the `Map` component, but bear in mind:
+            1) ___there is no container___: this component does not actually render itself.  Consequently, properties besides `items` will do nothing on this component.
+            2) ___children render flat___: there will be no separator between items, eg. n+2's chid items will render at the same level and immediately after n+1's child items
+
+            ## Live Example
+            *items to the right of the sidebar column are rendered by a `Map` pointed at `global_sourceArray`*
+            *this example is also a pretty good example of CSS grid and subgrid see `map.xml` and [MDN CSS Subgrids](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Subgrid)*
+
+            NOTE: box with 2 should be missing as a proof of WHEN props working correctly
+        </Markdown>
+
+        <Box
+            display="grid"
+            gridTemplateColumns="repeat(5, 1fr)"
+            gap="1em"
+        >
+            <Box
+                className="flex-row items-center justify-center"
+                gridColumn="1"
+                gridRow="1 / -1"
+                border="1px solid currentColor"
+                textContent="sidebar"
+                borderRadius="5px"
+            />
+            <Box
+                display="grid"
+                gridColumn="2 / -1"
+                gridTemplateColumns="subgrid"
+                gap="1em"
+            >
+                <Map items="global_sourceArray">
+                    <Box
+                        className="flex-row items-center justify-center"
+                        border="1px solid currentColor"
+                        borderRadius="5px"
+                        minHeight="100px"
+                        display="WHEN item_myIndex IS 2 THEN none ELSE flex"
+                    >
+                        <Typography>{{item_myIndex}}</Typography>
+                    </Box>
+                </Map>
+            </Box>
+            <Box for="spacing" mb="300px" />
+        </Box>
+
+    </PageContent>
+</Page>

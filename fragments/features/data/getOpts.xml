@@ -1,0 +1,149 @@
+<!-- 
+
+    HARRISON TODO:
+
+    when getOpts has params, should use getData instead
+    when getOpts is defined as a storedProc, should use getData
+
+ -->
+<Page>
+    <!-- DATA -->
+    <Data
+        name='optionsExample1'
+        getData='ui.sp_GetOptionLists'
+        param_OptionListName='static_YesNo'
+    />
+    <Data
+        name='selectedYesNo'
+        source="global_optionsExample1"
+        defaultValue="first"
+    />
+
+    <Data
+        name='optionsExample2'
+        getData='ui.sp_GetOptionLists'
+        param_OptionListName='static_OLMockedExample'
+        param_talentID='static_15'
+        param_rangeStartDT='static_5/26/2023'
+        param_rangeEndDT='static_5/26/2023'
+    />
+    <Data
+        name='selectedAssignment'
+        source="global_optionsExample2"
+        defaultValue="first"
+    />
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Data / Options List'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <PageContent>
+        <Markdown>
+            Data can be bound to server/DB using getOpts property.
+
+            The value of this property takes one of two forms:
+                - value is a key which the DB uses with a special Options List Procedure [DEPRECATED]
+                - value is a stored procedure which returns Options List results
+
+            This feature demo focuses on examples of both of these forms.
+        </Markdown>
+        <Box
+            display='flex'
+            flexDirection="column"
+            justifyContent="flex-end"
+            gap="2"
+            marginBottom="8em"
+        >
+            <Typography variant="h2">
+                Options Key + Options Procedure
+            </Typography>
+            <CodeBlock>
+                <!-- use this -->
+                <Data
+                    name='optionsExample1'
+                    getData='ui.sp_GetOptionLists'
+                    param_OptionListName='static_YesNo'
+                />
+                <!-- not this (DEPRECATED) -->
+                <Data
+                    name='optionsExample1'
+                    getOpts='YesNo'
+                />
+
+                <Data
+                    name='selectedYesNo'
+                    source="global_optionsExample1"
+                    defaultValue="first"
+                />
+                <TextField
+                    label='YesNo'
+                    options='global_optionsExample1'
+                    value='global_selectedYesNo'
+                    select
+                    fullWidth
+                />
+            </CodeBlock>
+            <TextField
+                label='YesNo'
+                options='global_optionsExample1'
+                value='global_selectedYesNo'
+                select
+                fullWidth
+            />
+        </Box>
+
+        <Box
+            display='flex'
+            flexDirection="column"
+            justifyContent="flex-end"
+            gap="2"
+            marginBottom="8em"
+        >
+            <Typography variant="h2">
+                Stored Proc (not Options Procedure)
+            </Typography>
+            <CodeBlock>
+                <Data
+                    name='optionsExample2'
+                    getData='ui.sp_OLActiveAssignmentsByTalentIDDates'
+                    param_talentID='static_15'
+                    param_rangeStartDT='static_5/26/2023'
+                    param_rangeEndDT='static_5/26/2023'
+                />
+                <Data
+                    name='selectedAssignment'
+                    source="global_optionsExample2"
+                    defaultValue="first"
+                />
+                <TextField
+                    label='Assignments'
+                    options='global_optionsExample2'
+                    value='global_selectedAssignment'
+                    select
+                    fullWidth
+                />
+            </CodeBlock>
+            <TextField
+                label='Assignments'
+                options='global_optionsExample2'
+                value='global_selectedAssignment'
+                select
+                fullWidth
+            />
+        </Box>
+    </PageContent>
+</Page>

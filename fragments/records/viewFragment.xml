@@ -1,0 +1,93 @@
+<!--
+    assumes
+
+    flowArgs.record (via recordsSideBarFragment) 
+-->
+<PageFragment>
+    <Data name="viewingRecordShowModal" defaultValue="false"/>
+    <Data name="viewingRecord" defaultValue="{}"/>
+
+    <Flow key='showRecordViewModal'>
+        <Query
+            exec='rec.sp_RecordGetItemDetails'
+            param_recordID='flowArgs.recordID,flowArgs.recordid'
+            out_viewingRecord="results[0]"
+        />
+        <SetData name="viewingRecordShowModal" data="true" />
+    </Flow>
+
+    <Flow key='hideRecordViewModal'>
+        <SetData name="viewingRecordShowModal" data="false" />
+        <SetData name="viewingRecord" data="{}" />
+    </Flow>
+
+    <Dialog
+        useData='viewingRecordShowModal'
+        hideCloseButton='false'
+        height="auto"
+    >
+        <Typography variant='h2' mb="3">
+            Viewing a Record
+        </Typography>
+        <Box className="flex-column" gap="2" sx:overflowY="auto" pt="1em">
+            <GridContainer sx='py:2'>
+                <TextField
+                    label="Record Name"
+                    value="global_viewingRecord.RecordName"
+                    InputProps:readOnly="true"
+                    variant="filled"
+                    xs='12'
+                    fullWidth
+                />
+                <TextField
+                    label="Date Created"
+                    value="global_viewingRecord.CreatedDt"
+                    type="date"
+                    InputProps:readOnly="true"
+                    variant="filled"
+                    xs='12'
+                    fullWidth
+                />
+                <TextField
+                    label="Record Type"
+                    value="global_viewingRecord.RecordType"
+                    InputProps:readOnly="true"
+                    variant="filled"
+                    xs='12'
+                    fullWidth
+                />
+                <TextField
+                    label="Content"
+                    value="global_viewingRecord.TextPhrase"
+                    InputProps:readOnly="true"
+                    disabled
+                    variant="filled"
+                    multiline
+                    minRows="4"
+                    xs='12'
+                    fullWidth
+                />
+                <Typography xs='12'>
+                    Attachment:
+                </Typography>
+                <Link
+                    sx:display='WHEN global_viewingRecord.RecordType IS Attachment THEN block ELSE none'
+                    href='/documents/{{global_viewingRecord.DocName}}?docId={{global_viewingRecord.DocID}}&disposition=inline'
+                    target='_blank'
+                    xs='12'
+                >
+                    {{global_viewingRecord.DocName}}
+                </Link>
+            </GridContainer>
+        </Box>
+
+        <Spacing space='1' />
+        <Box className="flex items-center justify-end" mt="2em">
+            <Button
+                label='Dismiss'
+                variant='primary'
+                href='flow:hideRecordViewModal'
+            />
+        </Box>
+    </Dialog>
+</PageFragment>

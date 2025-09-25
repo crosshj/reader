@@ -1,0 +1,95 @@
+<Page key="board">
+    <PageNavBar label='Board'>
+    </PageNavBar>
+
+    <PageContent>
+        <Box
+            display="flex"
+            flexDirection="column"
+            gap="2"
+            sx:mb="200px"
+            sx:mt="1em"
+            sx:width="100%"
+            sx:maxWidth="1000px"
+            sx:mx="auto"
+        >
+            <Box width="100%" minHeight="210px">
+                <Kanban for="testing"/>
+            </Box>
+            <Markdown>
+                ## 🗂️ Your Kanban Board
+
+                This is your Kanban board for organizing tasks.
+
+                - **Backlog** for new or unprioritized tasks  
+                - **In Progress** for items being actively worked on  
+                - **Done** for completed items  
+
+                ---
+
+                ### ✨ Features at a Glance
+
+                - You can **drag and drop** cards between columns.  
+                - This board focuses on **core functionality**, without extra bells and whistles.  
+                - It's great for **quick task management** and **visual clarity**.  
+
+                ---
+
+                ### 📌 Why Use a Kanban Board?
+
+                Kanban helps break down your workflow into manageable chunks. Instead of being overwhelmed by a massive list, tasks move clearly from “To Do” to “Doing” to “Done.” This mirrors real-life progress and helps you **visualize momentum**.
+
+                It’s especially effective in fast-moving teams where priorities shift often. The board gives you a snapshot of the current state at a glance—no need to dig through issue trackers or spreadsheets.
+
+                ---
+
+                ### 🔄 Real-Time Collaboration
+
+                Multiple team members can update the board simultaneously. This makes it ideal for:
+
+                - Stand-ups  
+                - Sprint planning  
+                - Visualizing blockers  
+                - Tracking daily throughput  
+
+                Unlike traditional task lists, a Kanban board encourages a living, **interactive workflow**. Updates are reflected instantly, giving everyone the same real-time perspective.
+
+                ---
+
+                ### 🧠 Working Agreements and WIP Limits
+
+                Kanban isn’t just visual—it’s about discipline. Many teams define **Work In Progress (WIP) limits** to reduce multitasking and improve throughput. For example:
+
+                > Limit “In Progress” to 3 tasks per person
+
+                This encourages focus and finishes over starts. It's easy to introduce policies like this gradually and reinforce them through team habits.
+
+                ---
+
+                ### 🚦 Identifying Bottlenecks
+
+                Columns that fill up quickly signal friction. If you constantly have 10+ items in “In Progress” but nothing moving to “Done,” that’s insight. The board becomes not just a tracker—but a **diagnostic tool**.
+
+                ---
+
+                ### 📁 Attachments, Tags, and Beyond (Future Features)
+
+                This basic board keeps things lean. But you may eventually extend it with:
+
+                - Labels for priority, category, or owner  
+                - File attachments or checklists  
+                - Card comments and history  
+                - Automation (e.g. move to Done when checkbox list is complete)
+
+                For now, enjoy the simplicity. You’re free to manage work *without distraction.*
+
+                ---
+
+                ### ✅ Final Thought
+
+                A Kanban board only works if it’s updated. Treat this as a **living surface**—drag, drop, prune, add. The more you use it, the more valuable it becomes.
+            </Markdown>
+
+        </Box>
+    </PageContent>
+</Page>

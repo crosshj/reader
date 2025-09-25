@@ -1,0 +1,166 @@
+<Page>
+<!-- 
+
+How to hide things:
+
+1) create an element whose job it is to hide/show
+
+2) set display property on MUI components
+
+How things know to hide:
+
+1) some data has changed, ie. useData
+2) always watch global
+
+-->
+
+    <!-- DATA -->
+    <Data
+        name='showRedBox'
+        defaultValue='true'
+    />
+    <Data
+        name='showMultipleBoxes'
+        defaultValue='{ "green": true, "blue": false }'
+        debug
+    />
+
+    <!-- FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Components / Hide'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box
+            display='flex'
+            flexDirection="column"
+            gap='2'
+            marginBottom="4"
+        >
+            <Typography variant="h2">
+                Using Data where Data is a simple Boolean
+            </Typography>
+            <Typography>
+                In this example, we have a Switch bound to data that takes a simple true or false value
+            </Typography>
+            <Box>
+                <CodeBlock>
+                    <Data
+                        name='showRedBox'
+                        defaultValue='true'
+                    />
+                    <Switch value="global_showRedBox" />
+                    <Box
+                        useData="showRedBox"
+                        display='WHEN global_showRedBox THEN flex ELSE none'
+                    >RED BOX</Box>
+                </CodeBlock>
+            </Box>
+        </Box>
+        <Box
+            display='flex'
+            justifyContent='flex-start'
+            alignItems="center"
+            gap='2'
+        >
+            <Typography>Show Red Box</Typography>
+            <Switch value="global_showRedBox" />
+        </Box>
+        <Box
+            useData="showRedBox"
+            display='WHEN global_showRedBox THEN flex ELSE none'
+            justifyContent="center"
+            alignItems="center"
+            py="8"
+            my="2"
+            color="white"
+            sx="background:red"
+        >
+            RED BOX
+        </Box>
+
+
+        <Box
+            display='flex'
+            flexDirection="column"
+            gap='2'
+            marginTop="4"
+            marginBottom="4"
+        >
+
+            <Typography variant="h2">
+                Using Data where Data is an Object
+            </Typography>
+            <Typography>
+                Next, a Switch bound to data that is an object
+            </Typography>
+            <Box>
+                <CodeBlock>
+                    <Data
+                        name='showMultipleBoxes'
+                        defaultValue='{ "green": true, "blue": false }'
+                    />
+                    <Switch value="global_showMultipleBoxes.green" />
+                    <Switch value="global_showMultipleBoxes.blue" />
+                </CodeBlock>
+            </Box>
+        </Box>
+
+        <Box
+            display='flex'
+            justifyContent='flex-start'
+            alignItems="center"
+            gap='2'
+        >
+            <Typography>Show Green Box</Typography>
+            <Switch value="global_showMultipleBoxes.green" />
+        </Box>
+        <Box
+            display='flex'
+            justifyContent='flex-start'
+            alignItems="center"
+            gap='2'
+        >
+            <Typography>Show Blue Box</Typography>
+            <Switch value="global_showMultipleBoxes.blue" />
+        </Box>
+
+        <Box
+            useData="showMultipleBoxes.green"
+            display='WHEN global_showMultipleBoxes.green THEN flex ELSE none'
+            justifyContent="center"
+            alignItems="center"
+            py="8"
+            my="2"
+            color="white"
+            sx="background:green"
+        >
+            GREEN BOX
+        </Box>
+        <Box
+            useData="showMultipleBoxes.blue"
+            display='WHEN global_showMultipleBoxes.blue THEN flex ELSE none'
+            justifyContent="center"
+            alignItems="center"
+            py="8"
+            my="2"
+            color="white"
+            sx="background:blue"
+        >
+            BLUE BOX
+        </Box>
+    </PageContent>
+</Page>

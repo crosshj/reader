@@ -1,0 +1,172 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data
+        name='today'
+        defaultValue='dateNow'
+    />
+    <Data
+        name='schemas.user'
+        getData='schemasUser'
+        param_eventDate.dateMinimum="global_today"
+        param_eventDate.dateExclusiveMaximum="static_2024-12-31T00:00:00Z"
+    />
+    <!-- param_eventDate.max="static_2040-12-12" -->
+    <Data
+        name='results'
+        defaultValue="{ data: {}, errors: {}}"
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key="validateForm">
+        <Validate
+            schema="global_schemas.user"
+            data="global_results.data"
+            errors="global_results.errors"
+        />
+        <Confirm title="Form is Valid" textContent="Great Job!" alertText="awesome" />
+    </Flow>
+    <Flow key="featuresDataValidationBad">
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresDataValidationBad"
+            out_results.data='results'
+        />
+    </Flow>
+    <Flow key="featuresDataValidationGood">
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresDataValidationGood"
+            out_results.data='results'
+        />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Data / Validation Alternate'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+         <Markdown>
+            The idea here is to just load [JSONSchema](https://json-schema.org/understanding-json-schema) directly and avoid converting from config.
+            ```xml
+                <Data
+                    name='schemas.user'
+                    getData='schemasUser'
+                />
+                <Flow key="validateForm">
+                    <Validate
+                        schema="global_schemas.userModel"
+                        data="global_results.data"
+                        errors="global_results.errors"
+                    />
+                    <Confirm title="Form is Valid" textContent="Great Job!" alertText="awesome" />
+                </Flow>
+                <TextField
+                    value="global_results.data.website"
+                    error="global_results.errors.website"
+                    helperText="global_results.errors.website"
+                    label="Website"
+                    fullWidth
+                    xs="6"
+                />
+            ```
+            ## Example
+         </Markdown>
+
+        <Box
+            display="flex"
+            gap="20px"
+            marginBottom="20px"
+        >
+            <Button
+                label='Load Good Data'
+                flow='featuresDataValidationGood'
+                color="success"
+            />
+            <Button
+                label='Load Bad Data'
+                flow='featuresDataValidationBad'
+                color="error"
+            />
+        </Box>
+        <GridContainer>
+            <TextField
+                name="name"
+                value="global_results.data.name"
+                error="global_results.errors.name"
+                helperText="global_results.errors.name"
+                label="Name
+                fullWidth
+                xs="6"
+            />
+            <TextField
+                name="age"
+                value="global_results.data.age"
+                error="global_results.errors.age"
+                helperText="global_results.errors.age"
+                label="Age"
+                type="number"
+                inputProps="min:1;max:80"
+                fullWidth
+                xs="6"
+            />
+            <TextField
+                name="email"
+                value="global_results.data.email"
+                error="global_results.errors.email"
+                helperText="global_results.errors.email"
+                label="Email"
+                inputProps="type:email"
+                fullWidth
+                xs="6"
+            />
+            <TextField
+                name="website"
+                value="global_results.data.website"
+                error="global_results.errors.website"
+                helperText="global_results.errors.website"
+                label="Website"
+                fullWidth
+                xs="6"
+            />
+            <TextField
+                debug
+                type="date"
+                name="eventDate"
+                value="global_results.data.eventDate"
+                error="global_results.errors.eventDate"
+                helperText="global_results.errors.eventDate"
+                label="Start Date"
+                fullWidth
+                xs="6"
+            />
+            <TextField
+                type="date"
+                name="eventEndDate"
+                value="global_results.data.eventEndDate"
+                error="global_results.errors.eventEndDate"
+                helperText="global_results.errors.eventEndDate"
+                label="Stop Date"
+                fullWidth
+                xs="6"
+            />
+            <Button
+                label='Validate Form'
+                href='flow:validateForm'
+                sx:marginBottom="48px"
+            />
+        </GridContainer>
+    </PageContent>
+</Page>

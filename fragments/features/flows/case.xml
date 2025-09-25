@@ -1,0 +1,201 @@
+<Page>
+    <Data
+        name="featuresCaseIsActive"
+        defaultValue="false"
+    />
+
+    <!-- #region FLOWS -->
+    <Flow key='activeOrDeactivatedWithConfirm'>   
+        <Case when='global_featuresCaseIsActive IS true'>
+            <Confirm title='ACTIVE'>
+                Hello! If you are seeing this, it means the checkbox is active
+            </Confirm>
+            <Confirm title='ACTIVE2'>
+                active2
+            </Confirm>
+            <Confirm title='ACTIVE3'>
+                active3
+            </Confirm>
+        </Case>
+
+        <Case when='global_featuresCaseIsActive IS false'>
+            <Confirm title='DEACTIVATED'>
+                Deactivated...
+            </Confirm>
+        </Case>
+    </Flow>
+
+    <Flow key='activeOrDeactivatedWithLocalData'>   
+        <Case when='global_featuresCaseIsActive IS true'>
+            <LocalData
+                name="myMessage"
+                data='hello I come straight from the active case'
+            />
+        </Case>
+
+        <Case when='global_featuresCaseIsActive IS false'>
+            <LocalData
+                name="myMessage"
+                data='deactivated!'
+            />
+        </Case>
+
+        <Confirm title="result">
+            {{ flowArgs.myMessage }}
+        </Confirm>
+    </Flow>
+
+    <Flow key='activeOrDeactivatedWithBreakFlow'>   
+        <Case when='global_featuresCaseIsActive IS true'>
+            <BreakFlow />
+        </Case>
+
+        <Confirm title="result">
+            If you are seeing this.. it means that it is deactivated.
+        </Confirm>
+    </Flow>
+
+    <Flow key='activeOrDeactivatedWithQuery'>
+        <Case when='global_featuresCaseIsActive IS true'>
+            <Query
+                showLoading
+                exec='ui.sp_OLYesNo'
+            >
+                <SetData
+                    name="global_featuresCaseQueryResult"
+                    data="results.0.DisplayValue"
+                />
+            </Query>
+            <Query
+                debug
+                showLoading
+                exec='ui.sp_OLYesNo'
+            >
+                <SetData
+                    name="global_featuresCaseQueryResult2"
+                    data="results.0.DisplayValue"
+                />
+            </Query>
+            <Query
+                debug
+                showLoading
+                exec='ui.sp_OLYesNo'
+            >
+                <SetData
+                    name="global_featuresCaseQueryResult3"
+                    data="results.0.DisplayValue"
+                />
+            </Query>
+        </Case>
+
+        <Case when='global_featuresCaseIsActive IS false'>
+            <Query
+                showLoading
+                exec='ui.sp_OLYesNo'
+                out_featuresCaseQueryResult="results.1.DisplayValue"
+            />
+        </Case>
+
+        <Confirm title="result">
+            Was it called? - {{ global_featuresCaseQueryResult }}
+        </Confirm>
+    </Flow>
+    <!-- #endregion FLOWS -->
+
+    <PageNavBar label="Features / Flows / Case">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button href="/features" label="back"/>
+        </Box>
+    </PageNavBar>
+
+    <PageContent>
+        <Typography variant="p" whiteSpace="pre-wrap">
+            Case components allow you to conditionally call flow components. It supports W.H.E.N conditions just like other places.
+
+            Inside of it you can call "Confirm", "Insert", "LocalData", "Navigate", "Refresh", "SetData", "BreakFlow" and "Query".
+        </Typography>
+
+        <Box
+            display="flex"
+            whiteSpace="nowrap"
+            textAlign="center"
+            margin="24px 0"
+
+            flexShrink="0"
+
+            borderTop="thin solid rgba(0, 0, 0, 0.12)"
+        />
+
+        <Box
+            display="flex"
+            flexDirection="column-reverse"
+        >
+            <CodeBlock>
+                <Flow key='activeOrDeactivatedWithConfirm'>   
+                    <Case debug when='global_isActive IS true'>
+                        <Confirm title='ACTIVE'>
+                            Hello! If you are seeing this, it means the checkbox is active
+                        </Confirm>
+                    </Case>
+
+                    <Case when='global_isActive IS false'>
+                        <Confirm title='ACTIVE'>
+                            Deactivated...
+                        </Confirm>
+                    </Case>
+                </Flow>
+            </CodeBlock>
+
+            <Box
+                display="flex"
+                justifyContent="flex-start"
+                gap="20px"
+            >
+                <Button
+                    href="flow:activeOrDeactivatedWithConfirm"
+                >
+                    Call with CONFIRM
+                </Button>
+                <Button
+                    href="flow:activeOrDeactivatedWithLocalData"
+                >
+                    Call with LOCAL DATA
+                </Button>
+                <Button
+                    href="flow:activeOrDeactivatedWithBreakFlow"
+                >
+                    Call with BREAK FLOW
+                </Button>
+                <Button
+                    href="flow:activeOrDeactivatedWithQuery"
+                >
+                    Call with QUERY
+                </Button>
+            </Box>
+
+            <Box display='flex' alignItems='center' marginTop="16px">
+                <Checkbox
+                    useData="featuresCaseIsActive"
+                />
+                <Typography
+                    variant="body1"
+                    display="WHEN global_featuresCaseIsActive IS true THEN block ELSE none"
+                >
+                    State is active
+                </Typography>
+                <Typography
+                    variant="body1"
+                    display="WHEN global_featuresCaseIsActive IS false THEN block ELSE none"
+                >
+                    State is deactivated
+                </Typography>
+            </Box>
+            
+        </Box>
+    </PageContent>
+</Page>

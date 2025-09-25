@@ -1,0 +1,86 @@
+<Page key="featuresComponentsFragment">
+    <!-- #region PAGE DATA -->
+    <Data name="queryError" defaultValue="Some error occured" />
+
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Alert">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            ```xml
+                <Alert label='LOCAL-ONLY:Work in Progress'>
+                    TODO item which is visible only on localhost.
+                </Alert>
+
+                <Alert showOn="//hominid-dev" label='LOCAL+DEV: Work in Progress'>
+                    TODO item which will only show on localhost and in dev.
+                </Alert>
+
+                <Alert showOn="*" label='ALL ENVs: Work in Progress'>
+                    TODO item which will show everywhere.
+                </Alert>
+            ```
+            ---
+        </Markdown>
+
+        <Alert label='LOCAL-ONLY:Work in Progress'>
+            TODO item which is visible only on localhost.
+        </Alert>
+
+        <Alert showOn="//hominid-dev" label='LOCAL+DEV: Work in Progress'>
+            TODO item which will only show on localhost and in dev.
+        </Alert>
+
+        <Alert showOn="*" label='ALL ENVs: Work in Progress'>
+            TODO item which will show everywhere.
+        </Alert>
+
+
+        <Markdown>
+            #### Low-level alternative to Alert (for error)
+            ```xml
+                <Box
+                    display="WHEN global_queryError THEN block ELSE none"
+                    position="relative"
+                    p="1em"
+                    borderRadius="6px"
+                    overflow="hidden"
+                >
+                    <Box sx:backgroundColor="error.light" sx:opacity="0.1" position="absolute" top="0" bottom="0" left="0" right="0"/>
+                    <Typography sx:color="error.dark" variant="body1">Error</Typography>
+                    <Typography sx:color="error.dark" variant="body2">{{global_queryError}}</Typography>
+                </Box>
+            ```
+        </Markdown>
+        <Box
+            display="WHEN global_queryError THEN block ELSE none"
+            position="relative"
+            p="1em"
+            borderRadius="6px"
+            overflow="hidden"
+        >
+            <Box sx:backgroundColor="error.light" sx:opacity="0.1" position="absolute" top="0" bottom="0" left="0" right="0"/>
+            <Typography variant="body1" fontWeight="500">Error</Typography>
+            <Typography sx:color="error.dark" variant="body2">{{global_queryError}}</Typography>
+        </Box>
+
+    </PageContent>
+</Page>

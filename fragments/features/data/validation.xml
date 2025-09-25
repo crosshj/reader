@@ -1,0 +1,215 @@
+<Page>
+
+    <Schema name="userModel">
+        <Object name="user">
+            <String name="name" min="3" max="30" required />
+            <Number name="age" minimum="1" integer required />
+            <String name="email" email />
+            <String name="website" url nullable />
+            <Date
+                name="eventDate"
+                min="1-1-1900"
+                maxDate="1-1-2030"
+                errMessage="This date is not right"
+            />
+        </Object>
+    </Schema>
+
+    <!-- DATA -->
+    <Data
+        name='results'
+        defaultValue="{}"
+    />
+    <Data
+        name="resultsErrors"
+        defaultValue="{}"
+    />
+
+    <!-- FLOWS -->
+    <Flow key="validateForm">
+        <Validate
+            schema="global_schemas.userModel"
+            data="global_results"
+            errors="global_resultsErrors"
+        />
+        <Confirm title="Form is Valid" textContent="Great Job!" alertText="awesome" />
+    </Flow>
+
+    <Flow key="featuresDataValidationBad">
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresDataValidationBad"
+            out_results='results'
+        />
+    </Flow>
+
+    <Flow key="featuresDataValidationGood">
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresDataValidationGood"
+            out_results='results'
+        />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Data / Validation'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            We convert a config object to JSONSchema, then we use [yup](https://www.npmjs.com/package/yup) validator via [schema-to-yup](https://www.npmjs.com/package/schema-to-yup).  The later supports custom schemas, but current code takes the path of converting to JSONSchema first.
+
+            The first part of Validation is the `Schema` component which reads configuration and registers a validation model with the global state.
+
+            The second part of Validation is a Flow Step Component `Validate` which executes the model against some data source and writes results to some error data source.
+
+            Third part comes from MUI by default; a `TextField` can accept an error prop which we attach to the error data source.
+
+            ```xml
+                <Schema name="userModel">
+                    <Object name="user">
+                        <String name="name" min="3" max="30" required />
+                        <Number name="age" minimum="1" integer required />
+                        <String name="email" email />
+                        <String name="website" url nullable />
+                        <Date
+                            name="eventDate"
+                            min="1-1-1900"
+                            maxDate="1-1-2030"
+                            errMessage="This date is not right"
+                        />
+                    </Object>
+                </Schema>
+                <Flow key="validateForm">
+                    <Validate
+                        schema="global_schemas.userModel"
+                        data="global_results"
+                        errors="global_resultsErrors"
+                    />
+                    <Confirm title="Form is Valid" textContent="Great Job!" alertText="awesome" />
+                </Flow>
+                <TextField
+                    value="global_results.website"
+                    error="global_resultsErrors.website"
+                    helperText="global_resultsErrors.website"
+                    label="Website"
+                    fullWidth
+                    xs="6"
+                />
+            ```
+
+            ### Example
+        </Markdown>
+
+
+        <GridContainer>
+            <Button
+                label='Load Good Data'
+                flow='featuresDataValidationGood'
+                color="success"
+            />
+            <Button
+                label='Load Bad Data'
+                flow='featuresDataValidationBad'
+                color="error"
+            />
+            <TextField
+                value="global_results.name"
+                error="global_resultsErrors.name"
+                helperText="global_resultsErrors.name"
+                label="Name"
+                fullWidth
+                xs="6"
+            />
+            <TextField
+                value="global_results.age"
+                error="global_resultsErrors.age"
+                helperText="global_resultsErrors.age"
+                label="Age"
+                fullWidth
+                xs="6"
+            />
+            <TextField
+                value="global_results.email"
+                error="global_resultsErrors.email"
+                helperText="global_resultsErrors.email"
+                label="Email"
+                fullWidth
+                xs="6"
+            />
+            <TextField
+                value="global_results.website"
+                error="global_resultsErrors.website"
+                helperText="global_resultsErrors.website"
+                label="Website"
+                fullWidth
+                xs="6"
+            />
+            <!--
+            <TextField
+                type="date"
+                value="global_results.eventDate"
+                error="global_resultsErrors.eventDate"
+                helperText="global_resultsErrors.eventDate"
+                label="Event Date"
+                fullWidth
+                xs="12"
+            />
+            -->
+            <TextField
+                value="global_results.eventDate"
+                error="global_resultsErrors.eventDate"
+                helperText="global_resultsErrors.eventDate"
+                label="Event Date"
+                fullWidth
+                xs="12"
+            />
+            <Button
+                label='Validate'
+                href='flow:validateForm'
+            />
+        </GridContainer>
+
+        <Markdown>
+            -----------------------------
+
+            ## Notes (needs to be updated)
+
+            ### TODO
+            - Date should be failing more (above)
+            - errMessage not working (should be OOTB); used to customize error text
+            - Textfield type="date" is not very tolerant (related, but side point)
+            - we need to spread the net wide with the variety of all possible validations
+            - validation does not happen "as you type" or "on focus out"; we lack this functionality for flow execution - should we have it?
+            - little/no support for nested validations.  Array/Object are supported weakly.
+            - we only support one child for a Validator element; do we need more?
+
+            ### Planned
+            - we can validate using only part of a schema, see [yup github](
+                https://github.com/jquense/yup#schemavalidateatpath-string-value-any-options-object-promiseinfertypeschema-validationerror
+            )
+            - we can validate sync versus async, see [yup github](
+                https://github.com/jquense/yup#schemavalidatesyncvalue-any-options-object-infertypeschema
+            )
+            - we use a json schema to yup parser and reconcile differences/shortcomings. See [JSONSchema Reference](
+                https://json-schema.org/understanding-json-schema/index.html
+            )
+        </Markdown>
+
+
+        <Box height="24em" for="overscroll"/>
+
+    </PageContent>
+</Page>

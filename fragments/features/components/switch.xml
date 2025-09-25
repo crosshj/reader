@@ -1,0 +1,212 @@
+<Page key='root.featuresComponentsSwitch'>
+    <!-- DATA -->
+    <Data
+        name='tableData'
+        getData='featuresExtensibleColsData'
+        param_qty="static_3"
+    />
+    <Data
+        name='selectedArray'
+        defaultValue='[2,3]'
+    />
+    <Data
+        name='soloSwitch'
+        defaultValue="true"
+    />
+
+    <!-- FLOWS -->
+    <Flow key='shouldUpdateSoloSwitch'>
+        <Confirm title='Do you confirm these changes?'>
+            Are you sure you want to update to "{{flowArgs.newValue}}"?
+        </Confirm>
+
+        <SetData name="global_soloSwitch" data="flowArgs.newValue" />
+    </Flow>
+
+    <Flow key='shouldUpdateSelectedArray'>
+        <Confirm title='Do you confirm these changes?'>
+            Are you sure you want to update to "{{flowArgs.newValue}}"?
+        </Confirm>
+
+        <SetData name="global_selectedArray" data="flowArgs.newValue" />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Switch">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Alert>
+            FUTURE: adjust the API for Switch more consistent with other generic MUI components, ie. remove need for useData and index
+        </Alert>
+        <Box sx="py:2" marginBottom="4">
+            <Typography variant="h2" marginBottom="4">
+                Global Context
+            </Typography>
+
+            <Typography useData="soloSwitch" whiteSpace="pre-wrap">
+                OUTSIDE TABLE: {{global_soloSwitch}}
+            </Typography>
+            <CodeBlock>
+                <Data
+                    name='soloSwitch'
+                    defaultValue="true"
+                />
+            </CodeBlock>
+
+            <Typography useData="selectedArray" whiteSpace="pre-wrap" marginTop="4">
+                INSIDE TABLE: {{global_selectedArray}}
+            </Typography>
+            <CodeBlock>
+                <Data
+                    name='selectedArray'
+                    defaultValue="[2,3]"
+                />
+            </CodeBlock>
+        </Box>
+
+        <Box sx="py:2" marginBottom="4">
+            <Typography variant="h2" marginBottom="4">
+                Switch
+            </Typography>
+
+            <Box sx="p:0" display="flex" alignItems="center">
+                <Switch
+                    useData="soloSwitch"
+                />
+                <Typography>
+                    A Switch outside a table context
+                </Typography>
+            </Box>
+            <CodeBlock>
+                <Switch
+                    useData="soloSwitch"
+                />
+            </CodeBlock>
+
+            <Divider sx="my:4" />
+
+            <!-- Using CHECKED with global state -->
+            <Box sx="p:0" display="flex" alignItems="center" marginTop="4">
+                <Switch
+                    checked="global_soloSwitch"
+                    href="flow:shouldUpdateSoloSwitch"
+                />
+                <Typography>
+                    A Single Switch using a combination of "checked" and "href" to update its value through a flow.
+                </Typography>
+            </Box>
+            <CodeBlock>
+                <Switch
+                    checked="global_soloSwitch"
+                    href="flow:shouldUpdateSoloSwitch"
+                />
+            </CodeBlock>
+
+            <Box sx="p:0" display="flex" alignItems="center" marginTop="4">
+                <Switch
+                    index="999"
+                    useData="selectedArray"
+                    checked="{{ global_selectedArray INCLUDES static_999 }}"
+                    href="flow:shouldUpdateSelectedArray"
+                />
+                <Typography whiteSpace="pre-wrap">
+                    A Table-Type switch using the same href+checked combination to update the value through a flow.
+                    
+                    @Anna.
+                    This is a WIP.
+
+                    "useData" here is a must to get the array value from state, but it also means that the state will be updated before the flow ends.
+                    
+                    What I want to do is "if there is href and there is useData, do not update the state with useData, let it be updated on flow",
+                    but I'm not sure if that is useful.
+                </Typography>
+            </Box>
+            <CodeBlock>
+                <Switch
+                    index="999"
+                    useData="selectedArray"
+                    checked="{{ global_selectedArray INCLUDES static_999 }}"
+                    href="flow:shouldUpdateSelectedArray"
+                />
+            </CodeBlock>
+
+            <Divider sx="my:4" />
+
+            <Box sx="p:0" display="flex" alignItems="center" marginTop="4">
+                <Switch
+                    index="1"
+                    useData="selectedArray"
+                    checked="{{ global_selectedArray INCLUDES static_1 }}"
+                />
+                <Typography>
+                    A table-type Switch used outside a table
+                </Typography>
+            </Box>
+            <CodeBlock>
+                <Switch
+                    index="1"
+                    useData="selectedArray"
+                    checked="{{ global_selectedArray INCLUDES static_1 }}"
+                />
+            </CodeBlock>
+
+            <Typography marginTop="4">
+                Note, this would usually be used inside a table like this
+            </Typography>
+            <CodeBlock>
+                <Switch
+                    index="{{ row_myID }}"
+                    useData="selectedArray"
+                    checked="{{ global_selectedArray INCLUDES row_myID }}"
+                />
+            </CodeBlock>
+        </Box>
+
+        <Divider sx="my:4" />
+
+        <Typography variant="h2">
+            Nested Table
+        </Typography>
+        <Typography whiteSpace="pre-wrap" my="4">
+            As you check/uncheck the Switches in this basic NestedTable, you will see Global Context reflects this.
+        </Typography>
+        <NestedTable
+            source='tableData'
+            collapsible="false"
+            indented="false"
+        >
+            <Column label='Switch' width="min-content" labelHidden >
+                <Switch
+                    index="{{ row_myID }}"
+                    useData="selectedArray"
+                    checked="{{ global_selectedArray INCLUDES row_myID }}"
+                />
+            </Column>
+            <Column label='ID' width="min-content">
+                <Typography>{{row_myID}}</Typography>
+            </Column>
+            <Column label='First'>
+                <Typography>{{row_firstName}}</Typography>
+            </Column>
+            <Column label='Last' >
+                <Typography>{{row_lastName}}</Typography>
+            </Column>
+            <Column label='Description' >
+                <Typography>{{row_description}}</Typography>
+            </Column>
+        </NestedTable>
+    </PageContent>
+</Page>

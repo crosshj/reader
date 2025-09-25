@@ -1,0 +1,71 @@
+<Page key='userManageSignature'>
+    <!-- #region PAGE DATA -->
+    <!-- #endregion PAGE DATA -->
+
+    <!-- #region FLOWS -->
+    <Trigger handler='userManageSignatureLoad' />
+    <Flow key='userManageSignatureLoad'>
+        <Query
+            proc='ui.sp_Upsert'
+            call="documentDownload"
+            flatParams="false"
+            param_documentType='static_signature'
+            out_userManageSignatureData='results.results[0].value'
+        />
+    </Flow>
+    <Flow key='userManageSignatureUpdateSignature'>
+        <SetData
+            name='global_userManageSignatureData'
+            data='flowArgs.signature'
+        />
+    </Flow>
+    <Flow key='userManageSignatureSubmitSignature'>
+        <Query
+            proc='ui.sp_Upsert'
+            call="documentUpload"
+            flatParams="false"
+            param_files='global_userManageSignatureData'
+            param_documentType='static_signature'
+        />
+        <Navigate route='/userSettings' />
+    </Flow>
+    <!-- #endregion FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar />
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box
+            sx:width="100%"
+            sx:display="flex"
+            sx:alignItems="center"
+            sx:justifyContent="space-between"
+        >
+            <Typography variant='h1'>
+                Manage Signature
+            </Typography>
+            <Button
+                label='Back to Settings'
+                href='/userSettings'
+                variant='secondary'
+            />
+        </Box>
+        <Spacing space='2' />
+        <GridContainer>
+            <Signature
+                label='Signature'
+                border="1px solid #ccc"
+                value='global_userManageSignatureData'
+                onEnd="runFlow_userManageSignatureUpdateSignature"
+                onClear='runFlow_userManageSignatureUpdateSignature'
+                xs='12'
+            />
+            <Button
+                label='Create/Update'
+                variant='primary'
+                href='flow:userManageSignatureSubmitSignature'
+            />
+        </GridContainer>
+    </PageContent>
+</Page>

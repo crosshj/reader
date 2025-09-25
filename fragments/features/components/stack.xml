@@ -1,0 +1,53 @@
+<Page key="featuresComponentsSidebar">
+    <!-- #region PAGE DATA -->
+    <Data name="subjectID" defaultValue="null" />
+    <Data name="referenceType" defaultValue="null" />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+
+    <xi:include href="../../records/viewFragment.xml"/>
+    <xi:include href="../../records/createFragment.xml"/>
+    <Stack variant="sidebar-right" sx:overflowY="hidden">
+        <xi:include href="../../records/sidebarFragment.xml"/>
+    </Stack>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Stack">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            it's probably best to put this above PageNavBar in XML.
+
+            TODO: provide controls for subjectID and referenceType
+
+            TODO: make this simpler by not using "Records" usecase
+
+            ```xml
+            <Stack variant="sidebar-right">
+                <!-- some sidebar content -->
+            </Stack>
+            
+            <PageNavBar>
+            </PageNavBar>
+            
+            <PageContent>
+            </PageContent>
+            ```
+        </Markdown>
+    </PageContent>
+
+</Page>

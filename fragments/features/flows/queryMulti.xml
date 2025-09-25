@@ -1,0 +1,72 @@
+<Page>
+
+    <!-- DATA -->
+    <Data name="multiOneMessage" />
+    <Data name="multiTwoMessage" />
+
+
+    <!-- FLOWS -->
+    <Flow key='multiQuery'>
+        <Query
+            showLoading
+            proc="ui.sp_Upsert"
+            procArgs="featuresFlowsQueryMultiOne"
+            out_multiOneMessage='results.message'
+        />
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresFlowsQueryMultiTwo"
+            param_oneMessage='global_multiOneMessage'
+            out_multiTwoMessage='results.message'
+        />
+        <Confirm
+            title='Success'
+            alertText="Okay"
+        >
+            That worked!
+        </Confirm>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Flows / Query Multi'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box
+            sx="py:2"
+            display='flex'
+            flexDirection="row"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                data-test-id='buttonExecuteMultiQuery'
+                label='Execute'
+                href='flow:multiQuery'
+            />
+            <Typography>
+                - call a Flow that has multiple Query elements
+
+                Note: Query 1 has "showLoading" prop, which shows a loading screen while waiting for its response.
+            </Typography0>
+        </Box>
+
+        <Typography whiteSpace="pre-wrap">
+            One Message: {{ global_multiOneMessage }}
+            Two Message: {{ global_multiTwoMessage }}
+        </Typography>
+
+    </PageContent>
+</Page>

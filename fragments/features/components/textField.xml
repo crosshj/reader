@@ -1,0 +1,827 @@
+<Page key='childStandalonePills'>
+    <!-- DATA -->
+    <Data
+        name='featuresComponentsDateTextFieldEdit'
+        defaultValue='0'
+    />
+    <Flow key='featuresComponentsDateTextFieldEditEnable'>
+        <SetData
+            name='global_featuresComponentsDateTextFieldEdit'
+            data='static_1'
+        />
+    </Flow>
+    <Flow key='featuresComponentsDateTextFieldEditDisable'>
+        <SetData
+            name='global_featuresComponentsDateTextFieldEdit'
+            data='static_0'
+        />
+    </Flow>
+    <!-- DATE & TIME -->
+    <Data
+        name='datetime'
+        defaultValue='2019-05-24T19:30'
+    />
+    <Data name='datetimeUndefined' />
+    <Data name='datetimeNull'  defaultValue="null" />
+    <Data name='datetimeNullWithDefaultValueProp'  defaultValue="null" />
+    <Data name='datetimeEmpty' defaultValue="" />
+
+    <Data
+        name='datetimeDBGlobalFormat'
+        defaultValue='2019-05-24T19:30:00.000Z'
+    />
+    <Data
+        name='date'
+        defaultValue='2019-05-24'
+    />
+    <Data
+        name='date2'
+        defaultValue='2019-05-24'
+    />
+    <Data
+        name='month'
+        defaultValue='2018-05'
+    />
+    <Data
+        name='week'
+        defaultValue='2019-W18'
+    />
+    <Data
+        name='time'
+        defaultValue='09:00'
+    />
+    <!-- SELECT -->
+    <Data
+        name='dataYesNo'
+        getData='ui.sp_OLYesNo'
+    />
+    <Data
+        name="selected"
+        defaultValue='{ "yesno": "1" }'
+    />
+    <Data
+        name="complicatedOptions1Value"
+        defaultValue='0005'
+    />
+    <Data
+        name='complicatedOptions1'
+        defaultValue="[
+            {'label':'0005 - Foo','value':'0005'},
+            {'label':'0006 - Bar','value':'0006'},
+            {'label':'0007 - wow','value':'0007'},
+        ]"
+    />
+
+    <!-- TEXT/MISC -->
+    <Data name="simple" defaultValue="Lorem ipsum" />
+    <Data name="multiline" defaultValue="Lorem ipsum dolor simet et statum" />
+    <Data name="number" defaultValue="123456" />
+    <Data name="dollars" defaultValue="20.1304" />
+
+    <!-- FLOWS -->
+    <Flow key="changeTheme">
+        <SetData name='global_theme' data='flowArgs.theme' />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / TextField">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box className="flex-row items-center" gap="1">
+            <Typography textContent="THEME: "/>
+            <Button textContent="Light" href="flow:changeTheme" flowArgs:theme="light" />
+            <Button textContent="Dark" href="flow:changeTheme" flowArgs:theme="dark" />
+            <Button textContent="green" href="flow:changeTheme" flowArgs:theme="green" />
+            <Button textContent="Orange" href="flow:changeTheme" flowArgs:theme="orange" />
+        </Box>
+        <Box
+            display='flex'
+            flexDirection="column"
+            alignItems="flex-start"
+            gap="4"
+            marginBottom="16"
+        >
+            <Card
+                label="About"
+                showMenu='false'
+                collapsible
+                collapsed
+            >
+                <Box
+                    gap="2"
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="flex-start"
+                    mt="4"
+                    mb="4"
+                >
+                    <Typography variant="h3">Docs: </Typography>
+                    <Link href="https://mui.com/material-ui/react-text-field/" target="blank">
+                        TextField MUI Docs
+                    </Link>
+
+                    <Typography variant="h3">Input Types</Typography>
+                    <Typography whiteSpace="pre-wrap">
+                        Use TextField's for input fields, but only where input *type* is supported, eg. type="date".
+                    </Typography>
+                    <Box display="flex" flexDirection="column" gap="2">
+                        <Typography variant="h3">Not supported:</Typography>
+                        <Typography whiteSpace="pre-wrap">
+                            file - MUI recommends 3rd party libs
+                            color - MUI recommends 3rd party libs.
+                            range - MUI has its own component.
+                            button - MUI has its own Component.
+                            hidden - MUI has its own Component.
+                        </Typography>
+                        <Typography variant="small" color="orange">
+                            ** They are inputs, but their behaviors differ a lot from textfields from a semantic perspective.
+                        </Typography>
+                    </Box>
+                    <Box display="flex" flexDirection="column" gap="2">
+                        <Typography variant="h3">Maybe:</Typography>
+                        <Typography whiteSpace="pre-wrap">
+                            Inner icons - Need to check if is feasible at the moment
+                            checkbox, radio - need to check
+                        </Typography>
+                    </Box>
+                    <Box display="flex" flexDirection="column" gap="2">
+                        <Typography variant="h3">Supported types:</Typography>
+                        <Typography variant="span" color="gray">version 0.0.1</Typography>
+                        <Typography variant="p">datetime-local, date, month, week, time, number, text, password.</Typography>
+                        <Typography variant="h3">Supported attributes:</Typography>
+                        <Typography variant="span" color="gray">version 0.0.1</Typography>
+                        <Typography variant="p">multiline, disabled, helperText, color, focused.</Typography>
+                        <Typography variant="small" color="orange">
+                            ** Several other attributes may be compatible, but not yet confirmed. If any unexpected behavior occur, please add below and inform me asap.
+                        </Typography>
+                        <Typography variant="h3">Attributes with unexpected behavior:</Typography>
+                        <Typography whiteSpace="pre-wrap">
+                            Attribute:
+                            Expected behavior:
+                            Current behavior:
+                        </Typography>
+                    </Box>
+                    <Box display="flex" flexDirection="column" gap="2">
+                        <Typography variant="h3">Misc: </Typography>
+                        <Typography whiteSpace="pre-wrap">
+                            Controlled/Uncontrolled: Need more analysis on how forms are being handled (React's concerns).  This can mostly be ignored since framework binds data and events using Data elements and useData prop.
+                        </Typography>
+                    </Box>
+                </Box>
+            </Card>
+
+            <!-- Date -->
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Date Time Picker</Typography>
+                <Markdown>
+                    ```xml
+                    <TextField
+                        label="Date Time"
+                        type="datetime-local"
+                        value="global_datetime"
+                        inputProps="min:2019-01-24T00\:00;max:2020-05-31T00\:00"
+                        sx="minWidth:25ch"
+                    />
+                    ```
+                </Markdown>
+                <TextField
+                    label="Date Time"
+                    type="datetime-local"
+                    value="global_datetime"
+                    inputProps="min:2019-01-24T00\:00;max:2020-05-31T00\:00"
+                    sx="minWidth:25ch"
+                />
+            </Box>
+
+            <Box width="100%">
+                <Typography variant="h3">Date Time Picker (state variations)</Typography>
+                <Box display="grid" gridTemplateColumns="repeat(auto-fit, minmax(375px, 1fr))" gap="1" width="100%">
+                    <Box>
+                        <Markdown>
+                            what if the value is undefined?
+                            ```xml
+                            <TextField
+                                label="Date Time with undefined value"
+                                type="datetime-local"
+                                value="global_datetimeUndefined"
+                                sx="minWidth:25ch"
+                            />
+                            ```
+                        </Markdown>
+                        <TextField
+                            label="Date Time with undefined value"
+                            type="datetime-local"
+                            value="global_datetimeUndefined"
+                            sx="minWidth:25ch"
+                        />
+                    </Box>
+                    <Box>
+                        <Markdown>
+                            what if the value is empty?
+                            ```xml
+                            <TextField
+                                label="Date Time with empty value"
+                                type="datetime-local"
+                                value="global_datetimeEmpty"
+                                sx="minWidth:25ch"
+                            />
+                            ```
+                        </Markdown>
+                        <TextField
+                            label="Date Time with empty value"
+                            type="datetime-local"
+                            value="global_datetimeEmpty"
+                            sx="minWidth:25ch"
+                        />
+                    </Box>
+                    <Box>
+                        <Markdown>
+                            what if the value is null?
+                            ```xml
+                            <TextField
+                                label="Date Time with null value"
+                                type="datetime-local"
+                                value="global_datetimeNull"
+                                sx="minWidth:25ch"
+                            />
+                            ```
+                        </Markdown>
+                        <TextField
+                            label="Date Time with null value"
+                            type="datetime-local"
+                            value="global_datetimeNull"
+                            sx="minWidth:25ch"
+                        />
+                    </Box>
+                    <Box>
+                        <Markdown>
+                            value is null, but with defaultValue of last month
+                            ```xml
+                            <TextField
+                                label="Date Time with default value"
+                                type="datetime-local"
+                                defaultValue="dateNowMinus1month"
+                                value="global_datetimeNullWithDefaultValueProp"
+                                sx="minWidth:25ch"
+                            />
+                            ```
+                        </Markdown>
+                        <TextField
+                            label="Date Time with default value"
+                            type="datetime-local"
+                            defaultValue="dateNowMinus1month"
+                            value="global_datetimeNullWithDefaultValueProp"
+                            sx="minWidth:25ch"
+                        />
+                    </Box>
+                </Box>
+            </Box>
+        
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Date Time Picker (with global date - format from DB)</Typography>
+                <TextField
+                    label="Date Time"
+                    type="datetime-local"
+                    value="global_datetimeDBGlobalFormat"
+                    inputProps="min:2019-01-24T00\:00;max:2020-05-31T00\:00"
+                    sx="minWidth:25ch"
+                />
+                <Markdown>
+                    also supports this format from DB: 
+                    ```xml
+                    <Data
+                        name='datetimeDBGlobalFormat'
+                        defaultValue='2019-05-24T19:30:00.000Z'
+                    />
+                    ```
+                </Markdown>
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Date Picker (no time)</Typography>
+                <CodeBlock>
+                    <TextField
+                        type="date"
+                        value="global_date"
+                        inputProps="min:2019-01-24;max:2020-05-31"
+                        sx="minWidth:25ch"
+                    />
+                </CodeBlock>
+                <TextField
+                    label='With min/max'
+                    type="date"
+                    value="global_date"
+                    inputProps="min:2019-01-24;max:2020-05-31"
+                    sx="minWidth:25ch"
+                />
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Date Picker (month)</Typography>
+                <CodeBlock>
+                    <TextField
+                        type="month"
+                        value="global_month"
+                        inputProps="min:2018-03"
+                        sx="minWidth:25ch"
+                    />
+                </CodeBlock>
+                <TextField
+                    type="month"
+                    value="global_month"
+                    inputProps="min:2018-03"
+                    sx="minWidth:25ch"
+                />
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Date Picker (week)</Typography>
+                <CodeBlock>
+                    <TextField
+                        type="week"
+                        value="global_week"
+                        inputProps="min:2019-W03,max:2020-W05"
+                        sx="minWidth:25ch"
+                    />
+                </CodeBlock>
+                <TextField
+                    type="week"
+                    value="global_week"
+                    inputProps="min:2019-W03,max:2020-W05"
+                    sx="minWidth:25ch"
+                />
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Time Picker</Typography>
+                <CodeBlock>
+                    <TextField
+                        type="time"
+                        value="global_time"
+                        inputProps="min:03\:00\:00;max:18\:30\:00"
+                        sx="minWidth:25ch"
+                    />
+                </CodeBlock>
+                <TextField
+                    type="time"
+                    value="global_time"
+                    inputProps="min:03\:00\:00;max:18\:30\:00"
+                    sx="minWidth:25ch"
+                />
+            </Box>
+
+            <!-- Select -->
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Option List</Typography>
+                <CodeBlock>
+                    <TextField
+                        select
+                        value="global_selected.yesno"
+                        options='global_dataYesNo'
+                        sx="minWidth:25ch"
+                    />
+                </CodeBlock>
+                <TextField
+                    select
+                    value="global_selected.yesno"
+                    options='global_dataYesNo'
+                    sx="minWidth:25ch"
+                />
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Option List (with eg. 0005 case)</Typography>
+                <CodeBlock>
+                    <TextField
+                        select
+                        options='global_complicatedOptions1'
+                        value='global_complicatedOptions1Value'
+                        sx="minWidth:25ch"
+                        coerce="false"
+                    />
+                </CodeBlock>
+                <TextField
+                    select
+                    options='global_complicatedOptions1'
+                    value='global_complicatedOptions1Value'
+                    sx="minWidth:25ch"
+                    coerce="false"
+                />
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Option List with defaultValue option</Typography>
+                <CodeBlock>
+                    <TextField
+                        select
+                        defaultValue='first'
+                        options='global_complicatedOptions1'
+                        sx="minWidth:25ch"
+                        coerce="false"
+                    />
+                    <TextField
+                        select
+                        defaultValue='second'
+                        options='global_complicatedOptions1'
+                        sx="minWidth:25ch"
+                        coerce="false"
+                    />
+                </CodeBlock>
+                <TextField
+                    select
+                    defaultValue='first'
+                    options='global_complicatedOptions1'
+                    sx="minWidth:25ch"
+                    coerce="false"
+                />
+                <TextField
+                    select
+                    defaultValue='second'
+                    options='global_complicatedOptions1'
+                    sx="minWidth:25ch"
+                    coerce="false"
+                />
+            </Box>
+
+
+            <!-- TextField -->
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">TextField</Typography>
+                <CodeBlock>
+                    <TextField
+                        value="global_simple"
+                    />
+                </CodeBlock>
+                <TextField
+                    value="global_simple"
+                />
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">TextField Variants/Sizes/Color</Typography>
+                <Box gap="2" display="flex" alignItems="flex-start">
+                    <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                        <CodeBlock>
+                            <TextField
+                                value="global_simple"
+                                variant="filled"
+                                size="small"
+                            />
+                        </CodeBlock>
+                        <TextField
+                            value="global_simple"
+                            variant="filled"
+                            size="small"
+                        />
+                    </Box>
+                    <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                        <CodeBlock>
+                            <TextField
+                                value="global_simple"
+                                variant="outlined"
+                                size="large"
+                            />
+                        </CodeBlock>
+                        <TextField
+                            value="global_simple"
+                            variant="outlined"
+                            size="large"
+                        />
+                    </Box>
+                    <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                        <CodeBlock>
+                            <TextField
+                                value="global_simple"
+                                color="warning"
+                                focused
+                            />
+                        </CodeBlock>
+                        <TextField
+                            value="global_simple"
+                            color="warning"
+                            focused
+                        />
+                    </Box>
+                </Box>
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">TextField with helper text</Typography>
+                <CodeBlock>
+                    <TextField
+                        value="global_simple"
+                        helperText="Some helper text"
+                    />
+                </CodeBlock>
+                <TextField
+                    value="global_simple"
+                    helperText="Some helper text"
+                />
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">TextField Multiline</Typography>
+                <Markdown>
+                    ```xml
+                    <TextField
+                        type="text"
+                        value="global_multiline"
+                        sx="minWidth:25ch"
+                        rows="4"
+                        maxRows="4"
+                        minRows="4"
+                        multiline
+                    />
+                    ```
+                    ISSUE: pressing enter in a blank field results in 0 being inserted
+                    ISSUE: after a number is entered in a blank field, newline is no longer accepted (enter press)
+                        - these are addressed by only coercing when coerce is not undefined or false, but does this cause issues elsewhere?
+                    ISSUE: error "MUI: Too many re-renders. The layout is unstable."
+                        - this happens sometimes when Dialogs are dismissed
+                        - this happens sometimes when just entering and deleting values
+                        - was supposed to be fixed in/before material@v5.8.7 : https://github.com/mui/material-ui/issues/33081
+                </Markdown>
+                <TextField
+                    type="text"
+                    value="global_multiline"
+                    sx="minWidth:25ch"
+                    rows="4"
+                    maxRows="4"
+                    minRows="4"
+                    multiline
+                />
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">TextField (Password)</Typography>
+                <CodeBlock>
+                    <TextField
+                        type="password"
+                        value="global_simple"
+                    />
+                </CodeBlock>
+                <TextField
+                    type="password"
+                    value="global_simple"
+                />
+            </Box>
+
+            <!-- <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Disabled TextField</Typography>
+                <CodeBlock>
+                    <TextField
+                        select
+                        value="global_selected.yesno"
+                        options='global_dataYesNo'
+                        sx="minWidth:25ch"
+                        disabled
+                    />
+                </CodeBlock>
+                <TextField
+                    select
+                    value="global_selected.yesno"
+                    options='global_dataYesNo'
+                    sx="minWidth:25ch"
+                    disabled
+                />
+            </Box> -->
+
+            <!-- Number  -->
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Number TextField</Typography>
+                <Link href="https://mui.com/material-ui/react-text-field/#type-quot-number-quot" target="blank">
+                    Number limitations
+                </Link>
+                <CodeBlock>
+                    <TextField
+                        type="number"
+                        value="global_number"
+                    />
+                </CodeBlock>
+                <TextField
+                    type="number"
+                    value="global_number"
+                />
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Dollars</Typography>
+                <CodeBlock>
+                    <TextField
+                        type="number"
+                        value="global_dollars"
+                        inputProps:step="0.01"
+                        InputProps:startAdornment="$"
+                    />
+                </CodeBlock>
+                <TextField
+                    type="number"
+                    value="global_dollars"
+                    inputProps:step="0.01"
+                    InputProps:startAdornment="$"
+                />
+            </Box>
+            
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Disabled</Typography>
+                <Typography variant="h3" marginTop="2">Disabled with When</Typography>
+                <Typography whiteSpace="pre-wrap">
+                    When you change the value below you should see the TextField immediately become disabled.
+                    This example also illustrates global_, double-quotes, and Boolean from String used in a WHEN statement.
+                </Typography>
+                <CodeBlock>
+                    <TextField
+                        label='Disable Me'
+                        value='global_simple'
+                        fullWidth
+                        disabled='WHEN global_simple IS "Lorem ipsum" THEN false ELSE true'
+                        xs='4'
+                    />
+                </CodeBlock>
+                <TextField
+                    label='Disable Me'
+                    value='global_simple'
+                    fullWidth
+                    disabled='WHEN global_simple IS "Lorem ipsum" THEN false ELSE true'
+                    xs='4'
+                />
+
+                <Typography variant="h3" marginTop="2">Disabled with When + With Nested Properties</Typography>
+                <Typography whiteSpace="pre-wrap">
+                    When you change the select box below, the following TextField will be disabled.
+                    This example also illustrates same features as above PLUS nested properties used in a WHEN statement.
+                </Typography>
+                <CodeBlock>
+                    <TextField
+                        select
+                        value="global_selected.yesno"
+                        options='global_dataYesNo'
+                        sx="minWidth:25ch"
+                    />
+                    <TextField
+                        label='Disable Me'
+                        value='global_simple'
+                        fullWidth
+                        disabled='WHEN global_selected.yesno IS "1" THEN true ELSE false'
+                        xs='4'
+                    />
+                </CodeBlock>
+                <TextField
+                    select
+                    value="global_selected.yesno"
+                    options='global_dataYesNo'
+                    sx="minWidth:25ch"
+                />
+                <TextField
+                    label='Disable Me, Too'
+                    value='global_simple'
+                    fullWidth
+                    disabled='WHEN global_selected.yesno IS "1" THEN true ELSE false'
+                    xs='4'
+                />
+
+                <Typography variant="h3" marginTop="2">Disabled When Value is null</Typography>
+                <Typography whiteSpace="pre-wrap">
+                    When TextField is disabled and value is 'null'.  Should act correctly.
+                </Typography>
+                <Box>
+                    <Markdown>
+                        textfield is disabled,
+                        value is null
+                        ```xml
+                        <TextField
+                            disabled
+                            label="Date Time with null value"
+                            type="datetime-local"
+                            value="global_datetimeNull"
+                            sx="minWidth:25ch"
+                        />
+                        ```
+                    </Markdown>
+                    <TextField
+                        disabled
+                        label="Date Time with null value"
+                        type="datetime-local"
+                        value="global_datetimeNull"
+                        sx="minWidth:25ch"
+                    />
+                </Box>
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Read Only</Typography>
+                <Typography whiteSpace="pre-wrap">
+                    This is like a disabled TextField, but works where disabled does not.
+                </Typography>
+                <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                    <Markdown>
+                        textfield is disabled via global var,
+                        type is "date"
+                        ```xml
+                        <TextField
+                            label='Date disabled by global var'
+                            type="date"
+                            value="global_date"
+                            inputProps="min:2019-01-24;max:2020-05-31"
+                            sx="minWidth:25ch"
+                            InputProps:readOnly="WHEN global_featuresComponentsDateTextFieldEdit IS 0"
+                        />
+                        ```
+                    </Markdown>
+                    <Box className="flex-row" gap="1em">
+                        <Button
+                            label='Enable'
+                            href='flow:featuresComponentsDateTextFieldEditEnable'
+                        />
+                        <Button
+                            label='Disable'
+                            href='flow:featuresComponentsDateTextFieldEditDisable'
+                        />
+                    </Box>
+                    <TextField
+                        label='Date disabled by global var'
+                        type="date"
+                        value="global_date"
+                        inputProps="min:2019-01-24;max:2020-05-31"
+                        sx="minWidth:25ch"
+                        InputProps:readOnly="WHEN global_featuresComponentsDateTextFieldEdit IS 0"
+                    />
+                </Box>
+            </Box>
+
+            <Box gap="2" display="flex" flexDirection="column" alignItems="flex-start">
+                <Typography variant="h3">Obscured</Typography>
+                <Typography variant="h3" marginTop="2">Basic Example</Typography>
+                <Typography whiteSpace="pre-wrap">
+                    Should obscure the value of the textfield based on the option you pass.
+                </Typography>
+                <CodeBlock>
+                    <TextField
+                        fullWidth
+                        label='With obscured TRUE'
+                        value='global_simple'
+                        obscured='true'
+                    />
+                    <TextField
+                        fullWidth
+                        label='With obscured FALSE'
+                        value='global_simple'
+                        obscured='false'
+                    />
+                    <TextField
+                        fullWidth
+                        label='With obscured LAST4'
+                        value='global_simple'
+                        obscured='last4'
+                    />
+                    <TextField
+                        fullWidth
+                        label='With obscured ANY-INVALID-VALUE'
+                        value='global_simple'
+                        obscured='someInvalidValue'
+                    />
+                </CodeBlock>
+                <TextField
+                    fullWidth
+                    label='With obscured TRUE'
+                    value='global_simple'
+                    obscured='true'
+                />
+                <TextField
+                    fullWidth
+                    label='With obscured FALSE'
+                    value='global_simple'
+                    obscured='false'
+                />
+                <TextField
+                    fullWidth
+                    label='With obscured LAST4'
+                    value='global_simple'
+                    obscured='last4'
+                />
+                <TextField
+                    fullWidth
+                    label='With obscured ANY-INVALID-VALUE'
+                    value='global_simple'
+                    obscured='someInvalidValue'
+                />
+            </Box>
+
+        </Box>
+    </PageContent>
+</Page>

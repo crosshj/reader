@@ -1,0 +1,174 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data name="invitePageLoaded" />
+    <Data
+        name='invitePathData'
+        defaultValue="{}"
+    />
+    <Data
+        name="user"
+        defaultValue='loading'
+    />
+    <Data
+        name="preUserResult"
+    />
+
+    <Trigger handler='inviteLoadPage' />
+    <Flow key='inviteLoadPage'>
+        <SetData
+            name='invitePathData'
+            route='/invite{/}?:token?'
+        />
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='dbo.sp_UsersGetByInvitationID'
+            param_inviteToken='global_invitePathData.token'
+            softError
+        >
+            <SetData
+                name='global_user'
+                data='results[0]'
+            />
+            <SetData
+                name="invitePageLoaded"
+                data="true"
+            />
+        </Query>
+    </Flow>
+
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key='register'>
+        <Navigate
+            hard="true"
+            route='/api/auth/register?invite={{global_invitePathData.token}}&login_hint='
+        />
+    </Flow>
+
+    <Flow key='beginRegistration'>
+        <LocalData
+            name='emailEncoded'
+            data='global_user.emailAddress:encodeURIComponent'
+        />
+        <Navigate
+            hard="true"
+            route='/api/auth/register'
+            query:invite="global_invitePathData.token"
+            query:email="global_user.emailAddress"
+            query:login_hint="flowArgs_emailEncoded"
+            query:firstName="global_user.FirstName"
+            query:lastName="global_user.LastName"
+        />
+    </Flow>
+    
+    <!-- TODO: should this not just say that invite is invalid?? -->
+    <Box
+        width="100vw"
+        height="100vh"
+        display='WHEN global_user IS undefined THEN flex ELSE none'
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        mt="-2em"
+    >
+        <Logo width="300px" />
+        <Box
+            display='flex'
+            flexDirection='column'
+            alignItems='center'
+            backgroundColor="white"
+            p="3"
+            minWidth="400px"
+            borderRadius="5px"
+            mt="1em"
+            gap='2'
+        >
+            <Typography
+                variant="h2"
+                textContent="You have been invited!"
+            />
+            <Markdown>
+                Log in to continue your journey with us. Your next great discovery is just a click away.
+
+                Not a member yet? Join us today and unlock a world of possibilities.
+            </Markdown>
+            <Button
+                label='Register'
+                variant='primary'
+                href='flow:register'
+            />
+        </Box>
+    </Box>
+
+    <Box
+        width="100vw"
+        height="100vh"
+        display="WHEN global_user IS undefined THEN none ELSE flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        mt="-2em"
+    >
+        <Logo width="300px" />
+        <Box
+            backgroundColor="white"
+            p="3"
+            borderRadius="5px"
+            mt="1em"
+            display="WHEN global_invitePageLoaded THEN none ELSE block"
+            textContent="loading..."
+        />
+        <Box
+            backgroundColor="white"
+            p="3"
+            width="min(95vw, 600px)"
+            borderRadius="5px"
+            mt="1em"
+            display="WHEN global_invitePageLoaded THEN block ELSE none"
+        >
+            <Typography
+                variant="h2"
+                textContent="You have been invited!"
+                mt="2"
+            />
+            <Markdown>
+                Welcome, please provide or update your info to begin invitation process.
+            </Markdown>
+
+            <Box
+                gap="2"
+                display="flex"
+                flexDirection="column"
+                alignItems="flex-start"
+                mt="4"
+                mb="2"
+            >
+                <TextField
+                    label="First Name"
+                    value="global_user.FirstName"
+                />
+                <TextField
+                    label="Last Name"
+                    value="global_user.LastName"
+                />
+                <TextField
+                    label="Email"
+                    value="global_user.emailAddress"
+                    disabled
+                />
+<!--                 <TextField
+                    label="Phone"
+                    value="global_user.0.phone"
+                /> -->
+                <Button
+                    href="flow:beginRegistration"
+                    variant="primary"
+                    textContent="Continue"
+                    sx:margin="auto"
+                    sx:mt="2"
+                />
+            </Box>
+        </Box>
+    </Box>
+</Page>

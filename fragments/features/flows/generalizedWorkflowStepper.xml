@@ -1,0 +1,211 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data name='WorkflowBeginData' />
+    <Data name='WorkflowGoToNextStepData' />
+
+    <Data name='firstName' defaultValue='' />
+    <Data name='lastName' defaultValue='' />
+    <Data name='message' defaultValue='' />
+
+    <!-- #endregion PAGE DATA -->
+
+    <Trigger handler='workflowBegin'/>
+    <Trigger onClose handler='workflowSaveData' />
+
+    <!-- #region PAGE FLOWS -->
+    <Flow key='workflowSaveData'>
+        <Query
+            call='workflowSaveData'
+            param_processName='static_GeneralizedWorkflow'
+            param_controlIdStrategy='static_userIDbranchID'
+
+            param_processData:firstName='global_firstName'
+            param_processData:lastName='global_lastName'
+            param_processData:message='global_message'
+        />
+
+        <Navigate route='{{flowArgs.nextRoutePath}}' />
+    </Flow>
+    
+    <Flow key='workflowBegin'>
+        <Query
+            call='workflowGetExistentOrCreateNew'
+            param_processName='static_GeneralizedWorkflow'
+            param_controlIdStrategy='static_userIDbranchID'
+        >
+            <ParseWorkflowData stepNumberName='WorkflowStep' />
+        </Query>
+    </Flow>
+    
+    <Flow key='workflowCancel'>
+        <Query
+            call='workflowCancel'
+            param_processName='static_GeneralizedWorkflow'
+            param_controlIdStrategy='static_userIDbranchID'
+        />
+        
+        <SetData name='global_WorkflowStep' data='static_1' />
+
+        <SetData name='global_firstName' data='' />
+        <SetData name='global_lastName' data='' />
+        <SetData name='global_message' data='' />
+
+        <Navigate
+            route='/features/flows/generalizedWorkflows'
+        />
+    </Flow>
+
+    <Flow key='workflowBack'>
+        <SetData
+            name='global_WorkflowStep'
+            mutate='subtract:1,min:1'
+        />
+    </Flow>
+
+    <Flow key='workflowGoToNextStep'>
+        <SetData
+            name="global_WorkflowStep"
+            mutate="add:1,max:3"
+        />
+        <Query
+            call='workflowGoToNextStep'
+            param_processName='static_GeneralizedWorkflow'
+            param_controlIdStrategy='static_userIDbranchID'
+            
+            param_stepNumber='global_WorkflowStep'
+
+            param_processData:firstName='global_firstName'
+            param_processData:lastName='global_lastName'
+            param_processData:message='global_message'
+        >
+        </Query>
+    </Flow>
+
+    <Flow key='workflowFinish'>
+
+        <Confirm title='Confirm finish'>
+            Are you sure you want to finish the workflow?
+        </Confirm>
+
+        <Query
+            call='workflowGoToNextStep'
+            param_processName='static_GeneralizedWorkflow'
+            param_controlIdStrategy='static_userIDbranchID'
+        >
+            <SetData name="global_WorkflowFinishData" data="results[0]" />
+        </Query>
+        
+        <Navigate
+            route='/features/flows/generalizedWorkflows'
+        />
+    </Flow>
+    <!-- #endregion PAGE FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label= 'Generalized Workflows - Stepper'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features/flows/generalizedWorkflows"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Spacing space='4'/>
+        <MUI_Stepper
+            activeStep='global_WorkflowStep'
+            orientation='horizontal'
+            startingIndex='1'
+        >
+            <Step label='Step 1' />
+            <Step label='Step 2' />
+            <Step label='Step 3' />
+        </MUI_Stepper>
+        <Box
+            display='WHEN global_WorkflowStep IS 1 THEN flex ELSE none'
+            flexDirection='column'
+            sx:pt='4'
+        >
+            <TextField
+                label="First Name"
+                value="global_firstName"
+            />
+            <Box
+                display="flex"
+                alignItems="center"
+                justifyContent='space-between'
+                sx:py='2'
+            >
+                <Button
+                    label='Cancel'
+                    href='flow:workflowCancel'
+                />
+                <Button
+                    label='Next'
+                    variant='primary'
+                    href='flow:workflowGoToNextStep'
+                />
+            </Box>
+        </Box>
+        <Box
+            display='WHEN global_WorkflowStep IS 2 THEN flex ELSE none'
+            flexDirection='column'
+            sx:pt='4'
+        >
+            <TextField
+                label="Last Name"
+                value="global_lastName"
+            />
+            <Box
+                display="flex"
+                alignItems="center"
+                justifyContent='space-between'
+                sx:py='2'
+            >
+                <Button
+                    label='Back'
+                    href='flow:workflowBack'
+                />
+                <Button
+                    label='Next'
+                    variant='primary'
+                    href='flow:workflowGoToNextStep'
+                />
+            </Box>
+        </Box>
+        <Box
+            display='WHEN global_WorkflowStep IS 3 THEN flex ELSE none'
+            flexDirection='column'
+            sx:pt='4'
+        >
+            <TextField
+                label="Any Message"
+                value="global_message"
+            />
+            <Box
+                display="flex"
+                alignItems="center"
+                justifyContent='space-between'
+                sx:py='2'
+            >
+                <Button
+                    label='Back'
+                    href='flow:workflowBack'
+                />
+                <Button
+                    label='Finish'
+                    variant='primary'
+                    href='flow:workflowFinish'
+                />
+            </Box>
+        </Box>
+    </PageContent>
+</Page>

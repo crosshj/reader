@@ -1,0 +1,123 @@
+<Page>
+    <!--DATA_COLOR -->
+    <Data
+        name="colorOptions"
+        getData="featuresPropsDynamic"
+        defaultValue='no_default'
+    />
+    <Data name="colorSelectedValue" />
+
+    <!--DATA_SHAPE -->
+    <Data name="shapeOptions" defaultValue='[]' />
+    <Data name="shapeSelectedValue" />
+
+    <!--DATA_TEXTURE-->
+    <Data name="textureOptions" defaultValue='[]' />
+    <Data name="textureSelectedValue" />
+
+    <!--COLOR<=>SHAPE SUBSCRIBE-->
+    <Subscribe
+        path="colorSelectedValue"
+        handler="getShapeFlow"
+    />
+
+    <Flow key="getShapeFlow">
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresPropsDynamic"
+            param_color='global_colorSelectedValue'
+        >
+            <SetData name='global_shapeOptions' data='results' />
+
+            <!-- cleanup dependent children -->
+            <SetData name='global_textureOptions' data='[]' />
+            <SetData name='global_shapeSelectedValue' data='undefined' />
+            <SetData name='global_textureSelectedValue' data='undefined' />
+        </Query>
+    </Flow>
+
+    <!-- SHAPE=TEXTURE SUBSCRIBE-->
+    <Subscribe
+        path='shapeSelectedValue'
+        handler='getTextureFlow'
+    />
+    <Flow key="getTextureFlow">
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresPropsDynamic"
+            param_shape='global_shapeSelectedValue'
+        >
+            <SetData name='global_textureOptions' data='results' />
+
+            <!-- cleanup dependent children -->
+            <SetData name='global_textureSelectedValue' data='undefined' />
+        </Query>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Dynamic Bind Props'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box>
+            <Markdown>
+            In this specific example we are simulating a 3-step "form", where the steps are
+                1. Color
+                2. Shape
+                3. Texture
+
+            The first step doesn't depend on anything, the second step depends on the first and the third depends on the second.
+
+            When a step is updated and it has dependent steps, each step runs the flow:
+                1. Fetch new options based on recently updated parent
+                2. Store new options
+                3. Clean current value
+
+            If all steps are filled and one updates step 1, which is the "parent" of all steps, then all dependent steps should be updated in cascade.
+            In this case, step 2 will fetch new options, then store then clean up, while step 3 will only clean up, since its value directly depends on the value from step 2, which was just cleaned.
+
+            related: [tables/forms](/features/tables/forms)
+            </Markdown>
+        </Box>
+
+        <Box
+            display='flex'
+            gap="2"
+            sx="my:4"
+        >
+            <TextField
+                select
+                label='COLOR'
+                value="global_colorSelectedValue"
+                options="global_colorOptions"
+                xs='6'
+            />
+            <TextField
+                select
+                label='SHAPE'
+                value="global_shapeSelectedValue"
+                options="global_shapeOptions"
+                xs='6'
+            />
+            <TextField
+                select
+                label='TEXTURE'
+                value="global_textureSelectedValue"
+                options="global_textureOptions"
+                xs='6'
+            />
+        </Box>
+    </PageContent>
+</Page>

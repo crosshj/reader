@@ -1,0 +1,392 @@
+<Page key='childButton'>
+    <!-- FLOWS -->
+    <Flow key='gotoFeaturesComponents'>
+        <Navigate route='features' />
+    </Flow>
+
+    <Flow key='testIfIsCalled'>
+        <Confirm title='Dummy'>
+            called.
+        </Confirm>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Actions">
+        <Box
+            sx:display='flex'
+            sx:justifyContent="flex-end"
+            sx:alignItems="center"
+            sx:gap="2"
+        >
+            <Button
+                flow="gotoFeaturesComponents"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            TODO:
+            - [X] need to add more documentation about what should and shouldn't work (supported vs not)
+            - [X] regular href support (across the board)
+            - [X] target = [new,blank] scenario handled and documented
+            - [X] external links should open externally; currently this fails as a navigate to: https://{siteroot}/https:/{external}
+        </Markdown>
+
+        <Typography variant='h2' sx:margin="16px 0">
+            Triggering Flows
+        </Typography>
+        <Typography variant='p'>
+            We support triggering flows on ALL action components through props useFlow, flow and href. 
+        </Typography>
+        <Box
+            sx:display='flex'
+            sx:flexDirection='column'
+            sx:alignItems="flex-start"
+        >
+            <Box
+                sx:display='flex'
+                sx:justifyContent="flex-start"
+                sx:alignItems="center"
+                sx:gap="2"
+                sx:marginTop="24px"
+                sx:padding="24px"
+                sx:border="1px solid #dddddd"
+                sx:borderRadius="10px"
+            >
+                <Typography>Buttons</Typography>
+                <Button
+                    flow="testIfIsCalled"
+                    label=" with 'flow'"
+                />
+                <Button
+                    useFlow="testIfIsCalled"
+                    label="with 'useFlow'"
+                    
+                    leftIcon='Search'
+                    leftIconColor='Indigo800'
+
+                    rightIcon='Search'
+                    rightIconColor='Indigo800'
+                />
+                <Button
+                    href="flow:testIfIsCalled"
+                    label="with 'href'"
+                />
+            </Box>
+
+            <Box
+                sx:display='flex'
+                sx:justifyContent="flex-start"
+                sx:alignItems="center"
+                sx:gap="2"
+                sx:marginTop="24px"
+                sx:padding="24px"
+                sx:border="1px solid #dddddd"
+                sx:borderRadius="10px"
+            >
+                <Typography>Links</Typography>
+                <Link flow="testIfIsCalled">with 'flow'</Link>
+                <Link useFlow="testIfIsCalled">with 'useFlow'</Link>
+                <Link href="flow:testIfIsCalled">with 'href'</Link>
+            </Box>
+
+            <Box
+                sx:display='flex'
+                sx:justifyContent="flex-start"
+                sx:alignItems="center"
+                sx:gap="2"
+                sx:marginTop="24px"
+                sx:padding="24px"
+                sx:border="1px solid #dddddd"
+                sx:borderRadius="10px"
+            >
+                <Typography>IconButtons</Typography>
+
+                <Box
+                    sx:display='flex'
+                    sx:flexDirection='column'
+                    sx:alignItems="center"
+                >
+                    <Typography>with 'flow'</Typography>
+                    <IconButton
+                        sx:width="40px"
+                        sx:height="40px"
+                        icon='FilterListRounded'
+                        flow="testIfIsCalled"
+                    />
+                </Box>
+
+                <Box
+                    sx:display='flex'
+                    sx:flexDirection='column'
+                    sx:alignItems="center"
+                >
+                    <Typography>with 'useFlow'</Typography>
+                    <IconButton
+                        sx:width="40px"
+                        sx:height="40px"
+                        icon='Search'
+                        useFlow="testIfIsCalled"
+                    />
+                </Box>
+                <Box
+                    sx:display='flex'
+                    sx:flexDirection='column'
+                    sx:alignItems="center"
+                >
+                    <Typography>with 'href'</Typography>
+                    <IconButton
+                        sx:width="40px"
+                        sx:height="40px"
+                        icon='MenuRounded'
+                        href="flow:testIfIsCalled"
+                    />
+                </Box>
+            </Box>
+
+            <Box
+                sx:display='flex'
+                sx:justifyContent="flex-start"
+                sx:alignItems="center"
+                sx:gap="2"
+                sx:marginTop="24px"
+                sx:padding="24px"
+                sx:border="1px solid #dddddd"
+                sx:borderRadius="10px"
+            >
+                <Typography>Chips</Typography>
+
+                <Chip
+                    label="with 'href'"
+                    href='flow:testIfIsCalled'
+                    backgroundColor='green800'
+                    icon='CheckCircle'
+                />
+                <Chip
+                    label="with 'flow'"
+                    flow='testIfIsCalled'
+                    backgroundColor='green800'
+                    icon='CheckCircle'
+                />
+                <Chip
+                    label="with 'useFlow'"
+                    useFlow='testIfIsCalled'
+                    backgroundColor='green800'
+                    icon='CheckCircle'
+                />
+            </Box>
+        </Box>
+
+        <Divider sx:my="4" />
+
+        <Typography variant='h2'>
+            Navigating/Routing
+        </Typography>
+        <Typography variant='p'>
+            One can navigate within the app combining href and target props.
+
+            There are two ways of navigating: Internally and Externally.
+        </Typography>
+        
+        <Box sx:marginTop="36px">
+            <Typography variant='h4' sx:textDecoration='underline'>
+                Internally
+            </Typography>
+            <Typography variant="p" sx:marginBottom="16px" sx:whiteSpace="pre-wrap">
+                Either just replacing the current tab params or opening a new tab with "target=_blank".
+                
+                One must ALWAYS use the "/" prefix on your href, otherwise it might cause unexpected behavior.
+
+                Optionally you can use "target='_blank'" to open the href link on a new tab.
+            </Typography>
+
+            <CodeBlock language="xml">
+                <Button href="/features/components/Actions/111">
+                    Normal
+                </Button>
+                <Button href="/features/components/Actions/111" target="_blank">
+                    With target blank
+                </Button>
+            </CodeBlock>
+            <Box
+                sx:display='flex'
+                sx:alignItems='center'
+                sx:gap='4'
+                sx:margin="16px 0"
+            >   
+                <Box
+                    sx:display='flex'
+                    sx:flexDirection='column'
+                    sx:alignItems='center'
+                    sx:gap='1'
+                >
+                    <Button href="/features/components/Actions/111">
+                        Normal
+                    </Button>
+                    <Button href="/features/components/Actions/111" target="_blank">
+                        With target blank
+                         <IconButton
+                            disabled
+                            icon='OpenInNew'
+                            color='theme_palette.primary.main'
+                        />
+                    </Button>
+                </Box>
+                <Box
+                    sx:display='flex'
+                    sx:flexDirection='column'
+                    sx:alignItems='center'
+                    sx:gap='1'
+                >
+                    <IconButton
+                        sx:width="40px"
+                        sx:height="40px"
+                        icon='FileOpen'
+                        href="/features/components/Actions/222"
+                    />
+                    <IconButton
+                        sx:width="40px"
+                        sx:height="40px"
+                        icon='OpenInNew'
+                        target="_blank"
+                        href="/features/components/Actions/222"
+                    />
+                </Box>
+                <Box
+                    sx:display='flex'
+                    sx:flexDirection='column'
+                    sx:alignItems='center'
+                    sx:gap='1'
+                >
+                    <Link href="/features/components/Actions/333">
+                        Normal
+                    </Link>
+                    <Link
+                        href="/features/components/Actions/333"
+                        target="_blank"
+                        sx:textAlign='center'
+                    >
+                        With target blank
+                    </Link>
+                </Box>
+                <Box
+                    sx:display='flex'
+                    sx:flexDirection='column'
+                    sx:alignItems='center'
+                    sx:gap='1'
+                >
+                    <Chip
+                        label="Normal"
+                        href="/features/components/Actions/444"
+                        backgroundColor='green800'
+                        icon='FileOpen'
+                    />
+                    <Chip
+                        label="With target blank"
+                        href="/features/components/Actions/444"
+                        backgroundColor='green800'
+                        icon='OpenInNew'
+                        target="_blank"
+                    />
+                </Box>
+            </Box>
+        </Box>
+
+        <Box sx:margin="36px 0 50px 0">
+            <Typography variant='h4' sx:textDecoration='underline'>
+                Externally
+            </Typography>
+            <Typography variant="p" sx:marginBottom="16px" sx:whiteSpace="pre-wrap">
+                To open an external link you must use the prefix "http://" or "https://", otherwise the framework will think that it is an internal navigation.
+
+                Similarly to internal links, you can optionally open on a new tab with "target=_blank".
+            </Typography>
+
+            <CodeBlock language="xml">
+                <Button href="https://google.com" target="_blank">
+                    Button
+                </Button>
+            </CodeBlock>
+
+            <Box
+                sx:display='flex'
+                sx:alignItems='center'
+                sx:gap='4'
+                sx:margin="16px 0"
+            >
+                <Button href="https://google.com" target="_blank">
+                    Button
+                </Button>
+                <IconButton
+                    sx:width="40px"
+                    sx:height="40px"
+                    target="_blank"
+                    icon='FilterListRounded'
+                    href="http://google.com"
+                />
+                <Link href="https://google.com">
+                    Link (without target _blank) 
+                </Link>
+                <Chip
+                    label="Chip"
+                    href="https://google.com"
+                    target="_blank"
+                    backgroundColor='green800'
+                    icon='OpenInNew'
+                />
+            </Box>
+        </Box>
+
+        <Box sx:margin="36px 0 50px 0">
+            <Markdown>
+                ### SIDE NOTE: Segmented Chips
+                ```xml
+                    <Chip
+                        label="ONE"
+                        backgroundColor='green800'
+                        icon='CheckCircle'
+                        sx:borderTopRightRadius="0"
+                        sx:borderBottomRightRadius="0"
+                    />
+                    <Chip
+                        label="TWO"
+                        backgroundColor='red800'
+                        icon='CheckCircle'
+                        sx:borderRadius="0"
+                    />
+                    <Chip
+                        label="THREE"
+                        backgroundColor='blue800'
+                        icon='CheckCircle'
+                        sx:borderTopLeftRadius="0"
+                        sx:borderBottomLeftRadius="0"
+                    />
+                ```
+            </Markdown>
+            <Chip
+                label="ONE"
+                backgroundColor='green800'
+                icon='CheckCircle'
+                sx:borderTopRightRadius="0"
+                sx:borderBottomRightRadius="0"
+            />
+            <Chip
+                label="TWO"
+                backgroundColor='red800'
+                icon='CheckCircle'
+                sx:borderRadius="0"
+            />
+            <Chip
+                label="THREE"
+                backgroundColor='blue800'
+                icon='CheckCircle'
+                sx:borderTopLeftRadius="0"
+                sx:borderBottomLeftRadius="0"
+            />
+        </Box>
+
+    </PageContent>
+</Page>

@@ -1,0 +1,18 @@
+<Page>
+    <PageNavBar label="Home" />
+
+    <PageContent key="pageContent">
+        <Box
+            display="flex"
+            flexDirection="column"
+            gap="2"
+            sx:mb="200px"
+            sx:mt="1em"
+            sx:width="100%"
+            sx:maxWidth="1000px"
+            sx:mx="auto"
+        >
+            <Dashboard key="dashboard" />
+        </Box>
+    </PageContent>
+</Page>

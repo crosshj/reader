@@ -1,0 +1,254 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='featuresFormsGridOptions1'
+        getData='ui.sp_OLBranchPayPeriods'
+    />
+    <Data
+        name='featuresFormsGridNestedTable'
+        getData='ui.sp_RLVAssignmentsByTalentID'
+        param_talentID='static_364'
+    />
+    
+    <!-- FLOWS -->
+
+    
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Forms / Grid Alignment">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href='/features'
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT-->
+    <PageContent>
+        <GridContainer>
+            <TextField
+                label='Input 1'
+                value='global_form2.input1'
+                xs='2'
+                fullWidth
+            />
+            <TextField
+                value='global_form1.input2'
+                label='Input 2'
+                fullWidth
+                xs='2'
+            />
+            <TextField
+                select
+                value='global_form1.option1'
+                label='Week End'
+                options='global_featuresFormsGridOptions1'
+                fullWidth
+                xs='2'
+            />
+            <Box
+                display='flex'
+                justifyContent='flex-start'
+                alignItems='center'
+                xs='6'
+            >
+                <Checkbox
+                    useData='form3.check1'
+                    label='Check 1'
+                />
+                <Typography>Check 1</Typography>
+            </Box>
+            <Box
+                display='flex'
+                justifyContent='flex-start'
+                alignItems='center'
+                xs='2'
+            >
+                <Checkbox
+                    useData='form3.check2'
+                    label='Check 2'
+                />
+                <Typography>Check 2</Typography>
+            </Box>
+            <Icon
+                color="green800"
+                icon="InsertDriveFile"
+                fontSize="x-large"
+            />
+            <Box
+                display='flex'
+                justifyContent='flex-start'
+                alignItems='center'
+                xs='2'
+            >
+                <Checkbox
+                    useData='form3.check3'
+                    label='Check 3'
+                />
+                <Typography>Check 3</Typography>
+            </Box>
+            <Card
+                label='Card 1'
+                collapsible='true'
+                xs='2'
+            >
+                <Stack
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <Spacing space="4" />
+                    <Icon
+                        color="green800"
+                        icon="InsertDriveFile"
+                        fontSize="x-large"
+                    />
+                    <Button
+                        variant="text"
+                        label="View ACH"
+                    />
+                    <Spacing space="2" />
+                </Stack>
+            </Card>
+            <Box
+                display='flex'
+                flexDirection="row"
+                alignItems="center"
+                gap="2"
+                sx='py:2'
+                xs='6'
+            >
+                <TextField
+                    select
+                    label='Week End'
+                    options='global_featuresFormsGridOptions1'
+                    value='global_form1.option2'
+                    fullWidth
+                />
+                <TextField
+                    label='Search'
+                    value='global_form1.search'
+                    fullWidth
+                />
+                <ActionsControl>
+                    <Action
+                        icon='DownloadRounded'
+                        color='grey700'
+                    />
+                    <Action
+                        icon='FilterListRounded'
+                        color='grey700'
+                    />
+                    <Action
+                        icon='ViewColumnRounded'
+                        color='grey700'
+                    />
+                    <Action
+                        icon='MenuRounded'
+                        color='grey700'
+                    />
+                </ActionsControl>
+            </Box>
+            <Box
+                display='flex'
+                justifyContent='flex-start'
+                alignItems='center'
+                xs='2'
+            >
+                <Checkbox
+                    useData='form3.check4'
+                    label='Check 4'
+                />
+                <Typography>Check 4</Typography>
+            </Box>
+            <TextField
+                label='Input 3'
+                value='global_form2.input3'
+                fullWidth
+            />
+            <TextField
+                value='global_form1.input4'
+                label='Input 4'
+                fullWidth
+                xs='2'
+            />
+            <NestedTable
+                source='childHome_orders'
+                toolbar='false'
+                xs='6'
+            >
+                <Nest>
+                    <Level
+                        param='branchID.hidden'
+                        name='branchName'
+                    />
+                    <Level
+                        param='orderID.hidden'
+                        name='orderName'
+                    />
+                    <Level
+                        param='shiftID.hidden'
+                        name='shiftName'
+                    />
+                </Nest>
+                <Column
+                    key='assignmentNum'
+                    label='Name/Number'
+                    variant='link'
+                    route="ordersTempDetails"
+                />
+                <Column
+                    key='startDate'
+                    label='Start Date'
+                    variant='date'
+                />
+                <Column
+                    key='clientName'
+                    label='Client Name'
+                    variant='link'
+                />
+                <Column
+                    key='unfilled'
+                    label='Unfilled'
+                />
+                <Column
+                    key='total'
+                    label='Total'
+                />
+                <Column
+                    key='billRate'
+                    label='Bill Rate'
+                    variant='dedimal'
+                />
+                <Column
+                    key='margin'
+                    label='Margin'
+                    variant='decimal'
+                />
+                <Column
+                    key='payRate'
+                    label='Pay Rate'
+                    variant='decimal'
+                />
+                <Column variant='actions'>
+                    <RowAction
+                        icon='OpenInNewRounded'
+                        color='grey700'
+                        useData=""
+                        useFlow=""
+                    />
+                    <RowAction
+                        icon='PersonRemoveRounded'
+                        color='grey700'
+                        useData=""
+                        useFlow=""
+                    />
+                </Column>
+            </NestedTable>
+        </GridContainer> 
+    </PageContent>
+</Page>

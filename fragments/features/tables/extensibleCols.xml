@@ -1,0 +1,146 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='extensibleColsData'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresExtensibleColsData'
+    />
+    <Data
+        name='dataYesNo'
+        getData='ui.sp_OLYesNo'
+    />
+    <Data
+        name="selected"
+        defaultValue='{ "yesno": "1" }'
+    />
+
+    <!-- FLOWS -->
+    <Flow key='myButtonFlow'>
+        <Confirm title='myButtonFlow'>
+            Look Mom, my button works!
+            ID = {{flowArgs.myID}}
+            Name: {{flowArgs.firstName}}
+            Links: {{flowArgs.myLinks}}
+            Description:  {{flowArgs.description}}
+        </Confirm>
+    </Flow>
+    <Flow key='myActionDeleteFlow'>
+        <Confirm title='myDeleteFlow'>
+            Look Mom, my delete action works!
+            ID = {{flowArgs.myID}}
+        </Confirm>
+    </Flow>
+    <Flow key='myActionDownloadFlow'>
+        <Confirm title='myDownloadFlow'>
+            Look Mom, my download action works!
+            ID = {{flowArgs.myID}}
+        </Confirm>
+    </Flow>
+    <Flow key='myActionOpenInNewFlow'>
+        <Confirm title='myOopenInNewFlow'>
+            Look Mom, my open in new action works!
+            ID = {{flowArgs.myID}}
+        </Confirm>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Tables / Extensible Columns">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box sx="py:2">
+            <Typography whiteSpace="pre-wrap">
+                One method of determining how a table is rendered is by defining a render mode (variant) for each of its columns.  For example, we can say that data that falls within the first column will be of type "DateTime" and then render all cells in that column using a component that shows a "DateTime".
+
+                This method can be quite inflexible since every time we have a need for new shape of cell contents we have to define a new render mode variant.
+
+                For this reason, we introduced the concept of "extensible" columns.  What this really means is that a column can have children which are similar (or same) as components elsewhere in the system.  With this method, a table cell is rendered using normal system components which are passed a "row" variable.
+
+                This page shows some examples of these components as they work within the context of a table.
+
+                For examples of Radio and Checkbox in table, see ... INSERT LINK
+            </Typography>
+        </Box>
+
+        <NestedTable
+            source='extensibleColsData'
+            collapsible='false'
+            indented='false'
+        >
+            <Column label='Typography'>
+                <Typography>
+                    {{row_myID}}-{{row_myLinks}}
+                </Typography>
+            </Column>
+
+            <Column label='TextField (date)'>
+                <TextField
+                    label="Date Time"
+                    type="datetime-local"
+                    value="row_datetime"
+                    inputProps="min:2019-01-24T00\:00;max:2020-05-31T00\:00"
+                    sx="minWidth:25ch"
+                />
+            </Column>
+
+            <Column label='TextField (select)'>
+                <TextField
+                    select
+                    value="row_isYesNo"
+                    options='global_dataYesNo'
+                    sx="minWidth:25ch"
+                    debug
+                />
+            </Column>
+            <Column label='Link'>
+                <Link
+                    href="featuresExtensibleCols/{{row_myID}}"
+                    underline="hover"
+                >
+                    {{row_myLinks}}
+                </Link>
+            </Column>
+            <Column
+                label='Button'
+                width="min-content"
+            >
+                <Button
+                    label='Click'
+                    href='flow:myButtonFlow'
+                />
+            </Column>
+            <Column
+                label='Icon Button'
+                width="min-content"
+            >
+                <IconButton
+                    icon='Delete'
+                    color='grey700'
+                    href='flow:myActionDeleteFlow'
+                />
+                <IconButton
+                    icon='Download'
+                    color='grey700'
+                    href='flow:myActionDownloadFlow'
+                />
+                <IconButton
+                    icon='OpenInNewRounded'
+                    color='red700'
+                    href='flow:myActionOpenInNewFlow'
+                />
+            </Column>
+        </NestedTable>
+    </PageContent>
+</Page>

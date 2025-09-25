@@ -1,0 +1,148 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='featuresFormsLabels'
+        getData='ui.sp_OLACAInvoiceFormat'
+    />
+
+    <!-- FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Forms / Label Alignment">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <PageContent>
+        <GridContainer>
+            <Box
+                display='flex'
+                alignItems='center'
+                justifyContent='flex-end'
+                gap='2'
+                xs='12'
+            > 
+                <TextField
+                    select
+                    label='ACA Invoice Format'
+                    options='global_featuresFormLabels'
+                    value='global_featuresFormsLabel.option1'
+                    fullWidth
+                />
+                <Box
+                    display='flex'
+                    justifyContent='flex-start'
+                    alignItems='center'
+                >
+                    <Checkbox
+                        label="ACA Bill Insured Only"
+                        fontSize="56"
+                    />
+                    <Typography>ACA Bill Insured Only</Typography>
+                </Box>
+            </Box>
+        </GridContainer>
+        <GridContainer>
+            <GridContainer
+                display='flex'
+                alignItems='center'
+                justifyContent='flex-end'
+                gap='2'
+                xs='12'
+            > 
+                <TextField
+                    select
+                    label='ACA Invoice Format'
+                    options='global_featuresFormLabels'
+                    value='global_featuresFormsLabel.option1'
+                    xs='9'
+                    fullWidth
+                />
+                <Box
+                    display='flex'
+                    justifyContent='flex-start'
+                    alignItems='center'
+                    xs='3'
+                >
+                    <Checkbox
+                        useData="acaBill"
+                        label="ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only"
+                        fontSize="56"
+                    />
+                    <Typography>ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only</Typography>
+                </Box>
+            </GridContainer>
+        </GridContainer>
+        <GridContainer>
+            <Stack
+                alignItems='center'
+                direction="row"
+                gap='2'
+                xs='12'
+            > 
+                <TextField
+                    select
+                    label='ACA Invoice Format'
+                    options='global_featuresFormLabels'
+                    value='global_featuresFormsLabel.option1'
+                    fullWidth
+                />
+                <Box
+                    display='flex'
+                    justifyContent='flex-start'
+                    alignItems='center'
+                >
+                    <Checkbox
+                        useData="acaBill"
+                        label="ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only"
+                        fontSize="56"
+                    />
+                    <Typography>ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only ACA Bill Insured Only</Typography>
+                </Box>
+            </Stack>
+        </GridContainer>
+        <Stack
+            alignItems='center'
+            justifyContent='space-between'
+            direction="row"
+            xs='12'
+        >
+            <TextField
+                select
+                label='Assigned Branch'
+                options=''
+                value=''
+                fullWidth
+            />
+            <Action
+                icon='OpenInNewRounded'
+                color='grey700'
+            />
+            <Checkbox
+                useData="acaBill"
+                label="ACA Bill"
+                fontSize="56"
+            />
+            <TextField
+                select
+                label='Assigned Salesperson'
+                options=''
+                value=''
+                fullWidth
+            />
+            <Action
+                color='grey700'
+                icon='OpenInNewRounded'
+            />
+        </Stack>
+    </PageContent>
+</Page>

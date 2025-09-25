@@ -1,0 +1,259 @@
+<Page>
+
+    <!-- DATA -->
+    <Data
+        name='exampleData'
+        defaultValue="-1"
+    />
+    <Data name="data1" defaultValue='' />
+
+    <!-- FLOWS -->
+    <Flow key='modifyRouteParam'>
+        <Navigate route='/features/flows/setData/999' />
+    </Flow>
+    <Flow key='withRouteValue'>
+        <SetData
+            name='routeParams'
+            route='/features/flows/setData{/}?:myID?'
+        />
+
+        <LocalData
+            name='routeParams'
+            route='/features/flows/setData{/}?:myID?'
+        />
+
+        <Confirm title='hey'>
+            using global: {{ global_routeParams.myID }}
+            using flow args: {{ flowArgs.routeParams.myID }}
+        </Confirm>
+    </Flow>
+    <Flow key='gotoFeaturesFlows'>
+        <Navigate route='features' />
+    </Flow>
+
+    <Flow key='addOne'>
+        <SetData
+            name='global_exampleData'
+            mutate="add:1,max:4"
+        />
+    </Flow>
+    <Flow key='subtractOne'>
+        <SetData
+            name='global_exampleData'
+            mutate="subtract:1,min:-1"
+        />
+    </Flow>
+
+    <Flow key="data1To100">
+        <SetData name="global_data1" data="100" />
+    </Flow>
+    <Flow key="data1To500">
+        <SetData name="global_data1" data="500"/>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Flows / SetData">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                flow="gotoFeaturesFlows"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent key="pageContent">
+        <Markdown>
+        ### Set Data is a way of modifying/defining state data.
+
+
+        TODO: add docs for all supported features
+        #### It supports:
+
+        - [X] static value
+        - [X] route params `/features/flows/setData{/}?:myID?`
+        - [X] use data from another global state
+        - [X] use flowArgs
+        - [X] mix global state and flowArgs, i.e `global_optionsList[flowArgs.index].label`
+        - [X] mutate existing data (add or subtract with custom boundaries)
+        </Markdown>
+
+        <Divider />
+
+            <Typography variant="h2" my="4">
+                Static value: {{ global_data1 }}
+            </Typography>
+
+            <CodeBlock marginBottom="4">
+                <Data name="data1" />
+
+                <Flow key="data1To100">
+                    <SetData name="global_data1" data="100" />
+                </Flow>
+                <Flow key="data1To500">
+                    <SetData name="global_data1" data="500" />
+                </Flow>
+            </CodeBlock>
+            <Box
+                display="flex"
+                gap="2"
+                my="4"
+            >
+                <Button
+                    data-test-id='buttonToSetTo100'
+                    href="flow:data1To100"
+                    label="Set to 100"
+                />
+                <Button
+                    data-test-id='buttonToSetTo500'
+                    href="flow:data1To500"
+                    label="Set to 500"
+                />
+            </Box>
+
+        <Typography variant="h2" my="4">
+            Mutate Data (Advanced)
+        </Typography>
+        <Typography>
+            Change data based on previous value.
+        </Typography>
+        <CodeBlock marginBottom="4">
+            <Data
+                name='exampleData'
+                defaultValue="-1"
+            />
+            <Flow key='addOne'>
+                <SetData
+                    name='global_exampleData'
+                    mutate="add:1,max:4"
+                />
+            </Flow>
+            <Flow key='subtractOne'>
+                <SetData
+                    name='global_exampleData'
+                    mutate="subtract:1,min:-1"
+                />
+            </Flow>
+        </CodeBlock>
+
+        <Typography
+            variant="h3"
+            my="4"
+        >
+            Example
+        </Typography>
+
+        <Typography my="4">
+            Current : {{ global_exampleData }}
+        </Typography>
+
+        <Box
+            display="flex"
+            gap="2"
+            my="4"
+        >
+            <Button
+                data-test-id='buttonToSubtractOne'
+                href="flow:subtractOne"
+                label="Minus One"
+            />
+            <Button
+                data-test-id='buttonToAddOne'
+                href="flow:addOne"
+                label="Plus One"
+            />
+        </Box>
+
+        <Box display='flex' alignItems='center' sx:my="2">
+            <IconButton
+                disabled
+                icon='CheckCircleRounded'
+                color='green800'
+            />
+            <Typography variant="h4" whiteSpace="pre-wrap">
+                Route params
+            </Typography>
+        </Box>
+        <Typography>
+            You can use this alongside with Triggers to display things and also Query necessary data with it.
+        </Typography>
+        <CodeBlock>
+            <Flow key='modifyRouteParam'>
+                <Navigate route='/features/flows/setData/999' />
+            </Flow>
+            <Flow key='withRouteValue'>
+                <SetData
+                    name='routeParams'
+                    route='/features/flows/setData{/}?:myID?'
+                />
+
+                <LocalData
+                    name='routeParams'
+                    route='/features/flows/setData{/}?:myID?'
+                />
+
+                <Confirm title='hey'>
+                    using global: {{ global_routeParams.myID }}
+                    using flow args: {{ flowArgs.routeParams.myID }}
+                </Confirm>
+            </Flow>
+        </CodeBlock>
+        <Box
+            display='flex'
+            gap="2"
+            sx:my='2'
+        >
+            <Button
+                data-test-id='buttonToModifyRouteParam'
+                href='flow:modifyRouteParam'
+            >
+                1. Change route
+            </Button>
+
+            <Button
+                data-test-id='buttonToTriggerRouteValue'
+                href='flow:withRouteValue'
+            >
+                2. Trigger 'withRouteValue'
+            </Button>
+        </Box>
+        <Typography
+            variant="h2"
+            my="4"
+        >
+            Flow Args
+        </Typography>
+
+        <Typography>
+            A Flow can potentially have data, which can be accessed through "flowArgs".
+
+            SetData does support updating a state based on values from "flowArgs".
+
+            SetData can also be used inside Queries alongside with `results` and `flowArgs`.
+        </Typography>
+
+        <CodeBlock>
+            <Data name="data1" />
+
+            <Flow key="updateSelectedRow">
+                <SetData name="global_selectedRowIndex" data="flowArgs.index"    />
+                <SetData name="global_selectedRow"      data="flowArgs"          />
+                <SetData name="global_selectedPersonID" data="flowArgs.personID" />
+
+                <Query
+                    ...
+                >
+                    <SetData name='global_something'   data='results' />
+                    <SetData name='global_somethingID' data='results[0].myID' />
+                </Query>
+            </Flow>
+        </CodeBlock>
+
+        <Divider />
+    </PageContent>
+</Page>

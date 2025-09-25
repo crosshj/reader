@@ -1,0 +1,213 @@
+<Page>
+    <!--
+        dbo.TenantBranches id, TenantID
+
+        dbo.Tenants id, RegionID, ParentTenantID
+
+        dbo.UserRoles id, user_id, Tenant_id, approle_id, BranchID, RegionID
+
+        dbo.Users id, email_address, Autho0UserKey
+
+    -->
+
+
+    <!-- #region PAGE DATA -->
+    <Data
+        name='featuresRolesAndAccessRightsSelectedTab'
+        defaultValue='0'
+    />
+    <Data
+        name='FeaturesBranchesList'
+        getData='ui.sp_RLVTenantBranches'
+    />
+    <Data
+        name='FeaturesRoles'
+        getData='ui.sp_OLAppRoles'
+    />
+    <Data
+        name='FeaturesRolesAllUsers'
+        getData='ui.sp_OLUsersAll'
+    />
+    <Data
+        name='FeaturesBranches'
+        getData='ui.sp_OLBranchesAll'
+    />
+    <Data
+        name='FeaturesRolesEffectivePermissions'
+        getData='ui.sp_RLVUserEffectivePermissions'
+        param_user='global_FeaturesRolesSelectedUser'
+        param_branch='global_FeaturesRolesSelectedBranch'
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Roles and Access Rights'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="Back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Tabs
+            useData='featuresRolesAndAccessRightsSelectedTab'
+            color='secondary'
+        >
+            <Tab label='Assigning Roles' />
+            <Tab label='Effective Permissions' />
+        </Tabs>
+        <TabContainer useData='featuresRolesAndAccessRightsSelectedTab'>
+            <Box sx='py:2'>
+                <NestedTable
+                    source='FeaturesBranchesList'
+                    collapsible
+                >
+                    <Nest>
+                        <Level param='ParentTenantID'>
+                            <Header>
+                                <Column justifyContent='start'>
+                                    <Typography>
+                                        Parent Tenant ID: {{row_ParentTenantID}}
+                                    </Typography>
+                                </Column>
+                                <Column justifyContent='start'>
+                                    <Typography>
+                                        {{row_ParentTenantName}}
+                                    </Typography>
+                                </Column>
+                                <Column justifyContent='start'>
+                                    <Typography>
+                                        {{row_ParentTenantEIN}}
+                                    </Typography>
+                                </Column>
+                            </Header>
+                        </Level>
+                        <Level param='TenantID'>
+                            <Header>
+                                <Column justifyContent='start'>
+                                    <Typography>
+                                        Tenant ID: {{row_TenantID}}
+                                    </Typography>
+                                </Column>
+                                <Column justifyContent='start'>
+                                    <Typography>
+                                        {{row_TenantName}}
+                                    </Typography>
+                                </Column>
+                                <Column justifyContent='start'>
+                                    <Typography>
+                                        {{row_TenantEIN}}
+                                    </Typography>
+                                </Column>
+                            </Header>
+                        </Level>
+                        <Level param='BranchID'>
+                            <Header>
+                                <Column label='Branch ID' justifyContent='start'>
+                                    <Typography>
+                                        BranchID: {{row_BranchID}}
+                                    </Typography>
+                                </Column>
+                                <Column label='Name' justifyContent='start'>
+                                    <Typography>
+                                        {{row_BranchName}}
+                                    </Typography>
+                                </Column>
+                                <Column label='EIN' justifyContent='start'>
+                                    <Typography>
+                                        {{row_BranchEIN}}
+                                    </Typography>
+                                </Column>
+                            </Header>
+                        </Level>
+                    </Nest>
+                    <Column label='ID' justifyContent='start'>
+                        <Typography>
+                            {{row_BranchClientID}}
+                        </Typography>
+                    </Column>
+                    <Column label='Name' justifyContent='start'>
+                        <Typography>
+                            {{row_BranchClientName}}
+                        </Typography>
+                    </Column>
+                    <Column label='EIN' justifyContent='start'>
+                        <Typography>
+                            {{row_BranchClientEIN}}
+                        </Typography>
+                    </Column>
+                    <Column />
+                </NestedTable>
+                <Spacing space='3'/>
+                <Divider />
+                <Spacing space='3'/>
+                <TextField
+                    select
+                    label='Roles'
+                    options='global_FeaturesRoles'
+                    value=''
+                />
+            </Box>
+            <Box sx='py:2'>
+                <CodeBlock>
+                    Test Combinations:
+                        1. Clark Kent000A at Lubbock (MasterBranch) should return branches: 1,2,4
+                        2. Clark Kent02A5 at San Jose should return branches: 4
+                        3. Clark Kent02A5 at Lubbock (MasterBranch) should return no branches allowed
+                </CodeBlock>
+                <Spacing space='2'/>
+                <GridContainer>
+                    <TextField
+                        select
+                        label='Users'
+                        options='global_FeaturesRolesAllUsers'
+                        value='global_FeaturesRolesSelectedUser'
+                        fullWidth
+                        xs='6'
+                    />
+                    <TextField
+                        select
+                        label='Branches'
+                        options='global_FeaturesBranches'
+                        value='global_FeaturesRolesSelectedBranch'
+                        fullWidth
+                        xs='6'
+                    />
+                </GridContainer>
+                <Spacing space='2'/>
+                <NestedTable source='FeaturesRolesEffectivePermissions' collapsible='false'>
+<!--                     <Level param='userID'>
+                        <Header>
+                            <Column justifyContent='start'>
+                                <Typography>
+                                    {{row_userName}}
+                                </Typography>
+                            </Column>
+                        </Header>
+                    </Level> -->
+                    <Column justifyContent='start' label='Component Key'>
+                        <Typography>
+                            {{row_ComponentKey}}
+                        </Typography>
+                    </Column>
+                    <Column justifyContent='start' label='Branches Allowed'>
+                        <Typography>
+                            {{row_BranchesAllowed}}
+                        </Typography>
+                    </Column>
+                </NestedTable>
+            </Box>
+        </TabContainer>
+    </PageContent>
+</Page>

@@ -1,0 +1,212 @@
+<Page>
+
+    <!-- DATA -->
+    <Data
+        name="address"
+        defaultValue='{ "postalCode":"30076"}'
+    />
+    <Data
+        name="geocodeId"
+        defaultValue=""
+    />
+
+    <Data
+        name="queryCallSendEmail"
+        defaultValue='{
+            "RecipientEmail": "",
+            "RecipientName": "",
+            "Message": ""
+        }'
+    />
+    <!-- FLOWS -->
+    <Flow key='readGeocode'>
+        
+        <Confirm title='Query for Geocode'>
+            Use County name: {{address.county.name}}
+            Use City name: {{address.city.name}}
+            Use State name: {{address.state.name}}
+            Use postal code: {{address.postalCode}}
+
+            Get geocode?
+        </Confirm>
+        <Query
+            debug
+            showLoading
+            proc="ui.sp_Upsert"
+            call="vertexGetGeocode"
+            flatParams="false"
+            param_body='global_address'
+            out_geocodeId='results.geocodes[0].geocodeId'
+        />
+
+        <!--
+            here we would submit the client/site along with geocode from previous step
+        -->
+    </Flow>
+    <Flow key='sendEmail'>
+        <Query
+            proc="ui.sp_Upsert"
+            call="communicate"
+            param_operation="static_sendEmail"
+            param_recipientEmail="global_queryCallSendEmail.RecipientEmail"
+            param_recipientName="global_queryCallSendEmail.RecipientName"
+            param_body="global_queryCallSendEmail.Message"
+        />
+    </Flow>
+    <Flow key='sendInviteEmail'>
+        <Query
+            proc="ui.sp_Upsert"
+            call="communicate"
+            param_operation="static_sendEmail"
+            param_templateName="USER_CREATE_INVITATION"
+            param_recipientEmail="global_queryCallSendInvitationEmail.RecipientEmail"
+            param_recipientFirstName="global_queryCallSendInvitationEmail.RecipientFirstName"
+            param_recipientLastName="global_queryCallSendInvitationEmail.RecipientLastName"
+            param_emailData:userCreateToken="global_queryCallSendInvitationEmail.Token"
+        />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Flows / Query Call'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box
+            sx="py:2"
+            display='flex'
+            flexDirection="column"
+            gap="2"
+        >
+            <Alert>
+                We use Vertex integration here as an example of how Configs can specify an external API to be called.
+                Specifically, we will verify an address returns a geocode from Vertex's API's.
+                Make sure that either State Name or Postal Code is defined below wehn submitting.
+            </Alert>
+            <Input
+                label='County Name'
+                useData='address.county.name'
+            />
+            <Input
+                data-test-id='inputCity'
+                label='City Name'
+                useData='address.city.name'
+            />
+            <Input
+                data-test-id='inputState'
+                label='State Name'
+                useData='address.state.name'
+            />
+            <Input
+                data-test-id='inputPostalCode'
+                label='Postal Code'
+                useData='address.postalCode'
+            />
+            <Button
+                data-test-id='buttonGetGeocode'
+                label='Get Geocode'
+                href='flow:readGeocode'
+            />
+        </Box>
+
+        <Typography
+            useData="geocodeId"
+            display="WHEN global_geocodeId THEN block ELSE none"
+        >
+            Geocode result: {{ global_geocodeId }}
+        </Typography>
+
+        <Divider/>
+
+        <Box
+            display="flex"
+            flexDirection="column"
+            marginTop="35px"
+        >
+            
+            <GridContainer>
+                <Typography variant="h4" xs='12'>Let's email someone</Typography>
+
+                <TextField
+                    value="global_queryCallSendEmail.RecipientName"
+                    label="Recipient Name"
+                    xs='6'
+                />
+                <TextField
+                    value="global_queryCallSendEmail.RecipientEmail"
+                    label="Recipient Email"
+                    xs='6'
+                />
+                <TextField
+                    area
+                    value="global_queryCallSendEmail.Message"
+                    label="Message"
+                    xs='12'
+                />
+                <Button
+                    variant="contained"
+                    color="success"
+                    href="flow:sendEmail"
+                    xs='5'
+                >
+                    SEND EMAIL
+                </Button>
+            </GridContainer>
+        </Box>
+
+        <Divider/>
+
+        <Box
+            display="flex"
+            flexDirection="column"
+            marginTop="35px"
+        >
+            
+            <GridContainer>
+                <Typography variant="h4" xs='12'>Let's email someone an invitation</Typography>
+
+                <TextField
+                    value="global_queryCallSendInvitationEmail.RecipientFirstName"
+                    label="Recipient First Name"
+                    xs='6'
+                />
+                <TextField
+                    value="global_queryCallSendInvitationEmail.RecipientLastName"
+                    label="Recipient Last Name"
+                    xs='6'
+                />
+                <TextField
+                    value="global_queryCallSendInvitationEmail.RecipientEmail"
+                    label="Recipient Email"
+                    xs='12'
+                />
+                <TextField
+                    area
+                    value="global_queryCallSendInvitationEmail.Token"
+                    label="Token"
+                    xs='12'
+                />
+                <Button
+                    variant="contained"
+                    color="success"
+                    href="flow:sendInviteEmail"
+                    xs='5'
+                >
+                    SEND INVITATION EMAIL
+                </Button>
+            </GridContainer>
+        </Box>
+
+    </PageContent>
+</Page>

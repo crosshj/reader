@@ -1,0 +1,718 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data
+        name='timecardEntryWIP'
+        getData='ui.sp_RLVTimeCardDetailsByTalentPayPeriod'
+        param_payPeriodID='global_timecardEntryWIPSelectedPayPeriodID'
+        param_talentID='global_timecardEntryWIPSelectedTalent'
+    />
+    <Data
+        name='timecardEntryWIPTimeTypes'
+        getData='ui.sp_OLHourlyPayTypes'
+    />
+    <Data
+        name='addAssignmentShow1'
+        defaultValue='false'
+    />
+    <Data
+        name='timecardEntryWIPData'
+        defaultValue="{'AssignmentID':'undefined','TimeTypeID':1,'StartTime':'1901-01-01T08:00:00.000Z','EndTime':'1901-01-01T08:00:00.000Z'}"
+    />
+
+    <Data
+        name='timecardEntryWIPPayPeriods'
+        getData='ui.sp_OLActiveBranchPayPeriodsTimeAssignable'
+        param_actionableOnly='static_1'
+    />
+    <Data
+        name="timecardEntryWIPSelectedPayPeriodID"
+        source='timecardEntryWIPPayPeriods'
+        defaultValue='first'
+    />
+    <Data
+        name='timecardEntryWIPTalent'
+        getData='ui.sp_OLTalentByPayPeriodIDActiveAssignment'
+        param_payPeriodID='global_timecardEntryWIPSelectedPayPeriodID'
+    />
+    <Data
+        name="timecardEntryWIPSelectedTalent"
+        source='timecardEntryWIPTalent'
+        defaultValue='first'
+    />
+
+    <Subscribe
+        path='timecardEntryWIPSelectedPayPeriodID'
+        handler='updateTalentList'
+    />
+    <Flow key='updateTalentList'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='ui.sp_OLTalentByPayPeriodIDActiveAssignment'
+            param_payPeriodID='global_timecardEntryWIPSelectedPayPeriodID'
+        >
+            <SetData
+                name='global_timecardEntryWIPTalent' 
+                data='results'
+            />
+        </Query>
+        <Refresh
+            data='timecardEntryWIP'
+        />
+    </Flow>
+
+    
+    <Data
+        name='timecardEntryWIP2'
+        getData='ui.sp_RLVEmployeeTimeCardBulkGetByPayPeriodID'
+        param_payperiodID='global_timecardEntryWIPSelectedPayPeriodID2'
+        param_BranchClientID='global_timecardEntryWIPSelectedClient'
+        param_JobOrderID='global_timecardEntryWIPSelectedJobOrder'
+    />
+    <Data
+        name="timecardEntryWIPSelectedPayPeriodID2"
+        source='timecardEntryWIPPayPeriods'
+        defaultValue='first'
+    />
+    <Data
+        name='timecardEntryWIPAssignments'
+        getData='ui.sp_OLActiveAssignmentsSansTimeByTalentID'
+        param_talentID='global_timecardEntryWIPSelectedTalent'
+        param_payPeriodID='global_timecardEntryWIPSelectedPayPeriodID'
+    />
+    <Data
+        name='timecardEntryWIPClients'
+        getData='ui.sp_OLClientsByPayPeriodIDActive'
+        param_payPeriodID='global_timecardEntryWIPSelectedPayPeriodID2'
+    />
+    <Data
+        name='timecardEntryWIPSelectedClient'
+        defaultValue='static_null'
+    />
+    <Data
+        name='timecardEntryWIPJobOrders'
+        getData='ui.sp_OLJobOrdersByPayPeriodIDActive'
+        param_payPeriodID='global_timecardEntryWIPSelectedPayPeriodID2'
+        param_BranchClientID='global_timecardEntryWIPSelectedClient'
+    />
+    <Data
+        name='timecardEntryWIPSelectedJobOrder'
+        defaultValue='static_null'
+    />
+
+    <Subscribe
+        path='timecardEntryWIPSelectedPayPeriodID2'
+        handler='updateClientList'
+    />
+    <Flow key='updateClientList'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='ui.sp_OLClientsByPayPeriodIDActive'
+            param_payPeriodID='global_timecardEntryWIPSelectedPayPeriodID2'
+        >
+            <SetData
+                name='global_timecardEntryWIPClients' 
+                data='results'
+            />
+        </Query>
+        <Refresh
+            data='timecardEntryWIP2'
+        />
+    </Flow>
+
+    <Subscribe
+        path='timecardEntryWIPSelectedClient'
+        handler='updateJobOrdersList'
+    />
+    <Flow key='updateJobOrdersList'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='ui.sp_OLJobOrdersByPayPeriodIDActive'
+            param_payPeriodID='global_timecardEntryWIPSelectedPayPeriodID2'
+            param_BranchClientID='global_timecardEntryWIPSelectedClient'
+        >
+            <SetData
+                name='global_timecardEntryWIPJobOrders' 
+                data='results'
+            />
+        </Query>
+        <Refresh
+            data='timecardEntryWIP2'
+        />
+    </Flow>
+    <!-- #endregion PAGE DATA -->
+
+    <!-- #region PAGE FLOWS -->
+
+    <!-- #endregion PAGE FLOWS -->
+
+    <!-- #region TABLE 1 FLOWS -->
+    <Flow key='addTime1'>
+        <Insert
+            name='global_timecardEntryWIP'
+            TalentID='flowArgs.TalentID'
+            AssignmentID='flowArgs.AssignmentID'
+            EmployeeTimeCardID='flowArgs.EmployeeTimeCardID'
+            editing='true'
+        />
+    </Flow>
+    <Flow key='timecardEntryWIPAddAssignmentOpen'>
+        <SetData
+            name='global_addAssignmentShow1'
+            data='true'
+        />
+    </Flow>
+    <Flow key='timecardEntryWIPAddAssignmentClose'>
+        <SetData
+            name='global_addAssignmentShow1'
+            data='false'
+        />
+    </Flow>
+    <Flow key='timecardEntryWIPAddAssignmentSubmit'>
+        <Confirm title='something'>
+            param_assignmentID={{timecardEntryWIPData.AssignmentID}}
+            param_payType={{timecardEntryWIPData.TimeTypeID}}
+            param_clockInDT={{timecardEntryWIPData.StartTime}}
+            param_clockOutDT={{timecardEntryWIPData.EndTime}}
+        </Confirm>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='dbo.sp_EmployeeTimeClockDetailUpsertManual'
+            param_assignmentID='global_timecardEntryWIPData.AssignmentID'
+            param_payType='global_timecardEntryWIPData.TimeTypeID'
+            param_clockInDT='global_timecardEntryWIPData.StartTime'
+            param_clockOutDT='global_timecardEntryWIPData.EndTime'
+        />
+        <SetData
+            name='global_addAssignmentShow1'
+            data='false'
+        />
+        <Refresh
+            data='timecardEntryWIP'
+        />
+    </Flow>
+    <Flow key='enableRowEdit1'>
+        <SetData
+            name='global_timecardEntryWIP[flowArgs.index]'
+            editing='true'
+        />
+    </Flow>
+    <Flow key='cancelRowEdit1'>
+        <SetData
+            name='global_timecardEntryWIP[flowArgs.index]'
+            editing='false'
+        />
+    </Flow>
+    <Flow key='applyRowEdit1'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='dbo.sp_EmployeeTimeClockDetailUpsertManual'
+            param_assignmentID='flowArgs.AssignmentID'
+            param_payType='flowArgs.PayTypeID'
+            param_clockInDT='flowArgs.DetailStartTime'
+            param_clockOutDT='flowArgs.DetailEndTime'
+            param_timeCardID='flowArgs.EmployeeTimeCardID'
+            param_shiftID='flowArgs.EmployeeTimeWorkedShiftID'
+            param_detailID='flowArgs.EmployeeTimeWorkedDetailsID'
+        />
+        <SetData
+            name='global_timecardEntryWIP[flowArgs.index]'
+            editing='false'
+        />
+        <Refresh
+            data='timecardEntryWIP'
+        />
+    </Flow>
+    <Flow key='deleteRow1'>
+        <SetData
+            name='global_timecardEntryWIP'
+            data='undefined'
+        />
+        <Refresh
+            name='timecardEntryWIP'
+        />
+    </Flow>
+    <!-- #endregion TABLE 1 FLOWS -->
+
+    <!-- #region TABLE 2 FLOWS -->
+    <Flow key='resetFilters'>
+        <SetData
+            name='global_timecardEntryWIPSelectedClient'
+            data='NULL'
+        />
+        <SetData
+            name='global_timecardEntryWIPSelectedJobOrder'
+            data='NULL'
+        />
+        <Refresh
+            data='timecardEntryWIP2'
+        />
+    </Flow>
+    
+    <Flow key='enterBulkTime'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='dbo.sp_EmployeeTimeCardAggregateBulkUpsert'
+            param_payPeriodID='global_timecardEntryWIPSelectedPayPeriodID2'
+            param_tableJSON='global_timecardEntryWIP2:stringify'
+        />
+        <Refresh
+            data='timecardEntryWIP2'
+        />
+    </Flow>
+    <Flow key='deleteRow2'>
+        <SetData
+            name='global_timecardEntryWIP2'
+            data='undefined'
+        />
+        <Refresh
+            data='timecardEntryWIP2'
+        />
+    </Flow>
+    <!-- #endregion TABLE 2 FLOWS -->
+
+    <!-- #region MODALS -->
+    <Dialog
+        useData='addAssignmentShow1'
+        hideCloseButton
+        height='300'
+        width='700'
+    >
+        <Typography variant='h3'>
+            Select An Assignment
+        </Typography>
+        <Spacing space='2'/>
+        <TextField
+            select
+            autoComplete='off'
+            options='global_timecardEntryWIPAssignments'
+            value='global_timecardEntryWIPData.AssignmentID'
+            fullWidth
+        />
+        <Spacing space='2'/>
+        <Typography variant='h3'>
+            Create the first time entry
+        </Typography>
+        <Spacing space='2'/>
+        <GridContainer>
+            <TextField
+                select
+                options='global_timecardEntryWIPTimeTypes'
+                value='global_timecardEntryWIPData.TimeTypeID'
+                fullWidth
+                xs='4'
+                disabled
+            />
+            <TextField
+                value='global_timecardEntryWIPData.StartTime'
+                type='datetime-local'
+                fullWidth
+                xs='4'
+            />
+            <TextField
+                value='global_timecardEntryWIPData.EndTime'
+                type='datetime-local'
+                fullWidth
+                xs='4'
+            />
+        </GridContainer>
+        <Spacing space='2'/>
+        <Box
+            display='flex'
+            justifyContent='space-between'
+            xs='12'
+        >
+            <Button
+                label='Cancel'
+                href='flow:timecardEntryWIPAddAssignmentClose'
+                variant='secondary'
+            />
+            <Button
+                label='Add'
+                href='flow:timecardEntryWIPAddAssignmentSubmit'
+                variant='primary'
+            />
+        </Box>
+    </Dialog>
+    <!-- #endregion MODALS -->
+    
+    <Data
+        name='disableTimeTypeInput'
+        defaultValue='true'
+    />
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Timecard Entry WIP'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            > Friendly Reminder: this page requires dev DB, it's not available with local DB
+            > Also, the add table row function needs a Cancel feature
+            > Only have 1 col per pay rate and bill rate. Which one should I show?
+        </Markdown>
+        <Spacing space='2'/>
+        <!-- #region TABLE1 -->
+        <Typography variant='h2'>
+            Talent Profile View
+        </Typography>
+        <Spacing space='2'/>
+        <GridContainer>
+            <TextField
+                select
+                label='Pay Period'
+                options='global_timecardEntryWIPPayPeriods'
+                value='global_timecardEntryWIPSelectedPayPeriodID'
+                fullWidth
+                xs='4'
+            />
+            <TextField
+                select
+                label='Talent'
+                options='global_timecardEntryWIPTalent'
+                value='global_timecardEntryWIPSelectedTalent'
+                fullWidth
+                xs='4'
+            />
+        </GridContainer>
+        <NestedTable source='timecardEntryWIP' collapsible>
+            <Nest>
+                <Level param='TalentID'>
+                    <Header>
+                        <Column justifyContent='start' span='auto'>
+                            <IconButton
+                                disabled
+                                icon='PersonRounded'
+                                color='grey700'
+                            />
+                            <Typography>
+                                {{row_TalentName}}
+                            </Typography>
+                        </Column>
+                        <Column justifyContent='end'>
+                            <Typography>
+                                {{row_totals.WorkedHrs:fixed2}}
+                            </Typography>
+                        </Column>
+                        <Column />
+                    </Header>
+                    <Addon>
+                        <Column span='auto' align='center'>
+                            <Link
+                                href='flow:timecardEntryWIPAddAssignmentOpen'
+                                textContent='ADD AN ASSIGNMENT'
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+                <Level param='AssignmentID'>
+                    <Header>
+                        <Column justifyContent='start' span='auto'>
+                            <IconButton
+                                icon='WorkRounded'
+                                color='grey700'
+                                disabled
+                            />
+                            <Typography paddingRight='3'>{{row_AssignmentName}}</Typography>
+                            <Typography paddingRight='3'>{{row_JobOrderName}}</Typography>
+                            <Typography>{{row_AssignmentClientName}}</Typography>
+                        </Column>
+                        <Column justifyContent='end'>
+                            <Typography>{{row_totals.WorkedHrs:fixed2}}</Typography>
+                        </Column>
+                        <Column />
+                    </Header>
+                    <Addon>
+                        <Column span='auto' align='center'>
+                            <Link
+                                href='flow:addTime1'
+                                textContent='ADD TIME'
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+            </Nest>
+            <Column
+                justifyContent='end'
+                width='max-content'
+            >
+                <Case when='row_PayrollInProgress IS Go'>
+                    <Chip
+                        label='PAYROLL NOT STARTED'
+                        icon='Check'
+                        backgroundColor='green800'
+                    />
+                </Case>
+                <Case when='row_PayrollInProgress IS PayrollInProgress'>
+                    <Chip
+                        label='PAYROLL IN PROGRESS'
+                        icon='PriceCheck'
+                        backgroundColor='amber800'
+                    />
+                </Case>
+            </Column>
+            <Column
+                label='Time Type'
+                width='max-content'
+            >
+                <TextField
+                    sx:display='WHEN row_editing IS undefined THEN block ELSE none'
+                    select
+                    options='global_timecardEntryWIPTimeTypes'
+                    value='row_PayTypeID'
+                    disabled
+                />
+                <TextField
+                    sx:display='WHEN row_editing IS true THEN block ELSE none'
+                    select
+                    options='global_timecardEntryWIPTimeTypes'
+                    value='row_PayTypeID'
+                />
+            </Column>
+            <Column
+                label='Start Time'
+                width='max-content'
+                justifyContent='center'
+            >
+                <Typography
+                    display='WHEN row_editing IS undefined THEN block ELSE none'
+                >
+                    {{row_DetailStartTime:datetime}}
+                </Typography>
+                <TextField
+                    sx:display='WHEN row_editing IS true THEN block ELSE none'
+                    size='small'
+                    value='row_DetailStartTime'
+                    type='datetime-local'
+                />
+            </Column>
+            <Column justifyContent='center' label='dash' labelHidden width='min-content'>
+                <Typography>
+                    -
+                </Typography>
+            </Column>
+            <Column
+                label='End Time'
+                width='max-content'
+                justifyContent='center'
+            >
+                <Typography
+                    display='WHEN row_editing IS undefined THEN block ELSE none'
+                >
+                    {{row_DetailEndTime:datetime}}
+                </Typography>
+                <TextField
+                    sx:display='WHEN row_editing IS true THEN block ELSE none'
+                    size='small'
+                    value='row_DetailEndTime'
+                    type='datetime-local'
+                />
+            </Column>
+            <Column
+                label='Hours'
+                justifyContent='end'
+                total='WorkedHrs'
+            >
+                <Typography>
+                    {{row_WorkedHrs:fixed2}}
+                </Typography>
+            </Column>
+            <Column justifyContent='end' width='min-content' paddingRight='0'>
+                <IconButton
+                    sx:display="WHEN row_editing IS undefined THEN inline-flex ELSE none"
+                    icon='Edit'
+                    color='grey700'
+                    href='flow:enableRowEdit1'
+                />
+                <IconButton
+                    sx:display="WHEN row_editing IS undefined THEN inline-flex ELSE none"
+                    icon='Delete'
+                    color='grey700'
+                    href='flow:deleteRow1'
+                />
+                <IconButton
+                    sx:display="WHEN row_editing IS true THEN inline-flex ELSE none"
+                    icon='Cancel'
+                    color='grey700'
+                    href='flow:cancelRowEdit1'
+                />
+                <IconButton
+                    sx:display="WHEN row_editing IS true THEN inline-flex ELSE none"
+                    icon='Save'
+                    color='grey700'
+                    href='flow:applyRowEdit1'
+                />
+            </Column>
+            <Column width='min-content'/>
+        </NestedTable>
+        <!-- #endregion TABLE1 -->
+        <Spacing space='4'/>
+        <!-- #region TABLE2 -->
+        <Typography variant='h2'>
+            Bulk View
+        </Typography>
+        <Spacing space='2'/>
+        <GridContainer>
+            <TextField
+                select
+                label='Pay Period'
+                options='global_timecardEntryWIPPayPeriods'
+                value='global_timecardEntryWIPSelectedPayPeriodID2'
+                fullWidth
+                xs='3'
+            />
+            <TextField
+                select
+                label='Client'
+                options='global_timecardEntryWIPClients'
+                value='global_timecardEntryWIPSelectedClient'
+                fullWidth
+                xs='3'
+            />
+            <TextField
+                select
+                label='Job Order'
+                options='global_timecardEntryWIPJobOrders'
+                value='global_timecardEntryWIPSelectedJobOrder'
+                fullWidth
+                xs='3'
+            />
+            <Button
+                label='Reset Filters'
+                variant='primary'
+                href='flow:resetFilters'
+                xs='3'
+            />
+        </GridContainer>
+        <Spacing space='3'/>
+        <NestedTable source='timecardEntryWIP2' collapsible='false'>
+            <Column
+                label='Client'
+                width='max-content'
+            >
+                <Typography>
+                    {{row_BranchClientName}}
+                </Typography>
+            </Column>
+            <Column
+                label='Job Order'
+                width='max-content'
+            >
+                <Typography>
+                    {{row_JobOrderName}}
+                </Typography>
+            </Column>
+            <Column
+                label='Assignment'
+                width='max-content'
+            >
+                <Typography>
+                    {{row_AssignmentName}}
+                </Typography>
+            </Column>
+            <Column
+                label='Talent'
+            >
+                <Typography>
+                    {{row_EmployeeName}}
+                </Typography>
+            </Column>
+            <Column 
+                label='Pay Rate'
+                width='max-content'
+            >
+                <Typography>
+                    {{row_PayRateReg:fixed2}}
+                </Typography>
+            </Column>
+            <Column 
+                label='Bill Rate'
+                width='max-content'
+            >
+                <Typography>
+                    {{row_BillRateReg:fixed2}}
+                </Typography>
+            </Column>
+            <Column
+                label='Scheduled Hrs'
+                width='min-content'
+            >
+                <Typography>
+                    {{row_TotalScheduledTime:fixed2}}
+                </Typography>
+            </Column>
+            <Column 
+                label='Regular Time'
+                width='min-content'
+            >
+                <Case when='row_Attention IS Alert'>
+                    <TextField
+                        size="small"
+                        type='number'
+                        value='row_HoursReg:fixed2'
+                        color='warning'
+                        focused
+                    />
+                </Case>
+                <Case when='row_Attention IS NoAlert'>
+                    <TextField
+                        size="small"
+                        type='number'
+                        value='row_HoursReg:fixed2'
+                    />
+                </Case>
+            </Column>
+            <Column 
+                label='Overtime'
+                width='min-content' 
+            >
+                <TextField
+                    size="small"
+                    type='number'
+                    value='row_HoursOT:fixed2'
+                />
+            </Column>
+            <Column 
+                label='Doubletime'
+                width='min-content'
+            >
+                <TextField
+                    size="small"
+                    type='number'
+                    value='row_HoursDT:fixed2'
+                />
+            </Column>
+            <Column 
+                label='action' labelHidden width='min-content' justifyContent='end'
+            >
+                <IconButton
+                    icon='Delete'
+                    color='grey700'
+                    href='flow:'
+                />
+            </Column>
+        </NestedTable>
+        <Box
+            display='flex'
+            justifyContent='flex-end'
+        >
+            <Button
+                label='Submit Time'
+                variant='primary'
+                href='flow:enterBulkTime'
+            />
+        </Box>
+        <!-- #endregion TABLE2 -->
+    </PageContent>
+</Page>

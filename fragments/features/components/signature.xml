@@ -1,0 +1,94 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data 
+        name="Signature"
+        getData="signatureExample"
+        defaultValue=""
+    />
+
+    <Data 
+        name="SignatureWithText"
+        defaultValue=""
+    />
+    <Data 
+        name="signatureText"
+        defaultValue="Signy M. Signature"
+    />
+
+    <Flow debug key="updateSignature">
+        <SetData name="global_Signature.dataUri" data="flowArgs.signature" />
+        <!-- TODO: save to DB -->
+    </Flow>
+
+    <Flow key="updateSignatureWithText">
+        <SetData name="global_SignatureWithText.dataUri" data="flowArgs.signature" />
+        <!-- TODO: save to DB -->
+    </Flow>
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Components / Signature'>
+        <Box className="flex-row justify-end items-center">
+            <Button
+                href="/features"
+                label="Back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            ## Basic Signature
+            ```xml
+                <Signature
+                    label='Signature'
+                    border="1px solid #ccc"
+                    value='global_Signature.dataUri'
+                    onEnd="runFlow_updateSignature"
+                    onClear="runFlow_updateSignature"
+                />
+            ```
+        </Markdown>
+
+        <Signature
+            label='Signature'
+            border="1px solid #ccc"
+            value='global_Signature.dataUri'
+            onEnd="runFlow_updateSignature"
+            onClear="runFlow_updateSignature"
+        />
+
+        <Markdown>
+            ## Type Your Signature
+            ```xml
+                <TextField
+                    label='Signature Text'
+                    value='global_signatureText'
+                    fullWidth
+                />
+                <Signature
+                    label='Signature'
+                    border="1px solid #ccc"
+                    onEnd="runFlow_updateSignatureWithText"
+                    fromText="global_signatureText"
+                />
+            ```
+        </Markdown>
+
+        <TextField
+            label='Signature Text'
+            value='global_signatureText'
+            sx:mb="1"
+            fullWidth
+        />
+        <Signature
+            label=''
+            border="1px solid #ccc"
+            onEnd="runFlow_updateSignatureWithText"
+            fromText="global_signatureText"
+        />
+
+        <Box for="spacing" mb="300px" />
+    </PageContent>
+</Page>

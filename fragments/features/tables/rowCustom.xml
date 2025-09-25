@@ -1,0 +1,126 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='tableData'
+        getData='featuresTablesAddons'
+    />
+
+    <Data
+        name='totalsData'
+        getData='featuresTablesAddonsTotals'
+    />
+
+    <!-- FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Tables / Row Customization">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            Row Customizations:
+            - backgroundColor
+            - color (text color)
+            - padding
+            - borderRadius
+            - TBD
+
+            Other CSS: TBD (roughly any valid CSS works in theory)
+            Nesting Support: TBD/WIP
+
+            These customizations are only applied on rows where active prop results in true.
+            ```xml
+                <NestedTable>
+                    <!-- other table config -->
+                    <RowModifier
+                        active="WHEN row_myID IS 1"
+                        color="#ff0000"
+                        backgroundColor="#ffaaaa"
+                        borderRadius="0px"
+                    />
+                    <RowModifier
+                        active="WHEN row_myID IS 2"
+                        color="#ff710c"
+                        backgroundColor="#ffdea2"
+                        borderRadius="0px"
+                    />
+                    <RowModifier
+                        active="WHEN row_myID IS 3"
+                        color="darkgreen"
+                        backgroundColor="#b5d6b1"
+                        borderRadius="0px"
+                    />
+                </NestedTable>
+            ```
+        </Markdown>
+        <NestedTable
+            source='tableData'
+            collapsible="false"
+            indented="false"
+        >
+            <Column
+                label='ID'
+                width="min-content"
+            >
+                <Typography>{{row_myID}}</Typography>
+            </Column>
+            <Column
+                label='First'
+                width='min-content'
+            >
+                <Typography>{{row_firstName}}</Typography>
+            </Column>
+            <Column label='Last'>
+                <Typography>{{row_lastName}}</Typography>
+            </Column>
+            <Column
+                label='Hours'
+                width='min-content'
+                align="right"
+            >
+                <Typography>{{row_hours:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Dollars'
+                width='min-content'
+                align="right"
+                background=""
+                backgroundHeader=""
+            >
+                <Typography>{{row_dollars:fixed2}}</Typography>
+            </Column>
+
+            <RowModifier
+                active="WHEN row_myID IS 1"
+                color="#ff0000"
+                backgroundColor="#ffaaaa"
+                borderRadius="0px"
+            />
+            <RowModifier
+                active="WHEN row_myID IS 2"
+                color="#ff710c"
+                backgroundColor="#ffdea2"
+                borderRadius="0px"
+            />
+            <RowModifier
+                active="WHEN row_myID IS 3"
+                color="darkgreen"
+                backgroundColor="#b5d6b1"
+                borderRadius="0px"
+            />
+        </NestedTable>
+        <Box _for="pageOverScroll" height="300px" />
+    </PageContent>
+</Page>

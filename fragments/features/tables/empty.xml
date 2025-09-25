@@ -1,0 +1,74 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data
+        name='emptyResults'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresSlowEmpty'
+        param_delayMs="static_10000"
+    />
+
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key='goBack'>
+        <Navigate route='/features' />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Tables / Empty'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                flow="goBack"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            Here is an example of what tables look like when they have no data available to show.
+            Visible columns will show while loading and after when no results state is indicated.
+        </Markdown>
+        <CodeBlock>
+            <Data
+                name='emptyResults'
+                proc='ui.sp_GetResourceListViews'
+                procArg='featuresSlowEmpty'
+                param_delayMs="static_10000"
+            />
+            <NestedTable
+                source='emptyResults'
+                collapsible='false'
+            >
+                <Column label='Col01' />
+                <Column label='Col02' />
+                <Column label='Col03' />
+                <Column label='Col04' />
+                <Column label='Col05' />
+                <Column label='Col06' />
+                <Column label='Col07' labelHidden/>
+            </NestedTable>
+        </CodeBlock>
+
+        <Box _for="spacing" height="3em" />
+
+        <NestedTable
+            source='emptyResults'
+            collapsible='false'
+        >
+            <Column label='Col01' />
+            <Column label='Col02' />
+            <Column label='Col03' />
+            <Column label='Col04' />
+            <Column label='Col05' />
+            <Column label='Col06' />
+            <Column label='Col07' labelHidden/>
+        </NestedTable>
+    </PageContent>
+</Page>

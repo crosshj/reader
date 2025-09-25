@@ -1,0 +1,202 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='tableData'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableOrders'
+
+    />
+
+    <Data
+        name='totalsData'
+        getData='featuresTablesAddonsTotals'
+    />
+
+    <!-- FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Tables / Nest Headers">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Typography
+            variant="h3"
+            marginBottom="2"
+        >
+            Basic Code Example
+        </Typography>
+        <Box>
+            <CodeBlock marginBottom="4">
+                <NestedTable>
+                    <Nest>
+                        <Level
+                            param='ordersTenantBranchID.hidden'
+                        >
+                            <Header>
+                                <Column span="2">
+                                    <Typography>{{row_ordersBranchName}}</Typography>
+                                </Column>
+                                <!-- <Column /> -->
+                                <Column justifyContent="end">
+                                    <Typography>{{row_totals.ordersUnfilled}}</Typography>
+                                </Column>
+                                <Column justifyContent="end">
+                                    <Typography>{{row_totals.ordersTotal}}</Typography>
+                                </Column>
+                                <Column justifyContent="end">
+                                    <Typography>{{row_totals.ordersBillRate:fixed2}}</Typography>
+                                </Column>
+                                <Column justifyContent="end">
+                                    <Typography>{{row_totals.ordersMargin:fixed2}}</Typography>
+                                </Column>
+                                <Column justifyContent="end">
+                                    <Typography>{{row_totals.ordersPayRate:fixed2}}</Typography>
+                                </Column>
+                            </Header>
+                        </Level>
+
+                        <!-- other stuff -->
+                    </Nest>
+                </NestedTable>
+            </CodeBlock>
+        </Box>
+
+        <Typography
+            variant="h3"
+            marginBottom="2"
+        >
+            Live Example
+        </Typography>
+
+        <NestedTable
+            source="tableData"
+            collapsible="false"
+        >
+            <Nest>
+                <Level param='ordersTenantBranchID.hidden'>
+                    <Header>
+                        <Column span="2">
+                            <Typography>{{row_ordersBranchName}}</Typography>
+                        </Column>
+                        <!-- <Column /> -->
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersUnfilled}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersTotal}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersBillRate:fixed2}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersMargin:fixed2}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersPayRate:fixed2}}</Typography>
+                        </Column>
+                    </Header>
+                </Level>
+                <Level param='ordersOrderID.hidden'>
+                    <Header>
+                        <Column span="2">
+                            <Typography>{{row_ordersOrderName}}</Typography>
+                        </Column>
+                        <!-- <Column /> -->
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersUnfilled}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersTotal}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersBillRate:fixed2}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersMargin:fixed2}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersPayRate:fixed2}}</Typography>
+                        </Column>
+                    </Header>
+                </Level>
+                <Level param='ordersShiftID.hidden'>
+                    <Header>
+                        <Column span="2">
+                            <Typography>{{row_ordersShiftName}}</Typography>
+                        </Column>
+                        <!-- <Column /> -->
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersUnfilled}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersTotal}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersBillRate:fixed2}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersMargin:fixed2}}</Typography>
+                        </Column>
+                        <Column justifyContent="end">
+                            <Typography>{{row_totals.ordersPayRate:fixed2}}</Typography>
+                        </Column>
+                    </Header>
+                </Level>
+            </Nest>
+            
+            <Column class="indent"/>
+            <Column
+                key="ordersStartDate"
+                label="Start Date"
+                variant='date'
+            />
+            <!-- preferred method for totals -->
+            <Column
+                label='Unfilled'
+                justifyContent="end"
+                total="ordersUnfilled"
+            >
+                <Typography>{{row_ordersUnfilled}}</Typography>
+            </Column>
+            <!-- older, ugly method for totals -->
+            <!-- requires key, total collides with other table/totals? -->
+            <Column
+                key='ordersTotal'
+                label='Total'
+                justifyContent="end"
+                total
+            />
+            <Column
+                key="ordersBillRate"
+                label="Bill Rate"
+                justifyContent="end"
+                total
+            />
+            <Column
+                key="ordersMargin"
+                label="Margin"
+                justifyContent="end"
+                total
+            />
+            <Column
+                key="ordersPayRate"
+                label="Pay Rate"
+                justifyContent="end"
+                total
+            />
+            <Column class="actions"/>
+        </NestedTable>
+    </PageContent>
+</Page>

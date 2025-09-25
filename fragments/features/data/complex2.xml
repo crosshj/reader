@@ -1,0 +1,292 @@
+<Page>
+    <!-- #region Data -->
+    <Data
+        name='nestedLevels3'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableLevels3Complex2'
+    />
+
+    <Data name="optionsColor" defaultValue='[]' />
+    <Data name="optionsShape" defaultValue='[]' />
+    <Data name="optionsTexture" defaultValue='[]' />
+
+
+    <!-- #endregion Data -->
+
+    <!-- #region flows -->
+    <Flow key='addThirdLevelChild'>
+        <Insert
+            name="global_nestedLevels3"
+            firstLevelName="flowArgs.firstLevelName"
+            secondLevelName="flowArgs.secondLevelName"
+            thirdLevelName="flowArgs.thirdLevelName"
+            editing="true"
+        />
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresNestedTableLevels3Complex2Options"
+            param_color='global_nestedLevels3[flowArgs.index].color'
+            param_shape='global_nestedLevels3[flowArgs.index].shape'
+        >
+            <SetData name='global_optionsColor[flowArgs.index]' data='results.colors' />
+            <SetData name='global_optionsShape[flowArgs.index]' data='results.shapes' />
+            <SetData name='global_optionsTexture[flowArgs.index]' data='results.textures' />
+        </Query>
+    </Flow>
+    <Flow key='rowActionDelete'>
+        <Confirm title="Does This Make Sense?" alertText="Not Sure">
+            Does this action always make sense, ie. can you delete a nest?
+
+            Look at flowArgs in your dev console for more information!
+        </Confirm>
+    </Flow>
+    <Flow key='rowActionSubmit'>
+        <SetData
+            name="global_nestedLevels3[flowArgs.index]"
+            editing="false"
+        />
+    </Flow>
+
+    <Flow key='rowActionEdit'>
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresNestedTableLevels3Complex2Options"
+            param_color='global_nestedLevels3[flowArgs.index].color'
+            param_shape='global_nestedLevels3[flowArgs.index].shape'
+        >
+            <SetData name='global_optionsColor[flowArgs.index]' data='results.colors' />
+            <SetData name='global_optionsShape[flowArgs.index]' data='results.shapes' />
+            <SetData name='global_optionsTexture[flowArgs.index]' data='results.textures' />
+        </Query>
+        <SetData
+            name="global_nestedLevels3[flowArgs.index]"
+            editing="true"
+        />
+    </Flow>
+
+    <!-- when COLOR or SHAPE changes on a row item -->
+    <Subscribe
+        match="nestedLevels3[INDEX].color"
+        handler="updateColor"
+    />
+    <Flow key="updateColor">
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresNestedTableLevels3Complex2Options"
+            param_color='global_nestedLevels3[flowArgs.index].color'
+        >
+            <SetData name='global_optionsColor[flowArgs.index]' data='results.colors' />
+            <SetData name='global_optionsShape[flowArgs.index]' data='results.shapes' />
+            <SetData name='global_optionsTexture[flowArgs.index]' data='results.textures' />
+
+            <SetData name='global_nestedLevels3[flowArgs.index].shape' data="undefined" />
+            <SetData name='global_nestedLevels3[flowArgs.index].texture' data="undefined" />
+        </Query>
+    </Flow>
+
+    <Subscribe
+        match='nestedLevels3[INDEX].shape'
+        handler='updateShape'
+    />
+    <Flow key="updateShape">
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresNestedTableLevels3Complex2Options"
+            param_color='global_nestedLevels3[flowArgs.index].color'
+            param_shape='global_nestedLevels3[flowArgs.index].shape'
+        >
+            <SetData name='global_optionsColor[flowArgs.index]' data='results.colors' />
+            <SetData name='global_optionsShape[flowArgs.index]' data='results.shapes' />
+            <SetData name='global_optionsTexture[flowArgs.index]' data='results.textures' />
+
+            <SetData name='global_nestedLevels3[flowArgs.index].texture' data="undefined" />
+        </Query>
+    </Flow>
+
+
+
+    <!-- #endregion flows -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Data / Complex 2'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            This page is mostly the same as [complex1](/features/data/complex1), but focuses on dependent options lists in table rows.
+        </Markdown>
+
+        <NestedTable 
+            source="nestedLevels3"
+            collapsible="false"
+        >
+            <Nest>
+                <Level param='firstLevelName'>
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_firstLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_firstLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+                </Level>
+
+                <Level param='secondLevelName' collapsible="false">
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_secondLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_secondLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_firstLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+                </Level>
+
+                <Level param='thirdLevelName' collapsible="false">
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_thirdLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_thirdLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_secondLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_firstLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+                    <Addon>
+                        <Column span="auto" align="center">
+                            <Link
+                                href="flow:addThirdLevelChild"
+                                textContent="+ Third Level Child"
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+            </Nest>
+
+             <Column label='COLOR'>
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_color:capitalize}}
+                </Typography>
+                <TextField
+                    select
+                    size="small"
+                    autoComplete='off'
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    value="row_color"
+                    options="global_optionsColor[row_index]"
+                />
+            </Column>
+            <Column label='SHAPE'>
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_shape:capitalize}}
+                </Typography>
+                <TextField
+                    select
+                    size="small"
+                    autoComplete='off'
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    value="row_shape"
+                    options="global_optionsShape[row_index]"
+                />
+            </Column>
+            <Column label='TEXTURE'>
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_texture:capitalize}}
+                </Typography>
+                <TextField
+                    select
+                    size="small"
+                    autoComplete='off'
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    value="row_texture"
+                    options="global_optionsTexture[row_index]"
+                />
+            </Column>
+
+            <Column label="1st Level">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_firstLevelName}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    size="small"
+                    type="text"
+                    value="row_firstLevelName"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column width='min-content' paddingLeft="0" paddingRight="0">
+                <!-- Actions -->
+                <IconButton
+                    sx:display="WHEN row_editing IS undefined THEN inline-flex ELSE none"
+                    icon='Edit'
+                    color='grey700'
+                    href="flow:rowActionEdit"
+                />
+                <IconButton
+                    sx:display="WHEN row_editing IS true THEN inline-flex ELSE none"
+                    icon='Send'
+                    color='grey700'
+                    href="flow:rowActionSubmit"
+                />
+            </Column>
+            <Column width='min-content' >
+                <!-- Actions Spacer: because expander/contracter -->
+            </Column>
+
+        </NestedTable>
+
+        <Box _for="pageOverScroll" height="300px" />
+
+    </PageContent>
+</Page>

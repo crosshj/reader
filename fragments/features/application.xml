@@ -1,0 +1,76 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data
+        name='featuresApplicationGeneralAppDefInstanceID'
+        getData='dbo.sp_GeneralApplicationGetByBranchID'
+    />
+    <Data
+        name='featuresApplicationApplications'
+        getData='ui.sp_OLApplicationsAll'
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- #region PAGE FLOWS -->
+    <Flow key='createApplication'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='dbo.sp_TalentJobOrderApplicationCreate'
+            param_TalentID='global_featuresApplicationSelectedTalent'
+            param_JobOrderID='global_featuresApplicationSelectedJobOrder'
+        />
+    </Flow>
+    <!-- #endregion PAGE FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Application'>
+        <Tooltip label='Application description'/>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Spacing space='3'/>
+        <GridContainer>
+            <TextField
+                label='TalentID'
+                value='global_featuresApplicationSelectedTalent'
+                fullWidth
+                xs='5'
+            />
+            <TextField
+                label='JobOrderID'
+                value='global_featuresApplicationSelectedJobOrder'
+                fullWidth
+                xs='5'
+            />
+            <Button
+                label='Create Talent Application Instance'
+                variant='primary'
+                href='flow:createApplication'
+                xs='2'
+            />
+        </GridContainer>
+        <Spacing space='3'/>
+        <Button
+            label='Configure General Application'
+            variant='primary'
+            href='/ordersTempApplicationConfigure/{{global_featuresApplicationGeneralAppDefInstanceID.0.jobOrderID}}'
+        />
+        <Spacing space='3'/>
+        <GridContainer>
+            <TextField
+                select
+                label='Select an application'
+                options='global_featuresApplicationApplications'
+                value='global_featuresApplicationSelectedApplication'
+                fullWidth
+                xs='6'
+            />
+            <Button
+                label='Fill Out Selected Application'
+                variant='primary'
+                href='/ordersTempApplication/{{global_featuresApplicationSelectedApplication}}'
+                xs='2'
+            />
+        </GridContainer>
+    </PageContent>
+</Page>

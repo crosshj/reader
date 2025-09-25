@@ -1,0 +1,73 @@
+<Page key='childInputs'>
+    <!-- DATA -->
+    <Data
+        name='form1'
+        defaultValue='{"input1":"hey", "input2":"ho", "check1":true,"optionListSelectedValue":"none"}'
+    />
+    <Data
+        name='OptionListSource'
+        proc='ui.sp_GetOptionLists'
+        procArg='BranchPayPeriods'
+    />
+    
+    <!-- FLOWS -->
+    <Flow key='showData'>
+        <Confirm title='Show my data'>
+            input 1:{{form1.input1}}
+            input 2:{{form1.input2}}
+            check 1: {{form1.check1}}
+            option list 1: {{form1.optionListSelectedValue}}
+        </Confirm>
+    </Flow>
+    
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Forms / Inputs">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT-->
+    <PageContent>
+        <Alert>
+            TODO: this should be deprecated in favor of TextField
+        </Alert>
+        <Box sx="py:2">
+            <Input
+                label='Input 1'
+                useData='form1.input1'
+            />
+        </Box>
+        <Box sx="py:2">
+            <Input
+                label='Input 2'
+                useData='form1.input2'
+            />
+        </Box>
+        <Box sx="py:2">
+            <OptionList
+                label='Option List 1'
+                source='OptionListSource'
+                useData='form1.optionListSelectedValue'
+                grid='false'
+            />
+        </Box>
+        <Checkbox
+            label='Checkbox 1'
+            useData='form1.check1'
+        />
+
+        <Button
+            label='SHOW DATA'
+            flow='showData'
+        />
+    </PageContent>
+</Page>

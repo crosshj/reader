@@ -1,0 +1,70 @@
+<Page>
+
+    <!-- DATA -->
+    <Data
+        name="results"
+        defaultValue=""
+    />
+
+    <!-- FLOWS -->
+    <Flow key='executeQuery'>
+        <Query
+            proc="ui.sp_Upsert"
+            procArgs="featuresFlowsQueryStaticParamsData"
+            param_clientId='static_15'
+            out_results='results.message'
+        />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Flows / Query Static Params'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <CodeBlock>
+            <Flow key='executeQuery'>
+                <Query
+                    proc="ui.sp_Upsert"
+                    procArgs="featuresFlowsQueryStaticParamsData"
+                    param_clientId='static_15'
+                    out_results='results.message'
+                />
+            </Flow>
+        </CodeBlock>
+        <Box
+            sx="py:2"
+            display='flex'
+            flexDirection="column"
+            gap="2"
+        >
+            <Alert>
+                Will call query with static value, ie. clientId = 15.  Should see results which indicate this happened.
+            </Alert>
+            <Button
+                data-test-id='buttonExecuteQueryWithStaticParams'
+                label='Query with static params'
+                href='flow:executeQuery'
+            />
+        </Box>
+
+        <Typography
+            useData="results"
+            display="WHEN global_results THEN block ELSE none"
+        >
+            {{ global_results }}
+        </Typography>
+
+    </PageContent>
+</Page>

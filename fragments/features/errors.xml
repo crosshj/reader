@@ -1,0 +1,103 @@
+<Page key="featuresErrors">
+    <Data name="timeoutDelay" defaultValue="120000" />
+
+    <Data name="shouldTriggerTimeout" />
+    <Data
+        name="dataTimeout"
+        getData='errorsSlowEmpty'
+        param_delayMs="global_timeoutDelay"
+        param_shouldTriggerTimeout="global_shouldTriggerTimeout"
+    />
+
+    <Data name="shouldTriggerBadResults" />
+    <Data
+        name="dataBadResults"
+        getData='errorsBadResults'
+        param_shouldTriggerBadResults="global_shouldTriggerBadResults"
+    />
+
+    <Flow key='triggerTimeout'>
+        <Query
+            exec='errorsSlowEmpty'
+            param_delayMs="global_timeoutDelay"
+        />
+    </Flow>
+    <Flow key='triggerDataTimeout'>
+        <Case when='global_shouldTriggerTimeout IS static_bar'>
+            <LocalData name='trigger' data='static_foo' />
+        </Case>
+        <Case when='global_shouldTriggerTimeout IS static_foo'>
+            <LocalData name='trigger' data='static_bar' />
+        </Case>
+        <Case when='global_shouldTriggerTimeout IS undefined'>
+            <LocalData name='trigger' data='static_foo' />
+        </Case>
+        <SetData name="shouldTriggerTimeout" data="flowArgs_trigger"/>
+    </Flow>
+
+    <Flow key='triggerBadResults'>
+        <Query
+            exec='errorsBadResults'
+        />
+    </Flow>
+    <Flow key='triggerDataBadResults'>
+        <Case when='global_shouldTriggerBadResults IS static_bar'>
+            <LocalData name='trigger' data='static_foo' />
+        </Case>
+        <Case when='global_shouldTriggerBadResults IS static_foo'>
+            <LocalData name='trigger' data='static_bar' />
+        </Case>
+        <Case when='global_shouldTriggerBadResults IS undefined'>
+            <LocalData name='trigger' data='static_foo' />
+        </Case>
+        <SetData name="shouldTriggerBadResults" data="flowArgs_trigger"/>
+    </Flow>
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Errors'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            what if errors occur in the system?
+
+            For the tests below:
+
+            Flow triggers directly from Button.
+            Data triggers indirectly by toggling a dependent param.
+        </Markdown>
+
+        <Markdown>
+            ###### Timeout
+            results that take too long to return
+            these will most likely behave differently in local vs hosted.
+        </Markdown>
+        <Box className="flex-row" gap="1">
+            <TextField label="Timeout Delay (ms)" type="number" value="global_timeoutDelay" />
+            <Button label="Flow" href="flow:triggerTimeout"/>
+            <Button label="Data" href="flow:triggerDataTimeout"/>
+        </Box>
+
+        <Markdown>
+            ###### Bad results
+            results that break the graphql schema
+        </Markdown>
+        <Box className="flex-row" gap="1">
+            <Button label="Flow" href="flow:triggerBadResults"/>
+            <Button label="Data" href="flow:triggerDataBadResults"/>
+        </Box>
+    </PageContent>
+</Page>

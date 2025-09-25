@@ -1,0 +1,45 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='pathData'
+        route="/featuresDataPathBasedNext{/}?:routeParam?"
+    />
+
+    <!-- FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Data / Path-based (next page)">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features/data/pathBased"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <CodeBlock>
+            <Data
+                name='pathData'
+                route="/featuresDataPathBasedNext{/}?:routeParam?"
+            />
+        </CodeBlock>
+
+        <Typography
+            useData="pathData"
+            my="4"
+            whiteSpace="pre-wrap"
+        >
+            Everything worked fine if you see a number after routeParam below.
+            Verify that this value shows up whether your click to navigate or refresh the page.
+
+            routeParam = {{global_pathData.routeParam}}
+        </Typography>
+    </PageContent>
+</Page>

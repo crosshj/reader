@@ -1,0 +1,89 @@
+<Page>
+    <PageNavBar label='Files' />
+
+    <PageContent>
+        <Box
+            display="flex"
+            flexDirection="column"
+            gap="2"
+            sx:mb="200px"
+            sx:mt="1em"
+            sx:width="100%"
+            sx:maxWidth="1000px"
+            sx:mx="auto"
+        >
+            <Markdown>
+            Files are more than just attachments—they are the **persistent artifacts** of a project’s work, ideas, and decisions. This section serves as your centralized repository for everything from design assets to stakeholder sign-off docs.
+
+            ---
+
+            ### 📁 Why File Management Matters
+
+            - Keeps all contributors on the same page  
+            - Prevents version conflicts and outdated references  
+            - Reduces time lost to digging through chat threads or email chains  
+
+            Centralizing files avoids knowledge silos and provides a **shared source of truth**. When you use structured file storage, team members can quickly locate what they need and focus on what matters.
+
+            ---
+
+            ### 🧭 Organizing Your Files
+
+            A good file system starts with structure. Consider:
+
+            - **Naming conventions** (e.g., `2025-04-DesignSpecs-v1.2.pdf`)
+            - **Consistent folder hierarchy**
+            - Tags for priority, confidentiality, or lifecycle stage
+
+            Use folders to segment work:  
+            `/Designs`, `/Specs`, `/Contracts`, `/Deliverables`, `/Archive`
+
+            ---
+
+            ### 🔍 Search and Discovery
+
+            Even with structure, quick access matters. This page may eventually include:
+
+            - Keyword search
+            - File previews (images, docs)
+            - Sort by date, name, or uploader
+
+            These improvements make the file system feel *alive*—not static.
+
+            ---
+
+            ### ✅ Use Cases
+
+            **During active work:**
+
+            - Upload and share WIP docs  
+            - Exchange drafts with reviewers  
+            - Store shared templates
+
+            **After project delivery:**
+
+            - Archive assets for compliance  
+            - Retain documentation for knowledge transfer  
+            - Track what decisions were made and why
+
+            ---
+
+            ### 🔒 Permissions and Responsibility
+
+            Every file has a footprint—who uploaded it, when, and why.
+
+            - Enforce access control for sensitive files  
+            - Versioning support lets you recover from mistakes  
+            - Metadata (author, date, size, tags) adds clarity
+
+            ---
+
+            ### 🧠 Final Tip
+
+            Think of this page as the *memory* of your project. Use it well, and future contributors—even your future self—will thank you.
+            </Markdown>
+
+
+        </Box>
+    </PageContent>
+</Page>

@@ -1,0 +1,130 @@
+<Page>
+    <!-- #region Data -->
+    <Data
+        name='nestLevels4'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableLevels4'
+    />  
+    <!-- #endregion Data -->
+
+    <!-- #region Flows -->
+    <!-- #endregion Flows -->
+
+
+    <!-- #region Navigation -->
+    <PageNavBar label='Features / Tables / Nest Levels 4'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+    <!-- #endregion Navigation -->
+
+    <!-- #region Content -->
+    <PageContent>
+        <Markdown>
+            This table demonstrates the following:
+                - 4 Levels of nesting where the nesting parameter and visible value are different
+
+            ```xml
+            <NestedTable source="nestLevels4">
+                <Nest>
+                    <Level param='L1' />
+                    <Level param='L2' />
+                    <Level param='L3' />
+                    <Level param='L4' />
+                </Nest>
+                <!-- Columns... -->
+            </NestedTable>
+            ```
+
+            also introduced here
+            ```xml
+            <NestedTable source="nestLevels4" debug>
+                <!-- Nest Defintion ... -->
+                <Total field="alertBit" />
+                <Total field="alertBit2" />
+                <!-- Columns... -->
+            </NestedTable>
+            ```
+            use `debug` to troubleshoot nested table
+
+            use `<Total />` for totalling data without needing a `<Column key="totalProp" total />`
+
+            #### Example
+        </Markdown>
+
+        <NestedTable
+            source="nestLevels4"
+            collapsible="true"
+            debug="false"
+        >
+            <Nest>
+                <Level param='L1'>
+                    <Header>
+                        <Column>
+                            <Typography
+                                sx:color='DEBUG WHEN row_totals.alertBit IS NOT 0 THEN red.800'
+                            >
+                                {{row_L1}}
+                            </Typography>
+                        </Column>
+                    </Header>
+                </Level>
+                <Level param='L2' >
+                    <Header>
+                        <Column>
+                            <Typography
+                                sx:color='WHEN row_totals.alertBit IS NOT 0 THEN red.800'
+                            >
+                                {{row_L2}}
+                            </Typography>
+                        </Column>
+                    </Header>
+                </Level>
+                <Level param='L3'>
+                    <Header>
+                        <Column>
+                            <Typography
+                                sx:color='WHEN row_totals.alertBit IS NOT 0 THEN red.800'
+                            >
+                                {{row_L3}}
+                            </Typography>
+                        </Column>
+                    </Header>
+                </Level>
+                <Level param='L4' >
+                    <Header>
+                        <Column>
+                            <Typography
+                                sx:color='WHEN row_totals.alertBit IS NOT 0 THEN red.800'
+                            >
+                                {{row_L4}}
+                            </Typography>
+                        </Column>
+                    </Header>
+                </Level>
+            </Nest>
+
+            <Total field="alertBit" />
+            <Total field="alertBit2" />
+
+            <Column labelHidden >
+                <Typography
+                    sx:color='WHEN row_alertBit IS NOT 0 THEN red.800'
+                >
+                    {{row_inner}}
+                </Typography>
+            </Column>
+            <Column class="indent" total key="foo"/>
+        </NestedTable>
+    </PageContent>
+    <!-- #endregion Content -->
+</Page>

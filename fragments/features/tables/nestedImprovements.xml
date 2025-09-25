@@ -1,0 +1,38 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='nestedTableData'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTable'
+    />  
+    <Data
+        name='nestedTableStyles'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableMultiChipCol'
+    />  
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Tables / Nested Improvements'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT-->
+    <PageContent>
+
+    <!-- ??? what happened to this ??? -->
+
+    </PageContent>
+</Page>

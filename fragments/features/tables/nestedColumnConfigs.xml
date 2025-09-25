@@ -1,0 +1,158 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='nestedTableColumnConfig'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableOrders'
+    />  
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Tables / Nested Column Config'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box marginBottom="4">
+            <Typography whiteSpace="pre-wrap">
+                Different nest levels don't always show the same data in the same column.
+                Sometimes certain nest levels have columns with multiple components inside that we need to be able to handle.
+                This also means we need control over column span to keep everything lined up.
+
+                Unique labels are required, but they can be hidden.
+            </Typography>
+            <CodeBlock>
+                 <Column
+                    label='orderStatus'
+                    labelHidden
+                />
+            </CodeBlock>
+        </Box>
+
+
+        <NestedTable source="nestedTableColumnConfig">
+            <Nest>
+                <Level
+                    param='ordersTenantBranchID.hidden'
+                    name='ordersBranchName'
+                >
+                    <Link href="/branch/{{row_ordersTenantBranchID.hidden}}">
+                        {{ row_ordersBranchName }}
+                    </Link>
+                    <Typography mx="1">-</Typography>
+                    <Typography>{{row_ordersBranchStatus}}</Typography>
+                </Level>
+                <Level
+                    param='ordersOrderID.hidden'
+                    name='ordersOrderName'
+                >
+                    <Typography>
+                        {{row_ordersOrderName}} - {{row_ordersOrderStatus}}
+                    </Typography>
+                </Level>
+                <Level
+                    param='ordersShiftID.hidden'
+                    name='ordersShiftName'
+                >
+                    <Typography>
+                        {{row_ordersShiftName}} - {{row_ordersShiftStatus}}
+                    </Typography>
+                </Level>
+            </Nest>
+            <Column
+                key='ordersStatus'
+                variant="icon"
+                label='orderStatus'
+                labelHidden
+            >
+                <Case
+                    when='filled'
+                    icon='CheckCircle'
+                    color='green800'
+                />
+                <Case
+                    when='partiallyFilled'
+                    icon='Error'
+                    color='amber800'
+                />
+                <Case
+                    when='unfilled'
+                    icon='Cancel'
+                    color='red800'
+                />
+            </Column>
+            <Column
+                label='Name/Number'
+                key='orderAssignName'
+                variant='text'
+            />
+            <Column
+                label='Client Name'
+                variant='text'
+            >
+                <Case
+                    level='ordersOrderName'
+                    key='ordersClientName'
+                />
+            </Column>
+            <Column label='Unfilled'>
+                <Case
+                    level='ordersOrderName'
+                    key='ordersUnfilled'
+                />
+                <Case
+                    level='ordersShiftName'
+                    key='ordersUnfilled'
+                />
+            </Column>
+            <Column
+                key="ordersPayRate"
+                label="Pay Rate"
+                variant="decimal"
+                total="true"
+            />
+            <!-- This needs to handle having multiple children in a case that show up in one cell together, i.e. one column -->
+            <!-- This will mean that the case needs to specify the span -->
+            <Column variant='actions'>
+                <Case level='ordersOrderName'>
+                    <IconButton
+                        icon='OpenInNewRounded'
+                        color='grey700'
+                    />
+                </Case>
+                <Case level='ordersShiftName'>
+                    <IconButton
+                        icon='OpenInNewRounded'
+                        color='grey700'
+                    />
+                </Case>
+                <Case default='true'>
+                    <IconButton
+                        icon='OpenInNewRounded'
+                        color='grey700'
+                        useFlow=''
+                    />
+                    <IconButton
+                        icon='PersonAddAlt1'
+                        color='grey700'
+                        useFlow=''
+                    />
+                </Case>
+            </Column>
+        </NestedTable>
+    </PageContent>
+</Page>

@@ -1,0 +1,132 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='testjson'
+        defaultValue='{
+                            "standaloneVariable1": "6",
+                            "standaloneVariable2": "Franklestein",
+                            "arrayVariable": "Hi",
+                            "arrayObjectsVariable": "Ho",
+                            "arrayMixedVariable": "To work I go"
+                        }'
+    />
+
+    <Data
+        name='parseResults'
+        defaultValue='{ "standaloneVariable1": '' }'
+    />
+
+    <!-- FLOWS -->
+    <Flow key='parseJSON'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='dbo.sp_aaaTempJSONTest'
+            param_testjson='global_testjson:stringify'
+            out_parseResults.standaloneVariable1='results[0].standaloneVariable1'
+            out_parseResults.standaloneVariable2='results[0].standaloneVariable2'
+            out_parseResults.arrayVariable='results[0].arrayVariable'
+            out_parseResults.arrayObjectsVariable='results[0].arrayObjectsVariable'
+            out_parseResults.arrayMixedVariable='results[0].arrayMixedVariable'
+        />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='JSONify'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            ```xml
+                <!-- put `:stringify` after the param value -->
+                <Query
+                    proc='ui.sp_Upsert'
+                    procArgs='dbo.sp_aaaTempJSONTest'
+                    param_testjson='global_testjson:stringify'
+                    out_parseResults.standaloneVariable1='results[0].standaloneVariable1'
+                    out_parseResults.standaloneVariable2='results[0].standaloneVariable2'
+                    out_parseResults.arrayVariable='results[0].arrayVariable'
+                    out_parseResults.arrayObjectsVariable='results[0].arrayObjectsVariable'
+                    out_parseResults.arrayMixedVariable='results[0].arrayMixedVariable'
+                />
+            ```
+
+            This is what the DB call looks like...
+            
+            ```sql
+                EXEC dbo.sp_aaaTempJSONTest @branchID=1, @userID=null, @testjson
+            ```
+
+            This is the correct JSON that will definitely work on the DB.
+            
+            ```javascript
+                {
+                    standaloneVariable1: "6",
+                    standaloneVariable2: "Franklestein",
+                    arrayVariable: "Hi",
+                    arrayObjectsVariable: "Ho",
+                    arrayMixedVariable: "To work I go"
+                }
+            ```
+        </Markdown>
+
+        <Spacing space='2'/>
+        <Typography whiteSpace="pre-wrap" fontFamily="monospace">
+            Structure:
+            - You can leave out any section at the root level and it will just return NULL.
+            - Any section that is parsed as if it were just a single entity can accept anything that is passed because it is only parsed by the section header.
+            - If the parser is expecting an array, sending a single value will cause a JSON text is not properly formatted error.
+            - If items are going to be parsed with KEY, then they must be structured as an object, inside {} and including a KEY, not just a VALUE
+            - Arrays can be sent as a comma delimited list of values in quotes, as long as they
+
+            Formatting:
+            - Incorrectly placed commas, missing "", missing curly brackets, etc. will cause a JSON text is not properly formatted error
+            - 
+        </Typography>
+
+        <Spacing space='4'/>
+        <GridContainer>
+            <TextField
+                label='@testjson'
+                fullWidth
+                multiline
+                rows='100'
+                value = 'global_testjson'
+                xs='5'
+            />
+            <Button label='Execute Parser' flow='parseJSON' xs='2'/>
+            <GridContainer xs='5'>
+                <Typography xs='12'>
+                    Results:
+                </Typography>
+                <Typography useData='parseResults' xs='12'>
+                    {{global_parseResults.standaloneVariable1}}
+                </Typography>
+                <Typography useData='parseResults' xs='12'>
+                    {{global_parseResults.standaloneVariable2}}
+                </Typography>
+                <Typography useData='parseResults' xs='12'>
+                    {{global_parseResults.arrayVariable}}
+                </Typography>
+                <Typography useData='parseResults' xs='12'>
+                    {{global_parseResults.arrayObjectsVariable}}
+                </Typography>
+                <Typography useData='parseResults' xs='12'>
+                    {{global_parseResults.arrayMixedVariable}}
+                </Typography>
+            </GridContainer>
+        </GridContainer>
+        <Spacing space='5'/>
+    </PageContent>
+</Page>

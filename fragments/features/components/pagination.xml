@@ -1,0 +1,60 @@
+<Page key="featuresComponentsPagination">
+    <!-- #region PAGE DATA -->
+    <Data
+        name="pagesCount"
+        defaultValue='3'
+    />
+    <Data
+        name="currentPage"
+        defaultValue='2'
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key="changePage" debug>
+        <SetData
+            name="currentPage"
+            data="flowArgs.nextPage"
+        />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Pagination">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            ```xml
+                <Pagination
+                    count="global_pagesCount"
+                    page="global_currentPage"
+                    onChange='runFlow_changePage'
+                />
+            ```
+            ---
+            ## Example
+        </Markdown>
+
+        <Typography variant="h2" sx:mb="2em">
+            pages: {{global_pagesCount}}
+            current: {{global_currentPage}}
+        </Typography>
+        <Pagination
+            count="global_pagesCount"
+            page="global_currentPage"
+            onChange='runFlow_changePage'
+        />
+    </PageContent>
+</Page>

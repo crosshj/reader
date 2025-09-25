@@ -1,0 +1,206 @@
+<!--
+    assumes
+
+    global_referenceType: one of [Talent, Client, JobSite]
+    global_subjectID: one of [Talent id, Client id, JobSite id]
+-->
+<PageFragment>
+    <!-- #region PAGE DATA -->
+    <Data name="recordsListFragmentList" />
+    <Data name='recordsListFragmentSubjectID' />
+    <Data name='recordsListFragmentRefType' />
+    <Data name='recordsListFragmentFiltersRefType' />
+    <Data name='recordsListFragmentFiltersSubjectID' />
+    <Data
+        name='recordsListFragmentRefTypeList' 
+        getData=' ui.sp_OLRecordReferenceTypes'
+    />
+    <Data
+        name='recordsListFragmentSubjectIDList'
+        getData='ui.sp_OLRecordSubjectIDsByRefType'
+        param_refType='global_recordsListFragmentFiltersRefType'
+    />
+
+    <Data
+        name='recordsListFragmentCurrentPage'
+        defaultValue='1'
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- #region PAGE FLOWS -->
+    <Subscribe path='recordsListFragmentSubjectID' handler='recordsListFragmentGetRecords' />
+    <Subscribe path='recordsListFragmentRefType' handler='recordsListFragmentGetRecords' />
+    <Flow key='recordsListFragmentGetRecords'>
+        <Case when='global_getRecordsListFragmentData IS NOT 1'>
+            <BreakFlow />
+        </Case>
+        <Case when='global_recordsListFragmentSubjectID IS NOT -1'>
+            <Query
+                exec='rec.sp_RecordLogGetList'
+                param_subjectID='global_recordsListFragmentSubjectID'
+                param_referenceType='global_recordsListFragmentRefType'
+                param_pageNum='global_recordsListFragmentCurrentPage'
+                out_recordsListFragmentList="results"
+            />
+        </Case>
+        <Case when='global_recordsListFragmentSubjectID IS -1'>
+            <Query
+                exec='rec.sp_RecordLogGetList'
+                param_referenceType='global_recordsListFragmentRefType'
+                param_pageNum='global_recordsListFragmentCurrentPage'
+                out_recordsListFragmentList="results"
+            />
+        </Case>
+        <SetData
+            name='global_getRecordsListFragmentData'
+            data='static_0'
+        />
+    </Flow>
+
+    <Flow key='recordsListFragmentGetFilteredRecords'>
+        <SetData
+            name='global_recordsListFragmentCurrentPage'
+            data='flowArgs.page'
+        />
+        <Query
+            exec='rec.sp_RecordLogGetList'
+            param_referenceType='global_recordsListFragmentFiltersRefType'
+            param_subjectID='global_recordsListFragmentFiltersSubjectID'
+            param_pageNum='global_recordsListFragmentCurrentPage'
+            out_recordsListFragmentList="results"
+        />
+    </Flow>
+    <Flow key='recordsListFragmentClearFilters'>
+        <SetData
+            name='global_recordsListFragmentFiltersRefType'
+            data='static_null'
+        />
+        <SetData
+            name='global_recordsListFragmentFiltersSubjectID'
+            data='static_null'
+        />
+    </Flow>
+
+    <Flow key='recordsListFragmentChangePage'>
+        <SetData
+            name='global_recordsListFragmentCurrentPage'
+            data='flowArgs.nextPage'
+        />
+        <Query
+            exec='rec.sp_RecordLogGetList'
+            param_referenceType='global_recordsListFragmentFiltersRefType'
+            param_subjectID='global_recordsListFragmentFiltersSubjectID'
+            param_pageNum='global_recordsListFragmentCurrentPage'
+            out_recordsListFragmentList="results"
+        />
+    </Flow>
+    <!-- #endregion PAGE FLOWS -->
+
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box
+            display='flex'
+            justifyContent='start'
+            alignItems='center'
+            gap='1'
+        >
+            <TextField
+                select
+                label='Record Type'
+                options='global_recordsListFragmentRefTypeList'
+                value='global_recordsListFragmentFiltersRefType'
+                fullWidth
+            />
+            <Autocomplete
+                select
+                label='Subject ID'
+                options='global_recordsListFragmentSubjectIDList'
+                value='global_recordsListFragmentFiltersSubjectID'
+                fullWidth
+            />
+            <Button
+                label='Apply Filters'
+                variant='primary'
+                href='flow:recordsListFragmentGetFilteredRecords'
+                flowArgs:page='1'
+            />
+            <Button
+                label='Clear Filters'
+                variant='secondary'
+                href='flow:recordsListFragmentClearFilters,recordsListFragmentGetFilteredRecords'
+                flowArgs:page='1'
+            />
+        </Box>
+        <NestedTable
+            source='recordsListFragmentList'
+            collapsible='false'
+        >
+            <Column
+                label='Date'
+                width='min-content'
+            >
+                <Typography>{{row_createdDate:date}}</Typography>
+            </Column>
+            <Column
+                label='Name'
+                width='max-content'
+            >
+                <Typography>{{row_name}}</Typography>
+            </Column>
+            <Column
+                label='Type'
+                width='max-content'
+            >
+                <Typography>{{row_type}}</Typography>
+            </Column>
+            <Column
+                label='Content'
+                width='max-content'
+            >
+                <Typography>{{row_snippet}}</Typography>
+            </Column>
+            <Column
+                width='max-content'
+            >
+                <Typography
+                    sx:display='WHEN row_type IS Attachment AND row_DocID IS null THEN block ELSE none'
+                >
+                    No file attached.
+                </Typography>
+                <Link
+                    sx:display='WHEN row_type IS Attachment 
+                                    AND row_ReferenceType IS Talent
+                                    AND row_TalentDocID IS NOT null 
+                                    THEN block ELSE none'
+                    href='/documents/{{row_TalentDocName}}?docId={{row_TalentDocID}}&disposition=inline'
+                    target='_blank'
+                >
+                    {{row_TalentDocName}}
+                </Link>
+                <Link
+                    sx:display='WHEN row_type IS Attachment 
+                                    AND row_ReferenceType IS Clients
+                                    AND row_ClientDocID IS NOT null 
+                                    THEN block ELSE none'
+                    href='/documents/{{row_ClientDocName}}?docId={{row_ClientDocID}}&disposition=inline'
+                    target='_blank'
+                >
+                    {{row_ClientDocName}}
+                </Link>
+            </Column>
+            <Column justifyContent='end'>
+                <IconButton
+                    icon='OpenInNewRounded'
+                    color='grey700'
+                    href='flow:showRecordViewModal'
+                />
+            </Column>
+        </NestedTable>
+        <Pagination
+            count='global_recordsListFragmentList.0.maxPages'
+            page='global_recordsListFragmentCurrentPage'
+            onChange='runFlow_recordsListFragmentChangePage'
+        />
+    </PageContent>
+</PageFragment>

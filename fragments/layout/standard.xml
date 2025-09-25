@@ -1,0 +1,93 @@
+<Page>
+
+    <Data 
+        name="activePath"
+        defaultValue=""
+    />
+
+    <Data
+        name="pageContent"
+        defaultValue=""
+    />
+
+    <Data
+        name='pathData'
+        route="/_layout/:rest*"
+    />
+
+    <Subscribe
+        path='pathData'
+        handler='pathChange'
+    />
+    <Flow key="pathChange">
+        <!-- de-dupe path change events -->
+        <Case when='global_pathData.rest IS global_activePath'>
+            <BreakFlow />
+        </Case>
+        <SetData
+            name="activePath"
+            data="global_pathData.rest, static_dashboard"
+            debug
+        />
+        <SetData
+            name="pageContent"
+            data=""
+        />
+        <Query
+            exec='ui.sp_UIContextGetComponentsByUserID'
+            param_fragment='global_activePath'
+            out_pageContent='results'
+        />
+    </Flow>
+
+    <Box
+        sx:position="absolute"
+        sx:top="0"
+        sx:left="0"
+        sx:display="grid"
+        sx:gridTemplateColumns='auto 1fr'
+        sx:gridTemplateRows='auto 1fr'
+        sx:height='100vh'
+        sx:width='100vw'
+        className="standardLayoutContainer"
+    >
+        <Box
+            sx:background="red"
+            sx:gridColumn="1/span 2"
+            sx:height="0"
+        >
+        </Box>
+
+        <xi:include href="./menu.xml" />
+
+        <Box
+            sx:background="theme_palette.background.default"
+            sx:height="100%"
+            sx:width="100%"
+            sx:overflow="hidden"
+            sx:display="block"
+        >
+            <Box
+                sx:display="WHEN global_pageContent THEN none ELSE flex"
+                width="100%"
+                height="100%"
+                background="inherit"
+                alignItems="center"
+                justifyContent="center"
+            >
+                    <Box
+                        sx:width="55px"
+                        sx:height="55px"
+                        sx:backgroundImage='url(/loading.svg)'
+                        sx:backgroundSize='cover'
+                        sx:opacity="0.1"
+                    />
+            </Box>
+            <Fragment
+                contents="global_pageContent"
+                showLoading="false"
+                sx:height="300px"
+            />
+        </Box>
+    </Box>
+</Page>

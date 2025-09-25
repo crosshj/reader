@@ -1,0 +1,102 @@
+<Page>
+
+    <Data
+      name='eventsMockedMessage'
+      defaultValue='"{\"events\":[{\"data\":{\"firstName\":\"--\",\"id\":\"+16785495691\",\"lastName\":\"--\",\"messages\":105,\"type\":\"talent\"},\"id\":\"54019e5b-188d-4c14-a03f-898f98302496\",\"module\":\"MESSAGE\",\"timeCreated\":1706547737515,\"timeRead\":null,\"userId\":\"ct\"}]}"'
+    />
+    <Data
+      name='eventsMockedWorkflow'
+      defaultValue='"{\"events\":[{\"data\":{},\"id\":\"d8edfc2c-b2b6-4691-b10e-b36ea692016a\",\"module\":\"WORKFLOW\",\"timeCreated\":1706547737515,\"timeRead\":null,\"userId\":\"ct\"}]}"'
+    />
+    <Data
+      name='eventsMockedDummy'
+      defaultValue='"{\"events\":[{\"data\":{},\"id\":\"d2897bbc-2ee6-4d8c-aa98-32fa3a8078a7\",\"module\":\"DUMMY\",\"timeCreated\":1706547737515,\"timeRead\":null,\"userId\":\"ct\"}]}"'
+    />
+
+    <Trigger handler='confirmOfTypeMessage'  event:module='MESSAGE' />
+    <Trigger  handler='confirmOfTypeWorkflow' event:module='WORKFLOW' />
+
+
+    <!-- FLOWS -->
+    <Flow key='storeEventMESSAGE'>
+      <SetData name='_internal:events' data='global_eventsMockedMessage' />
+    </Flow>
+    <Flow key='storeEventWORKFLOW'>
+      <SetData name='_internal:events' data='global_eventsMockedWorkflow' />
+    </Flow>
+    <Flow key='storeEventDummy'>
+      <SetData name='_internal:events' data='global_eventsMockedDummy' />
+    </Flow>
+    
+    <Flow debug key='confirmOfTypeMessage'>
+      <Confirm title='event with module MESSAGE came in...'>
+        hey from message.
+      </Confirm>
+    </Flow>
+
+    <Flow debug key='confirmOfTypeWorkflow'>
+      <Confirm title='event with module WORKFLOW came in...'>
+        hey from workflow.
+      </Confirm>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Flows / Triggers">
+      <Box
+          display='flex'
+          justifyContent="flex-end"
+          alignItems="center"
+          gap="2"
+      >
+          <Button href="/features" label="back"/>
+      </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Typography variant="h2" whiteSpace="pre-wrap">
+          Events.
+        </Typography>
+
+        <Divider sx="my:4" />
+
+        <Stack>
+          <Button
+            href='flow:storeEventMESSAGE'
+          >
+            simmulate event of module MESSAGE
+          </Button>
+          <Button
+            href='flow:storeEventWORKFLOW'
+          >
+            Simmulate event of module WORKFLOW
+          </Button>
+          <Button
+            href='flow:storeEventDummy'
+          >
+            Simmulate a dummy event (should turn into notification)
+          </Button>
+        </Stack>
+        
+        <!-- <CodeBlock>
+          <Trigger handler='shouldBeCalledWhenOpening' />
+          <Trigger handler='shouldBeCalledWhenOpening2' />
+
+          <Flow key='shouldBeCalledWhenOpening'>   
+            <Confirm title='Should be called when opening'>
+              Hey! I was automatically called by the trigger.
+              
+              This is what you should use to query required data
+              or
+              show a popup when the page loads.
+            </Confirm>
+          </Flow>
+          <Flow key='shouldBeCalledWhenOpening2'>
+            <Confirm title='Should be called when opening'>
+              You can also use multiple triggers. This is another flow.
+            </Confirm>
+          </Flow>
+        </CodeBlock> -->
+
+    </PageContent>
+</Page>

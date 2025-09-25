@@ -1,0 +1,126 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='obscuredComponentsTableData'
+        proc='ui.sp_GetResourceListViews'
+        procArg='talentListView'
+    />
+    <Data
+        name='mySSN'
+        defaultValue='249234176'
+    />
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Obscured">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT-->
+    <PageContent>
+        <GridContainer>
+            <Input
+                label='SSN Obscured=true'
+                useData='mySSN'
+                obscured='true'
+            />
+            <Input
+                label='SSN Obscured=false'
+                useData='mySSN'
+                obscured='false'
+            />
+            <Input
+                label='SSN Obscured=last4'
+                useData='mySSN'
+                obscured='last4'
+            />
+        </GridContainer>
+        <Spacing space='2' />
+        <NestedTable source='obscuredComponentsTableData'>
+            <Column
+                key="status"
+                label="Status"
+                variant="pill"
+            >
+                <Case
+                    when="Active"
+                    icon="check_circle"
+                    color="green800"
+                />
+                <Case
+                    when="Pre-Hire"
+                    icon="add_circle"
+                    color="lightGreen600"
+                />
+                <Case
+                    when="Signed"
+                    icon="create"
+                    color="indigo900"
+                />
+                <Case
+                    when="In-Active"
+                    icon="circle"
+                    color="amber800"
+                />
+                <Case
+                    when="DNU"
+                    icon="cancel"
+                    color="red800"
+                />
+                <Case
+                    when="???"
+                    icon="help"
+                    color="#777"
+                />
+            </Column>
+            <Column
+                key="firstName"
+                label="First Name"
+            />
+            <Column
+                key="lastName"
+                label="Last Name"
+            />
+            <Column
+                key="lastDatePaid"
+                label="Last Date Paid"
+                variant='date'
+            />
+            <Column
+                key="gender"
+                label="Gender"
+                obscured='true'
+            />
+            <Column
+                key="language"
+                label="Language"
+            />
+            <Column
+                key="recruiter"
+                label="Recruiter"
+            />
+            <Column
+                key="phoneNumber"
+                label="Phone Number"
+                obscured='last4'
+            />
+            <Column
+                key="emailAddress"
+                label="Email Address"
+                obscured='false'
+            />
+        </NestedTable>
+    </PageContent>
+</Page>

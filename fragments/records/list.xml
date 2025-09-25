@@ -1,0 +1,71 @@
+<Page key='recordsList'>
+    <Data
+        name='getRecordsListFragmentData'
+        defaultValue='0'
+    />
+
+    <Trigger handler='recordsListLoad' />
+    <Flow key='recordsListLoad'>
+        <SetData
+            name='global_recordsListPathData'
+            route='/recordsList{/}?:subjectID{/}?:referenceType?'
+        />
+        <SetData
+            name='global_recordsListFragmentRefType'
+            data='global_recordsListPathData.referenceType'
+        />
+        <SetData
+            name='global_recordsListFragmentFiltersRefType'
+            data='global_recordsListPathData.referenceType'
+        />
+        <SetData
+            name='global_recordsListFragmentSubjectID'
+            data='global_recordsListPathData.subjectID'
+        />
+        <Case when='global_recordsListPathData.subjectID IS NOT -1'>
+            <SetData
+                name='global_recordsListFragmentFiltersSubjectID'
+                data='global_recordsListPathData.subjectID'
+            />
+        </Case>
+        <Case when='global_recordsListPathData.subjectID IS -1'>
+            <SetData
+                name='global_recordsListFragmentFiltersSubjectID'
+                data='static_null'
+            />
+        </Case>
+        <SetData
+            name='global_getRecordsListFragmentData'
+            data='static_1'
+        />
+        <SetData
+            name='global_recordsListFragmentCurrentPage'
+            data='static_1'
+        />
+    </Flow>
+
+    <PageNavBar>
+        <Typography
+            variant="h2"
+            textContent="Records"
+        />
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="flow:showRecordAddModal"
+                label="Create New Record"
+                flowArgs:subjectID='global_recordsListFragmentSubjectID'
+                flowArgs:referenceType='global_recordsListFragmentRefType'
+                flowArgs:calledFromSidebar='static_0'
+            />
+        </Box>
+    </PageNavBar>
+
+    <xi:include href="../records/createFragment.xml"/>
+    <xi:include href="../records/viewFragment.xml"/>
+    <xi:include href="../records/listFragment.xml"/>
+</Page>

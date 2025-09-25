@@ -1,0 +1,621 @@
+<Page>
+    <!-- #region Data -->
+    <Data
+        name='nestedLevels3'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableLevels3Complex'
+    />
+
+    <!-- #endregion Data -->
+
+    <!-- #region flows -->
+    <Flow key='addFirstLevel'>
+        <Confirm title="addFirstLevel">
+            Add a new row to the table (no row-associated info is relevant)!
+            But... feel free to look in your dev console!
+
+            BONUS: this flow will also set table to loading state if you press Yes.
+        </Confirm>
+        <SetData
+            name="global_nestedLevels3"
+            data="undefined"
+        />
+    </Flow>
+    <Flow key='addFirstLevelChild'>
+        <Confirm title="addFirstLevelChild" alertText="Okay">
+            Add a new row at {{flowArgs.firstLevelName}}!
+
+            Look at flowArgs in your dev console for more information!
+        </Confirm>
+    </Flow>
+    <Flow key='addSecondLevelChild'>
+        <Confirm title="addSecondLevelChild" alertText="Okay">
+            Add a new row at {{flowArgs.secondLevelName}}!
+
+            Look at flowArgs in your dev console for more information!
+        </Confirm>
+    </Flow>
+    <Flow key='addThirdLevelChild'>
+        <Insert
+            name="global_nestedLevels3"
+            firstLevelName="flowArgs.firstLevelName"
+            secondLevelName="flowArgs.secondLevelName"
+            thirdLevelName="flowArgs.thirdLevelName"
+            editing="true"
+        />
+    </Flow>
+    <Flow key='rowActionDelete'>
+        <Confirm title="Does This Make Sense?" alertText="Not Sure">
+            Does this action always make sense, ie. can you delete a nest?
+
+            Look at flowArgs in your dev console for more information!
+        </Confirm>
+    </Flow>
+    <Flow key='rowActionEdit'>
+        <SetData
+            name="global_nestedLevels3[flowArgs.index]"
+            editing="true"
+        />
+    </Flow>
+    <Flow key='rowActionSubmit'>
+        <SetData
+            name="global_nestedLevels3[flowArgs.index]"
+            editing="false"
+        />
+    </Flow>
+
+    <!-- #endregion flows -->
+
+
+        <!-- #region SHIFT DATA -->
+        <Data
+            name='jobOrdersChildCreateShifts'
+            getData='ui.sp_RLVBranchJobOrderShiftScheduleGetByJobOrderID'
+            param_jobOrderID='static_1061'
+            param_sendEmptyRow='static_1'
+        />
+        <Data
+            name='jobOrdersChildCreateBranchClientShifts'
+            getData='ui.sp_OLBranchClientShiftsByBranchClientID'
+            param_BranchClientID='static_15'
+        />
+        <Data
+            name='jobOrdersChildCreateShiftByShiftDef'
+            getData='ui.sp_RLVBranchClientShiftDefinitionByShiftDefID'
+            param_shiftDefID='global_addShift.shiftDefID'
+        />
+        <Data name="jobOrdersChildCreateSchedule"
+            defaultValue='{"Sunday":false,"Monday":false,"Tuesday":false,"Wednesday":false,"Thursday":false,"Friday":false,"Saturday":false}'
+        />
+        <Data
+            name='jobOrdersChildCreate'
+            defaultValue="{'numSlots':''}"
+        />
+        <!-- #endregion SHIFT DATA -->
+        <!-- #region SHIFT FLOWS -->
+        <Flow key='addShift'>
+            <Insert
+                name="global_jobOrdersChildCreateShifts"
+                jobOrderID='static_1061'
+                editing="true"
+            />
+        </Flow>
+        <Flow key='cancelShiftAdd'>
+            <SetData
+                name='global_jobOrdersChildCreateShifts[flowArgs.index]'
+                editing='false'
+            />
+        </Flow>
+        <Flow key='saveShift' debug>
+            <!-- Don't need to send the shift -->
+            <Query debug
+                proc='ui.sp_Upsert'
+                procArgs='dbo.sp_BranchJobOrderShiftScheduleUpsert'
+                param_jobOrderID='static_1061'
+                param_shiftDefinitionID='flowArgs.ShiftDefID'
+                param_Quantity='flowArgs.QuantityNeeded'
+                param_workSun='flowArgs.WorkShiftSun'
+                param_workMon='flowArgs.WorkShiftMon'
+                param_workTue='flowArgs.WorkShiftTue'
+                param_workWed='flowArgs.WorkShiftWed'
+                param_workThu='flowArgs.WorkShiftThu'
+                param_workFri='flowArgs.WorkShiftFri'
+                param_workSat='flowArgs.WorkShiftSat'
+                param_isActive='static_1'
+            />
+            <Refresh data='jobOrdersChildCreateShifts'/>
+            <SetData
+                name='global_jobOrdersChildCreateShifts[flowArgs.index]'
+                editing='false'
+            />
+        </Flow>
+
+        <Subscribe
+            match="jobOrdersChildCreateShifts[INDEX].ShiftDefID"
+            handler='updateShiftDefInfo'
+        />
+        <Flow key='updateShiftDefInfo'>
+            <Query
+                proc='ui.sp_Upsert'
+                procArgs='ui.sp_RLVBranchClientShiftDefinitionByShiftDefID'
+                param_shiftDefID='global_jobOrdersChildCreateShifts[flowArgs.index].ShiftDefID'
+            >
+               <SetData name='global_[flowArgs.index]' data='results.colors' />
+            </Query>
+        </Flow>
+        <!-- #endregion SHIFT FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Data / Complex 1'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            This example shows a complex table setup with each of the following:
+            - Nested Rows (3 groupings here)
+            - Nested Headers with totals
+            - Tokenized Cell values, with formatters
+            - Addon Rows (one at the end, 3 inside nests)
+            - Mulitiple, Related Option lists in each row (dependent cells)
+
+            see [complex1](/features/tables/complex1) for 0,1,2 level table variants
+            see [complex2](/features/data/complex2) for dependent option list variants
+
+            [example figma usage](https://www.figma.com/file/NiwITNhzmuJKcVHVT3dlHG/CHILD-TENANT-USER-SCREENS?type=design&node-id=80-160072&mode=dev)
+
+            Progress:
+            - [X] render addon rows at Level
+            - [X] trigger a flow which adds relevant table row when addon is clicked
+            - [ ] make sure this works with multiple bound options lists
+
+            Other Goals:
+            - [X] auto-compute column spans -> can now have one `span="auto"` per Header or Addon
+            - [X] make actions line up
+            - [X] ability set collapsible per level
+            - [X] collapse works correctly (fix id bugs)
+            - [X] use SetData (tableSource=undefined) to make table show loading screen
+            - [X] disable indented="true"
+            - [X] fix table horizontal scroll issues (should be fixed, check this!)
+            - [!] make actions less painful
+            - [!] advanced addon styling (background, border, etc) - HEAVY LIFT, DO LATER OR NEVER
+        </Markdown>
+
+        <NestedTable 
+            source="nestedLevels3"
+            collapsible="true"
+        >
+            <Nest>
+                <Level param='firstLevelName'>
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_firstLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_firstLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+
+                    <!-- NEW FEATURE: Addon for nest -->
+                    <Addon>
+                        <Column span="auto" align="center">
+                            <Link
+                                href="flow:addFirstLevelChild"
+                                textContent="+ First Level Child"
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+
+                <Level param='secondLevelName' collapsible="false">
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_secondLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_secondLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_firstLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+
+                    <!-- NEW FEATURE: Addon for nest -->
+                    <Addon>
+                        <Column span="auto" align="center">
+                            <Link
+                                href="flow:addSecondLevelChild"
+                                textContent="+ Second Level Child"
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+
+                <Level param='thirdLevelName' collapsible="true">
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_thirdLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_thirdLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_secondLevelName}}</Typography>
+                        </Column>
+                        <Column>
+                            <Typography>{{row_firstLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+
+                    <!-- NEW FEATURE: Addon for nest -->
+                    <Addon>
+                        <Column span="auto" align="center">
+                            <Link
+                                href="flow:addThirdLevelChild"
+                                textContent="+ Third Level Child"
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+            </Nest>
+
+            <Column label="3rd Level Child">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_nestedChildName}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    size="small"
+                    type="text"
+                    value="row_nestedChildName"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="3rd Level">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_thirdLevelName}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    size="small"
+                    type="text"
+                    value="row_thirdLevelName"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="2nd Level">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_secondLevelName}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    size="small"
+                    type="text"
+                    value="row_secondLevelName"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="1st Level">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_firstLevelName}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    size="small"
+                    type="text"
+                    value="row_firstLevelName"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column width='min-content' paddingLeft="0" paddingRight="0">
+                <!-- Actions -->
+                <IconButton
+                    sx:display="WHEN row_editing IS undefined THEN inline-flex ELSE none"
+                    icon='Edit'
+                    color='grey700'
+                    href="flow:rowActionEdit"
+                />
+                <IconButton
+                    sx:display="WHEN row_editing IS true THEN inline-flex ELSE none"
+                    icon='Send'
+                    color='grey700'
+                    href="flow:rowActionSubmit"
+                />
+            </Column>
+            <Column width='min-content' >
+                <!-- Actions Spacer: because expander/contracter -->
+            </Column>
+
+            <Addon background='var(--nest-level-1-bg)' borderRadius="6px">
+                <Column span="auto" align="center">
+                    <Link
+                        href="flow:addFirstLevel"
+                        textContent="+ First Level"
+                    />
+                </Column>
+                <!-- WARNING:
+                    at this level, more than one column not currently supported by span="auto"
+                -->
+            </Addon>
+        </NestedTable>
+
+        <!-- DEBUG -->
+            <Spacing space='4'/>
+            <Typography variant='h2'>
+                Shifts
+            </Typography>
+            <Spacing space='3' />
+            <NestedTable
+                source='jobOrdersChildCreateShifts'
+                collapsible='false'
+            >
+                <Nest>
+                    <Level param='jobOrderID' />
+                </Nest>
+                <Column
+                    label='Schedule'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_schedule}}
+                    </Typography>
+                    <Typography display='WHEN row_editing IS true THEN block ELSE none'>
+                        S
+                    </Typography>
+                    <Checkbox
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        label='S'
+                        useData='global_jobOrdersChildCreateShifts[row_index].WorkShiftSun'
+                    />
+                    <Typography display='WHEN row_editing IS true THEN block ELSE none'>
+                        M
+                    </Typography>
+                    <Checkbox
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        label='M'
+                        useData='global_jobOrdersChildCreateShifts[row_index].WorkShiftMon'
+                    />
+                    <Typography display='WHEN row_editing IS true THEN block ELSE none'>
+                        T
+                    </Typography>
+                    <Checkbox
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        label='T'
+                        useData='global_jobOrdersChildCreateShifts[row_index].WorkShiftTue'
+                    />
+                    <Typography display='WHEN row_editing IS true THEN block ELSE none'>
+                        W
+                    </Typography>
+                    <Checkbox
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        label='W'
+                        useData='global_jobOrdersChildCreateShifts[row_index].WorkShiftWed'
+                    />
+                    <Typography display='WHEN row_editing IS true THEN block ELSE none'>
+                        Th
+                    </Typography>
+                    <Checkbox
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        label='Th'
+                        useData='global_jobOrdersChildCreateShifts[row_index].WorkShiftThu'
+                    />
+                    <Typography display='WHEN row_editing IS true THEN block ELSE none'>
+                        F
+                    </Typography>
+                    <Checkbox
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        label='F'
+                        useData='global_jobOrdersChildCreateShifts[row_index].WorkShiftFri'
+                    />
+                    <Typography display='WHEN row_editing IS true THEN block ELSE none'>
+                        Sa
+                    </Typography>
+                    <Checkbox
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        label='Sa'
+                        useData='global_jobOrdersChildCreateShifts[row_index].WorkShiftSat'
+                    />
+                </Column>
+               <Column
+                    label='Shift'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_ShiftName}}
+                    </Typography>
+                    <TextField
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        select
+                        options='global_jobOrdersChildCreateBranchClientShifts'
+                        value='row_ShiftDefID'
+                        fullWidth
+                    />
+                </Column>
+                <Column
+                    label='Supervisor'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_supervisor}}
+                    </Typography>
+                    <TextField
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        select
+                        options='global_jobOrdersChildCreateBranchClientShifts'
+                        value='row_SupervisorID'
+                        fullWidth
+                        disabled
+                    />
+                </Column>
+                <Column
+                    label='Start Time'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_startTime:time}}
+                    </Typography>
+                </Column>
+                <Column
+                    label='Expected Hrs'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_duration:number}}
+                    </Typography>
+                </Column>
+                <Column
+                    label='Pay Rate'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_payRate:fixed2}}
+                    </Typography>
+                    <TextField
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        value='row_payRate:fixed2'
+                        fullWidth
+                    />
+                </Column>
+                <Column
+                    label='Margin'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_margin:fixed2}}
+                    </Typography>
+                    <TextField
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        value='row_margin:fixed2'
+                        fullWidth
+                        disabled
+                    />
+                </Column>
+                <Column
+                    label='Bill Rate'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_billRate:fixed2}}
+                    </Typography>
+                    <TextField
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        value='row_billRate:fixed2'
+                        fullWidth
+                    />
+                </Column>
+                <Column
+                    label='OT Bill Rate'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_OTBillRate:fixed2}}
+                    </Typography>
+                    <TextField
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        value='row_OTBillRate:fixed2'
+                        fullWidth
+                    />
+                </Column>
+                <Column
+                    label='DT Bill Rate'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_DTBillRate:fixed2}}
+                    </Typography>
+                    <TextField
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        value='row_DTBillRate:fixed2'
+                        fullWidth
+                    />
+                </Column>
+                <Column
+                    label='Total Slots'
+                    width='max-content'
+                >
+                    <Typography display='WHEN row_editing IS undefined THEN block ELSE none'>
+                        {{row_QuantityNeeded:number}}
+                    </Typography>
+                    <TextField
+                        sx:display='WHEN row_editing IS true THEN block ELSE none'
+                        value='row_QuantityNeeded:number'
+                        fullWidth
+                    />
+                </Column>
+                <Column label='actions' labelHidden justifyContent='end'>
+                    <!-- TODO: this button should do something -->
+                    <IconButton
+                        sx:display='WHEN row_editing IS undefined THEN inline-flex ELSE none'
+                        icon='Delete'
+                        color='grey700'
+                        href=''
+                    />
+                    <IconButton
+                        sx:display='WHEN row_editing IS true THEN inline-flex ELSE none'
+                        icon='Cancel'
+                        color='grey700'
+                        href='flow:cancelShiftAdd'
+                    />
+                    <IconButton
+                        sx:display='WHEN row_editing IS true THEN inline-flex ELSE none'
+                        icon='Save'
+                        color='grey700'
+                        href='flow:saveShift'
+                    />
+                </Column>
+            </NestedTable>
+            <Box display='flex' justifyContent='center' alignItems='center' sx='border:"3px dashed grey",p:1'>
+                <Button
+                    label='Add Shift'
+                    leftIcon='AddCircle'
+                    variant='text'
+                    href='flow:addShift'
+                />
+            </Box>
+
+
+        <Box _for="pageOverScroll" height="300px" />
+
+    </PageContent>
+</Page>

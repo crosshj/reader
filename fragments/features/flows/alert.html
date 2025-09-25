@@ -1,0 +1,111 @@
+<Page>
+  <!-- DATA -->
+
+  <!-- FLOWS -->
+  <Flow key="simpleAlert">
+    <Alert message="Alert without type" />
+  </Flow>
+  <Flow key="successAlert">
+    <Alert type="success" message="This is a simple alert" />
+  </Flow>
+  <Flow key="alertWithMoreArgs">
+    <Alert
+      type="info"
+      message="This is an info alert!"
+      autoClose="10000"
+      closeButton="true"
+      closeOnClick="false"
+    />
+  </Flow>
+  <Flow key="errorAlert">
+    <Alert type="error" message="WOW! Something wrong happened!" />
+  </Flow>
+
+  <Flow key="complexAlert1">
+    <Query showToast exec="ui.sp_OLYesNo" />
+    <Alert type="success" message="Query results are in!" />
+  </Flow>
+
+  <x-flow key="userLogin">
+    if (global.user === undefined) { setData('loginError', 'Please log in
+    first'); navigate('/login'); } else { query('sp_GetUserData');
+    navigate('/dashboard'); }
+  </x-flow>
+
+  <script>
+    if (global.user === undefined) {
+      setData('loginError', 'Please log in first');
+      navigate('/login');
+    } else {
+      query('sp_GetUserData');
+      navigate('/dashboard');
+    }
+  </script>
+
+  <!-- PAGE NAV BAR-->
+  <PageNavBar label="Features / Flows / Alert">
+    <Box display="flex" justifyContent="flex-end" alignItems="center" gap="2">
+      <button href="/features" label="back" />
+    </Box>
+  </PageNavBar>
+
+  <!-- PAGE CONTENT -->
+  <PageContent>
+    <Typography variant="h2" mb="2">Alerts for flows!</Typography>
+
+    <Box display="flex" flexDirection="column" gap="4">
+      <Box display="flex" flexDirection="column" gap="1">
+        <button href="flow:simpleAlert" textContent="Alert without Type" />
+        <Box>
+          <CodeBlock>
+            <Alert message="Alert without type" />
+          </CodeBlock>
+        </Box>
+      </Box>
+      <Box display="flex" flexDirection="column" gap="1">
+        <button href="flow:successAlert" textContent="Success Alert" />
+        <Box>
+          <CodeBlock>
+            <Alert type="success" message="Simple successful alert" />
+          </CodeBlock>
+        </Box>
+      </Box>
+      <Box display="flex" flexDirection="column" gap="1">
+        <button
+          href="flow:alertWithMoreArgs"
+          textContent="Info Alert (with more args)"
+        />
+        <Box>
+          <CodeBlock>
+            <Alert
+              type="info"
+              message="This is an info alert!"
+              autoClose="10000"
+              closeButton="true"
+              closeOnClick="false"
+            />
+          </CodeBlock>
+        </Box>
+      </Box>
+      <Box display="flex" flexDirection="column" gap="1">
+        <button href="flow:errorAlert" textContent="Error Alert" />
+        <Box>
+          <CodeBlock>
+            <Alert type="error" message="WOW! Something wrong happened!" />
+          </CodeBlock>
+        </Box>
+      </Box>
+      <Box display="flex" flexDirection="column" gap="1">
+        <button href="flow:complexAlert1" textContent="Complex Alert 1" />
+        <Box>
+          <CodeBlock>
+            <Flow key="complexAlert1">
+              <Query exec="ui.sp_OLYesNo" />
+              <Alert type="success" message="Query results are in!" />
+            </Flow>
+          </CodeBlock>
+        </Box>
+      </Box>
+    </Box>
+  </PageContent>
+</Page>

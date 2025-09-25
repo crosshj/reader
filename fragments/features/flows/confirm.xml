@@ -1,0 +1,121 @@
+<Page>
+    <!-- DATA -->
+
+
+    <!-- FLOWS -->
+    <Flow key="withCancel">
+        <Confirm title="Continue / Cancel?" whiteSpace='pre-wrap'>
+            Your text here. You can use {{flowArgs.someProperty}} here if they are present.
+        </Confirm>
+    </Flow>
+    <Flow key="customContinue">
+        <Confirm title="Continue Only!" alertText="Accept" debug>
+            No Choice but to go on!
+        </Confirm>
+    </Flow>
+    <Flow key="aVeryLongConfirm">
+        <Confirm title="Very long confirm" whiteSpace='pre-wrap'>
+            This is a really long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long text.
+        </Confirm>
+    </Flow>
+    <Flow key="confirmWithCustomDenyText">
+        <Confirm
+            title="Custom Deny Text"
+            denyText="Deny it!!!!"
+        >
+            Are you from Mars?
+        </Confirm>
+    </Flow>
+    <Flow key="customAcceptWithoutRemovingCancelButton">
+        <Confirm
+            title="Custom Accept Without Removing Cancel Button"
+            acceptText="Please accept!"
+            denyText=",,,Deny,,,"
+        >
+            Howdy partner!
+        </Confirm>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Flows / confirm">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <CodeBlock>
+            <Confirm title="Continue / Cancel?" whiteSpace='pre-wrap'>
+                Your text here. You can use {{flowArgs.someProperty}} here if they are present.
+            </Confirm>
+
+            <Confirm title="Continue Only!" alertText="Accept" debug>
+                No Choice but to go on!
+            </Confirm>
+
+            <Confirm title="Very long confirm" whiteSpace='pre-wrap'>
+                This is a really long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long long text.
+            </Confirm>
+
+            <Confirm
+                title="Custom Deny Text"
+                denyText="Deny it!!!!"
+            >
+                Are you from Mars?
+            </Confirm>
+            
+            <Confirm
+                title="Custom Accept Without Removing Cancel Button"
+                acceptText="Please accept!"
+                denyText=",,,Deny,,,"
+            >
+                Howdy partner!
+            </Confirm>
+        </CodeBlock>
+
+        <Markdown>
+            In flows, you can use a Confirm step to show the user information and offer the choice of cancelling the flow.
+            This step will show a modal popup including button(s) for either a Yes/No or Yes with custom text (alertText).
+        </Markdown>
+
+        <Box
+            display="flex"
+            flexDirection="column"
+            gap="4"
+            my="4"
+        >
+            <Button
+                href="flow:withCancel"
+                textContent="With Cancel (Normal)"
+                data-test-id="buttonWithCancel"
+            />
+            <Button
+                href="flow:customContinue"
+                data-test-id="buttonWithCustomContinueAndWithoutCancel"
+                textContent="No Cancel, Custom Continue"
+            />
+            <Button
+                href="flow:aVeryLongConfirm"
+                textContent="With wrap white spaces"
+            />
+            <Button
+                href="flow:confirmWithCustomDenyText"
+                textContent="Custom Deny Text"
+            />
+            <Button
+                href="flow:customAcceptWithoutRemovingCancelButton"
+                textContent="Custom Accept Text Without Removing Cancel Button"
+            />
+        <Box>
+
+    </PageContent>
+</Page>

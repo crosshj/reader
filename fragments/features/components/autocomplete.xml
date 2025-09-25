@@ -1,0 +1,107 @@
+<Page key="featuresComponentsFragment">
+    <!-- #region PAGE DATA -->
+    <Data
+        name='options'
+        getData='ui.sp_GetOptionLists'
+        param_OptionListName='static_OLRealLong'
+        param_count="static_1000"
+    />
+    <Data
+        name="selected"
+    />
+    <Data
+        name="is2ndDisabled"
+        defaultValue='true'
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Autocomplete">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            A wrapper around MUI Autocomplete component.  See [MUI Autocomplete Docs](https://mui.com/material-ui/react-autocomplete/)
+
+            ## Basic Example
+            ```xml
+                <Autocomplete
+                    label="1st Example"
+                    value="global_selected"
+                    options="global_options"
+                    xs="6"
+                />
+            ```
+        </Markdown>
+
+        <GridContainer>
+            <Autocomplete
+                label="1st Example"
+                value="global_selected"
+                options="global_options"
+                xs="6"
+            />
+        </GridContainer>
+
+        <Markdown>
+            ## Other Prop Variations
+
+            WARNING: Most props variations will be blindly transferred directly to MUI from config, but this is untested outside the examples shown here.  For example, you might notice that sm, md, lg(etc), color and backgroundColor seem to not work as might be expected...
+
+            ```xml
+                <Autocomplete
+                    label="2nd Example"
+                    value="global_selected"
+                    options="global_options"
+                    xs="12"
+                    sm="8"
+                    md="6"
+                    color="green"
+                    sx:backgroundColor="#ffe3a4"
+                    disabled="WHEN global_is2ndDisabled THEN disabled ELSE false"
+                    debug
+                    willThisBreak:things="dunno"
+                    willThisBreak:myReputation="nah"
+                    yourGuessGoodAsMine="true"
+                />
+            ```
+        </Markdown>
+
+        <Box sx="p:0" display="flex" alignItems="center" my="4">
+            <Typography>This Autocomplete Disabled</Typography>
+            <Switch value="global_is2ndDisabled" />
+        </Box>
+        <GridContainer>
+            <Autocomplete
+                label="2nd Example"
+                value="global_selected"
+                options="global_options"
+                xs="12"
+                sm="8"
+                md="6"
+                color="green"
+                sx:backgroundColor="#ffe3a4"
+                disabled="WHEN global_is2ndDisabled THEN disabled ELSE false"
+                debug
+                willThisBreak:things="dunno"
+                willThisBreak:myReputation="nah"
+                yourGuessGoodAsMine="true"
+            />
+        </GridContainer>
+        <Box for="spacing" mb="300px" />
+    </PageContent>
+</Page>

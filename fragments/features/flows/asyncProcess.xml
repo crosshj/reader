@@ -1,0 +1,238 @@
+<Page>
+
+    <!-- DATA -->
+    <Data
+        name='periods'
+        getData="paybillGetPeriods"
+    />
+    <Data name='periodSelected' />
+    <Data name='processResults' />
+
+    <Data
+        name="processes"
+        getData='process.sp_WorkflowStateGetTreeByProcessNameControlID'
+        param_processName="static_hominidERPProcess"
+        param_controlID="static_-1"
+    />
+
+    <!-- FLOWS -->
+
+    <!-- processPeriod -->
+    <Flow key='processStart'>
+        <Query
+            call="payrollProcessStart"
+            param_id='global_periodSelected.id'
+            out_processResults='results.message'
+        />
+        <!-- <Confirm title='Process Results' alertText='Okay'>
+            {{processResults}}
+        </Confirm> -->
+        <Refresh data="periods" />
+        <Refresh data="processes" />
+    </Flow>
+    <Flow key='processCancel'>
+        <Query
+            call="payrollProcessCancel"
+            param_id='global_periodSelected.id'
+            out_processResults='results.message'
+        />
+        <!-- <Confirm title='Process Results' alertText='Okay'>
+            {{processResults}}
+        </Confirm> -->
+        <Refresh data="periods" />
+        <Refresh data="processes" />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Flows / Async Process'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box
+            marginBottom="4"
+            display="flex"
+            gap="1"
+        >
+            <Typography
+            >For an example of Multi-Step Workflow, see also </Typography>
+            <Link
+                href="/featuresFlowsAsyncMultiStep"
+            >Features / Flows / Async Multi-Step</Link>
+        </Box>
+
+        <!--
+        <Typography
+            variant="h2"
+            my="4"
+        >Pay Periods</Typography>
+        <NestedTable
+            source="periods"
+            collapsible="false"
+            indented="false"
+        >
+            <Column
+                key='status'
+                label='Status'
+                variant='icon'
+                width='min-content'
+                labelHidden
+            >
+                <Case
+                    when='NotStarted'
+                    icon='Circle'
+                    color='grey300'
+                />
+                <Case
+                    when='Abandoned'
+                    icon='Circle'
+                    color='grey300'
+                />
+                <Case
+                    when='Started'
+                    icon='Circle'
+                    color='orange400'
+                />
+                <Case
+                    when='Completed'
+                    icon='Circle'
+                    color='green800'
+                />
+            </Column>
+            <Column label="ID" width='min-content'>
+                <Typography>
+                    {{row_id}}
+                </Typography>
+            </Column>
+            <Column label="Start Date" width='min-content'>
+                <Typography>
+                    {{row_startDT}}
+                </Typography>
+            </Column>
+            <Column label="End Date" width='min-content'>
+                <Typography>
+                    {{row_endDT}}
+                </Typography>
+            </Column>
+            <Column label="Description" >
+                <Case when="row_status IS NotStarted">
+                    <Typography>
+                        Has not been processed.
+                    </Typography>
+                </Case>
+                <Case when="row_status IS Abandoned">
+                    <Typography>
+                        Has not been processed.
+                    </Typography>
+                </Case>
+                <Case when="row_status IS Started">
+                    <Typography>
+                        Started processing on {{row_StepStartDT}}.
+                    </Typography>
+                </Case>
+                <Case when="row_status IS Completed">
+                    <Typography>
+                        Finished processing on {{row_StepEndDT}}.
+                    </Typography>
+                </Case>
+            </Column>
+            <Column
+                label="periodActions"
+                width='min-content'
+                labelHidden
+            >
+                <Case when="row_status IS NotStarted">
+                    <Button
+                        label="Start"
+                        flow="processStart"
+                        useData="periodSelected"
+                    />
+                </Case>
+                <Case when="row_status IS Abandoned">
+                    <Button
+                        label="Start"
+                        flow="processStart"
+                        useData="periodSelected"
+                    />
+                </Case>
+                <Case when="row_status IS Started">
+                    <Button
+                        label="Cancel"
+                        flow="processCancel"
+                        useData="periodSelected"
+                    />
+                </Case>
+                <Case when="row_status IS Complete">
+                    <Button
+                        label="Retry"
+                        flow="processRetry"
+                        useData="periodSelected"
+                    />
+                </Case>
+            </Column>
+        </NestedTable>
+        -->
+        <Typography
+            variant="h2"
+            my="4"
+        >Processes</Typography>
+        <NestedTable
+            source="processes"
+            collapsible="false"
+            indented="false"
+        >
+            <Column label="Process Id">
+                <Typography>
+                    {{row_ProcessID}}
+                </Typography>
+            </Column>
+            <Column label="Name">
+                <Typography>
+                    {{row_ProcessName}}
+                </Typography>
+            </Column>
+            <Column label="Control ID">
+                <Typography>
+                    {{row_controlID}}
+                </Typography>
+            </Column>
+            <Column label="Parent Id">
+                <Typography>
+                    {{row_ParentID}}
+                </Typography>
+            </Column>
+            <Column label="Start">
+                <Typography>
+                    {{row_StepStartDT}}
+                </Typography>
+                <!-- <TextField
+                    value="row_StepStartDT"
+                    type="datetime-local"
+                /> -->
+            </Column>
+            <Column label="End">
+                <Typography>
+                    {{row_StepEndDT}}
+                </Typography>
+            </Column>
+            <Column label="Completed Status">
+                <Typography>
+                    {{row_CompletedStatus}}
+                </Typography>
+            </Column>
+            
+        </NestedTable>
+
+    </PageContent>
+</Page>

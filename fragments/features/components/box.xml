@@ -1,0 +1,69 @@
+<Page key="featuresComponentsBox">
+    <Data name="renderChildren" defaultValue="false" />
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Components / Box'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            #### Conditional Rendering 
+            ```xml
+                <Box renderChildren="WHEN global_renderChildren IS true">
+                    <!-- conditionally rendered children -->
+                </Box>
+            ```
+            This works with Data as well as with regular components.
+            Don't try this with Flow's?
+
+            ##### Live Example
+        </Markdown>
+        <Box className="flex-row items-center">
+            <Checkbox value='global_renderChildren'/>
+            <Typography>Render Children</Typography>
+        </Box>
+        <Box
+            className="flex-row items-center justify-center"
+            border="2px dashed #8888"
+            borderRadius="5px"
+            sx:display="WHEN global_renderChildren ISNOT true THEN flex ELSE none"
+            renderChildren="WHEN global_renderChildren ISNOT true"
+            mt="3"
+        >
+            <Markdown>
+                When Render Children is checked, content will appear here and Data will be called.
+            </Markdown>
+        </Box>
+        <Box
+            className="flex-row items-center justify-center"
+            border="2px dashed #8888"
+            borderRadius="5px"
+            sx:display="WHEN global_renderChildren IS true THEN flex ELSE none"
+            renderChildren="WHEN global_renderChildren IS true"
+            mt="3"
+        >
+            <Data
+                name='currentLoggedInUserPermissions'
+                getData='dbo.sp_UserRolesGetByUserIDBranchID'
+                param_resultFormat='static_aggregate->RoleName'
+                garbageCollect
+                debug
+            />
+            <Markdown>
+                Did it work?
+            </Markdown>
+        </Box>
+    </PageContent>
+</Page>

@@ -1,0 +1,100 @@
+<Page key="featuresComponentsBox">
+
+    <Data
+        name='featuresComponentsBoxCollapsed'
+        defaultValue='false'
+    />
+    <Flow key='featuresComponentsBoxCollapse'>
+        <SetData
+            name='global_featuresComponentsBoxCollapsed'
+            data='true'
+        />
+    </Flow>
+    <Flow key='featuresComponentsBoxUncollapse'>
+        <SetData
+            name='global_featuresComponentsBoxCollapsed'
+            data='false'
+        />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Components / Card'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            ```xml
+                <Card
+                    label='I am a default collapsed card.'
+                    collapsible
+                    collapsed='true'
+                >
+                    <Typography variant='h2'>
+                        Hi!
+                    </Typography>
+                </Card>
+            ```
+        </Markdown>
+        <Card
+            label='I am a default collapsed card.'
+            collapsible
+            collapsed='true'
+        >
+            <Typography variant='h2'>
+                Hi!
+            </Typography>
+        </Card>
+        <Card
+            label='I am a default uncollapsed card.'
+            collapsible
+            collapsed='false'
+        >
+            <Typography variant='h2'>
+                Bye!
+            </Typography>
+        </Card>
+
+        <Box sx:mb="2">
+            <Alert severity="warning">
+                Right now, the collapsed prop only works on first render. If it is dynamically set later, it doesn't affect the state of the card. Only using the carat will do that.
+                Future state would be nice is this could be programmatic.
+            </Alert>
+        </Box>
+
+        <Box
+            display='flex'
+            justify-center='flex-start'
+            gap='2'
+        >
+            <Button
+                label='Collapse'
+                href='flow:featuresComponentsBoxCollapse'
+            />
+            <Button
+                label='Uncollapse'
+                href='flow:featuresComponentsBoxUncollapse'
+            />
+        </Box>
+        <Card
+            label='I am a dynamically collapsed card.'
+            collapsible
+            collapsed='global_featuresComponentsBoxCollapsed'
+        >
+            <Typography variant='h2'>
+                Dynamic!
+            </Typography>
+        </Card>
+    </PageContent>
+</Page>

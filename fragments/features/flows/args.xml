@@ -1,0 +1,93 @@
+<Page key='root.featuresFlowsArgs'>
+    <!-- DATA -->
+    <Data
+        name='tableData'
+        getData='featuresExtensibleColsData'
+        param_qty="static_3"
+    />
+
+    <!-- FLOWS -->
+    <Flow key="verifyFlowArgs">
+        <Confirm title='Row Values'>
+            ID: {{flowArgs.myID}}
+
+            First Name: {{flowArgs.firstName}}
+
+            Last Name: {{flowArgs.lastName}}
+
+            Description: {{flowArgs.description}}
+        </Confirm>
+    </Flow>
+    
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Flows / Args">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box sx="py:2" marginBottom="4">
+            <CodeBlock>
+                <!-- include this in table -->
+                <Column label='actions' labelHidden>
+                    <Button label="GO" flow="verifyFlowArgs" useData="flowArgs"/>
+                </Column>
+
+                <!-- use data like this in flows -->
+                <Flow key="verifyFlowArgs">
+                    <Confirm title='Row Values'>
+                        ID: {{flowArgs.myID}}
+                    </Confirm>
+                </Flow>
+            </CodeBlock>
+        </Box>
+
+        <Typography variant="h2">
+            Nested Table
+        </Typography>
+        <Typography whiteSpace="pre-wrap" my="4">
+            ...
+        </Typography>
+        <NestedTable
+            source='tableData'
+            collapsible="false"
+            indented="false"
+        >
+            <Column label='Checkbox' width="min-content" labelHidden >
+                <Checkbox
+                    index="{{row_myID}}"
+                    useData="selectedRows"
+                    checked="{{ global_selectedRows INCLUDES row_myID }}"
+                />
+            </Column>
+            <Column label='ID' width="min-content">
+                <Typography>{{row_myID}}</Typography>
+            </Column>
+            <Column label='First'>
+                <Typography>{{row_firstName}}</Typography>
+            </Column>
+            <Column label='Last' >
+                <Typography>{{row_lastName}}</Typography>
+            </Column>
+            <Column label='Description' >
+                <Typography>{{row_description}}</Typography>
+            </Column>
+            <Column label='actions' labelHidden>
+                <Button label="GO" flow="verifyFlowArgs" useData="flowArgs"/>
+            </Column>
+        </NestedTable>
+    </PageContent>
+</Page>

@@ -1,0 +1,160 @@
+<Page>
+
+    <!-- DATA -->
+    <Data
+        name='selectedStep'
+        defaultValue="-1"
+    />
+    <Data
+        name='selectedStepActiveIndex'
+        defaultValue="1"
+    />
+
+    <!-- FLOWS -->
+    <Flow key='gotoNextStep'>
+        <SetData
+            name='global_selectedStep'
+            mutate="add:1,max:4"
+        />
+        <SetData
+            name='global_selectedStepActiveIndex'
+            mutate="add:1,max:5"
+        />
+    </Flow>
+    <Flow key='gotoPrevStep'>
+        <SetData
+            name='global_selectedStep'
+            mutate="subtract:1,min:-1"
+        />
+        <SetData
+            name='global_selectedStepActiveIndex'
+            mutate="subtract:1,min:0"
+        />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Step Indicator">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent key="pageContent">
+        <Alert>
+            MUI Stepper component, named MUI_Stepper to avoid conflicts.
+        </Alert>
+
+        <Typography
+            variant="h2"
+            my="4"
+        >
+            Usage
+        </Typography>
+        <Box>
+            <CodeBlock marginBottom="4">
+                <Data
+                    name='selectedStep'
+                    defaultValue="-1"
+                />
+                <MUI_Stepper
+                    activeStep="global_selectedStep"
+                    orientation="horizontal"
+                >
+                    <Step label="one" />
+                    <Step label="two" />
+                    <Step label="three" />
+                    <Step label="four" />
+                </MUI_Stepper>
+            </CodeBlock>
+        </Box>
+
+        <Typography
+            variant="h2"
+            my="4"
+        >
+            Example: Horizontal Stepper
+        </Typography>
+
+        <MUI_Stepper
+            activeStep="global_selectedStep"
+            orientation="horizontal"
+        >
+            <Step label="one" />
+            <Step label="two" />
+            <Step label="three" />
+            <Step label="four" />
+        </MUI_Stepper>
+
+        <Typography
+            variant="h2"
+            my="4"
+        >
+            Example: Vertical Stepper
+        </Typography>
+
+        <MUI_Stepper
+            activeStep="global_selectedStep"
+            orientation="vertical"
+        >
+            <Step label="one" />
+            <Step label="two" />
+            <Step label="three" />
+            <Step label="four" />
+        </MUI_Stepper>
+
+        <Typography
+            variant="h2"
+            my="4"
+        >
+            Example: With "startingIndex"
+        </Typography>
+        <Typography
+            my="4"
+            whiteSpace="pre-wrap"
+        >
+            With "startingIndex" step number: "{{global_selectedStepActiveIndex}}"
+            Without: {{global_selectedStep}}
+        </Typography>
+        <MUI_Stepper
+            sx="my:2"
+            activeStep="global_selectedStepActiveIndex"
+            orientation="horizontal"
+            startingIndex="1"
+        >
+            <Step label="one" />
+            <Step label="two" />
+            <Step label="three" />
+            <Step label="four" />
+        </MUI_Stepper>
+
+        <Typography
+            variant="h2"
+            my="4"
+        >
+            Controls
+        </Typography>
+        <Box
+            display="flex"
+            justifyContent="space-between"
+            my="4"
+        >
+            <Button
+                href="flow:gotoPrevStep"
+                label="prev"
+            />
+            <Button
+                href="flow:gotoNextStep"
+                label="next"
+            />
+        </Box>
+    </PageContent>
+</Page>

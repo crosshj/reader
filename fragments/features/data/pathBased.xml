@@ -1,0 +1,171 @@
+<Page key='featuresDataPathBased'>
+    <!-- DATA -->
+    <Data
+        name='fooState'
+        defaultValue="22"
+    />
+    <Data
+        name='barState'
+        defaultValue="33"
+    />
+    <Data
+        name='pathData'
+        route="/featuresDataPathBased{/}?:foo?{/sub/}?:bar?"
+        defaultValue='{ "foo": "fooDefault", "bar": "barDefault" }'
+    />
+
+    <!-- FLOWS -->
+
+
+    <Flow key='navigateWithFlow'>
+        <Navigate route="featuresDataPathBasedNext/33333" />
+    </Flow>
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Data / Path-based">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Typography
+            variant="h2"
+            marginBottom="2"
+        >
+            Route Parameters (YOU SHOULD BE USING Triggers + SetData with routes for this)
+        </Typography>
+        <Typography
+            whiteSpace="pre-wrap"
+            my="2"
+        >
+            When a Data element has a route parameter, it will take its value from the URL.
+            It will also watch the current URL and update accordingly.
+
+            {}? and ? means optional
+            :  denotes a parameter
+        </Typography>
+        <Box
+            marginBottom="4"
+            display="flex"
+            gap="1"
+        >
+            <Typography>See also </Typography>
+            <Link
+                href="https://github.com/WICG/urlpattern/blob/main/mdn-drafts/QUICK-REFERENCE.md"
+                target="_blank"
+                rel="noreferrer"
+            >URLPattern Reference</Link>
+        </Box>
+
+        <Box>
+            <CodeBlock>
+                <Data
+                    name='pathData'
+                    route="/featuresDataPathBased{/}?:foo?{/sub/}?:bar?"
+                />
+
+                <!-- with defaults -->
+                <Data
+                    name='pathData'
+                    route="/featuresDataPathBased{/}?:foo?{/sub/}?:bar?"
+                    defaultValue='{ "foo": "fooDefault", "bar": "barDefault" }'
+                />
+            </CodeBlock>
+        </Box>
+        <Card
+            label="Data From current URL"
+            showMenu="false"
+        >
+            <Typography
+                useData="pathData"
+                whiteSpace="pre-wrap"
+                marginTop="2"
+            >
+                [foo]: {{global_pathData.foo}}
+                [bar]: {{global_pathData.bar}}
+            </Typography>
+        </Card>
+
+        <Card
+            label="Build (and navigate to) a new URL"
+            showMenu="false"
+        >
+            <Box sx="py:2">
+                <TextField
+                    value="global_fooState"
+                    label=":foo"
+                    sx="width:100%"
+                />
+            </Box>
+            <Box sx="py:2">
+                <TextField
+                    value="global_barState"
+                    label=":bar"
+                    sx="width:100%"
+                />
+            </Box>
+            <Button
+                label='Go To New URL'
+                href='/featuresDataPathBased/{{global_fooState}}/sub/{{global_barState}}'
+            />
+        </Card>
+
+        <Typography variant="h2">
+            Route Data when Navigating
+        </Typography>
+        <Typography
+            whiteSpace="pre-wrap"
+            my="2"
+        >
+            There are two different ways of navigating to another page using a button: flow and target.
+
+            The code for button is simpler, but it's not as powerful.
+            You might use the flow because you need to build the route using some global variable.
+
+            When you arrive at this next page, route params should work.
+        </Typography>
+        <Box
+            marginBottom="4"
+            display="flex"
+            gap="1"
+        >
+            <Typography>See also </Typography>
+            <Link
+                href="/featuresFlowsNavigate"
+            >Features / Flows / Navigate</Link>
+        </Box>
+
+        <Box>
+            <CodeBlock>
+                <Button
+                    label='Navigate by Button'
+                    href='/featuresDataPathBasedNext/2222222'
+                />
+            </CodeBlock>
+        </Box>
+        <Box
+            display="flex"
+            flexDirection="column"
+            gap="4"
+            marginBottom="8"
+        >
+            <Button
+                label='Navigate by Button'
+                href='/featuresDataPathBasedNext/2222222'
+            />
+        </Box>
+    </PageContent>
+</Page>

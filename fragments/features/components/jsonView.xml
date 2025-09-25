@@ -1,0 +1,112 @@
+<Page key="featuresComponentsSidebar">
+    <Data 
+        name="jsonViewExampleData"
+        defaultValue="{
+            foo: {
+                bar: [
+                    {
+                        label: 'Amber Askew',
+                        value: 0,
+                        type: 'Option',
+                    },
+                    {
+                        label: 'Bobby Barrows',
+                        value: 1,
+                        type: 'Option',
+                    },
+                    {
+                        label: 'Carlton Cassini',
+                        value: 2,
+                        type: 'Option',
+                    },
+                ]
+            }
+        }"
+    />
+
+    <PageNavBar label="Features / Components / JSON View">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+
+            Uses react18-json-view.  See [https://github.com/YYsuni/react18-json-view](https://github.com/YYsuni/react18-json-view)
+
+            ### Usage
+            ```xml
+                <JsonView
+                    src="global_jsonViewExampleData"
+
+                    dark="WHEN theme_mode IS NOT light" // true | false
+                    theme='default'                     // default | a11y | github | vscode | atom| winter-is-coming
+                    displayArrayKey="false"             // true | false
+                    quotesOnKeys="false"                // true | false
+                    displayDataTypes="false"            // true | false
+                    displayObjectSize="false"           // true | false
+                    enableClipboard="true"              // true | false
+
+                    fontSize="0.75rem"
+                    padding="0.75rem"
+                    background="#8881"
+                    borderRadius="1em"
+                />
+            ```
+
+            ### Example
+
+            JSON View
+        </Markdown>
+ 
+        <JsonView
+            src="global_jsonViewExampleData"
+            theme="github"
+            dark="WHEN theme_mode IS NOT light"
+            enableClipboard="false"
+            fontSize="0.9rem"
+        />
+
+        <Markdown>
+            Markdown javascript block (alternative)
+
+            ```javascript
+            {
+                foo: {
+                    bar: [
+                        {
+                            label: "Amber Askew"
+                            value: 0
+                            type: "Option"
+                        },
+                        {
+                            label: "Bobby Barrows"
+                            value: 1
+                            type: "Option"
+                        },
+                        {
+                            label: "Carlton Cassini"
+                            value: 2
+                            type: "Option"
+                        }
+                    ]
+                }
+            }
+            ```
+        </Markdown>
+
+        <Box for="spacing" mb="300px" />
+
+    </PageContent>
+
+</Page>

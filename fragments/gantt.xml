@@ -1,0 +1,111 @@
+<Page>
+    <PageNavBar label='Gantt Chart' />
+
+    <PageContent>
+        <Box
+            display="flex"
+            flexDirection="column"
+            gap="2"
+            sx:mb="200px"
+            sx:mt="1em"
+            sx:width="100%"
+            sx:maxWidth="1000px"
+            sx:mx="auto"
+        >
+            <Box width="100%" minHeight="210px">
+                <Gantt for="testing"/>
+            </Box>
+            <Markdown>
+                ## 📅 Gantt Chart Overview
+
+                This Gantt chart gives you a visual timeline of your tasks and how they depend on each other.
+
+                - Each row is a task, and each bar shows its time span  
+                - Arrows indicate **task dependencies**  
+                - This chart is **lightweight and focused**, with just the essentials for planning  
+                - Great for getting a quick sense of **project flow** and **timing**
+
+                ---
+
+                ### 🛠️ What is a Gantt Chart?
+
+                A Gantt chart is a **time-based project visualization tool**. It allows you to see at a glance:
+
+                - What needs to be done
+                - When it needs to be done
+                - How tasks overlap
+                - What tasks depend on others
+
+                It helps stakeholders and contributors alike maintain shared timelines and track progress visually.
+
+                ---
+
+                ### 🔁 Dependencies and Critical Path
+
+                The arrows in the chart represent task **dependencies**. These show which tasks must be completed before others can begin.
+
+                - This helps identify your **critical path**—the minimum time needed to complete the project.
+                - Tasks that slip on the critical path can delay the entire schedule.
+                - Dependencies also reveal opportunities for **parallelization**: tasks that can run concurrently without conflict.
+
+                ---
+
+                ### ⏱️ Milestones and Buffer Time
+
+                Although this chart keeps things simple, in larger systems, you may also want to visualize:
+
+                - **Milestones** – major achievements or delivery dates
+                - **Buffers** – intentional slack built into the schedule for risk absorption
+                - **Deadlines** – hard constraints that must not be missed
+
+                Visualizing these early helps you spot tight spots before they become real bottlenecks.
+
+                ---
+
+                ### 💡 When to Use a Gantt Chart
+
+                Gantt charts are particularly effective when:
+
+                - Tasks have **clear durations**
+                - Multiple contributors need to coordinate timing
+                - Project scope spans **multiple weeks or months**
+                - Visual communication with stakeholders is critical
+
+                They're less ideal for purely agile workflows unless paired with iterative planning tools.
+
+                ---
+
+                ### 🚧 Keeping it Up to Date
+
+                A Gantt chart is only useful if it's current. Be sure to:
+
+                - Adjust start/end dates as work progresses
+                - Update dependencies if the task flow changes
+                - Re-assess overall project timing if blockers occur
+
+                A stale chart misleads more than it helps.
+
+                ---
+
+                ### 🔭 Future Enhancements
+
+                This chart is intentionally minimalist, but the structure is in place to evolve. Future upgrades could include:
+
+                - Drag-to-reschedule functionality  
+                - Milestone markers  
+                - Color coding by team, status, or phase  
+                - Export options (PDF, CSV)  
+                - Integration with the board or issue tracker  
+
+                ---
+
+                ### ✅ Summary
+
+                Gantt charts bridge the gap between vision and execution. When used well, they help teams stay coordinated, transparent, and proactive.
+
+                This lightweight implementation offers the essentials—and it’s only going to get better.
+            </Markdown>
+
+        </Box>
+    </PageContent>
+</Page>

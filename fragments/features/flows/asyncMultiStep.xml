@@ -1,0 +1,252 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='periods'
+        getData="paybillGetPeriods"
+        param_exclude='static_completed'
+    />
+    <Data
+        name='periodSelected'
+    />
+
+    <!-- FLOWS -->
+    <Flow key='refreshPeriods'>
+        <Refresh data="periods"/>
+    </Flow>
+
+    <Flow key='processBegin'>
+        <Query
+            call="payrollProcessNext"
+            param_controlID='global_periodSelected.id'
+            out_processResults='results.message'
+        />
+        <Navigate route='paybill/childSubmitPayroll_VerifyTime/{{periodSelected.id}}' />
+    </Flow>
+    <!-- TODO: replace these and verify that global data works from button -->
+    <Flow key='processVerify'>
+        <Navigate route='paybill/childSubmitPayroll_VerifyTime/{{periodSelected.id}}' />
+    </Flow>
+    <Flow key='processPay'>
+        <Navigate route='paybill/childSubmitPayroll_TalentPay/{{periodSelected.id}}' />
+    </Flow>
+    <Flow key='processDeductions'>
+        <Navigate route='paybill/childSubmitPayroll_SetDeductions/{{periodSelected.id}}' />
+    </Flow>
+    <Flow key='processReview'>
+        <Navigate route='paybill/childSubmitPayroll_ReviewAndApprove/{{periodSelected.id}}' />
+    </Flow>
+    <Flow key='processInvoice'>
+        <Navigate route='paybill/childSubmitPayroll_Invoices/{{periodSelected.id}}' />
+    </Flow>
+
+    <!-- processPeriod -->
+    <Flow key='processNext'>
+        <Query
+            call="payrollProcessNext"
+            param_controlID='global_periodSelected.id'
+            out_processResults='results.message'
+        />
+        <!-- <Confirm title='Process Results' alertText='Okay'>
+            {{processResults}}
+        </Confirm> -->
+        <Refresh data="periods"/>
+    </Flow>
+    <Flow key='processCancel'>
+        <Query
+            call="payrollProcessCancel"
+            param_processName="static_Paybill"
+            param_controlID='global_periodSelected.id'
+            out_processResults='results.message'
+        />
+        <!-- <Confirm title='Process Results' alertText='Okay'>
+            {{processResults}}
+        </Confirm> -->
+        <Refresh data="periods" />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Flows / Async Multi-Step'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box marginBottom="4" display="flex" gap="1">
+            <Typography>For a full list of Async Processes, see also </Typography>
+            <Link href="/featuresFlowsAsyncProcess">Features / Flows / Async Process</Link>
+        </Box>
+
+        <Button flow="refreshPeriods" label="Refresh Pay Periods" />
+
+        <Typography
+            variant="h2"
+            my="4"
+        >Pay Periods</Typography>
+        <NestedTable
+            source="periods"
+            collapsible="false"
+            indented="false"
+        >
+            <Column
+                key='status'
+                label='Status'
+                variant='icon'
+                width='min-content'
+                labelHidden
+            >
+                <Case
+                    when='NotStarted'
+                    icon='Circle'
+                    color='grey300'
+                />
+                <Case
+                    when='Abandoned'
+                    icon='Circle'
+                    color='grey300'
+                />
+                <Case
+                    when='Started'
+                    icon='Circle'
+                    color='orange400'
+                />
+                <Case
+                    when='Completed'
+                    icon='Circle'
+                    color='green800'
+                />
+            </Column>
+            <Column label="PeriodID" width='min-content'>
+                <Typography>
+                    {{row_id}}
+                </Typography>
+            </Column>
+            <Column label="Start Date" width='min-content'>
+                <Typography>
+                    {{row_startDT}}
+                </Typography>
+            </Column>
+            <Column label="End Date" width='min-content'>
+                <Typography>
+                    {{row_endDT}}
+                </Typography>
+            </Column>
+            <!-- <Column label="Process" width='min-content'>
+                <Typography>
+                    {{row_processId}}
+                </Typography>
+            </Column>
+            <Column label="Parent" width='min-content'>
+                <Typography>
+                    {{row_parentId}}
+                </Typography>
+            </Column> -->
+            <Column label="Step" width='min-content'>
+                <Typography>
+                    {{row_step}}
+                </Typography>
+            </Column>
+            <!-- <Column label="Step Status" width='min-content'>
+                <Typography>
+                    {{row_stepStatus}}
+                </Typography>
+            </Column> -->
+            <Column label="Description" >
+                <Case when="row_status IS NotStarted">
+                    <Typography>
+                        Has not been processed.
+                    </Typography>
+                </Case>
+                <Case when="row_status IS Abandoned">
+                    <Typography>
+                        Has not been processed.
+                    </Typography>
+                </Case>
+                <Case when="row_status IS Started">
+                    <Typography>
+                        Started processing on {{row_StepStartDT:datetime}}.
+                    </Typography>
+                </Case>
+                <Case when="row_status IS Completed">
+                    <Typography>
+                        Finished processing on {{row_StepEndDT:datetime}}.
+                    </Typography>
+                </Case>
+            </Column>
+            <Column
+                label="periodActions"
+                align="right"
+                labelHidden
+            >
+                <Case when="row_status IS NotStarted">
+                    <Button
+                        label="Process"
+                        flow="processBegin"
+                        useData="periodSelected"
+                    />
+                </Case>
+                <Case when="row_status IS Started">
+                    <Button
+                        label="Cancel"
+                        flow="processCancel"
+                        useData="periodSelected"
+                    />
+                </Case>
+                <!-- <Case when="row_status IS Started">
+                    <Button
+                        label="Next"
+                        flow="processNext"
+                        useData="periodSelected"
+                    />
+                </Case> -->
+
+                <Case when="row_step IS Verify">
+                    <Button
+                        label="Verify"
+                        flow="processVerify"
+                        useData="periodSelected"
+                    />
+                </Case>
+                <Case when="row_step IS Pay">
+                    <Button
+                        label="Talent Pay"
+                        flow="processPay"
+                        useData="periodSelected"
+                    />
+                </Case>
+                <Case when="row_step IS Deductions">
+                    <Button
+                        label="Set Deductions"
+                        flow="processDeductions"
+                        useData="periodSelected"
+                    />
+                </Case>
+                <Case when="row_step IS Review">
+                    <Button
+                        label="Reviews and Approvals"
+                        flow="processReview"
+                        useData="periodSelected"
+                    />
+                </Case>
+                <Case when="row_step IS Invoice">
+                    <Button
+                        label="Invoices"
+                        flow="processInvoice"
+                        useData="periodSelected"
+                    />
+                </Case>
+
+            </Column>
+        </NestedTable>
+
+    </PageContent>
+</Page>

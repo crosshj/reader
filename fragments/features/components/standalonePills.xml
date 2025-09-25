@@ -1,0 +1,63 @@
+<Page key='childStandalonePills'>
+    <!-- DATA -->
+    <Data
+        name='pillData'
+        defaultValue='Pre-Hire'
+    />
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Pill">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Pill useData="pillData">
+            <Case
+                when="Active"
+                icon="check_circle"
+                color="green800"
+            />
+            <Case
+                when="Pre-Hire"
+                icon="add_circle"
+                color="lightGreen600"
+            />
+            <Case
+                when="Signed"
+                icon="create"
+                color="green[500]"
+                color="indigo900"
+            />
+            <Case
+                when="In-Active"
+                icon="circle"
+                color="amber600"
+            />
+            <Case
+                when="DNU"
+                icon="cancel"
+                color="red800"
+            />
+            <Case
+                when="???"
+                icon="help"
+                color="#777"
+            />
+        </Pill>
+        <Spacing space='4' />
+    </PageContent>
+</Page>

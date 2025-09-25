@@ -1,0 +1,329 @@
+<Page key='childButton'>
+    <!-- FLOWS -->
+    <!-- DATA -->
+    <Data name="dateToFormat" defaultValue="2023-11-16T17:38:24.662Z" />
+    <Data name="stringToFormat" defaultValue="example string" />
+    <Data name="numberToFormat" defaultValue="8675309" />
+    <Data name="floatToFormat" defaultValue="212.41238924344271823768" />
+    <Data name="percentageToFormat" defaultValue="0.55" />
+    <Data name="objectToFormat" defaultValue='{ "red":0.55, "green":0.25, "blue":0.75 }' />
+    <Data name="objectStringToFormat" defaultValueType="string" defaultValue='{ "red":0.55, "green":0.25, "blue":0.75 }' />
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Props / Formatters">
+      <Box
+          display='flex'
+          justifyContent="flex-end"
+          alignItems="center"
+          gap="2"
+      >
+          <Button href="/features" label="back"/>
+      </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            Supported formatters:
+            - dateFormat
+            - date
+            - datetime
+            - time
+            - capitalize
+            - number
+            - fixed2
+            - percent
+            - stringify
+            - object
+        </Markdown>
+
+        <Markdown>
+            -----
+            ## dateFormat
+            format datetime value as date, uses a date-fns format String!
+            for help building format string, see https://date-fns-interactive.netlify.app/
+
+            Usage:
+            ```xml
+                <Data
+                    name="dateToFormat"
+                    defaultValue="2023-11-16T17:38:24.662Z"
+                />
+                <Typography
+                    textContent="{{ global_dateToFormat:dateFormat[EEEE, MMMM do dd/LL/yyyy hh:mm:ss b O] }}"
+                />
+            ```
+            Expected Output: 
+            ```text
+            Thursday, November 16th 16/11/2023 05:38:24 PM GMT-5
+            ```
+            Live Example:
+        </Markdown>
+        <Typography
+            textContent="{{ global_dateToFormat:dateFormat[EEEE, MMMM do dd/LL/yyyy hh:mm:ss b O] }}"
+            sx:p="3"
+            sx:borderRadius="5px"
+            sx:backgroundColor="#fafafa"
+        />
+
+        <Markdown>
+            -----
+            ## date
+            format datetime value as date
+
+            Usage:
+            ```xml
+                <Data
+                    name="dateToFormat"
+                    defaultValue="2023-11-16T17:38:24.662Z"
+                />
+                <Typography
+                    textContent="{{ global_dateToFormat:date }}"
+                />
+            ```
+            Expected Output: 
+            ```text
+            11/16/23
+            ```
+            Live Example:
+        </Markdown>
+        <Typography
+            textContent="{{ global_dateToFormat:date }}"
+            sx:p="3"
+            sx:borderRadius="5px"
+            sx:backgroundColor="#fafafa"
+        />
+
+
+        <Markdown>
+            -----
+            ## datetime
+            format datetime value as Date + Time
+
+            Usage:
+            ```xml
+                <Data
+                    name="dateToFormat"
+                    defaultValue="2023-11-16T17:38:24.662Z"
+                />
+                <Typography
+                    textContent="{{ global_dateToFormat:datetime }}"
+                />
+            ```
+            Expected Output (varies by timezone): 
+            ```text
+            11/16/23 12:38 PM
+            ```
+            Live Example:
+        </Markdown>
+        <Typography
+            textContent="{{ global_dateToFormat:datetime }}"
+            sx:p="3"
+            sx:borderRadius="5px"
+            sx:backgroundColor="#fafafa"
+        />
+
+        <Markdown>
+            -----
+            ## time 
+            format datetime value as time
+
+            Usage:
+            ```xml
+                <Data
+                    name="dateToFormat"
+                    defaultValue="2023-11-16T17:38:24.662Z"
+                />
+                <Typography
+                    textContent="{{ global_dateToFormat:time }}"
+                />
+            ```
+            Expected Output (varies by timezone): 
+            ```text
+            12:38 PM
+            ```
+            Live Example:
+        </Markdown>
+        <Typography
+            textContent="{{ global_dateToFormat:time }}"
+            sx:p="3"
+            sx:borderRadius="5px"
+            sx:backgroundColor="#fafafa"
+        />
+
+        <Markdown>
+            -----
+            ## capitalize
+            format string as a capitalized string
+
+            Usage:
+            ```xml
+                <Data
+                    name="stringToFormat"
+                    defaultValue="example string"
+                />
+                <Typography
+                    textContent="{{ global_stringToFormat:capitalize }}"
+                />
+            ```
+            Expected Output: 
+            ```text
+            Example string
+            ```
+            Live Example:
+        </Markdown>
+        <Typography
+            textContent="{{ global_stringToFormat:capitalize }}"
+            sx:p="3"
+            sx:borderRadius="5px"
+            sx:backgroundColor="#fafafa"
+        />
+
+        <Markdown>
+            -----
+            ## number
+            format string number as a number
+
+            Usage:
+            ```xml
+                <Data
+                    name="numberToFormat"
+                    defaultValue="8675309"
+                />
+                <Typography
+                    textContent="{{ global_numberToFormat:number }}"
+                />
+            ```
+            Expected Output: 
+            ```text
+            8675309
+            ```
+            Live Example:
+        </Markdown>
+        <Typography
+            textContent="{{ global_numberToFormat:number }}"
+            sx:p="3"
+            sx:borderRadius="5px"
+            sx:backgroundColor="#fafafa"
+        />
+
+        <Markdown>
+            -----
+            ## fixed2
+            format string float or number as a float with two fixed decimal places
+            WARNING: this does not current round the number!
+
+            Usage:
+            ```xml
+                <Data
+                    name="floatToFormat"
+                    defaultValue="212.41238924344271823768"
+                />
+                <Typography
+                    textContent="{{ global_floatToFormat:fixed2 }}"
+                />
+            ```
+            Expected Output: 
+            ```text
+            212.41
+            ```
+            Live Example:
+        </Markdown>
+        <Typography
+            textContent="{{ global_floatToFormat:fixed2 }}"
+            sx:p="3"
+            sx:borderRadius="5px"
+            sx:backgroundColor="#fafafa"
+        />
+
+        <Markdown>
+            -----
+            ## percentage
+            format string number as a string percentage
+            DEPRECATE: this could be better achieved with number or fixed2 and a % sign
+
+            Usage:
+            ```xml
+                <Data
+                    name="percentageToFormat"
+                    defaultValue="0.55"
+                />
+                <Typography
+                    textContent="{{ global_percentageToFormat:percent }}"
+                />
+            ```
+            Expected Output: 
+            ```text
+            55.00%
+            ```
+            Live Example:
+        </Markdown>
+        <Typography
+            textContent="{{ global_percentageToFormat:percent }}"
+            sx:p="3"
+            sx:borderRadius="5px"
+            sx:backgroundColor="#fafafa"
+        />
+
+        <Markdown>
+            -----
+            ## stringify
+            format an object as a string
+            NOTE: use for submitting JSON string to DB and for visual debugging
+
+            Usage:
+            ```xml
+                <Data
+                    name="objectToFormat"
+                    defaultValue='{ "red":0.55, "green":0.25, "blue":0.75 }'
+                />
+                <Typography
+                    textContent="{{ global_objectToFormat:stringify }}"
+                />
+            ```
+            Expected Output: 
+            ```text
+            { "red": 0.55, "green": 0.25, "blue": 0.75 }
+            ```
+            Live Example:
+        </Markdown>
+        <Typography
+            textContent="{{ global_objectToFormat:stringify }}"
+            sx:p="3"
+            sx:borderRadius="5px"
+            sx:backgroundColor="#fafafa"
+        />
+
+        <Markdown>
+            -----
+            ## object
+            parse an object from a string
+            NOTE: what is the use case? see LocalData
+
+            Usage:
+            ```xml
+                <Data
+                    name="objectStringToFormat"
+                    defaultValueType="string"
+                    defaultValue='{ "red":0.55, "green":0.25, "blue":0.75 }'
+                />
+                <Typography
+                    textContent="{{ global_objectStringToFormat:object }}"
+                />
+            ```
+            Expected Output: 
+            ```text
+            { "red": 0.55, "green": 0.25, "blue": 0.75 }
+            ```
+            Live Example:
+        </Markdown>
+        <Typography
+            textContent="{{ global_objectStringToFormat:object }}"
+            sx:p="3"
+            sx:borderRadius="5px"
+            sx:backgroundColor="#fafafa"
+        />
+
+        <Box _for="pageOverScroll" height="200px" />
+    </PageContent>
+</Page>

@@ -1,0 +1,154 @@
+<!--
+    assumes
+
+    global_referenceType: one of [Talent, Client, JobSite]
+    global_subjectID: one of [Talent id, Client id, JobSite id]
+
+    flow showRecordAddModal (automatically added via recordsCreateFragment)
+    flow showRecordViewModal (automatically added via recordsViewFragment)
+-->
+<PageFragment>
+    <Data name="records" defaultValue="loading"/>
+
+    <!-- #region TRY CLIENT SIDE FRAGMENTS -->
+    <Trigger handler='recordsSidebarFragmentLoadPage' />
+    <Flow key='recordsSidebarFragmentLoadPage'>
+        <Query
+            exec='ui.sp_UIContextGetComponentsByUserID'
+            param_fragment='recordsCreateFragment'
+            out_recordsCreateFragmentContext='results'
+        />
+        <Query
+            exec='ui.sp_UIContextGetComponentsByUserID'
+            param_fragment='recordsViewFragment'
+            out_recordsViewFragmentContext='results'
+        />
+    </Flow>
+    <!-- #endregion TRY CLIENT SIDE FRAGMENTS -->
+
+    <!-- TODO: want to listen for both of these, but not result in two triggers -->
+    <Subscribe path='subjectID' handler='recordsSidebarFragmentGetRecords' />
+    <Subscribe path='referenceType' handler='recordsSidebarFragmentGetRecords' />
+    <Flow key='recordsSidebarFragmentGetRecords'>
+        <Case when='global_getRecordsData IS NOT 1'>
+            <BreakFlow />
+        </Case>
+        <SetData name="records" data="loading" />
+        <Case when='global_referenceType IS null'>
+            <Query
+                exec='rec.sp_RecordLogGetList'
+                out_records="results"
+            />
+        </Case>
+        <Case when='global_subjectID IS null AND global_referenceType IS NOT null'>
+            <Query
+                exec='rec.sp_RecordLogGetList'
+                param_referenceType='global_referenceType'
+                out_records="results"
+            />
+        </Case>
+        <Case when='global_subjectID IS NOT null AND global_referenceType IS NOT null'>
+            <Query
+                exec='rec.sp_RecordLogGetList'
+                param_subjectID='global_subjectID'
+                param_referenceType='global_referenceType'
+                out_records="results"
+            />
+        </Case>
+        <SetData
+            name='global_getRecordsData'
+            data='static_0'
+        />
+    </Flow>
+
+    <Flow key='navigateRecordsViewAll'>
+        <Case when='global_referenceType IS NOT null AND global_subjectID IS NOT null'>
+<!--             <Navigate route='/recordsList?subjectID={{global_subjectID}}&referenceType={{global_referenceType}}' /> -->
+             <Navigate route='/recordsList/{{global_subjectID}}/{{global_referenceType}}' />
+         </Case>
+        <Case when='global_referenceType IS null'>
+            <Navigate route='/recordsList' />
+        </Case>
+        <Case when='global_referenceType IS NOT null AND global_subjectID IS null'>
+            <Navigate route='/recordsList/-1/{{global_referenceType}}' />
+        </Case>
+<!--         <BreakFlow />
+        <Case when='global_referenceType IS talent'>
+            <Navigate route='/talent/records/{{global_subjectID}}' />
+        </Case>
+        <Case when='global_referenceType IS clients'>
+            <Navigate route='/client/records/{{global_subjectID}}' />
+        </Case>
+        <Case when='global_referenceType IS jobSite'>
+            <Navigate route='/client/jobSite/records/{{global_subjectID}}' />
+        </Case> -->
+    </Flow>
+
+    <Fragment contents='global_recordsCreateFragmentContext' showLoading='false'/>
+    <Fragment contents='global_recordsViewFragmentContext' showLoading='false'/>
+
+    <SidebarContent
+        records="global_records"
+        recordAdd="runFlow_showRecordAddModal"
+        recordClick="runFlow_showRecordViewModal"
+        recordsView="runFlow_navigateRecordsViewAll"
+        flowArgs:subjectID='global_subjectID'
+        flowArgs:referenceType='global_referenceType'
+        flowArgs:calledFromSidebar='1'
+    />
+</PageFragment>
+
+
+
+<!--     <Data
+        name="recordsBIG"
+        defaultValue='[
+            { "name": "Job Ended",     "variant": "error",    "type": "System",       "snippet": "Job Ended details here." },
+            { "name": "Order Filled",  "variant": "success",  "type": "System",       "snippet": "Order Filled details here." },
+            { "name": "Message",       "variant": "info",     "type": "Message",      "snippet": "Message text here." },
+            { "name": "Intake Update", "variant": "default",  "type": "System",       "snippet": "20 Talent Completed Intake details here." },
+            { "name": "Job Ended",     "variant": "error",    "type": "System",       "snippet": "Job Ended details here." },
+            { "name": "Order Filled",  "variant": "success",  "type": "System",       "snippet": "Order Filled details here." },
+            { "name": "Message",       "variant": "info",     "type": "Message",      "snippet": "Message text here." },
+            { "name": "Intake Update", "variant": "default",  "type": "System",       "snippet": "20 Talent Completed Intake details here." },
+            { "name": "Job Ended",     "variant": "error",    "type": "System",       "snippet": "Job Ended details here." },
+            { "name": "Order Filled",  "variant": "success",  "type": "System",       "snippet": "Order Filled details here." },
+            { "name": "Message",       "variant": "info",     "type": "Message",      "snippet": "Message text here." },
+            { "name": "Intake Update", "variant": "default",  "type": "System",       "snippet": "20 Talent Completed Intake details here." },
+            { "name": "Job Ended",     "variant": "error",    "type": "System",       "snippet": "Job Ended details here." },
+            { "name": "Order Filled",  "variant": "success",  "type": "System",       "snippet": "Order Filled details here." },
+            { "name": "Message",       "variant": "info",     "type": "Message",      "snippet": "Message text here." },
+            { "name": "Intake Update", "variant": "default",  "type": "System",       "snippet": "20 Talent Completed Intake details here." },
+            { "name": "Job Ended",     "variant": "error",    "type": "System",       "snippet": "Job Ended details here." },
+            { "name": "Order Filled",  "variant": "success",  "type": "System",       "snippet": "Order Filled details here." },
+            { "name": "Message",       "variant": "info",     "type": "Message",      "snippet": "Message text here." },
+            { "name": "Intake Update", "variant": "default",  "type": "System",       "snippet": "20 Talent Completed Intake details here." },
+            { "name": "Job Ended",     "variant": "error",    "type": "System",       "snippet": "Job Ended details here." },
+            { "name": "Order Filled",  "variant": "success",  "type": "System",       "snippet": "Order Filled details here." },
+            { "name": "Message",       "variant": "info",     "type": "Message",      "snippet": "Message text here." },
+            { "name": "Intake Update", "variant": "default",  "type": "System",       "snippet": "20 Talent Completed Intake details here." },
+        ]'
+    />
+    <Data
+        name="recordsSMALL"
+        defaultValue='[
+            { "name": "Job Ended",     "variant": "error",    "type": "System",       "snippet": "Job Ended details here." },
+            { "name": "Order Filled",  "variant": "success",  "type": "System",       "snippet": "Order Filled details here." },
+            { "name": "Message",       "variant": "info",     "type": "Message",      "snippet": "Message text here." },
+            { "name": "Intake Update", "variant": "default",  "type": "System",       "snippet": "20 Talent Completed Intake details here." },
+        ]'
+    />
+    <Data
+        name="recordsPRACTICAL"
+        defaultValue='[
+            { "name": "Order Filled",  "variant": "success",  "type": "System",       "snippet": "Order Filled details here." },
+            { "name": "Order Filled",  "variant": "success",  "type": "System",       "snippet": "Order Filled details here." },
+            { "name": "Intake Update", "variant": "default",  "type": "System",       "snippet": "20 Talent Completed Intake details here." },
+            { "name": "Order Filled",  "variant": "success",  "type": "System",       "snippet": "Order Filled details here." },
+            { "name": "Message",       "variant": "info",     "type": "Message",      "snippet": "Message text here." },
+            { "name": "Intake Update", "variant": "default",  "type": "System",       "snippet": "20 Talent Completed Intake details here." },
+            { "name": "Message",       "variant": "info",     "type": "Message",      "snippet": "Message text here." },
+            { "name": "Message",       "variant": "info",     "type": "Message",      "snippet": "Message text here." },
+            { "name": "Intake Update", "variant": "default",  "type": "System",       "snippet": "20 Talent Completed Intake details here." },
+        ]'
+    /> -->

@@ -1,0 +1,137 @@
+<Page>
+    <!-- #region Data -->
+    <Data
+        name='nestedTableExample1'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableOrders'
+    />  
+    <!-- #endregion Data -->
+
+    <!-- #region Flows -->
+    <!-- #endregion Flows -->
+
+
+    <!-- #region Navigation -->
+    <PageNavBar label='Features / Tables / Nest Levels 2'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+    <!-- #endregion Navigation -->
+
+    <!-- #region Content -->
+    <PageContent>
+        <Markdown>
+            This table demonstrates the following:
+                - 2 Levels of nesting where the nesting parameter and visible value are different
+                - Status column using icons
+                - Action column with multiple actions
+
+            ```xml
+            <NestedTable source="nestedTableExample1">
+                <Nest>
+                    <Level
+                        param='ordersTenantBranchID.hidden'
+                    />
+                    <Level
+                        param='ordersOrderID.hidden'
+                    />
+                </Nest>
+                <!-- columns... -->
+            </NestedTable>
+            ```
+            #### Example
+        </Markdown>
+
+        <NestedTable source="nestedTableExample1" collapsible>
+            <Nest>
+                <Level
+                    param='ordersOrderID.hidden'
+                >
+                    <Typography>Order ID: {{row_ordersOrderID.hidden}}</Typography>
+                </Level>
+                <Level
+                    param='ordersShiftID.hidden'
+                >
+                    <Typography>Shift ID: {{row_ordersShiftID.hidden}}</Typography>
+                </Level>
+            </Nest>
+            <Column
+                key='ordersStatus'
+                variant="icon"
+                label='status'
+                labelHidden
+            >
+                <Case
+                    when='filled'
+                    icon='CheckCircle'
+                    color='green800'
+                />
+                <Case
+                    when='partiallyFilled'
+                    icon='Error'
+                    color='amber800'
+                />
+                <Case
+                    when='unfilled'
+                    icon='Cancel'
+                    color='red800'
+                />
+            </Column>
+            <Column
+                key="ordersAssignName"
+                label="Name/Number"
+            />
+            <Column
+                key="ordersStartDate"
+                label="Start Date"
+                variant='date'
+            />
+            <Column
+                key='ordersClientName'
+                label='Client Name'
+            />
+            <Column
+                key='ordersUnfilled'
+                label='Unfilled'
+            />
+            <Column
+                key='ordersTotal'
+                label='Total'
+            />
+            <Column
+                key="ordersBillRate"
+                label="Bill Rate"
+            />
+            <Column
+                key="ordersMargin"
+                label="Margin"
+            />
+            <Column
+                key="ordersPayRate"
+                label="Pay Rate"
+            />
+            <Column label='actions' labelHidden align='right'>
+                <IconButton
+                    icon='OpenInNewRounded'
+                    color='grey700'
+                    useFlow=''
+                />
+                <IconButton
+                    icon='PersonAddAlt1'
+                    color='grey700'
+                    useFlow=''
+                />
+            </Column>
+        </NestedTable>
+    </PageContent>
+    <!-- #endregion Content -->
+</Page>

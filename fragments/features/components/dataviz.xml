@@ -1,0 +1,622 @@
+<!-- @Francisco! -->
+<Page>
+    <!-- DATA -->
+    <Data
+        name='dataVizBar'
+        getData='featuresDataVizBar'
+    />
+    <Data
+        name='dataVizBarStacked'
+        getData='featuresDataVizBarStacked'
+    />
+
+    <!-- FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="Back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Typography variant="h2">
+            Contents
+        </Typography>
+        <Box
+            display='flex'
+            flexDirection="column"
+            gap="1"
+            my="2"
+            marginLeft="8"
+        >
+            <Link
+                href="#example-axis"
+                display='list-item'
+            >Example: Axis</Link>
+            <Link
+                href="#with-label-list"
+                display='list-item'
+            >With Label List</Link>
+            <Link
+                href="#with-theme-colors"
+                display='list-item'
+            >With Theme Colors</Link>
+        </Box>
+        <Box
+            marginBottom="8"
+        >
+            <Alert severity="error">Anchor tags above should work, but they do not</Alert>
+        </Box>
+
+        <Typography
+            id="example-axis"
+            variant="h2"
+            my="2"
+        >
+            Example: Axis
+        </Typography>
+        <Typography>
+            Labels should really look like the code block below and not be props of axes.
+        </Typography>
+        <Box>
+            <CodeBlock>
+                <XAxis
+                    domain='[0, "auto"]'
+                    type='number'
+                >
+                    <Label
+                        value='yAxis'
+                        position='insideBottom'
+                    />
+                </XAxis>
+                <Bar
+                    dataKey='yValue'
+                    fill='#8884d8'
+                >
+                    <Labellist
+                        dataKey='xValue'
+                        position='top'
+                    />
+                </Bar>
+            </CodeBlock>
+        </Box>
+        <Spacing space='2' />
+        <Card
+            label='Horizontal Bar Chart'
+            showMenu='false'
+        >
+            <DataViz
+                title='My Horizontal Bar Chart'
+                type='BarChart'
+                data="global_dataVizBar"
+                layout='vertical'
+                width='1000'
+                height='1000'
+                margin='top:15, bottom:5, right:30, left:20'
+                isAnimationActive="false"
+            >
+                <XAxis
+                    domain='[0, "auto"]'
+                    type='number'
+                >
+                    <Label
+                        value='yAxis'
+                        position='insideBottom'
+                    />
+                </XAxis>
+                <YAxis
+                    dataKey='xValue'
+                    type='category'
+                    width="100"
+                >
+                    <Label
+                        value='xAxis'
+                        position='insideLeft'
+                    />
+                </YAxis>
+                <Bar
+                    dataKey='yValue'
+                    fill='#8884d8'
+                />
+            </DataViz>
+        </Card>
+        <Card
+            label='Vertical Bar Chart'
+            showMenu='false'
+        >
+            <DataViz
+                title='My Vertical Bar Chart'
+                type='BarChart'
+                data="global_dataVizBar"
+                layout='horizontal'
+                width='1000'
+                height='1000'
+                margin='5'
+            >
+                <XAxis
+                    dataKey='xValue'
+                    type='category'
+                >
+                    <Label
+                        value='xAxis'
+                        position='insideBottom'
+                    />
+                </XAxis>
+                <YAxis
+                    domain='[0,"auto"]'
+                    type='number'
+                    width="100"
+                >
+                    <Label
+                        value='yAxis'
+                        position='insideLeft'
+                    />
+                </YAxis>
+                <Bar
+                    dataKey='yValue'
+                    fill='#8884d8'
+                />
+            </DataViz>
+        </Card>
+        <Card
+            label='Horizontal Stacked Bar Chart'
+            showMenu='false'
+        >
+            <DataViz
+                title='My Horizontal Stacked Bar Chart'
+                type='BarChart'
+                data='global_dataVizBarStacked'
+                layout='vertical'
+                width='1000'
+                height='1000'
+                margin='5'
+            >
+                <XAxis
+                    domain='["auto", "auto"]'
+                    type='number'
+                    label='yAxis'
+                    labelPosition='insideBottom'
+                />
+                <YAxis
+                    dataKey='xValue'
+                    type='category'
+                    label='xAxis'
+                    labelPosition='insideLeft'
+                    width="100"
+                />
+                <Bar
+                    dataKey='yValue2021'
+                    fill='#8884d8'
+                    stackId='a'
+                />
+                <Bar
+                    dataKey='yValue2022'
+                    fill='#ff0000'
+                    stackId='a'
+                />
+            </DataViz>
+        </Card>
+        <Card
+            label='Vertical Stacked Bar Chart'
+            showMenu='false'
+        >
+            <DataViz
+                title='My Vertical Stacked Bar Chart'
+                type='BarChart'
+                data='global_dataVizBarStacked'
+                layout='horizontal'
+                width='1000'
+                height='1000'
+                margin='5'
+            >
+                <XAxis
+                    dataKey='xValue'
+                    type='category'
+                    label='xAxis'
+                    labelPosition='insideBottom'
+                />
+                <YAxis
+                    domain='["auto", "auto"]'
+                    type='number'
+                    label='yAxis'
+                    labelPosition='insideLeft'
+                    width="100"
+                />
+                <Bar
+                    dataKey='yValue2021'
+                    fill='#8884d8'
+                    stackId='b'
+                />
+                <Bar
+                    dataKey='yValue2022'
+                    fill='#ff0000'
+                    stackId='b'
+                />
+            </DataViz>
+        </Card>
+        <Card
+            label='Simple Line Chart'
+            showMenu='false'
+        >
+            <Alert>
+                Line type is the interpolation type. See recharts docs for details.
+            </Alert>
+            <DataViz
+                title='My Simple Line Chart'
+                type='LineChart'
+                data='global_dataVizBarStacked'
+                layout='horizontal'
+                width='1000'
+                height='1000'
+                margin='5'
+            >
+                <XAxis
+                    dataKey='xValue'
+                    type='category'
+                    label='xAxis'
+                    labelPosition='insideBottom'
+                />
+                <YAxis
+                    domain='[0, 1600250]'
+                    type='number'
+                    label='yAxis'
+                    labelPosition='insideLeft'
+                    width="100"
+                />
+                <Line
+                    dataKey='yValue2021'
+                    type='linear'
+                    stroke='#ff0000'
+                    fill='#ff0000'
+                />
+                <Line
+                    dataKey='yValue2022'
+                    type='linear'
+                    stroke='#8884d8'
+                    fill='#8884d8'
+                />
+            </DataViz>
+        </Card>
+        <Alert>
+            Don't worry about the Bar Chart with Target Line yet.  Do the others first and then come back to this.
+        </Alert>
+        <Card
+            label='Bar Chart With Target Line'
+            showMenu='false'
+        >
+            <DataViz
+                title='My Vertical Bar Chart'
+                type='ComposedChart'
+                data="global_dataVizBar"
+                layout='horizontal'
+                width='800'
+                height='500'
+                margin='20'
+            >
+                <!-- <CartesianGrid strokeDasharray="3 3" />
+                <Tooltip /> -->
+
+                <XAxis
+                    dataKey='xValue'
+                    type='category'
+                >
+                    <Label
+                        value='xAxis'
+                        position='insideBottom'
+                    />
+                </XAxis>
+                <YAxis
+                    domain='[0,1750000]'
+                    type='number'
+                    width="100"
+                >
+                    <Label
+                        value='yAxis'
+                        position='insideLeft'
+                    />
+                </YAxis>
+                <Area
+                    type="monotone"
+                    dataKey="yAverage"
+                    stroke="#8884d8"
+                    fill="yellow"
+                />
+                <Bar
+                    dataKey='yValue'
+                    fill='#8884d8'
+                />
+                <Line
+                    type="monotone"
+                    dataKey="yAverage"
+                    stroke="#ff7300"
+                /> 
+                <Scatter
+                    dataKey="yAverage"
+                    fill="red"
+                /> 
+            </DataViz>
+        </Card>
+
+        <!-- @Francisco will add his own examples here -->
+        <Card
+            label="Area Chart"
+            showMenu="false"
+        >
+            <DataViz
+                title='Area Chart'
+                type='AreaChart'
+                data="global_dataVizBar"
+                width='800'
+                height='500'
+                margin='top:10, bottom:0, right:30, left:0'
+            >
+                <XAxis dataKey="xValue" />
+                <YAxis
+                    dataKey="yValue"
+                    domain="[0, 1750000]"
+                    width="100"
+                />
+                <Tooltip />
+                <Area
+                    type="monotone"
+                    dataKey="yValue"
+                    stroke="#8884d8"
+                    fill="#8884d8"
+                />
+            </DataViz>
+        </Card>
+        <Card
+            label='Responsive Bar Chart'
+            showMenu='false'
+        >
+            <DataViz
+                title='My Responsive Horizontal Bar Chart'
+                type='BarChart'
+                data="global_dataVizBar"
+                layout='vertical'
+                height='250'
+                margin='top:5, bottom:5, right:10, left:10'
+            >
+                <XAxis
+                    domain='[0, "auto"]'
+                    type='number'
+                    label='yAxis'
+                    labelPosition='insideBottom'
+                />
+                <YAxis
+                    dataKey='xValue'
+                    type='category'
+                    label='xAxis'
+                    labelPosition='insideLeft'
+                    width="100"
+                />
+                <Bar
+                    dataKey='yValue'
+                    fill='#8884d8'
+                />
+            </DataViz>
+        </Card>
+        <!-- With Legend -->
+        <Card
+            label='With Legend and Tooltip Bar Chart'
+            showMenu='false'
+        >
+            <DataViz
+                title='My Responsive Horizontal Bar Chart'
+                type='BarChart'
+                data="global_dataVizBar"
+                layout='vertical'
+                height='250'
+                margin='top:5, bottom:5, right:10, left:10'
+            >
+                <XAxis
+                    domain='[0, "auto"]'
+                    type='number'
+                    label='yAxis'
+                    labelPosition='insideBottom'
+                />
+                <YAxis
+                    dataKey='xValue'
+                    type='category'
+                    label='xAxis'
+                    labelPosition='insideLeft'
+                    width="100"
+                />
+                <Bar
+                    dataKey='yValue'
+                    fill='#8884d8'
+                />
+                <CartesianGrid strokeDasharray="3 3" />
+                <Tooltip />
+                <Legend
+                    iconType='star'
+                    iconSize='20'
+                />
+            </DataViz>
+        </Card>
+        <!-- With LabelList -->
+        <Card
+            label='With LabelList'
+            showMenu='false'
+        >
+            <DataViz
+                title='My Bar Chart with LabelList'
+                type='BarChart'
+                data="global_dataVizBar"
+                layout='vertical'
+                height='250'
+                margin='top:5, bottom:5, right:10, left:10'
+            >
+                <XAxis
+                    domain='[0, 1700000]'
+                    type='number'
+                    label='yAxis'
+                    labelPosition='insideBottom'
+                />
+                <YAxis
+                    dataKey='xValue'
+                    type='category'
+                    label='xAxis'
+                    labelPosition='insideLeft'
+                    width="100"
+                />
+                <Bar
+                    dataKey='yValue'
+                    fill='#8884d8'
+                >
+                    <LabelList
+                        dataKey="yValue"
+                        position="insideRight"
+                    />
+                </Bar>
+                <Tooltip />
+                <Legend
+                    iconType='star'
+                    iconSize='20'
+                />
+            </DataViz>
+        </Card>
+        <Card
+            id="with-label-list"
+            label='Vertical Bar Chart with LabelList'
+            showMenu='false'
+        >
+            <DataViz
+                title='My Vertical Bar Chart with LabelList'
+                type='BarChart'
+                data="global_dataVizBar"
+                layout='horizontal'
+                width='500'
+                height='500'
+                margin='top:15, bottom:5, right:30, left:20'
+            >
+                <XAxis
+                    dataKey='xValue'
+                    type='category'
+                >
+                    <Label
+                        value='xAxis'
+                        position='insideBottom'
+                    />
+                </XAxis>
+                <YAxis
+                    domain='[0,1700000]'
+                    type='number'
+                    width="100"
+                >
+                    <Label
+                        value='yAxis'
+                        position='insideLeft'
+                    />
+                </YAxis>
+                <Bar
+                    dataKey='yValue'
+                    fill='#8884d8'
+                >
+                    <LabelList
+                        dataKey="yValue"
+                        position="insideTop"
+                        angle="45"
+                    />
+                </Bar>
+            </DataViz>
+        </Card>
+        <!-- With Label (WIP) -->
+        <Card
+            label='Vertical Bar Chart with Label (WIP) - Not showing =/'
+            showMenu='false'
+        >
+            <DataViz
+                title='Vertical Bar Chart with Label'
+                type='BarChart'
+                data="global_dataVizBar"
+                layout='horizontal'
+                width='730'
+                height='250'
+                margin='top:15, bottom:5, right:30, left:20'
+            >
+             <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey='xValue'>
+                    <Label
+                        value='Label for xAxis'
+                        position='insideBottom'
+                        offset="0"
+                    />
+                </XAxis>
+                <YAxis
+                    domain='[0,1700000]'
+                    dataKey='yValue'
+                    width="100"
+                >
+                    <Label
+                        value='Label for yAxis'
+                        content="hsaushauau"
+                        position='insideLeft'
+                    />
+                </YAxis>
+                <Bar
+                    dataKey='yValue'
+                    fill='#8884d8'
+                />
+                <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical="false"
+                />
+            </DataViz>
+        </Card>
+        <!-- Color Playground -->
+        <Card
+            id="with-theme-colors"
+            label='With theme colors'
+            showMenu='false'
+        >
+            <DataViz
+                title='Bar Chart with theme colors'
+                type='BarChart'
+                data="global_dataVizBar"
+                layout='vertical'
+                height='250'
+                margin='top:5, bottom:5, right:10, left:10'
+            >
+                <XAxis
+                    domain='[0, 1700000]'
+                    type='number'
+                    label='yAxis'
+                    labelPosition='insideBottom'
+                />
+                <YAxis
+                    dataKey='xValue'
+                    type='category'
+                    label='xAxis'
+                    labelPosition='insideLeft'
+                    width="100"
+                />
+                <Bar
+                    dataKey='yValue'
+                    fill='orange500'
+                >
+                    <LabelList
+                        dataKey="yValue"
+                        position="insideRight"
+                        fill='teal'
+                    />
+                </Bar>
+                <Tooltip />
+                <Legend
+                    iconType='star'
+                    iconSize='20'
+                />
+            </DataViz>
+        </Card>
+    </PageContent>
+</Page>

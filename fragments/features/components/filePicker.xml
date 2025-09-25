@@ -1,0 +1,135 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data
+        name='selectedFiles'
+    />
+    <Data
+        name='docDescription'
+        defaultValue=''
+    />
+    <Data
+        name='docTypeId'
+        defaultValue='1'
+    />
+    <Data
+        name='uploadResults'
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key="filesSetData" debug>
+        <SetData
+            name="uploadResults"
+            data=''
+        />
+        <SetData
+            name="flowArgs.dataName"
+            data='flowArgs.files'
+        />
+    </Flow>
+
+    <Flow key="submitFiles">
+        <SetData
+            name="uploadResults"
+            data='loading'
+        />
+        <Query
+            proc="ui.sp_Upsert"
+            call="documentUpload"
+            flatParams="false"
+            param_files='global_selectedFiles'
+            param_documentDescription='global_docDescription'
+            param_documentTypeId='global_docTypeId'
+            out_uploadResults='results._'
+        />
+        <SetData
+            name="selectedFiles"
+            data=''
+        />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Components / FilePicker'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="Back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+
+        <Markdown>
+            This is a demonstration of both FilePicker component and a Query call to documentUpload.
+
+            FilePicker is currently a custom component in hominid; we will add it to the framework lib when/if it is settled.
+            
+            TODO: Could we instead use a TextField with type="file"?
+
+            ```xml
+                <FilePicker
+                    dataName="selectedFiles"
+                    selectFileFn="runFlow_filesSetData"
+                    label="Select File"
+                />
+            ```
+
+            ### File Upload Notes
+            Description is optional
+            Document type id should map to a system document type, eg. W4, drugScreen, WOTC, etc
+            ```xml
+              <Query
+                    proc="ui.sp_Upsert"
+                    call="documentUpload"
+                    flatParams="false"
+                    param_files='global_selectedFiles'
+                    param_documentDescription='global_docDescription'
+                    param_documentTypeId='global_docTypeId'
+                    out_results='results'
+                />
+            ```
+
+            ---
+
+            Demo
+        </Markdown>
+        <Box
+            display='flex'
+            flexDirection="column"
+            justifyContent="flex-start"
+            gap="2"
+            sx:mb="300px"
+        >
+            <TextField
+                label="Description"
+                value="global_docDescription"
+            />
+            <TextField
+                label="Type Id"
+                value="global_docTypeId"
+            />
+            <FilePicker
+                dataName="selectedFiles"
+                selectFileFn="runFlow_filesSetData"
+                label="Select File"
+            />
+            <Button
+                label="Upload"
+                href="flow:submitFiles"
+                sx:ml="auto"
+                sx:mt="1em"
+            />
+            <Typography
+                textContent="global_uploadResults"
+                sx:ml="auto"
+            />
+        </Box>
+    </PageContent>
+</Page>

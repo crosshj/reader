@@ -1,0 +1,178 @@
+<Page>
+    <Trigger handler='shouldBeCalledWhenOpening' />
+    <Trigger handler='shouldBeCalledWhenOpening2' />
+    <Trigger onClose handler='shouldBeCalledBeforeClosing' />
+
+    <!-- FLOWS -->
+    <Flow key='shouldBeCalledWhenOpening'>
+        <Confirm title='Should be called when opening'>
+            Hey! I was automatically called by the trigger.
+            
+            This is what you should use to query required data
+            or
+            show a popup when the page loads.
+        </Confirm>
+    </Flow>
+
+    <Flow key='shouldBeCalledWhenOpening2'>
+        <Confirm title='Should be called when opening'>
+            You can also use multiple triggers. This is another flow.
+        </Confirm>
+    </Flow>
+
+    <Flow key='shouldBeCalledBeforeClosing'>
+        <Confirm title='Should be called before CLOSING'>
+            Are you sure you wanna leave the page?
+        </Confirm>
+
+        <Navigate route='{{flowArgs.nextRoutePath}}' />
+    </Flow>
+
+    <Flow debug key='triggerFlowInsideFlow'>
+        <Confirm title='I come from flow 1'>
+            I come from flow 1
+        </Confirm>
+
+        <LocalData name="dataOnFlow1" data="static_123" />
+
+        <Case when='true IS true'>
+            <TriggerFlow handler='thisFlowIsCalledByAnotherFlow' forwardFlowArgs />
+        </Case>
+
+        <TriggerFlow handler='unknownFlow'/>
+
+        <Confirm title='I am after trigger...'>
+            local data on flow1: {{ flowArgs.dataOnFlow1 }}
+            
+            query result from flow2: {{ global_featuresTriggerQueryResult }}
+            local data on flow2: {{ flowArgs.definedInFlow2 }}
+        </Confirm>
+    </Flow>
+
+    <Flow key='thisFlowIsCalledByAnotherFlow'>
+        <Query
+            showLoading
+            exec='ui.sp_OLYesNo'
+        >
+            <SetData
+                name="global_featuresTriggerQueryResult"
+                data="results.0.DisplayValue"
+            />
+        </Query>
+
+        <LocalData name="definedInFlow2" data="static_999999" />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Flows / Triggers">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button href="/features" label="back"/>
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Typography variant="h4" whiteSpace="pre-wrap">
+            Triggers are different ways of running flows.
+        </Typography>
+
+        <Typography variant="body1" whiteSpace="pre-wrap" sx:my='1'>
+            Previously we only supported running flows based on user events, such as clicking a button.
+
+            Flows give the builder the ability to run a flow right after the page loads or before the page closes.
+
+            It is mostly used to fetch required data before loading a page or to save progress before leaving it.
+        </Typography>
+
+        <Divider sx="my:4" />
+
+        <Box display='flex' alignItems='center'>
+            <IconButton
+                disabled
+                icon='CheckCircleRounded'
+                color='green800'
+            />
+            <Typography variant="body1" whiteSpace="pre-wrap">
+                Trigger flows when page loads
+            </Typography>
+        </Box>
+        
+        <Box>
+            <CodeBlock>
+                <Trigger handler='shouldBeCalledWhenOpening' />
+                <Trigger handler='shouldBeCalledWhenOpening2' />
+
+                <Flow key='shouldBeCalledWhenOpening'>   
+                    <Confirm title='Should be called when opening'>
+                        Hey! I was automatically called by the trigger.
+                        
+                        This is what you should use to query required data
+                        or
+                        show a popup when the page loads.
+                    </Confirm>
+                </Flow>
+                <Flow key='shouldBeCalledWhenOpening2'>
+                    <Confirm title='Should be called when opening'>
+                        You can also use multiple triggers. This is another flow.
+                    </Confirm>
+                </Flow>
+            </CodeBlock>
+        </Box>
+
+        <Divider sx="my:4" />
+
+        <Box display='flex' alignItems='center'>
+            <IconButton
+                disabled
+                icon='CheckCircleRounded'
+                color='green800'
+            />
+            <Typography variant="body1">
+                To trigger flow before leaving page, use the "onClose" prop.
+            </Typography>
+        </Box>
+        <Typography variant="p">
+            To run this, click on a menu link or on the  page header "Back" button.
+        </Typography>
+        <Box>
+            <CodeBlock>
+                <Trigger onClose handler='shouldBeCalledBeforeClosing' />
+
+                <Flow key='shouldBeCalledBeforeClosing'>   
+                    <Confirm title='Should be called before CLOSING'>
+                    Are you sure you wanna leave the page?
+                    </Confirm>
+
+                    <Navigate route='{{flowArgs.nextRoutePath}}' />
+                </Flow>
+            </CodeBlock>
+        </Box>
+        <Alert>
+            1. Please notice the "Navigate" with "flowArgs.nextRoutePath" as the route.
+
+            This is REQUIRED for all flows that are triggered with "onClose".
+            
+            Why? In order to run the flow, we must stop the default behavior of leaving the page,
+            therefore giving the Flow the responsibility of doing that. 
+
+            We could do this automtically, yes, but there are a lot of abstractions in place here and
+            we figured it was better for the builder to do it manually since it makes it more predictable.
+        </Alert>
+
+        <Divider sx="my:4" /> 
+
+        <Button
+            href="flow:triggerFlowInsideFlow"
+        >
+            Trigger flow inside flow
+        </Button>
+
+        <Box for="spacing" mb="300px" />
+
+    </PageContent>
+</Page>

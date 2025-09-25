@@ -1,0 +1,455 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data
+        name='userSettingsSelectedTab'
+        defaultValue='0'
+    />
+    <Data
+        name='userSettingsEdit'
+        defaultValue="{'personalInfo':0,'contactInfo':0,'payInfo':0}"
+    />
+    <Data
+        name='userSettingsTalentData'
+        getData='dbo.sp_TalentGetByUserID'
+    />
+
+    <Data
+        name='userSettingsBranchesList'
+    />
+    <Data
+        name="userSettingsBranchesSelected"
+    />
+    <!-- #endregion PAGE DATA -->
+
+    <Flow key="branchesRead">
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='ui.sp_OLUsersBranchesGetbyUserID'
+        >
+            <SetData
+                name='global_userSettingsBranchesList'
+                data='results'
+            />
+        </Query>
+        <Cookie
+            method="get"
+            name="CURRENTBRANCH"
+        />
+        <SetData
+            name='global_userSettingsBranchesSelected'
+            data='flowArgs.cookie.CURRENTBRANCH, global_userSettingsBranchesList[0].value'
+        />
+    </Flow>
+    <Trigger handler='branchesRead' />
+
+    <Flow key="branchesSetCurrent">
+        <Confirm title='Change Branch'>
+            Your current branch will now change and the page will refresh.
+            Would you like to continue?
+        </Confirm>
+        <Cookie
+            method="set"
+            name="CURRENTBRANCH"
+            data="global_userSettingsBranchesSelected"
+        />
+        <Navigate hard route='refresh' />
+    </Flow>
+
+    <Flow key="passwordReset">
+        <Navigate hard route='/api/auth/reset' />
+    </Flow>
+
+    <!-- #region CREATE/UPDATE SIGNATURE -->
+    <Data
+        name='userSettingsSignatureShow'
+        defaultValue='false'
+    />
+    <Data
+        name='userSettingsSignature'
+    />
+    <Flow key='signatureOpen'>
+        <Case when='HASROLES(Talent)'>
+            <Navigate route='/userManageSignature' />
+        </Case>
+        <Query
+            proc='ui.sp_Upsert'
+            call="documentDownload"
+            flatParams="false"
+            param_documentType='static_signature'
+            out_userSettingsSignature='results.results[0].value'
+        />
+        <SetData
+            name='global_userSettingsSignatureShow'
+            data='true'
+        />
+    </Flow>
+    <Flow key='signatureClose'>
+        <SetData
+            name='global_userSettingsSignatureShow'
+            data='false'
+        />
+    </Flow>
+    <Flow key='signatureSubmit'>
+        <Query
+            proc='ui.sp_Upsert'
+            call="documentUpload"
+            flatParams="false"
+            param_files='global_userSettingsSignature'
+            param_documentType='static_signature'
+        />
+        <SetData
+            name='global_userSettingsSignatureShow'
+            data='false'
+        />
+    </Flow>
+    <Flow key='updateSignature'>
+        <SetData
+            name='global_userSettingsSignature'
+            data='flowArgs.signatureFiles'
+        />
+    </Flow>
+    
+    <Dialog
+        useData='userSettingsSignatureShow'
+        height='auto'
+    >
+        <Box
+            width="100%"
+            height="100%"
+            sx:overflowX="auto"
+            sx:overflowY="hidden"
+        >
+            <Signature
+                label='Signature'
+                border="1px solid #ccc"
+                value='global_userSettingsSignature'
+                onEnd="runFlow_updateSignature"
+                onClear="runFlow_updateSignature"
+                xs='12'
+            />
+        </Box>
+        <Box display='flex' justifyContent='space-between' mt='20px'>
+            <Button
+                label='Cancel'
+                href='flow:signatureClose'
+            />
+            <Button
+                label='Create/Update'
+                variant='primary'
+                href='flow:signatureSubmit'
+            />
+        </Box>
+    </Dialog>
+    <!-- #endregion CREATE/UPDATE SIGNATURE -->
+
+    <!-- #region ACCOUNT INFO TAB DATA/FLOWS -->
+    <Data
+        name='userSettingsRolesList'
+        getData='dbo.sp_UsersRoleGetByUserID'
+        param_callAsSelf='static_1'
+    />
+    <Flow key='personalInfoEdit'>
+        <SetData
+            name='userSettingsEdit.personalInfo'
+            data='static_1'
+        />
+    </Flow>
+    <Flow key='personalInfoEditCancel'>
+        <SetData
+            name='userSettingsEdit.personalInfo'
+            data='static_0'
+        />
+    </Flow>
+    <Flow key='personalInfoEditSubmit'>
+        <Query
+            exec='dbo.sp_UserUpdateName'
+            param_firstName='global_userSettingsTalentData.0.FirstName'
+            param_lastName='global_userSettingsTalentData.0.LastName'
+        />
+        <Query
+            exec='dbo.sp_TalentUpdateBySection'
+            param_UpdateName='static_1'
+            param_talentID='global_userSettingsTalentData.0.TalentID'
+            param_FirstName='global_userSettingsTalentData.0.FirstName'
+            param_LastName='global_userSettingsTalentData.0.LastName'
+        />
+        <SetData
+            name='userSettingsEdit.personalInfo'
+            data='static_0'
+        />
+    </Flow>
+    <!-- #endregion ACCOUNT INFO TAB DATA/FLOWS -->
+
+    <!-- #region CONTACT INFO TAB DATA/FLOWS -->
+    <Flow key='contactInfoEdit'>
+        <SetData
+            name='userSettingsEdit.contactInfo'
+            data='static_1'
+        />
+    </Flow>
+    <Flow key='contactInfoEditCancel'>
+        <SetData
+            name='userSettingsEdit.contactInfo'
+            data='static_0'
+        />
+    </Flow>
+    <Flow key='contactInfoEditSubmit'>
+        <Query
+            exec='dbo.sp_UserUpdateContactInfo'
+            param_talentID='global_userSettingsTalentData.0.TalentID'
+            param_Phone='global_userSettingsTalentData.0.phoneNum'
+            param_Email='global_userSettingsTalentData.0.emailAddress'
+            param_SendSMS='global_userSettingsTalentData.0.SendSMSUpdates'
+            param_SendEmail='global_userSettingsTalentData.0.SendEmailUpdates'
+        />
+        <SetData
+            name='userSettingsEdit.contactInfo'
+            data='static_0'
+        />
+    </Flow>
+    <!-- #endregion CONTACT INFO TAB DATA/FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='My Settings'>
+        <Tooltip Description='My account description'/>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box
+            display='flex'
+            justifyContent='flex-start'
+            alignItems='center'
+            gap='1'
+            sx:py='2'
+        >
+            <Button
+                label='Manage Signature'
+                variant='secondary'
+                href='flow:signatureOpen'
+            />
+            <Button
+                label='Reset Password'
+                variant='secondary'
+                href='flow:passwordReset'
+            />
+        </Box>
+        <Spacing space='1' />
+        <Tabs
+            useData='userSettingsSelectedTab'
+            color='secondary'
+        >
+            <Tab label='Account Info' />
+            <Tab label='Contact Info' />
+        </Tabs>
+        <TabContainer useData='userSettingsSelectedTab'>
+            <!-- #region ACCOUNT INFO TAB -->
+            <Box 
+                sx:py='2'
+                sx:width="100%"
+                sx:display="flex"
+                flexDirection='column'
+                sx:alignItems="center"
+                sx:justifyContent="space-between"
+            >
+                <GridContainer>
+                    <Box 
+                        display='flex'
+                        justifyContent='flex-end'
+                        gap='1'
+                        xs='12'
+                    >
+                        <IconButton
+                            icon='Edit'
+                            color='grey700'
+                            href='flow:personalInfoEdit'
+                            sx:display='WHEN global_userSettingsEdit.personalInfo IS 1 THEN none ELSE inline-flex'
+                        />
+                        <IconButton
+                            icon='Cancel'
+                            color='grey700'
+                            href='flow:personalInfoEditCancel'
+                            sx:display='WHEN global_userSettingsEdit.personalInfo IS 1 THEN inline-flex ELSE none'
+                        />
+                        <IconButton
+                            icon='Save'
+                            color='grey700'
+                            href='flow:personalInfoEditSubmit'
+                            sx:display='WHEN global_userSettingsEdit.personalInfo IS 1 THEN inline-flex ELSE none'
+                        />
+                    </Box>
+                    <TextField
+                        label='First Name'
+                        value='global_userSettingsTalentData.0.FirstName'
+                        fullWidth
+                        disabled='WHEN global_userSettingsEdit.personalInfo IS 1 THEN false ELSE true'
+                        variant='WHEN global_userSettingsEdit.personalInfo IS 1 THEN outlined ELSE standard'
+                        xs='6'
+                    />
+                    <TextField
+                        label='Last Name'
+                        value='global_userSettingsTalentData.0.LastName'
+                        fullWidth
+                        disabled='WHEN global_userSettingsEdit.personalInfo IS 1 THEN false ELSE true'
+                        variant='WHEN global_userSettingsEdit.personalInfo IS 1 THEN outlined ELSE standard'
+                        xs='6'
+                    />
+                </GridContainer>
+                <Box
+                    display='WHEN global_userSettingsRolesList.0.nonTalentRoleCnt IS NOT 0 THEN flex ELSE none'
+                    flexDirection='column'
+                    sx:width="100%"
+                >
+                    <Spacing space='4' />
+                    <TextField
+                        select
+                        label='Current Branch'
+                        options='global_userSettingsBranchesList'
+                        value='global_userSettingsBranchesSelected'
+                        onChange="runFlow_branchesSetCurrent"
+                        fullWidth
+                        xs='6'
+                    />
+                    <Spacing space='4' />
+                    <Typography variant='h2'>
+                        Roles
+                    </Typography>
+                    <NestedTable
+                        source='userSettingsRolesList'
+                        collapsible='false'
+                    >
+                        <Column
+                            label='Role'
+                            justifyContent='start'
+                            width='max-content'
+                        >
+                            <Typography>
+                                {{row_RoleName}}
+                            </Typography>
+                        </Column>
+                        <Column
+                            label='Organization'
+                            justifyContent='start'
+                        >
+                            <Typography>
+                                {{row_BranchName}}
+                            </Typography>
+                        </Column>
+                    </NestedTable>
+                </Box>
+<!--                 <Spacing space='2'/>
+                <Divider />
+                <Spacing space='2' />
+                <GridContainer>
+                    <Typography variant='h2' xs='12'>
+                        System Settings
+                    </Typography>
+                    <TextField
+                        label='Time Format'
+                        value=''
+                        fullWidth
+                        disabled='WHEN global_userSettingsEdit.personalInfo IS 1 THEN false ELSE true'
+                        xs='6'
+                    />
+                    <TextField
+                        label='Color Settings'
+                        value=''
+                        fullWidth
+                        disabled='WHEN global_userSettingsEdit.personalInfo IS 1 THEN false ELSE true'
+                        xs='6'
+                    />
+                </GridContainer> -->
+            </Box>
+            <!-- #endregion ACCOUNT INFO TAB -->
+            
+            <!-- #region CONTACT INFO TAB -->
+            <Box
+                sx:py='2'
+                sx:width="100%"
+                sx:display="flex"
+                sx:alignItems="center"
+                flexDirection='column'
+                sx:justifyContent="space-between"
+            >
+                <GridContainer>
+                    <Box
+                        display='flex'
+                        justifyContent='space-between'
+                        xs='12'
+                    >
+                        <Typography variant='h2' xs='12'>
+                            Methods of Contact
+                        </Typography>
+                        <Box 
+                            display='flex'
+                            justifyContent='flex-end'
+                            gap='1'
+                        >
+                            <IconButton
+                                icon='Edit'
+                                color='grey700'
+                                href='flow:contactInfoEdit'
+                                sx:display='WHEN global_userSettingsEdit.contactInfo IS 1 THEN none ELSE inline-flex'
+                            />
+                            <IconButton
+                                icon='Cancel'
+                                color='grey700'
+                                href='flow:contactInfoEditCancel'
+                                sx:display='WHEN global_userSettingsEdit.contactInfo IS 1 THEN inline-flex ELSE none'
+                            />
+                            <IconButton
+                                icon='Save'
+                                color='grey700'
+                                href='flow:contactInfoEditSubmit'
+                                sx:display='WHEN global_userSettingsEdit.contactInfo IS 1 THEN inline-flex ELSE none'
+                            />
+                        </Box>
+                    </Box>
+                    <TextField
+                        label='Phone #'
+                        value='global_userSettingsTalentData.0.phoneNum'
+                        fullWidth
+                        disabled='WHEN global_userSettingsEdit.contactInfo IS 1 THEN false ELSE true'
+                        variant='WHEN global_userSettingsEdit.contactInfo IS 1 THEN outlined ELSE standard'
+                        xs='6'
+                    />
+                    <TextField
+                        label='Email Address'
+                        value='global_userSettingsTalentData.0.emailAddress'
+                        fullWidth
+                        disabled='WHEN global_userSettingsEdit.contactInfo IS 1 THEN false ELSE true'
+                        variant='WHEN global_userSettingsEdit.contactInfo IS 1 THEN outlined ELSE standard'
+                        xs='6'
+                    />
+                    <Box
+                        display='flex'
+                        justifyContent='flex-start'
+                        alignItems='center'
+                        xs='6'
+                    >
+                        <Checkbox
+                            checked='global_userSettingsData.0.SendSMSUpdates'
+                            useData='userSettingsTalentData.0.SendSMSUpdates'
+                            disabled='WHEN global_userSettingsEdit.contactInfo IS 1 THEN false ELSE true'
+                        />
+                        <Typography>Receive notifications via text message</Typography>
+                    </Box>
+                    <Box
+                        display='flex'
+                        justifyContent='flex-start'
+                        alignItems='center'
+                        xs='6'
+                    >
+                        <Checkbox
+                            checked='global_userSettingsData.0.SendEmailUpdates'
+                            useData='userSettingsTalentData.0.SendEmailUpdates'
+                            disabled='WHEN global_userSettingsEdit.contactInfo IS 1 THEN false ELSE true'
+                        />
+                        <Typography>Receive notifications via text message</Typography>
+                    </Box>
+                </GridContainer>
+            </Box>
+            <!-- #endregion CONTACT INFO TAB -->
+        </TabContainer>
+    </PageContent>
+</Page>

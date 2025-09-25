@@ -1,0 +1,198 @@
+<Page>
+
+    <!-- DATA -->
+    <Data
+        name="arrayParam"
+        defaultValue="[1,2,3,4]"
+    />
+    <Data
+        name="arrayParamResult"
+        defaultValue=""
+    />
+    <Data
+        name="nastyGlobalParams"
+        defaultValue='{
+            "longBlankString": "           "
+        }'
+    />
+
+    <Data name="paybillChildTalentPayAssignments" />
+    <Data
+        name='paybillChildTalentPayPayPeriodDetails'
+        getData='dbo.sp_PayPeriodGetByPayPeriodID'
+        param_payPeriodID='static_78'
+    />
+    <Data
+        name='paybillChildTalentPayAdditionalPays'
+        defaultValue="{assignment: '-99', payType: '4', regularTime: '0', overTime: '0', doubleTime: '0', totalHours: '0' }"
+    />
+
+    <!-- FLOWS -->
+    <Flow key='issueQuery'>
+        <Query
+            exec='featuresMirrorRequest'
+            param_skills='global_arrayParam'
+            out_arrayParamResult='results'
+        />
+    </Flow>
+    <Flow key='querySetData'>
+        <Query
+            proc='ui.sp_Upsert'
+            procArgs='ui.sp_OLActiveAssignmentsByTalentIDDates'
+            param_resultFormat='options'
+            param_talentID='static_409'
+            param_rangeStartDT='global_paybillChildTalentPayPayPeriodDetails.0.PeriodStartDT'
+            param_rangeEndDT='global_paybillChildTalentPayPayPeriodDetails.0.PeriodEndDT'
+            out_paybillChildTalentPayAssignments="results"
+        />
+    </Flow>
+
+    <Flow key="querySendLongBlankString">
+        <SetData name="global_querySendLongBlankStringLoading" data="true" />
+        <Query
+            exec='featuresMirrorRequest'
+            param_longBlankString='global_nastyGlobalParams.longBlankString:forceString'
+            out_querySendLongBlankStringResults="results"
+        />
+        <SetData name="global_querySendLongBlankStringLoading" data="false" />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Flows / Query Params'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            ## Query With Long Blank String
+
+            if the thing is a string and you want it to stay a string, use :forceString
+
+            ```xml
+                <Query
+                    exec='featuresMirrorRequest'
+                    param_longBlankString='global_nastyGlobalParams.longBlankString:forceString'
+                    out_querySendLongBlankStringResults="results"
+                />
+            ```
+        </Markdown>
+        <Button
+            label='Query With Long Blank String'
+            href='flow:querySendLongBlankString'
+        />
+        <Typography
+            display="WHEN global_querySendLongBlankStringLoading IS true THEN block ELSE none"
+            textContent="loading..."
+            marginTop="1em"
+        />
+        <Box
+            display="WHEN global_querySendLongBlankStringLoading ISNOT true THEN block ELSE none"
+        >
+            <Box 
+                display="WHEN global_querySendLongBlankStringResults ISNOT undefined THEN block ELSE none"
+                marginTop="1em"
+            >
+                <Markdown>
+                    NOTE: JsonView may make string look short, check `currentState.querySendLongBlankStringResults` to see actual string length!
+                </Markdown>
+                <JsonView
+                    src="global_querySendLongBlankStringResults"
+                    dark="WHEN theme_mode IS NOT light"
+                />
+            </Box>
+        </Box>
+
+        <Markdown>
+            ## Query With Array Params
+
+            Will call query with array value, ie. skills = 1,2,3,4.  Should see results which indicate this happened.
+
+            ```xml
+                <Data
+                    name="arrayParam"
+                    defaultValue="[1,2,3,4]"
+                />
+                <Flow key='issueQuery'>
+                    <Query
+                        exec='featuresMirrorRequest'
+                        param_skills='global_arrayParam'
+                        out_arrayParamResult='results'
+                    />
+                </Flow>
+            ```
+        </Markdown>
+        <Button
+            label='Query with Array params'
+            flow='issueQuery'
+        />
+        <Box 
+            display="WHEN global_arrayParamResult ISNOT undefined THEN block ELSE none"
+            marginTop="1em"
+        >
+            <JsonView
+                src="global_arrayParamResult"
+                dark="WHEN theme_mode IS NOT light"
+            />
+        </Box>
+
+
+
+        <Markdown>
+            ## Query With ResultFormat
+
+            NOTE: the following example does seem to work and is NOT the use case that gets used often.
+
+            Instead, we should highlight the case that does get used, ie.  `resultFormat='static_aggregate->someProp'`
+
+            ```xml
+                <Data name="paybillChildTalentPayAssignments" />
+                <Data
+                    name='paybillChildTalentPayPayPeriodDetails'
+                    getData='dbo.sp_PayPeriodGetByPayPeriodID'
+                    param_payPeriodID='static_78'
+                />
+                <Data
+                    name='paybillChildTalentPayAdditionalPays'
+                    defaultValue="{assignment: '-99', payType: '4', regularTime: '0', overTime: '0', doubleTime: '0', totalHours: '0' }"
+                />
+                <Flow key='querySetData'>
+                    <Query
+                        proc='ui.sp_Upsert'
+                        procArgs='ui.sp_OLActiveAssignmentsByTalentIDDates'
+                        param_resultFormat='options'
+                        param_talentID='static_409'
+                        param_rangeStartDT='global_paybillChildTalentPayPayPeriodDetails.0.PeriodStartDT'
+                        param_rangeEndDT='global_paybillChildTalentPayPayPeriodDetails.0.PeriodEndDT'
+                        out_paybillChildTalentPayAssignments="results"
+                    />
+                </Flow>
+            ```
+        </Markdown>
+        <Button
+            label='Query With ResultFormat'
+            href='flow:querySetData'
+        />
+        <Box 
+            display="WHEN global_paybillChildTalentPayAssignments ISNOT undefined THEN block ELSE none"
+            marginTop="1em"
+        >
+            <JsonView
+                src="global_paybillChildTalentPayAssignments"
+                dark="WHEN theme_mode IS NOT light"
+            />
+        </Box>
+
+        <Box for="spacing" sx:mb="300px"/>
+    </PageContent>
+</Page>

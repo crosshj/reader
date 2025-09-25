@@ -1,0 +1,120 @@
+<Page key="featuresComponentsDialog">
+    <!-- #region PAGE DATA -->
+    <Data name="showBasicDialog" />
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key='openBasicDialog'>
+        <SetData
+            name='global_showBasicDialog'
+            data='true'
+        />
+    </Flow>
+    <Flow key='closeBasicDialog'>
+        <SetData
+            name='global_showBasicDialog'
+            data='false'
+        />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Dialog">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            ### Basic Example
+            ```xml
+                <Button
+                    textContent="Open Basic Dialog"
+                    href="flow:openBasicDialog"
+                />
+
+                <Dialog
+                    useData='showBasicDialog'
+                    hideCloseButton='false'
+                    height='auto'
+                >
+                    ... content ...
+                </Dialog>
+            ```
+        </Markdown>
+
+        <Button
+            textContent="Open Basic Dialog"
+            href="flow:openBasicDialog"
+        />
+
+        <Dialog
+            useData='showBasicDialog'
+            hideCloseButton='false'
+            height='auto'
+        >
+            <Typography variant='h2'>
+                Basic Dialog
+            </Typography>
+
+            <Box
+                className="flex-column"
+                gap="2"
+                sx:overflowY="auto"
+                mt="1em"
+                minHeight="500px"
+                maxHeight="60vh"
+            >
+                <Box
+                    for="scrolled content simulation"
+                    className="flex-column justify-between items-center"
+                    minHeight="6000px"
+                    sx:background="
+                        linear-gradient(to bottom, transparent 1500px, #000000 100%),
+                        linear-gradient(to bottom, #e5f6fd 0%, #e5f6fd 1000px)
+                    "
+                    color="white"
+                    sx:py="2em"
+                >
+                    <Box 
+                        sx:color="black"
+                        sx:width="1000px"
+                    >
+                        dialog content goes here, Y scroll is forced for effect, X scroll is arbitrary
+                    </Markdown>
+                    <Markdown>
+                        _"Success is how high you bounce when you hit bottom."_ - George S. Patton
+                    </Markdown>
+                </Box>
+
+            </Box>
+
+            <Spacing space='1' />
+            <Box
+                display='flex'
+                alignItems='center'
+                justifyContent='space-between'
+            >
+                <Button
+                    label='Cancel'
+                    href='flow:closeBasicDialog'
+                />
+                <Button
+                    label='Submit'
+                    variant='primary'
+                    href='flow:closeBasicDialog'
+                />
+            </Box>
+        </Dialog>
+
+    </PageContent>
+</Page>

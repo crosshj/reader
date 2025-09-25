@@ -1,0 +1,94 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data name="theme" />
+
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key="changeTheme" debug>
+        <SetData name='global_theme' data='flowArgs.theme' />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Components / Typography">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box className="flex-row items-center" gap="1">
+            <Typography textContent="THEME: "/>
+            <Button textContent="Light" href="flow:changeTheme" flowArgs:theme="light" />
+            <Button textContent="Dark" href="flow:changeTheme" flowArgs:theme="dark" />
+            <Button textContent="green" href="flow:changeTheme" flowArgs:theme="green" />
+            <Button textContent="Orange" href="flow:changeTheme" flowArgs:theme="orange" />
+        </Box>
+
+        <Markdown>
+            ```xml
+                <Typography variant="someVariant">
+                    Some Text
+                </Typography>
+            ```
+            You can use one of variants according to the theme.  Below are examples of each of the supported variants.
+            See also [MUI Theme Default](https://mui.com/material-ui/customization/default-theme/) and [MUI theme docs](https://mui.com/material-ui/customization/theming/)
+            ---
+            ## Examples
+        </Markdown>
+
+        <Typography variant="h1">
+            h1. Heading
+        </Typography>
+        <Typography variant="h2">
+            h2. Heading
+        </Typography>
+        <Typography variant="h3">
+            h3. Heading
+        </Typography>
+        <Typography variant="h4">
+            h4. Heading
+        </Typography>
+        <Typography variant="h5">
+            h5. Heading
+        </Typography>
+        <Typography variant="h6" mb="2" >
+            h6. Heading
+        </Typography>
+        <Typography variant="subtitle1" mb="2">
+            subtitle1. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos blanditiis tenetur
+        </Typography>
+        <Typography variant="subtitle2" mb="2">
+            subtitle2. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos blanditiis tenetur
+        </Typography>
+        <Typography variant="body1" mb="2">
+            body1. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos blanditiis tenetur unde suscipit, quam beatae rerum inventore consectetur, neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti? Eum quasi quidem quibusdam.
+        </Typography>
+        <Typography variant="body2" mb="2">
+            body2. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos blanditiis tenetur unde suscipit, quam beatae rerum inventore consectetur, neque doloribus, cupiditate numquam dignissimos laborum fugiat deleniti? Eum quasi quidem quibusdam.
+        </Typography>
+        <Typography variant="button">
+            button. text
+        </Typography>
+        <Typography variant="caption">
+            caption. text
+        </Typography>
+        <Typography variant="overline">
+            overline. text
+        </Typography>
+        <Typography variant="totalsItemVizValue">
+           totalsItemVizValue
+        </Typography>
+
+        <Box for="spacing" mb="300px" />
+    </PageContent>
+</Page>

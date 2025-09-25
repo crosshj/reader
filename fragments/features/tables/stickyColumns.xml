@@ -1,0 +1,219 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='tableData'
+        getData='featuresTablesAddons'
+    />
+
+    <!-- FLOWS -->
+    <Flow key="simpleFlow">
+        <Confirm title="Do Nothing">
+            This does nothing, okay?
+        </Confirm>
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Tables / Sticky Columns">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box py="2">
+            <Typography>
+                When table is so wide that it scrolls, some columns should remain present by sticky to the scrollable container.
+            </Typography>
+        </Box>
+
+        <Box>
+            <CodeBlock marginBottom="4">
+                <NestedTable>
+                    <!-- { the other column definitions here } -->
+                    <Column
+                        label="actions"
+                        labelHidden
+                        width="80px"
+                        cell.position="sticky"
+                        right="0"
+                        background="#ccc"
+                        cell.background="#fafafa"
+                        boxShadow="#ccc 1px 0px 0px 0px"
+                    >
+                        <IconButton
+                            icon='OpenInNewWindow'
+                            color='grey700'
+                            href="flow:simpleFlow"
+                            target='_blank'
+                        />
+                    </Column>
+                </NestedTable>
+            </CodeBlock>
+        </Box>
+
+        <Typography
+            variant="h3"
+            marginBottom="2"
+        >
+            Live Example
+        </Typography>
+        <NestedTable
+            source='tableData'
+            collapsible="false"
+            indented="false"
+        >
+            <Column
+                label='ID'
+                width="min-content"
+            >
+                <Typography>{{row_myID}}</Typography>
+            </Column>
+            <Column
+                label='First'
+                width='min-content'
+            >
+                <Typography>{{row_firstName}}</Typography>
+            </Column>
+            <Column label='Last'>
+                <Typography>{{row_lastName}}</Typography>
+            </Column>
+            <Column
+                label='Hours One'
+                width='min-content'
+                align="right"
+            >
+                <Typography>{{row_hours:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Hours Two'
+                width='min-content'
+                align="right"
+            >
+                <Typography>{{row_hours:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Hours Three'
+                width='min-content'
+                align="right"
+            >
+                <Typography>{{row_hours:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Hours Four'
+                width='min-content'
+                align="right"
+            >
+                <Typography>{{row_hours:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Hours Five'
+                width='min-content'
+                align="right"
+            >
+                <Typography>{{row_hours:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Hours Six'
+                width='min-content'
+                align="right"
+            >
+                <Typography>{{row_hours:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Dollars One'
+                width='min-content'
+                align="right"
+                background=""
+                backgroundHeader=""
+            >
+                <Typography>{{row_dollars:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Dollars Two'
+                width='min-content'
+                align="right"
+                background=""
+                backgroundHeader=""
+            >
+                <Typography>{{row_dollars:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Dollars Three'
+                width='min-content'
+                align="right"
+                background=""
+                backgroundHeader=""
+            >
+                <Typography>{{row_dollars:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Dollars Four'
+                width='min-content'
+                align="right"
+                background=""
+                backgroundHeader=""
+            >
+                <Typography>{{row_dollars:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Dollars Five'
+                width='min-content'
+                align="right"
+                background=""
+                backgroundHeader=""
+            >
+                <Typography>{{row_dollars:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Dollars Six'
+                width='min-content'
+                align="right"
+                background=""
+                backgroundHeader=""
+            >
+                <Typography>{{row_dollars:fixed2}}</Typography>
+            </Column>
+            <Column
+                label="Stuck"
+                position="sticky"
+                right="80px"
+                width="100px"
+                background="#eee"
+                paddingLeft="1em"
+                boxShadow="#ccc -1px 0px 0px 0px"
+                cell.background="#fafafa"
+                margin="0"
+                align="center"
+            >
+                <Typography>---</Typography>
+            </Column>
+            <Column
+                label="actions"
+                labelHidden
+                position="sticky"
+                right="0"
+                width="80px"
+                background="#eee"
+                cell.background="#fafafa"
+                boxShadow="#ccc 1px 0px 0px 0px"
+                margin="0"
+            >
+                <IconButton
+                    icon='OpenInNewWindow'
+                    color='grey700'
+                    href="flow:simpleFlow"
+                    target='_blank'
+                />
+            </Column>
+        </NestedTable>
+    </PageContent>
+</Page>

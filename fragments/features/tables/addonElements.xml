@@ -1,0 +1,157 @@
+<Page>
+    <!-- DATA -->
+    <Data
+        name='tableData'
+        getData='featuresTablesAddons'
+    />
+
+    <Data
+        name='totalsData'
+        getData='featuresTablesAddonsTotals'
+    />
+
+    <!-- FLOWS -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Tables / Addon Elements">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box py="2">
+            <Typography>
+                include elements within table which use its grid dimensions but are otherwise independent of table
+            </Typography>
+        </Box>
+
+        <Typography
+            variant="h3"
+            marginBottom="2"
+        >
+            Basic Code Example
+        </Typography>
+        <Box>
+            <CodeBlock marginBottom="4">
+                <NestedTable>
+                    <!-- { the usual column definitions here } -->
+                    <Addon background="blue900">
+                        <Column span="3">
+                            <Typography>Wide Row</Typography>
+                        </Column>
+                        <Column align="right">
+                            <Typography>{{global_someValue.one:fixed2}}</Typography>
+                        </Column>
+                        <Column align="right">
+                            <Typography>{{global_someValue.two:fixed2}}</Typography>
+                        </Column>
+                    </Addon>
+                </NestedTable>
+            </CodeBlock>
+        <Box>
+
+        <Typography
+            variant="h3"
+            marginBottom="2"
+        >
+            Live Example
+        </Typography>
+        <NestedTable
+            source='tableData'
+            collapsible="false"
+            indented="false"
+        >
+            <Column
+                label='ID'
+                width="min-content"
+            >
+                <Typography>{{row_myID}}</Typography>
+            </Column>
+            <Column
+                label='First'
+                width='min-content'
+            >
+                <Typography>{{row_firstName}}</Typography>
+            </Column>
+            <Column label='Last'>
+                <Typography>{{row_lastName}}</Typography>
+            </Column>
+            <Column
+                label='Hours'
+                width='min-content'
+                align="right"
+            >
+                <Typography>{{row_hours:fixed2}}</Typography>
+            </Column>
+            <Column
+                label='Dollars'
+                width='min-content'
+                align="right"
+                background=""
+                backgroundHeader=""
+            >
+                <Typography>{{row_dollars:fixed2}}</Typography>
+            </Column>
+
+            <Addon
+                background="grey500"
+                color="white"
+            >
+                <Column span="3">
+                    <Typography>Gross Totals</Typography>
+                </Column>
+                <Column align="right">
+                    <Typography
+                    >{{global_totalsData.sub.hours:fixed2}}</Typography>
+                </Column>
+                <Column align="right">
+                    <Typography
+                    >{{global_totalsData.sub.dollars:fixed2}}</Typography>
+                </Column>
+            </Addon>
+
+            <Addon
+                background="indigo500"
+                color="white"
+            >
+                <Column span="4">
+                    <Typography>Modifier</Typography>
+                </Column>
+                <Column align="right">
+                    <Typography
+                    >{{global_totalsData.modifier:percent}}</Typography>
+                </Column>
+            </Addon>
+
+            <Addon
+                background="indigo700"
+                color="white"
+            >
+                <Column span="3">
+                    <Typography>Net Totals</Typography>
+                </Column>
+                <Column align="right">
+                    <Typography>
+                        {{global_totalsData.grand.hours:fixed2}}
+                    </Typography>
+                </Column>
+                <Column align="right">
+                    <Typography>
+                        {{global_totalsData.grand.dollars:fixed2}}
+                    </Typography>
+                </Column>
+            </Addon>
+
+        </NestedTable>
+    </PageContent>
+</Page>

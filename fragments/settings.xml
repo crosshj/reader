@@ -1,0 +1,26 @@
+<Page>
+    <Data
+        name='contacts'
+        getData='ui.sp_UIContextGetComponentsByUserID'
+        debug="true"
+    />
+
+    <Flow key='goBack'>
+    </Flow>
+
+    <PageNavBar label="User Settings">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+        </Box>
+    </PageNavBar>
+
+    <PageContent>
+        <Typography>
+            User Settings Page!
+        </Typography>
+    </PageContent>
+</Page>

@@ -1,0 +1,763 @@
+<Page>
+    <!-- #region Data -->
+    <Data
+        name='nestedLevels3'
+        proc='ui.sp_GetResourceListViews'
+        procArg='featuresNestedTableLevels3Complex'
+    />
+
+    <!-- #endregion Data -->
+
+    <!-- #region flows -->
+    <Flow key='addFirstLevel'>
+        <Confirm title="addFirstLevel">
+            Add a new row to the table (no row-associated info is relevant)!
+            But... feel free to look in your dev console!
+
+            BONUS: this flow will also set table to loading state if you press Yes.
+        </Confirm>
+        <SetData
+            name="global_nestedLevels3"
+            data="undefined"
+        />
+    </Flow>
+    <Flow key='addFirstLevelChild'>
+        <Confirm title="addFirstLevelChild" alertText="Okay">
+            Add a new row at {{flowArgs.firstLevelName}}!
+
+            Look at flowArgs in your dev console for more information!
+        </Confirm>
+    </Flow>
+    <Flow key='addSecondLevelChild'>
+        <Confirm title="addSecondLevelChild" alertText="Okay">
+            Add a new row at {{flowArgs.secondLevelName}}!
+
+            Look at flowArgs in your dev console for more information!
+        </Confirm>
+    </Flow>
+    <Flow key='addThirdLevelChild'>
+        <Insert
+            name="global_nestedLevels3"
+            firstLevelName="flowArgs.firstLevelName"
+            firstLevelName="flowArgs.firstLevelName"
+            secondLevelName="flowArgs.secondLevelName"
+            secondLevelName="flowArgs.secondLevelName"
+            thirdLevelName="flowArgs.thirdLevelName"
+            thirdLevelName="flowArgs.thirdLevelName"
+            editing="true"
+        />
+    </Flow>
+    <Flow key='rowActionDelete'>
+        <Confirm title="Does This Make Sense?" alertText="Not Sure">
+            Does this action always make sense, ie. can you delete a nest?
+
+            Look at flowArgs in your dev console for more information!
+        </Confirm>
+    </Flow>
+    <Flow key='rowActionEdit'>
+        <SetData
+            name="global_nestedLevels3[flowArgs.index].editing"
+            data="true"
+        />
+    </Flow>
+    <Flow key='rowActionSubmit'>
+        <SetData
+            name="global_nestedLevels3[flowArgs.index].editing"
+            data="undefined"
+        />
+        <SetData
+            name="global_nestedLevels3"
+            data="global_nestedLevels3"
+        />
+    </Flow>
+
+    <!-- #endregion flows -->
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label='Features / Tables / Complex 1'>
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Markdown>
+            This page is mostly the same as [/features/data/complex1](/features/data/complex1), but has a ton more tables added at the bottom.
+        </Markdown>
+
+        <Markdown>
+            ## Three Nest Levels
+            - firstLevelName
+            - secondLevelName
+            - thirdLevelName
+        </Markdown>
+
+        <NestedTable 
+            source="nestedLevels3"
+            collapsible="true"
+        >
+            <Nest>
+                <Level param='firstLevelName'>
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_firstLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+
+                    <!-- NEW FEATURE: Addon for nest -->
+                    <Addon>
+                        <Column span="auto" align="center">
+                            <Link
+                                href="flow:addFirstLevelChild"
+                                textContent="+ First Level Child"
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+
+                <Level param='secondLevelName' collapsible="false">
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_secondLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+
+                    <!-- NEW FEATURE: Addon for nest -->
+                    <Addon>
+                        <Column span="auto" align="center">
+                            <Link
+                                href="flow:addSecondLevelChild"
+                                textContent="+ Second Level Child"
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+
+                <Level param='thirdLevelName' collapsible="false">
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_thirdLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+
+                    <!-- NEW FEATURE: Addon for nest -->
+                    <Addon>
+                        <Column span="auto" align="center">
+                            <Link
+                                href="flow:addThirdLevelChild"
+                                textContent="+ Third Level Child"
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+            </Nest>
+
+            <Column label="First Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_nestedChildName}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_nestedChildName"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Second Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Third Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Fourth Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Fifth Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column width='min-content' paddingLeft="0" paddingRight="0">
+                <!-- Actions -->
+                <IconButton
+                    sx:display="WHEN row_editing IS undefined THEN inline-flex ELSE none"
+                    icon='Edit'
+                    color='grey700'
+                    href="flow:rowActionEdit"
+                />
+                <IconButton
+                    sx:display="WHEN row_editing IS true THEN inline-flex ELSE none"
+                    icon='Send'
+                    color='grey700'
+                    href="flow:rowActionSubmit"
+                />
+            </Column>
+            <Column width='min-content' >
+                <!-- Actions Spacer: because expander/contracter -->
+            </Column>
+
+            <Addon background='var(--nest-level-1-bg)' borderRadius="6px">
+                <Column span="auto" align="center">
+                    <Link
+                        href="flow:addFirstLevel"
+                        textContent="+ First Level"
+                    />
+                </Column>
+                <!-- WARNING:
+                    at this level, more than one column not currently supported by span="auto"
+                -->
+            </Addon>
+        </NestedTable>
+
+        <Markdown>
+            ## Two Nest Levels
+            - secondLevelName
+            - thirdLevelName
+        </Markdown>
+        <NestedTable
+            source="nestedLevels3"
+            collapsible="true"
+        >
+            <Nest>
+                <Level param='secondLevelName'>
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_secondLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+                    <Addon>
+                        <Column span="auto" align="center">
+                            <Link
+                                href="flow:addSecondLevelChild"
+                                textContent="+ Second Level Child"
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+
+                <Level param='thirdLevelName' collapsible="false">
+                    <Header>
+                        <Column span="5">
+                            <Typography>{{row_thirdLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+                    <Addon>
+                        <Column span="auto" align="center">
+                            <Link
+                                href="flow:addThirdLevelChild"
+                                textContent="+ Third Level Child"
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+            </Nest>
+
+
+            <Column label="First Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_nestedChildName}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_nestedChildName"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Second Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Third Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Fourth Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Fifth Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column width='min-content' paddingLeft="0" paddingRight="0">
+                <!-- Actions -->
+                <IconButton
+                    sx:display="WHEN row_editing IS undefined THEN inline-flex ELSE none"
+                    icon='Edit'
+                    color='grey700'
+                    href="flow:rowActionEdit"
+                />
+                <IconButton
+                    sx:display="WHEN row_editing IS true THEN inline-flex ELSE none"
+                    icon='Send'
+                    color='grey700'
+                    href="flow:rowActionSubmit"
+                />
+            </Column>
+            <Column width='min-content' >
+                <!-- Actions Spacer: because expander/contracter -->
+            </Column>
+        </NestedTable>
+
+
+        <Markdown>
+            ## One Nest Level
+            - thirdLevelName
+
+            *This is technically a special case of 2 nest levels: the grey box (header only and one child) and the inner white box(no header, children only).  It is faked here because white (inner nest level) on white (page) does not show contrast.
+            If you are having trouble seeing it, compare white boxes here to the "real" 2-level nests above.  Here, there's only ever one white box per grey box; there you'll see multiple.*
+        </Markdown>
+        <NestedTable
+            source="nestedLevels3"
+            collapsible="true"
+        >
+            <Nest>
+                <Level param='thirdLevelName' collapsible>
+                    <Header>
+                        <Column span="auto">
+                            <Typography>{{row_thirdLevelName}}</Typography>
+                        </Column>
+                        <Column paddingLeft="0" paddingRight="0">
+                            <IconButton
+                                icon='Delete'
+                                color='grey700'
+                                href="flow:rowActionDelete"
+                            />
+                        </Column>
+                    </Header>
+                    <Addon>
+                        <Column span="auto" align="center">
+                            <Link
+                                href="flow:addThirdLevelChild"
+                                textContent="+ Third Level Child"
+                            />
+                        </Column>
+                    </Addon>
+                </Level>
+            </Nest>
+
+
+            <Column label="First Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_nestedChildName}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_nestedChildName"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Second Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Third Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Fourth Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Fifth Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column width='min-content' paddingLeft="0" paddingRight="0">
+                <!-- Actions -->
+                <IconButton
+                    sx:display="WHEN row_editing IS undefined THEN inline-flex ELSE none"
+                    icon='Edit'
+                    color='grey700'
+                    href="flow:rowActionEdit"
+                />
+                <IconButton
+                    sx:display="WHEN row_editing IS true THEN inline-flex ELSE none"
+                    icon='Send'
+                    color='grey700'
+                    href="flow:rowActionSubmit"
+                />
+            </Column>
+            <Column width='min-content' >
+                <!-- Actions Spacer: because expander/contracter -->
+            </Column>
+        </NestedTable>
+
+        <Markdown>
+            ## No Nest Levels
+            [none]
+        </Markdown>
+        <NestedTable
+            source="nestedLevels3"
+        >
+
+            <Column label="First Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_nestedChildName}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_nestedChildName"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Second Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Third Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Fourth Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Fifth Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column width='min-content' paddingLeft="0" paddingRight="0">
+                <!-- Actions -->
+                <IconButton
+                    sx:display="WHEN row_editing IS undefined THEN inline-flex ELSE none"
+                    icon='Edit'
+                    color='grey700'
+                    href="flow:rowActionEdit"
+                />
+                <IconButton
+                    sx:display="WHEN row_editing IS true THEN inline-flex ELSE none"
+                    icon='Send'
+                    color='grey700'
+                    href="flow:rowActionSubmit"
+                />
+            </Column>
+
+
+            <Addon background='var(--nest-level-1-bg)' borderRadius="6px">
+                <Column span="auto" align="center">
+                    <Link
+                        href="flow:addFirstLevel"
+                        textContent="+ First Level"
+                    />
+                </Column>
+                <!-- WARNING:
+                    at this level, more than one column not currently supported by span="auto"
+                -->
+            </Addon>
+        </NestedTable>
+
+        <Markdown>
+            ## No Nest Levels (but wrapped in param = *)
+            - `param=*`
+
+            *This is a special case of 2 nest levels: one huge grey box(with no header) and lots of inner white boxes (no header, single child). This is done for presentation purposes.*
+
+        </Markdown>
+        <NestedTable
+            source="nestedLevels3"
+        >
+            <Nest>
+                <Level param="*" />
+            </Nest>
+
+            <Column label="First Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_nestedChildName}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_nestedChildName"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Second Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Third Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Fourth Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column label="Fifth Column">
+                <Typography
+                    display="WHEN row_editing IS undefined THEN block ELSE none"
+                >
+                    {{row_myIndex}}
+                </Typography>
+                <TextField
+                    sx:display="WHEN row_editing IS true THEN block ELSE none"
+                    type="text"
+                    value="row_myIndex"
+                    autoComplete='off'
+                />
+            </Column>
+            <Column width='min-content' paddingLeft="0" paddingRight="0">
+                <!-- Actions -->
+                <IconButton
+                    sx:display="WHEN row_editing IS undefined THEN inline-flex ELSE none"
+                    icon='Edit'
+                    color='grey700'
+                    href="flow:rowActionEdit"
+                />
+                <IconButton
+                    sx:display="WHEN row_editing IS true THEN inline-flex ELSE none"
+                    icon='Send'
+                    color='grey700'
+                    href="flow:rowActionSubmit"
+                />
+            </Column>
+
+
+            <Addon background='var(--nest-level-1-bg)' borderRadius="6px">
+                <Column span="auto" align="center">
+                    <Link
+                        href="flow:addFirstLevel"
+                        textContent="+ First Level"
+                    />
+                </Column>
+                <!-- WARNING:
+                    at this level, more than one column not currently supported by span="auto"
+                -->
+            </Addon>
+        </NestedTable>
+
+        <Box _for="pageOverScroll" height="300px" />
+
+    </PageContent>
+</Page>

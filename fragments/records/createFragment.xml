@@ -1,0 +1,483 @@
+<!--
+    assumes
+
+    global_referenceType: one of [Talent, Client, JobSite]
+    global_subjectID: one of [Talent id, Client id, JobSite id]
+-->
+<PageFragment>
+    <Data
+        name='recordsCreateFragmentModalShow'
+        defaultValue='false'
+    />
+    <Data
+        name="createdRecord" 
+        defaultValue="{
+                recordType: null,
+                recordName: '',
+                content: '',
+                docID: null
+            }"
+    />
+    <Data name='calledFromSidebar' defaultValue='0' />
+    <!--
+    <Data
+        name="recordTypesDB"
+        getData='ui.sp_OLRecordTypes'
+    />
+    -->
+    <Data
+        name="recordTypesAll"
+        defaultValue='[
+            { "label": "Attachment", "value": 2 },
+            { "label": "Note", "value": 3 }
+        ]'
+    />
+    <Data
+        name="recordTypesNoAttachment"
+        defaultValue='[
+            { "label": "Note", "value": 3 }
+        ]'
+    />
+    <Data
+        name='selectedFiles'
+        defaultValue="false"
+    />
+    <Data name='recordsCreateFragmentSubjectID' defaultValue='null'/>
+    <Data name='recordsCreateFragmentRefType' />
+    <Data
+        name='recordsCreateFragmentRefTypeList' 
+        getData=' ui.sp_OLRecordReferenceTypes'
+    />
+    <Data
+        name='recordsCreateFragmentSubjectIDList'
+        getData='ui.sp_OLRecordSubjectIDsByRefType'
+        param_refType='global_recordsCreateFragmentRefType'
+    />
+    <Data
+        name='recordsCreateFragmentDocumentUploadData'
+        defaultValue="{
+                    'id':null,
+                    'DocumentDescrip':'',
+                    'DocumentType': null,
+                    'DocumentData': null,
+                    'DocumentName':'',
+                    'ExpirationDate':'',
+                    }"
+    />
+    <Data
+        name='recordsCreateFragmentDocumentSelected'
+        defaultValue='false'
+    />
+    <Data
+        name='recordsCreateFragmentTalentDocumentTypes'
+        getData='ui.sp_OLDocumentTypesGetActive'
+        param_referenceType='static_talent'
+    />
+    <Data
+        name='recordsCreateFragmentClientDocumentTypes'
+        getData='ui.sp_OLDocumentTypesGetActive'
+        param_referenceType='static_client'
+    />
+
+    <!-- #region VALIDATION -->
+    <Data
+        name='schema.recordsCreateFragmentCreatedRecord'
+        getData='schemasRecordsCreate'
+    />
+    <Data
+        name='schema.recordsCreateFragmentCreatedRecordErrors'
+        defaultValue='undefined'
+    />
+    <!-- #endregion VALIDATION -->
+
+    <Flow key='showRecordAddModal'>
+        <SetData
+            name='global_recordsCreateFragmentSubjectID'
+            data='flowArgs.subjectID'
+        />
+        <Case when='global_recordsCreateFragmentSubjectID IS -1'>
+            <SetData
+                name='global_recordsCreateFragmentSubjectID' 
+                data='static_null'
+            />
+        </Case>
+        <Case when='global_recordsCreateFragmentSubjectID IS undefined'>
+            <SetData
+                name='global_recordsCreateFragmentSubjectID' 
+                data='static_null'
+            />
+        </Case>
+        <SetData
+            name='global_recordsCreateFragmentRefType'
+            data='flowArgs.referenceType'
+        />
+        <SetData
+            name='global_calledFromSidebar'
+            data='flowArgs.calledFromSidebar'
+        />
+        <SetData
+            name="global_createdRecord"
+            data="{
+                recordType: 3,
+                recordName: '',
+                content: '',
+                docID: null
+            }" 
+        />
+        <SetData
+            name='global_recordsCreateFragmentModalShow'
+            data='true'
+        />
+    </Flow>
+    <Flow key='hideRecordAddModal'>
+        <SetData
+            name="global_createdRecord"
+            data="{
+                recordType: 3,
+                recordName: '',
+                content: '',
+                docID: null
+            }"
+        />
+        <SetData
+            name='global_recordsCreateFragmentDocumentUploadData'
+            data="{
+                    'id':null,
+                    'DocumentDescrip':'',
+                    'DocumentType': null,
+                    'DocumentData': null,
+                    'DocumentName':'',
+                    'ExpirationDate':'',
+                    }"
+        />
+        <SetData
+            name='global_schema.recordsCreateFragmentErrors'
+            data='undefined'
+        />
+        <SetData
+            name='global_recordsCreateFragmentModalShow'
+            data='false'
+        />
+    </Flow>
+    <Flow key='recordSubmit'>
+        <Validate
+            schema='global_schema.recordsCreateFragmentCreatedRecord'
+            data='global_createdRecord'
+            errors='global_schema.recordsCreateFragmentCreatedRecordErrors'
+        />
+        <Case when='global_createdRecord.recordType IS NOT 2'>
+            <Query
+                exec='rec.sp_RecordCreate'
+                param_subjectID='global_recordsCreateFragmentSubjectID'
+                param_referenceType='global_recordsCreateFragmentRefType'
+                param_recordType='global_createdRecord.recordType'
+                param_recordName='global_createdRecord.recordName'
+                param_content='global_createdRecord.content'
+            />
+        </Case>
+        <Case when='global_createdRecord.recordType IS 2'>
+            <Query
+                exec='rec.sp_RecordCreate'
+                param_subjectID='global_recordsCreateFragmentSubjectID'
+                param_referenceType='global_recordsCreateFragmentRefType'
+                param_recordType='global_createdRecord.recordType'
+                param_recordName='global_createdRecord.recordName'
+                param_content='global_createdRecord.content'
+                param_documentID='global_createdRecord.docID'
+            />
+        </Case>
+        <SetData
+            name="global_createdRecord"
+            data="{
+                recordType: 3,
+                recordName: '',
+                content: '',
+                docID: null
+            }"
+        />
+    </Flow>
+
+    <Flow key='setGetRecordsData'>
+        <SetData
+            name='global_getRecordsData'
+            data='static_1'
+        />
+    </Flow>
+    <Flow key='setGetListFragmentRecordsData'>
+        <SetData
+            name='global_getRecordsListFragmentData'
+            data='static_1'
+        />
+    </Flow>
+
+    <Flow key="recordsCreateFragmentSelect">
+        <SetData
+            name="uploadResults"
+            data=''
+        />
+        <SetData
+            name='global_recordsCreateFragmentDocumentUploadData.DocumentData'
+            data='flowArgs.files'
+        />
+        <SetData
+            name='global_recordsCreateFragmentDocumentUploadData.DocumentName'
+            data='global_recordsCreateFragmentDocumentUploadData.DocumentData[0].name'
+        />
+        <SetData
+            name='global_recordsCreateFragmentDocumentSelected'
+            data='true'
+        />
+    </Flow>
+    <Flow key="recordsCreateFragmentDocUpload">
+        <SetData
+            name="global_uploadResults"
+            data='loading'
+        />
+        <Query
+            proc="ui.sp_Upsert"
+            call="documentUpload"
+            flatParams="false"
+            param_files='global_recordsCreateFragmentDocumentUploadData.DocumentData'
+            param_documentDescription='global_recordsCreateFragmentDocumentUploadData.DocumentDescrip'
+            param_documentType='global_recordsCreateFragmentDocumentUploadData.DocumentType'
+            out_recordsCreateFragmentDocumentUploadData.id='results.results[0]'
+        />
+        <Case when='global_recordsCreateFragmentRefType IS talent'>
+            <Query
+                exec='dbo.sp_TalentDocumentUploadsUpsert'
+                param_talentID = 'global_recordsCreateFragmentSubjectID'
+                param_documentID = 'global_recordsCreateFragmentDocumentUploadData.id'
+                out_createdRecord.docID='results[0].TalentDocumentUploadsID'
+            />
+        </Case>
+        <Case when='global_recordsCreateFragmentRefType IS clients OR global_recordsCreateFragmentRefType IS prospects'>
+            <Query
+                exec='dbo.sp_BranchClientDocumentUploadsUpsert'
+                param_branchClientID = 'global_recordsCreateFragmentSubjectID'
+                param_documentID = 'global_recordsCreateFragmentDocumentUploadData.id'
+                out_createdRecord.docID='results[0].BranchClientDocumentUploadsID'
+            />
+        </Case>
+<!--         <SetData
+            name='global_recordsCreateFragmentDocumentUploadData'
+            data="{
+                    'id':null,
+                    'DocumentDescrip':'',
+                    'DocumentType': null,
+                    'DocumentData': null,
+                    'DocumentName':'',
+                    'ExpirationDate':'',
+                    }"
+        /> -->
+    </Flow>
+    <Flow key='recordsCreateFragmentUpdateSubjectID'>
+        <SetData
+            name='global_recordsCreateFragmentSubjectID'
+            data='static_null'
+        />
+        <SetData
+            name='global_createdRecord.recordType'
+            data='3'
+        />
+    </Flow>
+
+    <Dialog
+        useData='recordsCreateFragmentModalShow'
+        height='auto'
+    >
+        <Typography variant='h2'>
+            Create a Record
+        </Typography>
+        <Box
+            display='flex'
+            flexDirection='column'
+            paddingTop='2'
+            paddingRight="2"
+            sx:overflowY='auto'
+        >
+            <GridContainer>
+                <TextField
+                    select
+                    label='Reference Type*'
+                    options='global_recordsCreateFragmentRefTypeList'
+                    value='global_recordsCreateFragmentRefType'
+                    onChange='runFlow_recordsCreateFragmentUpdateSubjectID'
+                    fullWidth
+                    xs='12'
+                    sm='6'
+                />
+                <Autocomplete
+                    select
+                    label='Subject ID*'
+                    options='global_recordsCreateFragmentSubjectIDList'
+                    value='global_recordsCreateFragmentSubjectID'
+                    fullWidth
+                    xs='12'
+                    sm='6'
+                />
+                <TextField
+                    label='Record Name*'
+                    value='global_createdRecord.recordName'
+                    fullWidth
+                    xs='12'
+                    disabled='WHEN global_recordsCreateFragmentSubjectID IS null THEN true ELSE false'
+                    
+                    name='recordName'
+                    error='global_schema.recordsCreateFragmentCreatedRecordErrors.recordName'
+                    helperText='global_schema.recordsCreateFragmentCreatedRecordErrors.recordName'
+                />
+                <Box
+                    display='flex'
+                    xs='12'
+                >
+                    <TextField
+                        sx:display='WHEN global_recordsCreateFragmentRefType IS NOT talent
+                                    AND global_recordsCreateFragmentRefType IS NOT clients
+                                    AND global_recordsCreateFragmentRefType IS NOT prospects
+                                    THEN block ELSE none'
+                        label='Record Type*'
+                        select
+                        value='global_createdRecord.recordType'
+                        options="global_recordTypesNoAttachment"
+                        fullWidth
+                        xs='12'
+                        disabled='WHEN global_recordsCreateFragmentSubjectID IS null THEN true ELSE false'
+
+                        name='recordType'
+                        error='global_schema.recordsCreateFragmentCreatedRecordErrors.recordType'
+                        helperText='global_schema.recordsCreateFragmentCreatedRecordErrors.recordType'
+                    />
+                    <TextField
+                        sx:display='WHEN global_recordsCreateFragmentRefType IS talent
+                                    OR global_recordsCreateFragmentRefType IS clients
+                                    OR global_recordsCreateFragmentRefType IS prospects
+                                    THEN block ELSE none'
+                        label='Record Type*'
+                        select
+                        value='global_createdRecord.recordType'
+                        options="global_recordTypesAll"
+                        fullWidth
+                        xs='12'
+                        disabled='WHEN global_recordsCreateFragmentSubjectID IS null THEN true ELSE false'
+
+                        name='recordType'
+                        error='global_schema.recordsCreateFragmentCreatedRecordErrors.recordType'
+                        helperText='global_schema.recordsCreateFragmentCreatedRecordErrors.recordType'
+                    />
+                </Box>
+            </GridContainer>
+            <Spacing space='1' />
+            <Box
+                display="WHEN global_createdRecord.recordType IS 2 THEN flex ELSE none"
+                flexDirection='column'
+                justifyContent='flex-start'
+                alignItems='center'
+                gap='1'
+            >
+                <GridContainer>
+                    <FilePicker
+                        dataName="selectedFiles"
+                        selectFileFn="runFlow_recordsCreateFragmentSelect"
+                        label="Select File"
+                        xs='12'
+                        sm='12'
+                        disabled='WHEN global_recordsCreateFragmentSubjectID IS null THEN true ELSE false'
+                    />
+                    <Box
+                        display='flex'
+                        justifyContent='space-between'
+                        alignItems='center'
+                        xs='4'
+                        sm='4'
+                    >
+                        <TextField
+                            sx:display='WHEN global_recordsCreateFragmentRefType IS talent THEN block ELSE none'
+                            select
+                            label='Document Type*'
+                            options='global_recordsCreateFragmentTalentDocumentTypes'
+                            value='global_recordsCreateFragmentDocumentUploadData.DocumentType'
+                            fullWidth
+                            xs='12'
+                            sm='4'
+                            disabled='WHEN global_recordsCreateFragmentSubjectID IS null THEN true ELSE false'
+                        />
+                        <TextField
+                            sx:display='WHEN global_recordsCreateFragmentRefType IS clients OR
+                                        global_recordsCreateFragmentRefType IS prospects THEN block ELSE none'
+                            select
+                            label='Document Type*'
+                            options='global_recordsCreateFragmentClientDocumentTypes'
+                            value='global_recordsCreateFragmentDocumentUploadData.DocumentType'
+                            fullWidth
+                            xs='12'
+                            sm='4'
+                            disabled='WHEN global_recordsCreateFragmentSubjectID IS null THEN true ELSE false'
+                        />
+                    </Box>
+                    <TextField
+                        label='File Name'
+                        value='global_recordsCreateFragmentDocumentUploadData.DocumentName'
+                        fullWidth
+                        xs='12'
+                        sm='6'
+                        disabled='WHEN global_recordsCreateFragmentSubjectID IS null THEN true ELSE false'
+                    />
+                    <Button
+                        label="Upload"
+                        disabled="WHEN global_recordsCreateFragmentDocumentSelected THEN false ELSE true"
+                        href="flow:recordsCreateFragmentDocUpload"
+                        xs='2'
+                        sm='2'
+                        disabled='WHEN global_recordsCreateFragmentSubjectID IS null THEN true ELSE false'
+                    />
+                </GridContainer>
+            </Box>
+            <Spacing space='1' />
+            <Box
+                display="flex"
+            >
+                <TextField
+                    label='Content*'
+                    value='global_createdRecord.content'
+                    multiline
+                    minRows="4"
+                    fullWidth
+                    disabled='WHEN global_recordsCreateFragmentSubjectID IS null THEN true ELSE false'
+
+                    name='content'
+                    error='global_schema.recordsCreateFragmentCreatedRecordErrors.content'
+                    helperText='global_schema.recordsCreateFragmentCreatedRecordErrors.content'
+                />
+            </Box>
+        </Box>
+        <Spacing space='1' />
+        <Box
+            display='flex'
+            alignItems='center'
+            justifyContent='space-between'
+        >
+            <Button
+                label='Cancel'
+                href='flow:hideRecordAddModal'
+            />
+            <Button
+                sx:display='WHEN global_calledFromSidebar IS 1 THEN block ELSE none'
+                label='Submit'
+                variant='primary'
+                href='flow:recordSubmit,setGetRecordsData,recordsSidebarFragmentGetRecords,hideRecordAddModal'
+                disabled='WHEN global_recordsCreateFragmentSubjectID IS null 
+                            OR global_recordsCreateFragmentRefType IS null
+                            THEN true ELSE false'
+            />
+            <Button
+                sx:display='WHEN global_calledFromSidebar IS NOT 1 THEN block ELSE none'
+                label='Submit'
+                variant='primary'
+                href='flow:recordSubmit,setGetListFragmentRecordsData,recordsListFragmentGetRecords,hideRecordAddModal'
+                disabled='WHEN global_recordsCreateFragmentSubjectID IS null 
+                            OR global_recordsCreateFragmentRefType IS null
+                            THEN true ELSE false'
+            />
+        </Box>
+    </Dialog>
+</PageFragment>

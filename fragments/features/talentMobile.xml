@@ -1,0 +1,69 @@
+<Page>
+    <!-- DATA -->
+    <Data getOpts="talentTalentMobileAssign" />
+    <Data getForm='talentTalentMobileTimeClockStatus' />
+    <Data getList='talentTalentMobileTimesheet' />
+    <Data getData='talentTalentMobileBreakTypes' />
+
+    <!-- FLOWS -->
+
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <TextField
+            select
+            label='Assignments'
+            options='global_talentTalentMobileAssign'
+            value=''
+            fullWidth
+        />
+        <Spacing space='2' />
+        <Typography variant='h2'>
+            Time Clock Status
+        </Typography>
+        <NestedTable source='talentTalentMobileTimeClockStatus'>
+            <Column
+                key='status'
+                label='Status'
+            />
+            <Column
+                key='totHrsWorkedToday'
+                label='Hours Worked'
+            />
+        </NestedTable>
+        <Spacing space='3' />
+        <Typography variant='h2'>
+            Timesheet Data
+        </Typography>
+        <NestedTable source='talentTalentMobileTimesheet'>
+            <Column
+                key='timeTypeText'
+                label='Time'
+            />
+            <Column
+                key='hours'
+                label='Hours'
+            />
+            <Column
+                key='details'
+                label='Details'
+            />
+            <Column
+                key='timeSummary'
+                label='Time Summary'
+            />
+        </NestedTable>
+        <Spacing space='2' />
+        <TextField
+            select
+            label='Break Types'
+            options='global_talentTalentMobileBreakTypes'
+            value=''
+            fullWidth
+        />
+    </PageContent>
+
+    <!-- It's ok if you want to define the entire page in a single component. -->
+    <!-- TALENT CLOCK VIEW -->
+    <TimeClockPage />
+</Page>

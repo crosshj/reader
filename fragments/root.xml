@@ -1,0 +1,59 @@
+<!-- TODO: this probably doesn't work -->
+<LinkMenu key="userprofile" label="Logout" />
+<LinkMenu key="darkLight" label="Dark / Light" />
+<LinkMenu key="userSettings" label="Settings" />
+
+<!-- TODO: make this work -->
+<LinkMenu key="darkMode" label="Dark | Light" icon="DarkMode" />
+<LinkMenu key="feedback" label="Feedback" icon="Lightbulb" />
+<LinkMenu key="settings" label="Settings" icon="Settings" />
+<LinkMenu key="logout" label="Logout" icon="LogoutIcon" />
+
+<!-- project management app -->
+<SidebarMenu key="home" label="Home" icon="Home" />
+<SidebarMenu key="issues" label="Issues" icon="ListAlt" />
+<SidebarMenu key="board" label="Board" icon="ViewKanban" />
+<SidebarMenu key="gantt" label="Gantt Chart" icon="Analytics" />
+<SidebarMenu key="wiki" label="Wiki" icon="MenuBook" />
+<SidebarMenu key="files" label="Files" icon="DriveFolderUpload" />
+<SidebarMenu key="projectSettings" label="Project Settings" icon="AccountTree" />
+<SidebarMenu key="features" label="Features" icon="Settings" />
+
+<!-- e-commerce admin -->
+<!-- <SidebarMenu key="home" label="Dashboard" icon="Dashboard" />
+<SidebarMenu key="orders" label="Orders" icon="ShoppingCart" />
+<SidebarMenu key="products" label="Products" icon="Inventory" />
+<SidebarMenu key="customers" label="Customers" icon="People" />
+<SidebarMenu key="analytics" label="Analytics" icon="BarChart" />
+<SidebarMenu key="marketing" label="Marketing" icon="Campaign" />
+<SidebarMenu key="ecomSettings" label="Settings" icon="Settings" /> -->
+
+<!-- learning management system -->
+<!-- <SidebarMenu key="home" label="Dashboard" icon="Dashboard" />
+<SidebarMenu key="courses" label="Courses" icon="School" />
+<SidebarMenu key="assignments" label="Assignments" icon="Assignment" />
+<SidebarMenu key="grades" label="Grades" icon="Grade" />
+<SidebarMenu key="discussions" label="Discussions" icon="Forum" />
+<SidebarMenu key="calendar" label="Calendar" icon="Event" />
+<SidebarMenu key="resources" label="Resources" icon="LibraryBooks" />
+<SidebarMenu key="lmsSettings" label="Settings" icon="Settings" /> -->
+
+<!-- healthcare dashboard -->
+<!-- <SidebarMenu key="home" label="Overview" icon="Dashboard" />
+<SidebarMenu key="patients" label="Patients" icon="LocalHospital" />
+<SidebarMenu key="appointments" label="Appointments" icon="CalendarToday" />cndyMAN75@$
+
+<SidebarMenu key="records" label="Records" icon="Description" />
+<SidebarMenu key="billing" label="Billing" icon="RequestQuote" />
+<SidebarMenu key="reports" label="Reports" icon="Assessment" />
+<SidebarMenu key="healthSettings" label="Settings" icon="Settings" /> -->
+
+<!-- game analytics -->
+<!-- <SidebarMenu key="home" label="Overview" icon="Dashboard" />
+<SidebarMenu key="players" label="Players" icon="PeopleAlt" />
+<SidebarMenu key="sessions" label="Sessions" icon="AccessTime" />
+<SidebarMenu key="economy" label="Economy" icon="MonetizationOn" />
+<SidebarMenu key="events" label="Events" icon="EventNote" />
+<SidebarMenu key="retention" label="Retention" icon="TrendingUp" />
+<SidebarMenu key="gameSettings" label="Settings" icon="Settings" /> -->
+

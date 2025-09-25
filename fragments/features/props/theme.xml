@@ -1,0 +1,180 @@
+<Page>
+    <!-- #region PAGE DATA -->
+    <Data name="theme" />
+
+    <!-- #endregion PAGE DATA -->
+
+    <!-- FLOWS -->
+    <Flow key="changeTheme" debug>
+        <SetData name='global_theme' data='flowArgs.theme' />
+    </Flow>
+
+    <!-- PAGE NAV BAR-->
+    <PageNavBar label="Features / Props / Theme">
+        <Box
+            display='flex'
+            justifyContent="flex-end"
+            alignItems="center"
+            gap="2"
+        >
+            <Button
+                href="/features"
+                label="back"
+            />
+        </Box>
+    </PageNavBar>
+
+    <!-- PAGE CONTENT -->
+    <PageContent>
+        <Box className="flex-row items-center" gap="1">
+            <Typography textContent="Theme:"/>
+            <Button textContent="Light" href="flow:changeTheme" flowArgs:theme="light" />
+            <Button textContent="Dark" href="flow:changeTheme" flowArgs:theme="dark" />
+            <Button textContent="green" href="flow:changeTheme" flowArgs:theme="green" />
+            <Button textContent="Orange" href="flow:changeTheme" flowArgs:theme="orange" />
+        </Box>
+
+        <Markdown>
+            ```xml
+                <!-- with sx props -->
+                <Box
+                    sx:color="error.main"
+                    sx:backgroundColor="warning.main"
+                    sx:borderColor="warning.dark"
+                    border="1px solid"
+                />
+
+                <!-- with theme props -->
+                <Box
+                    color="theme_palette.error.main"
+                    backgroundColor="theme_palette.warning.main"
+                    border="1px solid {{theme_palette.warning.dark}}"
+                />
+            ```
+            ## References
+            [MUI Theme Default](https://mui.com/material-ui/customization/default-theme/)
+            [MUI theme docs](https://mui.com/material-ui/customization/theming/)
+
+            ## Values
+        </Markdown>
+
+        <Box className="flex-row items-center" gap="1" mb="1">
+            <Typography minWidth="170px">palette.text</Typography>
+            <Typography minWidth="100px" textAlign="right">primary</Typography>
+            <Box sx:backgroundColor="text.primary" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">secondary</Typography>
+            <Box sx:backgroundColor="text.secondary" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">disabled</Typography>
+            <Box sx:backgroundColor="text.disabled" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+        </Box>
+
+        <Box className="flex-row items-center" gap="1" mb="1">
+            <Typography minWidth="170px">palette.background</Typography>
+            <Typography minWidth="100px" textAlign="right">default</Typography>
+            <Box sx:backgroundColor="background.default" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">paper</Typography>
+            <Box sx:backgroundColor="background.paper" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">contrast</Typography>
+            <Box sx:backgroundColor="background.contrast" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+        </Box>
+
+        <Box className="flex-row items-center" gap="1" mb="1">
+            <Typography minWidth="170px">palette.primary</Typography>
+            <Typography minWidth="100px" textAlign="right">main</Typography>
+            <Box sx:backgroundColor="primary.main" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">dark</Typography>
+            <Box sx:backgroundColor="primary.dark" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">light</Typography>
+            <Box sx:backgroundColor="primary.light" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">contrast</Typography>
+            <Box sx:backgroundColor="primary.contrast" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">navbar</Typography>
+            <Box sx:backgroundColor="primary.navbar" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+        </Box>
+
+        <Box className="flex-row items-center" gap="1" mb="1">
+            <Typography minWidth="170px">palette.secondary</Typography>
+            <Typography minWidth="100px" textAlign="right">main</Typography>
+            <Box sx:backgroundColor="secondary.main" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">dark</Typography>
+            <Box sx:backgroundColor="secondary.dark" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">light</Typography>
+            <Box sx:backgroundColor="secondary.light" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">contrast</Typography>
+            <Box sx:backgroundColor="secondary.contrast" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+        </Box>
+
+        <Box className="flex-row items-center" gap="1" mb="1">
+            <Typography minWidth="170px">palette.success</Typography>
+            <Typography minWidth="100px" textAlign="right">main</Typography>
+            <Box sx:backgroundColor="success.main" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">dark</Typography>
+            <Box sx:backgroundColor="success.dark" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">light</Typography>
+            <Box sx:backgroundColor="success.light" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">contrast</Typography>
+            <Box sx:backgroundColor="success.contrast" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+        </Box>
+
+        <Box className="flex-row items-center" gap="1" mb="1">
+            <Typography minWidth="170px">palette.info</Typography>
+            <Typography minWidth="100px" textAlign="right">main</Typography>
+            <Box sx:backgroundColor="info.main" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">dark</Typography>
+            <Box sx:backgroundColor="info.dark" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">light</Typography>
+            <Box sx:backgroundColor="info.light" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">contrast</Typography>
+            <Box sx:backgroundColor="info.contrast" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+        </Box>
+
+        <Box className="flex-row items-center" gap="1" mb="1">
+            <Typography minWidth="170px">palette.warning</Typography>
+            <Typography minWidth="100px" textAlign="right">main</Typography>
+            <Box sx:backgroundColor="warning.main" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">dark</Typography>
+            <Box sx:backgroundColor="warning.dark" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">light</Typography>
+            <Box sx:backgroundColor="warning.light" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">contrast</Typography>
+            <Box sx:backgroundColor="warning.contrast" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+        </Box>
+
+        <Box className="flex-row items-center" gap="1" mb="1">
+            <Typography minWidth="170px">palette.error</Typography>
+            <Typography minWidth="100px" textAlign="right">main</Typography>
+            <Box sx:backgroundColor="error.main" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">dark</Typography>
+            <Box sx:backgroundColor="error.dark" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">light</Typography>
+            <Box sx:backgroundColor="error.light" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+            <Typography minWidth="100px" textAlign="right">contrast</Typography>
+            <Box sx:backgroundColor="error.contrast" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+        </Box>
+
+        <Box className="flex-row items-center" gap="1" mb="1">
+            <Typography minWidth="170px">palette.action</Typography>
+
+            <Typography minWidth="100px" textAlign="right">active</Typography>
+            <Box sx:backgroundColor="action.active" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+
+            <Typography minWidth="100px" textAlign="right">disabled</Typography>
+            <Box sx:backgroundColor="action.disabled" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+
+            <Typography minWidth="100px" textAlign="right">disabledBG</Typography>
+            <Box sx:backgroundColor="action.disabledBackground" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+
+
+            <Typography minWidth="100px" textAlign="right">hover</Typography>
+            <Box sx:backgroundColor="action.hover" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+
+            <Typography minWidth="100px" textAlign="right">selected</Typography>
+            <Box sx:backgroundColor="action.selected"  minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+
+            <Typography minWidth="100px" textAlign="right">focus</Typography>
+            <Box sx:backgroundColor="action.focus" minWidth="2.5em" height="2em" border="1px solid {{theme_palette.text.secondary}}" />
+        </Box>
+
+        <Box for="spacing" mb="300px" />
+    </PageContent>
+</Page>
