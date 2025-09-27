@@ -1,0 +1,288 @@
+<x-page>
+	<x-navbar>
+		<x-button
+			label="SAVE CHANGES"
+			class="primary"
+		/>
+	</x-navbar>
+
+	<x-content>
+		<x-box
+			sx:display="flex"
+			sx:flexDirection="column"
+			sx:gap="2"
+			sx:mb="200px"
+			sx:mt="1em"
+			sx:width="100%"
+			sx:maxWidth="1000px"
+			sx:mx="auto"
+		>
+			<x-typography
+				variant="body1"
+				sx:mb="3"
+			>
+				Welcome to the Project Settings page! This is where you configure the
+				fundamentals that shape your workspace, collaboration model, and project
+				identity.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🏷️ Project Metadata
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="2"
+			>
+				Your project settings define the core identity of this workspace:
+			</x-typography>
+
+			<x-box
+				sx:ml="2"
+				sx:mb="4"
+			>
+				<x-typography variant="body1"
+					>- <strong>Name</strong>: Display name across the UI</x-typography
+				>
+				<x-typography variant="body1"
+					>- <strong>Identifier</strong>: Internal slug used in URLs or
+					integration references</x-typography
+				>
+				<x-typography variant="body1"
+					>- <strong>Created On</strong>: Timestamp for project
+					creation</x-typography
+				>
+				<x-typography variant="body1"
+					>- <strong>Owner</strong>: Primary admin or organizational
+					owner</x-typography
+				>
+			</x-box>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				Keeping this metadata accurate ensures traceability and helps external
+				integrations align with your naming conventions.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🔐 Permissions & Roles
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="2"
+			>
+				Settings here help define <strong>who can do what</strong>:
+			</x-typography>
+
+			<x-box
+				sx:ml="2"
+				sx:mb="4"
+			>
+				<x-typography variant="body1">- Invite new collaborators</x-typography>
+				<x-typography variant="body1"
+					>- Promote/demote users (e.g., Admin, Editor, Viewer)</x-typography
+				>
+				<x-typography variant="body1"
+					>- Set up access tiers (e.g., only Admins can edit Gantt
+					charts)</x-typography
+				>
+				<x-typography variant="body1"
+					>- Manage sensitive data or security-critical areas</x-typography
+				>
+			</x-box>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				Good permission hygiene ensures accountability without friction.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🛠️ Configuration Areas
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="2"
+			>
+				This space may eventually allow you to modify or define:
+			</x-typography>
+
+			<x-box
+				sx:ml="2"
+				sx:mb="4"
+			>
+				<x-typography variant="body1"
+					>- Default view (Board, Gantt, Wiki, etc.)</x-typography
+				>
+				<x-typography variant="body1"
+					>- Project-wide tags and labels</x-typography
+				>
+				<x-typography variant="body1"
+					>- Preferred date format and timezone</x-typography
+				>
+				<x-typography variant="body1"
+					>- Enable/disable experimental features</x-typography
+				>
+			</x-box>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				These settings streamline the experience for every contributor.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🔁 Project Lifecycle Management
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="2"
+			>
+				You'll be able to define:
+			</x-typography>
+
+			<x-box
+				sx:ml="2"
+				sx:mb="4"
+			>
+				<x-typography variant="body1"
+					>- <strong>Start & end dates</strong> for the project</x-typography
+				>
+				<x-typography variant="body1"
+					>- <strong>Phases or milestones</strong> (e.g., Planning, Execution,
+					Delivery)</x-typography
+				>
+				<x-typography variant="body1"
+					>- Rules for archiving completed tasks or freezing old
+					issues</x-typography
+				>
+			</x-box>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				Project settings give structure to the lifespan of work—not just the
+				tasks within it.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🌐 Integrations & Webhooks
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="2"
+			>
+				This section may include:
+			</x-typography>
+
+			<x-box
+				sx:ml="2"
+				sx:mb="4"
+			>
+				<x-typography variant="body1"
+					>- API keys or OAuth settings</x-typography
+				>
+				<x-typography variant="body1"
+					>- Integration toggles (Slack, GitHub, etc.)</x-typography
+				>
+				<x-typography variant="body1"
+					>- Webhooks for triggering automations on status change or issue
+					creation</x-typography
+				>
+			</x-box>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				Settings here allow your project to
+				<strong>extend beyond this UI</strong> into your broader tooling
+				ecosystem.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🧹 Danger Zone
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="2"
+			>
+				Some actions are sensitive and irreversible:
+			</x-typography>
+
+			<x-box
+				sx:ml="2"
+				sx:mb="4"
+			>
+				<x-typography variant="body1"
+					>- <strong>Delete Project</strong></x-typography
+				>
+				<x-typography variant="body1"
+					>- <strong>Transfer Ownership</strong></x-typography
+				>
+				<x-typography variant="body1"
+					>- <strong>Purge All Data</strong></x-typography
+				>
+			</x-box>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				These options, when implemented, will be gated with confirmations and
+				limited to Admin roles only.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				📌 Final Notes
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				Project settings are the foundation layer. Think of them as your
+				project's DNA: they don't change often, but when they do, they shape
+				everything downstream.
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				More configuration options will be added over time as your needs grow.
+			</x-typography>
+		</x-box>
+	</x-content>
+</x-page>

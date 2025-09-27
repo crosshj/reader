@@ -1,6 +1,6 @@
 <x-page>
 	<x-data
-		name="activePath"
+		name="subPage"
 		defaultValue=""
 	></x-data>
 
@@ -9,60 +9,65 @@
 		defaultValue=""
 	></x-data>
 
-	<x-data
-		name="pathData"
-		route="/framework/#/:rest*"
-	></x-data>
-
 	<x-subscribe
 		path="pathData"
 		handler="pathChange"
 	></x-subscribe>
 
 	<x-flow key="pathChange">
-		// de-dupe path change events
-		if (global_pathData.rest === global_activePath) {
-		  return;
+		let currentPath = `/${state.pathData.rest || ''}`;
+
+		// Normalize root path
+		if (currentPath === '' || currentPath === '/') {
+			currentPath = '/';
 		}
-		setData('activePath', global_pathData.rest || 'dashboard');
-		setData('pageContent', '');
-		query('ui.sp_UIContextGetComponentsByUserID', {
-		  fragment: global_activePath
-		}, 'pageContent');
+
+		if(currentPath === state.activePath) return;
+		// console.log('Path changed!', event);
+		      console.log('currentPath', currentPath);
+		SetData('activePath', currentPath);
+
+		// Transform to fragment path for loading content
+		const fragmentPath = currentPath === '/' ? 'fragments/dashboard.html' : `fragments${currentPath}.html`;
+
+		SetData('pageContent', '');
+		SetData(
+			'pageContent',
+			Query({ url: fragmentPath })
+		);
 	</x-flow>
+
+	<x-data
+		name="pathData"
+		route="/framework/#/:rest*"
+	></x-data>
 
 	<x-box
 		sx:position="absolute"
 		sx:top="0"
 		sx:left="0"
-		sx:display="grid"
-		sx:gridTemplateColumns="auto 1fr"
-		sx:gridTemplateRows="auto 1fr"
+		sx:display="flex"
+		sx:flexDirection="row"
 		sx:height="100vh"
 		sx:width="100vw"
 		className="standardLayoutContainer"
 		class="standardLayoutContainer"
 	>
-		<x-box
-			sx:background="red"
-			sx:gridColumn="1/span 2"
-			sx:height="0px"
-			sx:width="100%"
-		></x-box>
-
 		<x-include
 			href="./menu.html"
 			sx:background="var(--palettePrimaryMain)"
 			sx:width="260px"
-			sx:height="100%"
+			sx:height="100vh"
+			sx:flexShrink="0"
 		></x-include>
 
 		<x-box
 			sx:background="var(--paletteBackgroundDefault)"
-			sx:height="100%"
-			sx:width="100%"
-			sx:overflow="hidden"
-			sx:display="block"
+			sx:height="100vh"
+			sx:flex="1"
+			sx:overflow="auto"
+			sx:display="flex"
+			sx:flexDirection="column"
 		>
 			<x-box
 				sx:display="WHEN global_pageContent THEN none ELSE flex"
@@ -83,7 +88,6 @@
 			<x-fragment
 				contents="global_pageContent"
 				showLoading="false"
-				sx:height="300px"
 			></x-fragment>
 		</x-box>
 	</x-box>

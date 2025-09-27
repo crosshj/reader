@@ -2,6 +2,17 @@
 	<x-data
 		name="projectManagementMenuItems"
 		defaultValue='[
+			{ "label": "Home",             "icon": "Home",              "path": "/"   },
+			{ "label": "Issues",           "icon": "ListAlt",           "path": "/issues"      },
+			{ "label": "Wiki",             "icon": "MenuBook",          "path": "/wiki"        },
+			{ "label": "Files",            "icon": "DriveFolderUpload", "path": "/files"       },
+			{ "label": "Settings",         "icon": "AccountTree",       "path": "/settings" }
+		]'
+	></x-data>
+
+	<x-data
+		name="projectManagementMenuItemsOLD"
+		defaultValue='[
         { "label": "Home",             "icon": "Home",              "path": "dashboard"   },
         { "label": "Issues",           "icon": "ListAlt",           "path": "issues"      },
         { "label": "Board",            "icon": "ViewKanban",        "path": "board"       },
@@ -74,7 +85,7 @@
 		sx:pt="1"
 	>
 		<x-link
-			href="/fragments/layout/standard.html"
+			href="/"
 			underline="none"
 		>
 			<x-box
@@ -95,12 +106,11 @@
 		>
 			<x-map items="global_projectManagementMenuItems">
 				<x-link
-					href="/fragments/{{item_path}}.html"
+					href="{{item_path}}"
 					underline="none"
 				>
 					<x-box
-						className="WHEN global_activePath IS item_path THEN 'standardMenuItem active' ELSE standardMenuItem"
-						class="standardMenuItem"
+						class="WHEN global_activePath IS {{item_path}} THEN 'standardMenuItem active' ELSE standardMenuItem"
 					>
 						<x-icon
 							icon="{{item_icon}}"

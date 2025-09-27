@@ -1,0 +1,272 @@
+<x-page>
+	<x-navbar>
+		<x-button
+			label="ADD ISSUE"
+			class="primary"
+		/>
+	</x-navbar>
+
+	<x-content>
+		<x-box
+			sx:display="flex"
+			sx:flexDirection="column"
+			sx:gap="2"
+			sx:pb="200px"
+			sx:pt="1em"
+			sx:width="100%"
+			sx:maxWidth="1000px"
+			sx:mx="auto"
+		>
+			<x-typography
+				variant="body1"
+				sx:mb="3"
+			>
+				Welcome to the Issue Submission Portal! Your detailed reports are vital
+				to our progress.
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="3"
+			>
+				Please click the <strong>Add Issue</strong> button and fill out all the
+				fields thoroughly to help us identify and address the issue efficiently.
+				Once completed, hit the <em>Submit</em> button to send your report.
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				We appreciate your contribution to improving our system. This page will
+				become more powerful as more issues are added and organized.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🧩 What is an "Issue" Anyway?
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				An issue can be anything that blocks, degrades, or misaligns with
+				expected project outcomes. It might be a broken feature, a missing
+				component, a data mismatch, or even a process flaw. Not every issue is a
+				bug—some are signals of friction in your team or tools.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🚨 Urgency vs. Impact
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				Not all issues are equal. A crash in a rarely used admin panel may be
+				less critical than a minor typo on your login page. Reporting both is
+				valuable—but tagging them with the correct
+				<strong>priority</strong> helps focus energy where it matters most.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🧠 Make Issues Actionable
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="2"
+			>
+				Avoid vague titles like "Login broken" or "Search doesn't work."
+				Instead, try:
+			</x-typography>
+
+			<x-box
+				sx:bg="grey.100"
+				sx:p="2"
+				sx:mb="4"
+				sx:borderLeft="4px solid"
+				sx:borderColor="primary.main"
+			>
+				<x-typography
+					variant="body1"
+					sx:fontStyle="italic"
+				>
+					"Login fails on mobile Safari 15 with valid credentials"
+				</x-typography>
+			</x-box>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				Make sure your <strong>steps to reproduce</strong> are unambiguous.
+				Assume the person fixing it knows nothing about your environment unless
+				you tell them.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				📊 What Happens After You Submit?
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="2"
+			>
+				Each issue enters a triage workflow:
+			</x-typography>
+
+			<x-box
+				sx:ml="2"
+				sx:mb="4"
+			>
+				<x-typography variant="body1"
+					>1. <strong>Reviewed</strong> by a team lead or product
+					owner</x-typography
+				>
+				<x-typography variant="body1"
+					>2. <strong>Categorized</strong> based on type and
+					severity</x-typography
+				>
+				<x-typography variant="body1"
+					>3. <strong>Assigned</strong> to the right contributor</x-typography
+				>
+				<x-typography variant="body1"
+					>4. <strong>Tracked</strong> through its lifecycle to
+					resolution</x-typography
+				>
+			</x-box>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				You'll often see updates, comments, or questions—responding quickly
+				helps resolution.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🧭 Tags and Metadata
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="2"
+			>
+				Use tags like:
+			</x-typography>
+
+			<x-box
+				sx:ml="2"
+				sx:mb="4"
+			>
+				<x-typography variant="body1"
+					>- <code>#frontend</code> / <code>#backend</code></x-typography
+				>
+				<x-typography variant="body1"
+					>- <code>#critical</code>, <code>#low-priority</code></x-typography
+				>
+				<x-typography variant="body1"
+					>- <code>#ux</code>, <code>#performance</code>,
+					<code>#security</code></x-typography
+				>
+			</x-box>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				Tags allow for smarter filtering, faster search, and better visibility
+				during sprint planning.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🧪 The Value of Patterns
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				Even if a single issue seems small, patterns across many reports expose
+				systemic problems. Frequent low-priority issues might reveal poor UX or
+				inconsistent data handling. Reporting helps us spot those trends early.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🤝 Team Collaboration
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				An issue report is a conversation starter. Devs, designers, QA, and PMs
+				often collaborate on clarifying, testing, and resolving it. The clearer
+				your starting point, the faster the conversation moves.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🔐 Confidentiality
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				If an issue involves sensitive data or security vulnerabilities, flag it
+				accordingly. Some issue types may need restricted visibility or private
+				triage—this protects your users and organization.
+			</x-typography>
+
+			<x-typography
+				variant="h5"
+				sx:mb="2"
+			>
+				🚧 We're Always Improving
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				Just like our product, our issue system is a work in progress. If you
+				notice any friction in how you submit, view, or track issues—ironically,
+				<em>submit an issue about it</em>.
+			</x-typography>
+
+			<x-typography
+				variant="body1"
+				sx:mb="4"
+			>
+				This page isn't just for reporting problems. It's where improvements
+				begin.
+			</x-typography>
+		</x-box>
+	</x-content>
+</x-page>
