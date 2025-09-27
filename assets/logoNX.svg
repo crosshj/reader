@@ -1,0 +1,23 @@
+<svg width="256" height="320" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .label {
+      font-family: sans-serif;
+      font-weight: bold;
+      font-size: 32px;
+      fill: black;
+      text-anchor: middle;
+    }
+    .nx {
+      font-family: sans-serif;
+      font-weight: bold;
+      font-size: 64px;
+      fill: white;
+      text-anchor: middle;
+    }
+  </style>
+  <g style="" transform="matrix(1.931514, 0, 0, 1.940683, -111.141014, -97.232964)">
+    <path d="M 59.979 53.28 L 188.768 53.28 L 182.667 158.888 L 124.196 179.874 L 66.05 159.77 L 59.979 53.28 Z" style="" fill="#e44d26"></path>
+    <path d="M 126.183 171.126 L 174.535 152.249 L 180.674 61.695 L 126.272 61.695 L 126.183 171.126 Z" style="" fill="#f16529"></path>
+  </g>
+  <text class="nx" x="122.401" y="176.783" style="white-space: pre; font-size: 128px;" transform="matrix(1.059303, 0, 0, 0.917639, -0.279273, 0.507888)">NX</text>
+</svg>

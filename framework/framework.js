@@ -154,28 +154,31 @@ class XButton extends BaseUIComponent {
 		const textContent = this.getTextContentExcludingIcons();
 		const buttonText = label || textContent;
 
-		// Create icon HTML if icon is specified
-		let iconHtml = '';
+		// Create icon if specified
+		let iconElement = null;
 		if (icon) {
-			const materialIconName = this.convertToMaterialIconName(icon);
-			iconHtml = `<span class="material-icons button-icon">${materialIconName}</span>`;
+			iconElement = document.createElement('span');
+			iconElement.className = `fa fa-${this.convertToFontAwesome(icon)} small button-icon`;
 		}
 
 		// Create button content with proper icon positioning
-		let buttonContent = '';
-		if (icon && iconPosition === 'left') {
-			buttonContent = `${iconHtml}${buttonText}`;
-		} else if (icon && iconPosition === 'right') {
-			buttonContent = `${buttonText}${iconHtml}`;
-		} else {
-			buttonContent = buttonText;
+		const button = document.createElement('button');
+		if (href) {
+			button.onclick = () => (window.location.href = href);
 		}
 
-		this.innerHTML = html`
-			<button ${href ? `onclick="window.location.href='${href}'"` : ''}>
-				${buttonContent}
-			</button>
-		`;
+		if (icon && iconPosition === 'left') {
+			button.appendChild(iconElement);
+			button.appendChild(document.createTextNode(buttonText));
+		} else if (icon && iconPosition === 'right') {
+			button.appendChild(document.createTextNode(buttonText));
+			button.appendChild(iconElement);
+		} else {
+			button.textContent = buttonText;
+		}
+
+		this.innerHTML = '';
+		this.appendChild(button);
 
 		// Apply sx: styles if any
 		this.applySxStyles();
@@ -191,18 +194,41 @@ class XButton extends BaseUIComponent {
 		return clone.textContent.trim();
 	}
 
-	convertToMaterialIconName(pascalCaseName) {
-		if (!pascalCaseName) return 'help_outline';
+	convertToFontAwesome(pascalCaseName) {
+		if (!pascalCaseName) return 'help';
 
-		// Convert PascalCase to snake_case
-		// Home -> home
-		// ListAlt -> list_alt
-		// ViewKanban -> view_kanban
-		// DriveFolderUpload -> drive_folder_upload
-		return pascalCaseName
-			.replace(/([A-Z])/g, '_$1') // Add underscore before capital letters
-			.toLowerCase() // Convert to lowercase
-			.replace(/^_/, ''); // Remove leading underscore
+		// Convert PascalCase to Material Symbols naming convention
+		const iconMap = {
+			Home: 'home',
+			ListAlt: 'list-alt',
+			MenuBook: 'book',
+			DriveFolderUpload: 'upload',
+			AccountTree: 'cog',
+			Save: 'save',
+			Add: 'plus',
+			ArrowForward: 'arrow-right',
+			ArrowBack: 'arrow-left',
+			Edit: 'edit',
+			Delete: 'trash-o',
+			Close: 'times',
+			Search: 'search',
+			Filter: 'filter',
+			MoreVert: 'ellipsis-v',
+			MoreHoriz: 'ellipsis-h',
+			Info: 'info-circle',
+			Warning: 'exclamation-triangle',
+			Error: 'exclamation-circle',
+			Success: 'check-circle',
+			Loading: 'refresh',
+		};
+
+		return (
+			iconMap[pascalCaseName] ||
+			pascalCaseName
+				.replace(/([A-Z])/g, '_$1') // Add underscore before capital letters
+				.toLowerCase() // Convert to lowercase
+				.replace(/^_/, '')
+		); // Remove leading underscore
 	}
 }
 
@@ -544,23 +570,19 @@ class XIcon extends BaseUIComponent {
 	connectedCallback() {
 		const icon = this.getAttribute('icon');
 		const color = this.getAttribute('color');
-
-		// Convert PascalCase to snake_case for Material Icons
-		const materialIconName = this.convertToMaterialIconName(icon);
-
-		// Create a Material Icon element
-		const iconElement = document.createElement('span');
-		iconElement.className = 'material-icons';
-		iconElement.textContent = materialIconName;
-
-		// Set color attribute for CSS to use
-		if (color) {
-			iconElement.setAttribute('data-color', color);
-		}
+		const size = this.getAttribute('size') || 'medium';
 
 		// Only replace content if this is a standalone icon (not inside a button)
 		const isInsideButton = this.closest('x-button');
 		if (!isInsideButton) {
+			// Create icon element with Font Awesome class
+			const iconElement = document.createElement('span');
+			iconElement.className = `fa fa-${this.convertToFontAwesome(icon)} ${size}`;
+
+			if (color) {
+				iconElement.style.color = color;
+			}
+
 			this.innerHTML = '';
 			this.appendChild(iconElement);
 		} else {
@@ -573,18 +595,46 @@ class XIcon extends BaseUIComponent {
 		this.applySxStyles();
 	}
 
-	convertToMaterialIconName(pascalCaseName) {
-		if (!pascalCaseName) return 'help_outline';
+	convertToFontAwesome(pascalCaseName) {
+		if (!pascalCaseName) return 'help';
 
-		// Convert PascalCase to snake_case
+		// Convert PascalCase to Material Symbols naming convention
 		// Home -> home
-		// ListAlt -> list_alt
-		// ViewKanban -> view_kanban
-		// DriveFolderUpload -> drive_folder_upload
-		return pascalCaseName
-			.replace(/([A-Z])/g, '_$1') // Add underscore before capital letters
-			.toLowerCase() // Convert to lowercase
-			.replace(/^_/, ''); // Remove leading underscore
+		// ListAlt -> list
+		// MenuBook -> menu_book
+		// DriveFolderUpload -> folder_upload
+		// AccountTree -> settings
+		const iconMap = {
+			Home: 'home',
+			ListAlt: 'list-alt',
+			MenuBook: 'book',
+			DriveFolderUpload: 'upload',
+			AccountTree: 'cog',
+			Save: 'save',
+			Add: 'plus',
+			ArrowForward: 'arrow-right',
+			ArrowBack: 'arrow-left',
+			Edit: 'edit',
+			Delete: 'trash-o',
+			Close: 'times',
+			Search: 'search',
+			Filter: 'filter',
+			MoreVert: 'ellipsis-v',
+			MoreHoriz: 'ellipsis-h',
+			Info: 'info-circle',
+			Warning: 'exclamation-triangle',
+			Error: 'exclamation-circle',
+			Success: 'check-circle',
+			Loading: 'refresh',
+		};
+
+		return (
+			iconMap[pascalCaseName] ||
+			pascalCaseName
+				.replace(/([A-Z])/g, '_$1') // Add underscore before capital letters
+				.toLowerCase() // Convert to lowercase
+				.replace(/^_/, '')
+		); // Remove leading underscore
 	}
 }
 
