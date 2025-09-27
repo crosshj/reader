@@ -87,7 +87,7 @@ class XNavbar extends BaseUIComponent {
 
 		// Map activePath to display title
 		if (activePath === '/' || activePath === '') {
-			title = 'Dashboard';
+			title = 'Home';
 		} else if (activePath === '/issues') {
 			title = 'Issues';
 		} else if (activePath === '/wiki') {
@@ -220,6 +220,10 @@ class XButton extends BaseUIComponent {
 			Error: 'exclamation-circle',
 			Success: 'check-circle',
 			Loading: 'refresh',
+			People: 'users',
+			Person: 'user',
+			LineChart: 'line-chart',
+			History: 'history',
 		};
 
 		return (
@@ -253,7 +257,9 @@ class XTypography extends BaseUIComponent {
 				}
 			});
 
-			this.parentNode.replaceChild(element, this);
+			if (this.parentNode) {
+				this.parentNode.replaceChild(element, this);
+			}
 
 			// Apply sx: styles to the new element
 			this.applySxStylesToElement(element);
@@ -269,7 +275,9 @@ class XTypography extends BaseUIComponent {
 				}
 			});
 
-			this.parentNode.replaceChild(element, this);
+			if (this.parentNode) {
+				this.parentNode.replaceChild(element, this);
+			}
 
 			// Apply sx: styles to the new element
 			this.applySxStylesToElement(element);
@@ -579,6 +587,14 @@ class XIcon extends BaseUIComponent {
 			const iconElement = document.createElement('span');
 			iconElement.className = `fa fa-${this.convertToFontAwesome(icon)} ${size}`;
 
+			// Set consistent dimensions and alignment
+			iconElement.style.display = 'inline-flex';
+			iconElement.style.alignItems = 'center';
+			iconElement.style.justifyContent = 'center';
+			iconElement.style.width = '1.2em';
+			iconElement.style.height = '1.2em';
+			iconElement.style.flexShrink = '0';
+
 			if (color) {
 				iconElement.style.color = color;
 			}
@@ -626,6 +642,10 @@ class XIcon extends BaseUIComponent {
 			Error: 'exclamation-circle',
 			Success: 'check-circle',
 			Loading: 'refresh',
+			People: 'users',
+			Person: 'user',
+			LineChart: 'line-chart',
+			History: 'history',
 		};
 
 		return (

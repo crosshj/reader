@@ -585,32 +585,94 @@ x-typography {
 		color: inherit;
 	}
 
-	/* Specific element variants */
-	&[variant='h1'] h1 {
+	/* Typography Scale Variants */
+	&[variant='h1'] {
 		font-size: 2.5rem;
 		font-weight: 700;
-		margin: 0.5rem 0;
 		line-height: 1.2;
+		color: var(--paletteTextPrimary);
 	}
 
-	&[variant='h2'] h2 {
+	&[variant='h2'] {
 		font-size: 2rem;
 		font-weight: 600;
-		margin: 0.5rem 0;
-		line-height: 1.3;
+		line-height: 1.2;
+		color: var(--paletteTextPrimary);
 	}
 
-	&[variant='h3'] h3 {
+	&[variant='h3'] {
 		font-size: 1.5rem;
 		font-weight: 600;
-		margin: 0.5rem 0;
-		line-height: 1.4;
+		line-height: 1.3;
+		color: var(--paletteTextPrimary);
 	}
 
-	&[variant='p'] p {
+	&[variant='h4'] {
+		font-size: 1.25rem;
+		font-weight: 400;
+		line-height: 1.4;
+		color: var(--paletteTextPrimary);
+	}
+
+	&[variant='h5'] {
+		font-size: 1.125rem;
+		font-weight: 600;
+		line-height: 1.4;
+		color: var(--paletteTextPrimary);
+	}
+
+	&[variant='h6'] {
 		font-size: 1rem;
-		margin: 0.5rem 0;
+		font-weight: 500;
+		line-height: 1.4;
+		letter-spacing: 0.01em;
+		color: var(--paletteTextPrimary);
+	}
+
+	&[variant='body1'] {
+		font-size: 1rem;
+		font-weight: 400;
 		line-height: 1.6;
+		color: var(--paletteTextPrimary);
+	}
+
+	&[variant='body2'] {
+		font-size: 0.875rem;
+		font-weight: 400;
+		line-height: 1.4;
+		color: var(--paletteTextSecondary);
+	}
+
+	&[variant='caption'] {
+		font-size: 0.75rem;
+		font-weight: 400;
+		line-height: 1.4;
+		opacity: 0.8;
+		color: var(--paletteTextSecondary);
+	}
+
+	&[variant='overline'] {
+		font-size: 0.75rem;
+		font-weight: 500;
+		line-height: 1.4;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--paletteTextSecondary);
+	}
+
+	&[variant='label'] {
+		font-size: 1rem;
+		font-weight: 500;
+		line-height: 1.4;
+		letter-spacing: 0.01em;
+		color: var(--paletteTextPrimary);
+	}
+
+	&[variant='intro'] {
+		font-size: 1.125rem;
+		font-weight: 400;
+		line-height: 1.6;
+		color: var(--paletteTextPrimary);
 	}
 }
 
@@ -619,15 +681,21 @@ x-map {
 	display: contents;
 }
 
-/* x-icon component - Material Icons */
+/* x-icon component - Font Awesome Icons */
 x-icon {
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.2em;
+	height: 1.2em;
+	flex-shrink: 0;
+	vertical-align: middle;
 
-	.material-icons {
-		font-family: 'Material Icons';
+	/* Font Awesome icon styling */
+	.fa {
+		font-family: 'FontAwesome';
 		font-weight: normal;
 		font-style: normal;
-		font-size: 1.2em;
 		line-height: 1;
 		letter-spacing: normal;
 		text-transform: none;
@@ -635,12 +703,31 @@ x-icon {
 		white-space: nowrap;
 		word-wrap: normal;
 		direction: ltr;
-		margin-right: 0.5rem;
-		vertical-align: middle;
 		color: inherit;
+	}
 
-		&[data-color] {
-			color: attr(data-color);
-		}
+	/* Size variants */
+	&[size='small'] {
+		width: 1em;
+		height: 1em;
+		font-size: 0.875rem;
+	}
+
+	&[size='medium'] {
+		width: 1.2em;
+		height: 1.2em;
+		font-size: 1rem;
+	}
+
+	&[size='large'] {
+		width: 1.5em;
+		height: 1.5em;
+		font-size: 1.25rem;
+	}
+
+	&[size='xlarge'] {
+		width: 2em;
+		height: 2em;
+		font-size: 1.5rem;
 	}
 }

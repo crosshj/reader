@@ -1,0 +1,286 @@
+<x-page>
+	<x-data
+		name="metricCards"
+		defaultValue='[
+			{
+				"title": "Active Issues",
+				"value": "12",
+				"subtitle": "+2 from last week",
+				"icon": "ListAlt",
+				"color": "var(--palettePrimaryMain)"
+			},
+			{
+				"title": "Completed Tasks",
+				"value": "48",
+				"subtitle": "+8 from last week",
+				"icon": "Success",
+				"color": "var(--paletteSuccessMain)"
+			},
+			{
+				"title": "Team Members",
+				"value": "8",
+				"subtitle": "All active",
+				"icon": "People",
+				"color": "var(--paletteInfoMain)"
+			},
+			{
+				"title": "Project Progress",
+				"value": "75%",
+				"subtitle": "On track for deadline",
+				"icon": "LineChart",
+				"color": "var(--paletteWarningMain)"
+			}
+		]'
+	></x-data>
+
+	<x-data
+		name="recentActivity"
+		defaultValue='[
+			{
+				"user": "John Doe",
+				"action": "completed task",
+				"item": "Update user interface",
+				"time": "2 hours ago",
+				"icon": "Person"
+			},
+			{
+				"user": "Sarah Wilson",
+				"action": "created new issue",
+				"item": "Bug in login form",
+				"time": "4 hours ago",
+				"icon": "Add"
+			},
+			{
+				"user": "Alex Rodriguez",
+				"action": "commented on",
+				"item": "API integration discussion",
+				"time": "6 hours ago",
+				"icon": "Edit"
+			},
+			{
+				"user": "Mike Johnson",
+				"action": "updated project documentation",
+				"item": "",
+				"time": "1 day ago",
+				"icon": "Edit"
+			},
+			{
+				"user": "Emma Davis",
+				"action": "assigned task",
+				"item": "Code review for payment module",
+				"time": "1 day ago",
+				"icon": "Person"
+			},
+			{
+				"user": "Lisa Chen",
+				"action": "resolved issue",
+				"item": "Database connection timeout",
+				"time": "2 days ago",
+				"icon": "Success"
+			},
+			{
+				"user": "David Kim",
+				"action": "created new branch",
+				"item": "feature/user-authentication",
+				"time": "3 days ago",
+				"icon": "Add"
+			},
+			{
+				"user": "Maria Garcia",
+				"action": "deployed to",
+				"item": "staging environment",
+				"time": "3 days ago",
+				"icon": "Success"
+			},
+			{
+				"user": "Tom Wilson",
+				"action": "merged pull request",
+				"item": "Fix responsive design issues",
+				"time": "4 days ago",
+				"icon": "Success"
+			},
+			{
+				"user": "Jennifer Lee",
+				"action": "created new feature",
+				"item": "Dark mode toggle",
+				"time": "4 days ago",
+				"icon": "Add"
+			},
+			{
+				"user": "Carlos Mendez",
+				"action": "updated dependencies",
+				"item": "React to v18.2.0",
+				"time": "5 days ago",
+				"icon": "Edit"
+			},
+			{
+				"user": "Rachel Green",
+				"action": "fixed bug",
+				"item": "Memory leak in data processing",
+				"time": "5 days ago",
+				"icon": "Success"
+			},
+			{
+				"user": "Kevin Park",
+				"action": "wrote tests for",
+				"item": "User authentication module",
+				"time": "6 days ago",
+				"icon": "Edit"
+			},
+			{
+				"user": "Amanda Foster",
+				"action": "reviewed code",
+				"item": "Payment integration PR",
+				"time": "1 week ago",
+				"icon": "Person"
+			},
+			{
+				"user": "James Taylor",
+				"action": "optimized performance",
+				"item": "Database queries",
+				"time": "1 week ago",
+				"icon": "Success"
+			},
+			{
+				"user": "Sofia Martinez",
+				"action": "created documentation",
+				"item": "API endpoints guide",
+				"time": "1 week ago",
+				"icon": "Edit"
+			},
+			{
+				"user": "Nina Patel",
+				"action": "refactored",
+				"item": "Component architecture",
+				"time": "2 weeks ago",
+				"icon": "Edit"
+			}
+		]'
+	></x-data>
+
+	<x-navbar>
+		<x-button
+			label="NEW PROJECT"
+			class="primary"
+		/>
+	</x-navbar>
+
+	<x-content>
+		<x-box
+			sx:display="flex"
+			sx:flexDirection="column"
+			sx:gap="2"
+			sx:mb="200px"
+			sx:mt="1em"
+			sx:width="100%"
+			sx:maxWidth="1000px"
+			sx:mx="auto"
+		>
+			<x-typography
+				variant="intro"
+				sx:mb="3"
+			>
+				Welcome to your project management home. Here's an overview of your
+				current status and key metrics.
+			</x-typography>
+
+			<!-- Stats Grid -->
+			<x-box
+				sx:display="grid"
+				sx:gridTemplateColumns="repeat(auto-fit, minmax(280px, 1fr))"
+				sx:gap="2"
+				sx:mb="3"
+			>
+				<x-map items="global_metricCards">
+					<x-box
+						sx:background="var(--paletteBackgroundPaper)"
+						sx:borderRadius="8px"
+						sx:p="3"
+						sx:border="1px solid var(--paletteDivider)"
+					>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:mb="2"
+						>
+							<x-icon
+								icon="{{item_icon}}"
+								color="{{item_color}}"
+								size="large"
+								sx:mr="1"
+							></x-icon>
+							<x-typography variant="label">
+								{{ item_title }}
+							</x-typography>
+						</x-box>
+						<x-typography
+							variant="h2"
+							sx:mb="1"
+						>
+							{{ item_value }}
+						</x-typography>
+						<x-typography
+							variant="body2"
+							sx:whiteSpace="nowrap"
+							sx:overflow="hidden"
+							sx:textOverflow="ellipsis"
+						>
+							{{ item_subtitle }}
+						</x-typography>
+					</x-box>
+				</x-map>
+			</x-box>
+
+			<!-- Recent Activity Section -->
+			<x-box
+				sx:background="var(--paletteBackgroundPaper)"
+				sx:borderRadius="8px"
+				sx:p="3"
+				sx:border="1px solid var(--paletteDivider)"
+			>
+				<x-box
+					sx:display="flex"
+					sx:alignItems="center"
+					sx:mb="2"
+				>
+					<x-icon
+						icon="History"
+						color="var(--palettePrimaryMain)"
+						size="large"
+						sx:mr="1"
+					></x-icon>
+					<x-typography variant="label"> Recent Activity </x-typography>
+				</x-box>
+
+				<x-box
+					sx:display="flex"
+					sx:flexDirection="column"
+					sx:gap="2"
+				>
+					<x-map items="global_recentActivity">
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="2"
+						>
+							<x-icon
+								icon="{{item_icon}}"
+								color="var(--paletteTextSecondary)"
+								size="medium"
+							></x-icon>
+							<x-typography variant="body2">
+								{{ item_user }} {{ item_action }} "{{ item_item }}"
+							</x-typography>
+							<x-typography
+								variant="caption"
+								sx:ml="auto"
+							>
+								{{ item_time }}
+							</x-typography>
+						</x-box>
+					</x-map>
+				</x-box>
+			</x-box>
+		</x-box>
+	</x-content>
+</x-page>
