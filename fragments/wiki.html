@@ -1,4 +1,87 @@
 <x-page>
+	<x-data
+		name="wikiSections"
+		defaultValue='[
+			{
+				"title": "What Belongs Here?",
+				"icon": "Info",
+				"color": "var(--paletteInfoMain)",
+				"content": "Think of this as the operational memory of your team. This space is ideal for:",
+				"listItems": [
+					"Setup instructions for developers, testers, and designers",
+					"Policies, naming conventions, and process guides",
+					"Architecture diagrams and API overviews",
+					"Project principles, goals, and key decisions",
+					"Postmortems, retrospectives, and lessons learned",
+					"Integration notes with third-party tools or platforms"
+				],
+				"footer": "Anything that someone joining the team later will wish existed—belongs here now."
+			},
+			{
+				"title": "Writing Good Wiki Entries",
+				"icon": "Edit",
+				"color": "var(--palettePrimaryMain)",
+				"content": "A few tips to keep content useful and durable:",
+				"listItems": [
+					"Use clear titles and consistent formatting",
+					"Prefer brevity over verbosity, but don&apos;t sacrifice clarity",
+					"Break long content into sections with headers",
+					"Link to related wiki entries or external resources",
+					"Use checklists, tables, or diagrams where helpful"
+				],
+				"footer": "Each entry should answer: What is this? Why does it matter? How do I use it?"
+			},
+			{
+				"title": "Suggested Categories",
+				"icon": "Filter",
+				"color": "var(--paletteWarningMain)",
+				"content": "Structure helps people find what they need. Some categories you may want to create:",
+				"listItems": [
+					"Getting Started – onboarding steps, tool setup, accounts to request",
+					"Engineering – coding standards, deployment process, CI/CD details",
+					"Product – user flows, feature specs, definitions of done",
+					"Design – design system, color palette, UX principles",
+					"Business – timelines, contracts, KPIs, stakeholders",
+					"Glossary – acronyms and terms specific to your domain"
+				],
+				"footer": "Organized documentation is 10× more useful than scattered brilliance."
+			},
+			{
+				"title": "Collaborative Editing",
+				"icon": "People",
+				"color": "var(--paletteSuccessMain)",
+				"content": "This wiki isn&apos;t just a read-only space. You&apos;re encouraged to:",
+				"listItems": [
+					"Create new pages",
+					"Refactor existing content",
+					"Update outdated instructions",
+					"Flag content that needs clarification",
+					"Comment with questions or suggestions"
+				],
+				"footer": "Knowledge should be maintained by everyone, not just the documentation person."
+			},
+			{
+				"title": "Search, Tags, and Navigation",
+				"icon": "Search",
+				"color": "var(--paletteTextSecondary)",
+				"content": "Once your wiki grows, features like:",
+				"listItems": [
+					"Full-text search",
+					"Tag filters",
+					"Sidebar navigation",
+					"Page linking and backlinks"
+				],
+				"footer": "These will help reduce noise and make information discoverable when needed most."
+			},
+			{
+				"title": "Final Thought",
+				"icon": "History",
+				"color": "var(--paletteInfoMain)",
+				"content": "If your project lost every contributor today, could someone new pick up the pieces? This wiki is your answer to that question. It&apos;s not about documenting everything—just the parts that matter when things get hard or messy. Write with your future team in mind."
+			}
+		]'
+	></x-data>
+
 	<x-navbar>
 		<x-button
 			label="NEW PAGE"
@@ -11,14 +94,14 @@
 			sx:display="flex"
 			sx:flexDirection="column"
 			sx:gap="3"
-			sx:pb="200px"
-			sx:pt="1em"
+			sx:mb="200px"
+			sx:mt="1em"
 			sx:width="100%"
 			sx:maxWidth="1000px"
 			sx:mx="auto"
 		>
 			<x-typography
-				variant="body1"
+				variant="intro"
 				sx:mb="3"
 			>
 				Welcome to the knowledge center of your project. This wiki is where
@@ -33,260 +116,72 @@
 				and team learnings—designed to evolve as your project grows.
 			</x-typography>
 
-			<x-typography
-				variant="h5"
-				sx:mb="3"
-				sx:mt="4"
-			>
-				🧭 What Belongs Here?
-			</x-typography>
+			<!-- <x-typography variant="h1">header1</x-typography>
+			<x-typography variant="h2">header2</x-typography>
+			<x-typography variant="h3">header3</x-typography>
+			<x-typography variant="h4">header4</x-typography>
+			<x-typography variant="h5">header5</x-typography>
+			<x-typography variant="h6">header6</x-typography>
+			<h1>header 1</h1>
+			<h2>header 2</h2>
+			<h3>header 3</h3>
+			<h4>header 4</h4>
+			<h5>header 5</h5>
+			<h6>header 6</h6> -->
 
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				Think of this as the <strong>operational memory</strong> of your team.
-				This space is ideal for:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1"
-					>- Setup instructions for developers, testers, and
-					designers</x-typography
-				>
-				<x-typography variant="body1"
-					>- Policies, naming conventions, and process guides</x-typography
-				>
-				<x-typography variant="body1"
-					>- Architecture diagrams and API overviews</x-typography
-				>
-				<x-typography variant="body1"
-					>- Project principles, goals, and key decisions</x-typography
-				>
-				<x-typography variant="body1"
-					>- Postmortems, retrospectives, and lessons learned</x-typography
-				>
-				<x-typography variant="body1"
-					>- Integration notes with third-party tools or platforms</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				Anything that someone joining the team later will wish existed—<strong
-					>belongs here now</strong
-				>.
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="3"
-				sx:mt="4"
-			>
-				✍️ Writing Good Wiki Entries
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				A few tips to keep content useful and durable:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="2"
-			>
-				<x-typography variant="body1"
-					>- Use <strong>clear titles</strong> and consistent
-					formatting</x-typography
-				>
-				<x-typography variant="body1"
-					>- Prefer brevity over verbosity, but don't sacrifice
-					clarity</x-typography
-				>
-				<x-typography variant="body1"
-					>- Break long content into sections with headers</x-typography
-				>
-				<x-typography variant="body1"
-					>- Link to related wiki entries or external resources</x-typography
-				>
-				<x-typography variant="body1"
-					>- Use checklists, tables, or diagrams where helpful</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				Each entry should answer:
-				<em>What is this? Why does it matter? How do I use it?</em>
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="3"
-				sx:mt="4"
-			>
-				🧱 Suggested Categories
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				Structure helps people find what they need. Some categories you may want
-				to create:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1"
-					>- <strong>Getting Started</strong> – onboarding steps, tool setup,
-					accounts to request</x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Engineering</strong> – coding standards, deployment
-					process, CI/CD details</x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Product</strong> – user flows, feature specs, definitions
-					of done</x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Design</strong> – design system, color palette, UX
-					principles</x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Business</strong> – timelines, contracts, KPIs,
-					stakeholders</x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Glossary</strong> – acronyms and terms specific to your
-					domain</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				Organized documentation is 10× more useful than scattered brilliance.
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="3"
-				sx:mt="4"
-			>
-				💬 Collaborative Editing
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				This wiki isn't just a read-only space. You're encouraged to:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1">- Create new pages</x-typography>
-				<x-typography variant="body1">- Refactor existing content</x-typography>
-				<x-typography variant="body1"
-					>- Update outdated instructions</x-typography
-				>
-				<x-typography variant="body1"
-					>- Flag content that needs clarification</x-typography
-				>
-				<x-typography variant="body1"
-					>- Comment with questions or suggestions</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				Knowledge should be maintained by <strong>everyone</strong>, not just
-				the "documentation person."
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="3"
-				sx:mt="4"
-			>
-				🔍 Search, Tags, and Navigation
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				Once your wiki grows, features like:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="2"
-			>
-				<x-typography variant="body1">- Full-text search</x-typography>
-				<x-typography variant="body1">- Tag filters</x-typography>
-				<x-typography variant="body1">- Sidebar navigation</x-typography>
-				<x-typography variant="body1"
-					>- Page linking and backlinks</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				...will help reduce noise and make information
-				<strong>discoverable</strong> when needed most.
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="3"
-				sx:mt="4"
-			>
-				🧠 Final Thought
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				If your project lost every contributor today, could someone new pick up
-				the pieces?
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				This wiki is your answer to that question. It's not about documenting
-				everything—just the parts that matter when things get hard or messy.
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				Write with your future team in mind.
-			</x-typography>
+			<!-- Wiki Guidelines Sections -->
+			<x-map items="global_wikiSections">
+				<x-box>
+					<x-box
+						sx:display="flex"
+						sx:alignItems="center"
+						sx:mb="1"
+					>
+						<x-icon
+							icon="{{item_icon}}"
+							color="{{item_color}}"
+							size="large"
+							sx:mr="1"
+						></x-icon>
+						<x-typography variant="h2">
+							{{ item_title }}
+						</x-typography>
+					</x-box>
+					<x-typography
+						variant="body1"
+						sx:mb="0.5"
+					>
+						{{ item_content }}
+					</x-typography>
+					{{#if item_listItems}}
+					<x-box
+						sx:ml="2"
+						sx:mb="0.5"
+					>
+						<ul>
+							{{#each item_listItems}}
+							<li>
+								<x-typography variant="body1">{{ this }}</x-typography>
+							</li>
+							{{/each}}
+						</ul>
+					</x-box>
+					{{/if}}
+					{{#if item_footer}}
+					<x-typography
+						variant="body1"
+						sx:mb="6"
+					>
+						{{ item_footer }}
+					</x-typography>
+					{{/if}}
+					<x-box
+						sx:borderBottom="1px solid var(--paletteDivider)"
+						sx:mt="4"
+						sx:mb="2"
+					></x-box>
+				</x-box>
+			</x-map>
 		</x-box>
 	</x-content>
 </x-page>

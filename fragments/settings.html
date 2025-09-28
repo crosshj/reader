@@ -1,4 +1,94 @@
 <x-page>
+	<x-data
+		name="settingsSections"
+		defaultValue='[
+			{
+				"title": "Project Metadata",
+				"icon": "Filter",
+				"color": "var(--paletteWarningMain)",
+				"content": "Your project settings define the core identity of this workspace. Key metadata includes:",
+				"listItems": [
+					"Name: Display name across the UI",
+					"Identifier: Internal slug used in URLs or integration references",
+					"Created On: Timestamp for project creation",
+					"Owner: Primary admin or organizational owner"
+				],
+				"footer": "Keeping this metadata accurate ensures traceability and helps external integrations align with your naming conventions."
+			},
+			{
+				"title": "Permissions & Roles",
+				"icon": "Error",
+				"color": "var(--paletteErrorMain)",
+				"content": "Settings here help define who can do what within your project:",
+				"listItems": [
+					"Invite new collaborators",
+					"Promote/demote users (e.g., Admin, Editor, Viewer)",
+					"Set up access tiers (e.g., only Admins can edit Gantt charts)",
+					"Manage sensitive data or security-critical areas"
+				],
+				"footer": "Good permission hygiene ensures accountability without friction."
+			},
+			{
+				"title": "Configuration Areas",
+				"icon": "AccountTree",
+				"color": "var(--paletteTextSecondary)",
+				"content": "This space may eventually allow you to modify or define:",
+				"listItems": [
+					"Default view (Board, Gantt, Wiki, etc.)",
+					"Project-wide tags and labels",
+					"Preferred date format and timezone",
+					"Enable/disable experimental features"
+				],
+				"footer": "These settings streamline the experience for every contributor."
+			},
+			{
+				"title": "Project Lifecycle Management",
+				"icon": "History",
+				"color": "var(--paletteInfoMain)",
+				"content": "You&apos;ll be able to define project structure and timeline:",
+				"listItems": [
+					"Start & end dates for the project",
+					"Phases or milestones (e.g., Planning, Execution, Delivery)",
+					"Rules for archiving completed tasks or freezing old issues",
+					"Project status and workflow states"
+				],
+				"footer": "Project settings give structure to the lifespan of work—not just the tasks within it."
+			},
+			{
+				"title": "Integrations & Webhooks",
+				"icon": "People",
+				"color": "var(--paletteSuccessMain)",
+				"content": "This section may include external tool connections:",
+				"listItems": [
+					"API keys or OAuth settings",
+					"Integration toggles (Slack, GitHub, etc.)",
+					"Webhooks for triggering automations on status change or issue creation",
+					"Third-party service configurations"
+				],
+				"footer": "Settings here allow your project to extend beyond this UI into your broader tooling ecosystem."
+			},
+			{
+				"title": "Danger Zone",
+				"icon": "Warning",
+				"color": "var(--paletteErrorMain)",
+				"content": "Some actions are sensitive and irreversible:",
+				"listItems": [
+					"Delete Project",
+					"Transfer Ownership",
+					"Purge All Data",
+					"Export/Import project data"
+				],
+				"footer": "These options, when implemented, will be gated with confirmations and limited to Admin roles only."
+			},
+			{
+				"title": "Final Notes",
+				"icon": "Info",
+				"color": "var(--palettePrimaryMain)",
+				"content": "Project settings are the foundation layer. Think of them as your project&apos;s DNA: they don&apos;t change often, but when they do, they shape everything downstream. More configuration options will be added over time as your needs grow."
+			}
+		]'
+	></x-data>
+
 	<x-navbar>
 		<x-button
 			label="SAVE CHANGES"
@@ -10,7 +100,7 @@
 		<x-box
 			sx:display="flex"
 			sx:flexDirection="column"
-			sx:gap="2"
+			sx:gap="3"
 			sx:mb="200px"
 			sx:mt="1em"
 			sx:width="100%"
@@ -18,271 +108,75 @@
 			sx:mx="auto"
 		>
 			<x-typography
-				variant="body1"
+				variant="intro"
 				sx:mb="3"
 			>
-				Welcome to the Project Settings page! This is where you configure the
+				Welcome to the Project Settings page. This is where you configure the
 				fundamentals that shape your workspace, collaboration model, and project
 				identity.
 			</x-typography>
 
 			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				🏷️ Project Metadata
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				Your project settings define the core identity of this workspace:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1"
-					>- <strong>Name</strong>: Display name across the UI</x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Identifier</strong>: Internal slug used in URLs or
-					integration references</x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Created On</strong>: Timestamp for project
-					creation</x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Owner</strong>: Primary admin or organizational
-					owner</x-typography
-				>
-			</x-box>
-
-			<x-typography
 				variant="body1"
 				sx:mb="4"
 			>
-				Keeping this metadata accurate ensures traceability and helps external
-				integrations align with your naming conventions.
+				This is your <strong>project configuration center</strong> where you can
+				manage permissions, integrations, and core project settings.
 			</x-typography>
 
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				🔐 Permissions & Roles
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				Settings here help define <strong>who can do what</strong>:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1">- Invite new collaborators</x-typography>
-				<x-typography variant="body1"
-					>- Promote/demote users (e.g., Admin, Editor, Viewer)</x-typography
-				>
-				<x-typography variant="body1"
-					>- Set up access tiers (e.g., only Admins can edit Gantt
-					charts)</x-typography
-				>
-				<x-typography variant="body1"
-					>- Manage sensitive data or security-critical areas</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				Good permission hygiene ensures accountability without friction.
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				🛠️ Configuration Areas
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				This space may eventually allow you to modify or define:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1"
-					>- Default view (Board, Gantt, Wiki, etc.)</x-typography
-				>
-				<x-typography variant="body1"
-					>- Project-wide tags and labels</x-typography
-				>
-				<x-typography variant="body1"
-					>- Preferred date format and timezone</x-typography
-				>
-				<x-typography variant="body1"
-					>- Enable/disable experimental features</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				These settings streamline the experience for every contributor.
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				🔁 Project Lifecycle Management
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				You'll be able to define:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1"
-					>- <strong>Start & end dates</strong> for the project</x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Phases or milestones</strong> (e.g., Planning, Execution,
-					Delivery)</x-typography
-				>
-				<x-typography variant="body1"
-					>- Rules for archiving completed tasks or freezing old
-					issues</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				Project settings give structure to the lifespan of work—not just the
-				tasks within it.
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				🌐 Integrations & Webhooks
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				This section may include:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1"
-					>- API keys or OAuth settings</x-typography
-				>
-				<x-typography variant="body1"
-					>- Integration toggles (Slack, GitHub, etc.)</x-typography
-				>
-				<x-typography variant="body1"
-					>- Webhooks for triggering automations on status change or issue
-					creation</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				Settings here allow your project to
-				<strong>extend beyond this UI</strong> into your broader tooling
-				ecosystem.
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				🧹 Danger Zone
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				Some actions are sensitive and irreversible:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1"
-					>- <strong>Delete Project</strong></x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Transfer Ownership</strong></x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Purge All Data</strong></x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				These options, when implemented, will be gated with confirmations and
-				limited to Admin roles only.
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				📌 Final Notes
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				Project settings are the foundation layer. Think of them as your
-				project's DNA: they don't change often, but when they do, they shape
-				everything downstream.
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				More configuration options will be added over time as your needs grow.
-			</x-typography>
+			<!-- Settings Guidelines Sections -->
+			<x-map items="global_settingsSections">
+				<x-box>
+					<x-box
+						sx:display="flex"
+						sx:alignItems="center"
+						sx:mb="1"
+					>
+						<x-icon
+							icon="{{item_icon}}"
+							color="{{item_color}}"
+							size="large"
+							sx:mr="1"
+						></x-icon>
+						<x-typography variant="h2">
+							{{ item_title }}
+						</x-typography>
+					</x-box>
+					<x-typography
+						variant="body1"
+						sx:mb="0.5"
+					>
+						{{ item_content }}
+					</x-typography>
+					{{#if item_listItems}}
+					<x-box
+						sx:ml="2"
+						sx:mb="0.5"
+					>
+						<ul>
+							{{#each item_listItems}}
+							<li>
+								<x-typography variant="body1">{{ this }}</x-typography>
+							</li>
+							{{/each}}
+						</ul>
+					</x-box>
+					{{/if}}
+					{{#if item_footer}}
+					<x-typography
+						variant="body1"
+						sx:mb="6"
+					>
+						{{ item_footer }}
+					</x-typography>
+					{{/if}}
+					<x-box
+						sx:borderBottom="1px solid var(--paletteDivider)"
+						sx:mt="4"
+						sx:mb="2"
+					></x-box>
+				</x-box>
+			</x-map>
 		</x-box>
 	</x-content>
 </x-page>

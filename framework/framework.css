@@ -59,7 +59,7 @@ body {
 
 	/* Palette System */
 	/* Primary Palette */
-	--palettePrimaryMain: #402c6d;
+	--palettePrimaryMain: #5a3d8a;
 	--palettePrimaryLight: #5b2ec2;
 	--palettePrimaryDark: #29105d;
 	--palettePrimaryContrast: #fff;
@@ -79,6 +79,7 @@ body {
 	/* Text Palette */
 	--paletteTextPrimary: rgba(0, 0, 0, 0.87);
 	--paletteTextSecondary: rgba(0, 0, 0, 0.6);
+	--paletteTextTertiary: rgba(0, 0, 0, 0.55);
 	--paletteTextDisabled: rgba(0, 0, 0, 0.5);
 
 	/* Divider */
@@ -291,8 +292,9 @@ x-page {
 
 /* x-navbar component - navigation bar */
 x-navbar {
+	height: 80px;
 	background: rgba(255, 255, 255, 0.6);
-	padding: 0.75rem 1.5rem;
+	padding: 0 1.5rem;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -322,25 +324,9 @@ x-navbar {
 		width: 100%;
 	}
 
-	.navbar-left {
-		display: flex;
-		align-items: center;
-	}
-
 	.navbar-right {
 		display: flex;
 		align-items: center;
-	}
-
-	.navbar-title {
-		color: #555;
-		font-size: 1.25rem;
-		font-weight: 500;
-		margin: 0;
-		line-height: 1.2;
-		display: flex;
-		align-items: center;
-		height: 55px; /* Match logo height */
 	}
 
 	.navbar-actions {
@@ -578,6 +564,17 @@ x-button[iconPosition='right'] button {
 x-typography {
 	display: inline;
 
+	/* Reset all heading margins to prevent user agent overrides */
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+
 	/* Default span styling */
 	span {
 		font-size: inherit;
@@ -587,46 +584,52 @@ x-typography {
 
 	/* Typography Scale Variants */
 	&[variant='h1'] {
-		font-size: 2.5rem;
-		font-weight: 700;
+		/* Page titles, main headings */
+		font-size: 1.75rem;
+		font-weight: 500;
 		line-height: 1.2;
 		color: var(--paletteTextPrimary);
 	}
 
 	&[variant='h2'] {
-		font-size: 2rem;
-		font-weight: 600;
+		/* Section headers, major content divisions */
+		font-size: 1.35rem;
+		font-weight: 500;
 		line-height: 1.2;
-		color: var(--paletteTextPrimary);
+		color: var(--paletteTextSecondary);
 	}
 
 	&[variant='h3'] {
-		font-size: 1.5rem;
-		font-weight: 600;
+		/* Subsections, content groupings */
+		font-size: 1.2rem;
+		font-weight: 400;
 		line-height: 1.3;
-		color: var(--paletteTextPrimary);
+		color: var(--paletteTextSecondary);
 	}
 
 	&[variant='h4'] {
-		font-size: 1.25rem;
+		/* Sub-subsections, minor headings */
+		font-size: 1rem;
 		font-weight: 400;
 		line-height: 1.4;
-		color: var(--paletteTextPrimary);
+		color: var(--paletteTextTertiary);
 	}
 
 	&[variant='h5'] {
-		font-size: 1.125rem;
-		font-weight: 600;
+		/* Small headings, labels */
+		font-size: 0.875rem;
+		font-weight: 400;
 		line-height: 1.4;
-		color: var(--paletteTextPrimary);
+		color: var(--paletteTextTertiary);
 	}
 
 	&[variant='h6'] {
-		font-size: 1rem;
-		font-weight: 500;
+		/* Micro labels, metadata, fine print */
+		font-size: 0.75rem;
+		font-weight: 400;
 		line-height: 1.4;
 		letter-spacing: 0.01em;
-		color: var(--paletteTextPrimary);
+		color: var(--paletteTextTertiary);
 	}
 
 	&[variant='body1'] {

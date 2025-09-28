@@ -108,9 +108,7 @@ class XNavbar extends BaseUIComponent {
 		// Create navbar structure with dark grey header
 		this.innerHTML = html`
 			<div class="navbar-header">
-				<div class="navbar-left">
-					<span class="navbar-title">${title}</span>
-				</div>
+				<x-typography variant="h1"> ${title} </x-typography>
 				<div class="navbar-right">
 					<div class="navbar-actions">${originalContent}</div>
 				</div>
@@ -243,45 +241,10 @@ class XTypography extends BaseUIComponent {
 	}
 
 	connectedCallback() {
-		const variant = this.getAttribute('variant');
-
-		// Only create specific elements if variant is explicitly specified
-		if (variant && variant !== 'span') {
-			const element = document.createElement(variant);
-			element.innerHTML = this.innerHTML;
-
-			// Copy sx: attributes to the new element
-			Array.from(this.attributes).forEach((attr) => {
-				if (attr.name.startsWith('sx:')) {
-					element.setAttribute(attr.name, attr.value);
-				}
-			});
-
-			if (this.parentNode) {
-				this.parentNode.replaceChild(element, this);
-			}
-
-			// Apply sx: styles to the new element
-			this.applySxStylesToElement(element);
-		} else {
-			// Default to span for inline text styling
-			const element = document.createElement('span');
-			element.innerHTML = this.innerHTML;
-
-			// Copy sx: attributes to the new element
-			Array.from(this.attributes).forEach((attr) => {
-				if (attr.name.startsWith('sx:')) {
-					element.setAttribute(attr.name, attr.value);
-				}
-			});
-
-			if (this.parentNode) {
-				this.parentNode.replaceChild(element, this);
-			}
-
-			// Apply sx: styles to the new element
-			this.applySxStylesToElement(element);
-		}
+		// Set display: block for typography elements
+		this.style.display = 'block';
+		// Apply sx: styles to the x-typography element itself
+		this.applySxStylesToElement(this);
 	}
 
 	applySxStylesToElement(element) {
@@ -313,37 +276,47 @@ class XTypography extends BaseUIComponent {
 	expandShorthandProperty(property, value) {
 		const expanded = {};
 
+		// Convert numeric values to spacing scale (1 = 8px = 0.5rem)
+		const convertSpacingValue = (val) => {
+			// If it's a number (or string that can be parsed as number), convert to spacing scale
+			if (!isNaN(val) && !isNaN(parseFloat(val))) {
+				const num = parseFloat(val);
+				return `${num * 0.5}rem`; // 1 = 0.5rem (8px), 2 = 1rem (16px), etc.
+			}
+			return val;
+		};
+
 		// Padding shorthand properties
 		if (property === 'p') {
-			expanded['padding'] = value;
+			expanded['padding'] = convertSpacingValue(value);
 		} else if (property === 'pt') {
-			expanded['padding-top'] = value;
+			expanded['padding-top'] = convertSpacingValue(value);
 		} else if (property === 'pb') {
-			expanded['padding-bottom'] = value;
+			expanded['padding-bottom'] = convertSpacingValue(value);
 		} else if (property === 'pl') {
-			expanded['padding-left'] = value;
+			expanded['padding-left'] = convertSpacingValue(value);
 		} else if (property === 'pr') {
-			expanded['padding-right'] = value;
+			expanded['padding-right'] = convertSpacingValue(value);
 		} else if (property === 'py') {
-			expanded['padding-block'] = value;
+			expanded['padding-block'] = convertSpacingValue(value);
 		} else if (property === 'px') {
-			expanded['padding-inline'] = value;
+			expanded['padding-inline'] = convertSpacingValue(value);
 		}
 		// Margin shorthand properties
 		else if (property === 'm') {
-			expanded['margin'] = value;
+			expanded['margin'] = convertSpacingValue(value);
 		} else if (property === 'mt') {
-			expanded['margin-top'] = value;
+			expanded['margin-top'] = convertSpacingValue(value);
 		} else if (property === 'mb') {
-			expanded['margin-bottom'] = value;
+			expanded['margin-bottom'] = convertSpacingValue(value);
 		} else if (property === 'ml') {
-			expanded['margin-left'] = value;
+			expanded['margin-left'] = convertSpacingValue(value);
 		} else if (property === 'mr') {
-			expanded['margin-right'] = value;
+			expanded['margin-right'] = convertSpacingValue(value);
 		} else if (property === 'my') {
-			expanded['margin-block'] = value;
+			expanded['margin-block'] = convertSpacingValue(value);
 		} else if (property === 'mx') {
-			expanded['margin-inline'] = value;
+			expanded['margin-inline'] = convertSpacingValue(value);
 		}
 		// Handle regular camelCase properties
 		else {
@@ -541,6 +514,50 @@ class XMap extends HTMLElement {
 		// Handle {{index}} for array index
 		processedTemplate = processedTemplate.replace(/\{\{index\}\}/g, index);
 
+		// Process {{#if}} conditionals
+		processedTemplate = processedTemplate.replace(
+			/\{\{#if\s+([^}]+)\}\}([\s\S]*?)\{\{\/if\}\}/g,
+			(match, condition, content) => {
+				// Evaluate the condition
+				const conditionValue = this.evaluateCondition(condition.trim(), item);
+				return conditionValue ? content : '';
+			}
+		);
+
+		// Process {{#each}} loops
+		processedTemplate = processedTemplate.replace(
+			/\{\{#each\s+([^}]+)\}\}([\s\S]*?)\{\{\/each\}\}/g,
+			(match, arrayProperty, content) => {
+				const property = arrayProperty.trim();
+				let arrayValue;
+
+				// Handle item_property syntax
+				if (property.startsWith('item_')) {
+					const prop = property.substring(5);
+					arrayValue = item[prop];
+				} else {
+					arrayValue = item[property];
+				}
+
+				if (!Array.isArray(arrayValue)) {
+					return '';
+				}
+
+				// Process each item in the array
+				return arrayValue
+					.map((arrayItem, index) => {
+						// Replace {{ this }} with the current array item
+						let processedContent = content.replace(
+							/\{\{\s*this\s*\}\}/g,
+							arrayItem
+						);
+						// Process any other template variables in the content
+						return this.processTemplate(processedContent, arrayItem, index);
+					})
+					.join('');
+			}
+		);
+
 		// Process conditional classes after template variables are replaced
 		processedTemplate = processedTemplate.replace(
 			/class="WHEN\s+(.+?)\s+IS\s+(.+?)\s+THEN\s+(.+?)\s+ELSE\s+(.+?)"/g,
@@ -566,6 +583,27 @@ class XMap extends HTMLElement {
 		);
 
 		return processedTemplate;
+	}
+
+	evaluateCondition(condition, item) {
+		// Handle simple property checks like "item_listItems"
+		if (condition.startsWith('item_')) {
+			const property = condition.substring(5); // Remove "item_" prefix
+			const value = item[property];
+
+			// Check if it's truthy (exists and not empty)
+			if (Array.isArray(value)) {
+				return value.length > 0;
+			}
+			return !!value;
+		}
+
+		// Handle direct property checks
+		const value = item[condition];
+		if (Array.isArray(value)) {
+			return value.length > 0;
+		}
+		return !!value;
 	}
 }
 

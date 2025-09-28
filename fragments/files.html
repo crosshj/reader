@@ -1,4 +1,83 @@
 <x-page>
+	<x-data
+		name="fileSections"
+		defaultValue='[
+			{
+				"title": "Why File Management Matters",
+				"icon": "DriveFolderUpload",
+				"color": "var(--paletteInfoMain)",
+				"content": "Keeps all contributors on the same page and prevents version conflicts and outdated references. Centralizing files avoids knowledge silos and provides a shared source of truth.",
+				"listItems": [
+					"Prevents version conflicts and outdated references",
+					"Reduces time lost to digging through chat threads or email chains",
+					"Provides a shared source of truth for all team members",
+					"Enables quick location of needed files and focus on what matters"
+				],
+				"footer": "When you use structured file storage, team members can quickly locate what they need and focus on what matters."
+			},
+			{
+				"title": "Organizing Your Files",
+				"icon": "Filter",
+				"color": "var(--palettePrimaryMain)",
+				"content": "A good file system starts with structure. Consider these organizational principles:",
+				"listItems": [
+					"Naming conventions (e.g., 2025-04-DesignSpecs-v1.2.pdf)",
+					"Consistent folder hierarchy",
+					"Tags for priority, confidentiality, or lifecycle stage",
+					"Use folders to segment work: /Designs, /Specs, /Contracts, /Deliverables, /Archive"
+				],
+				"footer": "Structure makes your file system predictable and navigable for everyone on the team."
+			},
+			{
+				"title": "Search and Discovery",
+				"icon": "Search",
+				"color": "var(--paletteWarningMain)",
+				"content": "Even with structure, quick access matters. This page may eventually include:",
+				"listItems": [
+					"Keyword search across all files",
+					"File previews (images, docs)",
+					"Sort by date, name, or uploader",
+					"Advanced filtering by file type or tags"
+				],
+				"footer": "These improvements make the file system feel alive—not static."
+			},
+			{
+				"title": "Use Cases",
+				"icon": "Success",
+				"color": "var(--paletteSuccessMain)",
+				"content": "File management serves different needs throughout the project lifecycle:",
+				"listItems": [
+					"During active work: Upload and share WIP docs",
+					"Exchange drafts with reviewers",
+					"Store shared templates and resources",
+					"After project delivery: Archive assets for compliance",
+					"Retain documentation for knowledge transfer",
+					"Track what decisions were made and why"
+				],
+				"footer": "Proper file management supports both active collaboration and long-term project memory."
+			},
+			{
+				"title": "Permissions and Responsibility",
+				"icon": "Error",
+				"color": "var(--paletteErrorMain)",
+				"content": "Every file has a footprint—who uploaded it, when, and why. Key considerations include:",
+				"listItems": [
+					"Enforce access control for sensitive files",
+					"Versioning support lets you recover from mistakes",
+					"Metadata (author, date, size, tags) adds clarity",
+					"Clear ownership and responsibility for file maintenance"
+				],
+				"footer": "Good file governance protects your project and team from confusion and security risks."
+			},
+			{
+				"title": "Final Tip",
+				"icon": "History",
+				"color": "var(--paletteTextSecondary)",
+				"content": "Think of this page as the memory of your project. Use it well, and future contributors—even your future self—will thank you."
+			}
+		]'
+	></x-data>
+
 	<x-navbar>
 		<x-button
 			label="UPLOAD FILE"
@@ -10,229 +89,84 @@
 		<x-box
 			sx:display="flex"
 			sx:flexDirection="column"
-			sx:gap="2"
-			sx:pb="200px"
-			sx:pt="1em"
+			sx:gap="3"
+			sx:mb="200px"
+			sx:mt="1em"
 			sx:width="100%"
 			sx:maxWidth="1000px"
 			sx:mx="auto"
 		>
 			<x-typography
-				variant="body1"
+				variant="intro"
 				sx:mb="3"
 			>
 				Files are more than just attachments—they are the
-				<strong>persistent artifacts</strong> of a project's work, ideas, and
-				decisions. This section serves as your centralized repository for
+				<strong>persistent artifacts</strong> of a project&apos;s work, ideas,
+				and decisions. This section serves as your centralized repository for
 				everything from design assets to stakeholder sign-off docs.
 			</x-typography>
 
 			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				📁 Why File Management Matters
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="2"
-			>
-				<x-typography variant="body1"
-					>- Keeps all contributors on the same page</x-typography
-				>
-				<x-typography variant="body1"
-					>- Prevents version conflicts and outdated references</x-typography
-				>
-				<x-typography variant="body1"
-					>- Reduces time lost to digging through chat threads or email
-					chains</x-typography
-				>
-			</x-box>
-
-			<x-typography
 				variant="body1"
 				sx:mb="4"
 			>
-				Centralizing files avoids knowledge silos and provides a
-				<strong>shared source of truth</strong>. When you use structured file
-				storage, team members can quickly locate what they need and focus on
-				what matters.
+				This is your <strong>centralized file repository</strong> where all
+				project artifacts are stored, organized, and accessible to your team.
 			</x-typography>
 
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				🧭 Organizing Your Files
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				A good file system starts with structure. Consider:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="2"
-			>
-				<x-typography variant="body1"
-					>- <strong>Naming conventions</strong> (e.g.,
-					<code>2025-04-DesignSpecs-v1.2.pdf</code>)</x-typography
-				>
-				<x-typography variant="body1"
-					>- <strong>Consistent folder hierarchy</strong></x-typography
-				>
-				<x-typography variant="body1"
-					>- Tags for priority, confidentiality, or lifecycle
-					stage</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				Use folders to segment work:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1"
-					><code>/Designs</code>, <code>/Specs</code>, <code>/Contracts</code>,
-					<code>/Deliverables</code>, <code>/Archive</code></x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				🔍 Search and Discovery
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				Even with structure, quick access matters. This page may eventually
-				include:
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1">- Keyword search</x-typography>
-				<x-typography variant="body1"
-					>- File previews (images, docs)</x-typography
-				>
-				<x-typography variant="body1"
-					>- Sort by date, name, or uploader</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				These improvements make the file system feel <em>alive</em>—not static.
-			</x-typography>
-
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				✅ Use Cases
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				<strong>During active work:</strong>
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="2"
-			>
-				<x-typography variant="body1">- Upload and share WIP docs</x-typography>
-				<x-typography variant="body1"
-					>- Exchange drafts with reviewers</x-typography
-				>
-				<x-typography variant="body1">- Store shared templates</x-typography>
-			</x-box>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				<strong>After project delivery:</strong>
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1"
-					>- Archive assets for compliance</x-typography
-				>
-				<x-typography variant="body1"
-					>- Retain documentation for knowledge transfer</x-typography
-				>
-				<x-typography variant="body1"
-					>- Track what decisions were made and why</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				🔒 Permissions and Responsibility
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="2"
-			>
-				Every file has a footprint—who uploaded it, when, and why.
-			</x-typography>
-
-			<x-box
-				sx:ml="2"
-				sx:mb="4"
-			>
-				<x-typography variant="body1"
-					>- Enforce access control for sensitive files</x-typography
-				>
-				<x-typography variant="body1"
-					>- Versioning support lets you recover from mistakes</x-typography
-				>
-				<x-typography variant="body1"
-					>- Metadata (author, date, size, tags) adds clarity</x-typography
-				>
-			</x-box>
-
-			<x-typography
-				variant="h5"
-				sx:mb="2"
-			>
-				🧠 Final Tip
-			</x-typography>
-
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				Think of this page as the <em>memory</em> of your project. Use it well,
-				and future contributors—even your future self—will thank you.
-			</x-typography>
+			<!-- File Management Guidelines Sections -->
+			<x-map items="global_fileSections">
+				<x-box>
+					<x-box
+						sx:display="flex"
+						sx:alignItems="center"
+						sx:mb="1"
+					>
+						<x-icon
+							icon="{{item_icon}}"
+							color="{{item_color}}"
+							size="large"
+							sx:mr="1"
+						></x-icon>
+						<x-typography variant="h2">
+							{{ item_title }}
+						</x-typography>
+					</x-box>
+					<x-typography
+						variant="body1"
+						sx:mb="0.5"
+					>
+						{{ item_content }}
+					</x-typography>
+					{{#if item_listItems}}
+					<x-box
+						sx:ml="2"
+						sx:mb="0.5"
+					>
+						<ul>
+							{{#each item_listItems}}
+							<li>
+								<x-typography variant="body1">{{ this }}</x-typography>
+							</li>
+							{{/each}}
+						</ul>
+					</x-box>
+					{{/if}}
+					{{#if item_footer}}
+					<x-typography
+						variant="body1"
+						sx:mb="6"
+					>
+						{{ item_footer }}
+					</x-typography>
+					{{/if}}
+					<x-box
+						sx:borderBottom="1px solid var(--paletteDivider)"
+						sx:mt="4"
+						sx:mb="2"
+					></x-box>
+				</x-box>
+			</x-map>
 		</x-box>
 	</x-content>
 </x-page>
