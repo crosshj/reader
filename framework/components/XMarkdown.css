@@ -1,0 +1,95 @@
+/* x-markdown component styles */
+x-markdown {
+	display: block;
+	width: 100%;
+	font-family: var(--fontFamily, sans-serif);
+	line-height: 1.6;
+	color: var(--paletteTextPrimary, #333);
+}
+
+x-markdown h1 {
+	font-size: 2rem;
+	font-weight: 600;
+	margin: 1.5rem 0 1rem 0;
+	color: var(--paletteTextPrimary, #333);
+}
+
+x-markdown h2 {
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin: 1.25rem 0 0.75rem 0;
+	color: var(--paletteTextPrimary, #333);
+}
+
+x-markdown h3 {
+	font-size: 1.25rem;
+	font-weight: 600;
+	margin: 1rem 0 0.5rem 0;
+	color: var(--paletteTextPrimary, #333);
+}
+
+x-markdown p {
+	margin: 0 0 1rem 0;
+}
+
+x-markdown ul {
+	margin: 0 0 1rem 0;
+	padding-left: 1.5rem;
+}
+
+x-markdown li {
+	margin: 0.25rem 0;
+}
+
+x-markdown strong {
+	font-weight: 600;
+	color: var(--paletteTextPrimary, #333);
+}
+
+x-markdown x-typography[variant='strong'] {
+	font-weight: 600;
+	color: var(--paletteTextPrimary, #333);
+}
+
+x-markdown em {
+	font-style: italic;
+}
+
+x-markdown a {
+	color: var(--palettePrimaryMain, #1976d2);
+	text-decoration: none;
+}
+
+x-markdown a:hover {
+	text-decoration: underline;
+}
+
+x-markdown code {
+	background-color: color-mix(
+		in srgb,
+		var(--paletteBackgroundPaper, #fff) 90%,
+		var(--paletteTextPrimary, #333)
+	);
+	padding: 0.125rem 0.25rem;
+	border-radius: 0.25rem;
+	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+	font-size: 0.875rem;
+}
+
+x-markdown pre {
+	background-color: color-mix(
+		in srgb,
+		var(--paletteBackgroundPaper, #fff) 90%,
+		var(--paletteTextPrimary, #333)
+	);
+	padding: 1rem;
+	border-radius: 0.5rem;
+	overflow-x: auto;
+	margin: 1rem 0;
+}
+
+x-markdown pre code {
+	background: none;
+	padding: 0;
+	border-radius: 0;
+}

@@ -103,94 +103,83 @@
 	</x-navbar>
 
 	<x-content>
-		<x-box
-			sx:display="flex"
-			sx:flexDirection="column"
-			sx:gap="3"
-			sx:mb="200px"
-			sx:mt="1em"
-			sx:width="100%"
-			sx:maxWidth="1000px"
-			sx:mx="auto"
+		<x-typography
+			variant="intro"
+			sx:mb="3"
 		>
-			<x-typography
-				variant="intro"
-				sx:mb="3"
-			>
-				Welcome to the Issue Submission Portal! Your detailed reports are vital
-				to our progress.
-			</x-typography>
+			Welcome to the Issue Submission Portal! Your detailed reports are vital to
+			our progress.
+		</x-typography>
 
-			<x-typography
-				variant="body1"
-				sx:mb="3"
-			>
-				Please click the <strong>Add Issue</strong> button and fill out all the
-				fields thoroughly to help us identify and address the issue efficiently.
-				Once completed, hit the <em>Submit</em> button to send your report.
-			</x-typography>
+		<x-typography
+			variant="body1"
+			sx:mb="3"
+		>
+			Please click the <strong>Add Issue</strong> button and fill out all the
+			fields thoroughly to help us identify and address the issue efficiently.
+			Once completed, hit the <em>Submit</em> button to send your report.
+		</x-typography>
 
-			<x-typography
-				variant="body1"
-				sx:mb="4"
-			>
-				We appreciate your contribution to improving our system. This page will
-				become more powerful as more issues are added and organized.
-			</x-typography>
+		<x-typography
+			variant="body1"
+			sx:mb="4"
+		>
+			We appreciate your contribution to improving our system. This page will
+			become more powerful as more issues are added and organized.
+		</x-typography>
 
-			<!-- Issue Guidelines Sections -->
-			<x-map items="global_issueSections">
-				<x-box>
-					<x-box
-						sx:display="flex"
-						sx:alignItems="center"
-						sx:mb="1"
-					>
-						<x-icon
-							icon="{{item_icon}}"
-							color="{{item_color}}"
-							size="large"
-							sx:mr="1"
-						></x-icon>
-						<x-typography variant="h2">
-							{{ item_title }}
-						</x-typography>
-					</x-box>
-					<x-typography
-						variant="body1"
-						sx:mb="0.5"
-					>
-						{{ item_content }}
+		<!-- Issue Guidelines Sections -->
+		<x-map items="global_issueSections">
+			<x-box>
+				<x-box
+					sx:display="flex"
+					sx:alignItems="center"
+					sx:mb="1"
+				>
+					<x-icon
+						icon="{{item_icon}}"
+						color="{{item_color}}"
+						size="large"
+						sx:mr="1"
+					></x-icon>
+					<x-typography variant="h2">
+						{{ item_title }}
 					</x-typography>
-					{{#if item_listItems}}
-					<x-box
-						sx:ml="2"
-						sx:mb="0.5"
-					>
-						<ul>
-							{{#each item_listItems}}
-							<li>
-								<x-typography variant="body1">{{ this }}</x-typography>
-							</li>
-							{{/each}}
-						</ul>
-					</x-box>
-					{{/if}}
-					{{#if item_footer}}
-					<x-typography
-						variant="body1"
-						sx:mb="6"
-					>
-						{{ item_footer }}
-					</x-typography>
-					{{/if}}
-					<x-box
-						sx:borderBottom="1px solid var(--paletteDivider)"
-						sx:mt="4"
-						sx:mb="2"
-					></x-box>
 				</x-box>
-			</x-map>
-		</x-box>
+				<x-typography
+					variant="body1"
+					sx:mb="0.5"
+				>
+					{{ item_content }}
+				</x-typography>
+				{{#if item_listItems}}
+				<x-box
+					sx:ml="2"
+					sx:mb="0.5"
+				>
+					<ul>
+						{{#each item_listItems}}
+						<li>
+							<x-typography variant="body1">{{ this }}</x-typography>
+						</li>
+						{{/each}}
+					</ul>
+				</x-box>
+				{{/if}}
+				{{#if item_footer}}
+				<x-typography
+					variant="body1"
+					sx:mb="6"
+				>
+					{{ item_footer }}
+				</x-typography>
+				{{/if}}
+				<x-box
+					sx:borderBottom="1px solid var(--paletteDivider)"
+					sx:mt="4"
+					sx:mb="2"
+				></x-box>
+			</x-box>
+		</x-map>
 	</x-content>
 </x-page>

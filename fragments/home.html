@@ -34,6 +34,29 @@
 	></x-data>
 
 	<x-data
+		name="chartData"
+		defaultValue='[
+			{"value": 12, "label": "Jan"},
+			{"value": 19, "label": "Feb"},
+			{"value": 15, "label": "Mar"},
+			{"value": 25, "label": "Apr"},
+			{"value": 22, "label": "May"},
+			{"value": 30, "label": "Jun"}
+		]'
+	></x-data>
+
+	<x-data
+		name="pieData"
+		defaultValue='[
+			{"value": 35, "label": "Frontend"},
+			{"value": 25, "label": "Backend"},
+			{"value": 20, "label": "Database"},
+			{"value": 15, "label": "DevOps"},
+			{"value": 5, "label": "Other"}
+		]'
+	></x-data>
+
+	<x-data
 		name="recentActivity"
 		defaultValue='[
 			{
@@ -166,126 +189,245 @@
 	</x-navbar>
 
 	<x-content>
-		<x-box
-			sx:display="flex"
-			sx:flexDirection="column"
-			sx:gap="2"
-			sx:mb="200px"
-			sx:mt="1em"
-			sx:width="100%"
-			sx:maxWidth="1000px"
-			sx:mx="auto"
-		>
-			<x-typography
-				variant="intro"
-				sx:mb="3"
-			>
-				Welcome to your project management home. Here's an overview of your
-				current status and key metrics.
-			</x-typography>
+		<x-markdown>
+			Welcome to the **Project Management Dashboard**. This document outlines
+			**goals**, **tasks**, and **progress tracking**.
+		</x-markdown>
 
-			<!-- Stats Grid -->
-			<x-box
-				sx:display="grid"
-				sx:gridTemplateColumns="repeat(auto-fit, minmax(280px, 1fr))"
-				sx:gap="2"
-				sx:mb="3"
-			>
-				<x-map items="global_metricCards">
+		<!-- Stats Grid -->
+		<x-box
+			sx:display="grid"
+			sx:gridTemplateColumns="repeat(auto-fit, minmax(400px, 1fr))"
+			sx:gap="3"
+			sx:mb="3"
+		>
+			<x-map items="global_metricCards">
+				<x-box
+					sx:background="var(--paletteBackgroundPaper)"
+					sx:borderRadius="8px"
+					sx:p="3"
+					sx:border="1px solid var(--paletteDivider)"
+				>
 					<x-box
-						sx:background="var(--paletteBackgroundPaper)"
-						sx:borderRadius="8px"
-						sx:p="3"
-						sx:border="1px solid var(--paletteDivider)"
+						sx:display="flex"
+						sx:alignItems="center"
+						sx:mb="2"
 					>
-						<x-box
-							sx:display="flex"
-							sx:alignItems="center"
-							sx:mb="2"
-						>
-							<x-icon
-								icon="{{item_icon}}"
-								color="{{item_color}}"
-								size="large"
-								sx:mr="1"
-							></x-icon>
-							<x-typography variant="label">
-								{{ item_title }}
-							</x-typography>
-						</x-box>
-						<x-typography
-							variant="h2"
-							sx:mb="1"
-						>
-							{{ item_value }}
-						</x-typography>
-						<x-typography
-							variant="body2"
-							sx:whiteSpace="nowrap"
-							sx:overflow="hidden"
-							sx:textOverflow="ellipsis"
-						>
-							{{ item_subtitle }}
+						<x-icon
+							icon="{{item_icon}}"
+							color="{{item_color}}"
+							size="large"
+							sx:mr="1"
+						></x-icon>
+						<x-typography variant="label">
+							{{ item_title }}
 						</x-typography>
 					</x-box>
-				</x-map>
-			</x-box>
+					<x-typography
+						variant="h2"
+						sx:mb="1"
+					>
+						{{ item_value }}
+					</x-typography>
+					<x-typography
+						variant="body2"
+						sx:whiteSpace="nowrap"
+						sx:overflow="hidden"
+						sx:textOverflow="ellipsis"
+					>
+						{{ item_subtitle }}
+					</x-typography>
+				</x-box>
+			</x-map>
+		</x-box>
 
-			<!-- Recent Activity Section -->
+		<!-- Charts Section -->
+		<x-box
+			sx:display="grid"
+			sx:gridTemplateColumns="repeat(auto-fit, minmax(400px, 1fr))"
+			sx:gap="3"
+			sx:mb="3"
+		>
 			<x-box
 				sx:background="var(--paletteBackgroundPaper)"
 				sx:borderRadius="8px"
 				sx:p="3"
 				sx:border="1px solid var(--paletteDivider)"
+				sx:height="300px"
+				sx:display="flex"
+				sx:flexDirection="column"
+			>
+				<x-typography
+					variant="h3"
+					sx:mb="2"
+				>
+					Monthly Progress
+				</x-typography>
+				<x-viz-bar data="global_chartData"></x-viz-bar>
+			</x-box>
+
+			<x-box
+				sx:background="var(--paletteBackgroundPaper)"
+				sx:borderRadius="8px"
+				sx:p="3"
+				sx:border="1px solid var(--paletteDivider)"
+				sx:height="300px"
+				sx:display="flex"
+				sx:flexDirection="column"
+			>
+				<x-typography
+					variant="h3"
+					sx:mb="2"
+				>
+					Project Distribution
+				</x-typography>
+				<x-viz-pie data="global_pieData"></x-viz-pie>
+			</x-box>
+		</x-box>
+
+		<!-- Markdown Section -->
+		<!-- prettier-ignore -->
+		<x-markdown>
+				## 1. Project Overview
+				- **Project Name:** Apollo Revamp
+				- **Start Date:** 2025-09-01  
+				- **Target Release:** 2026-01-15
+				
+				> _“Plans are useless, but planning is indispensable.”_ — Dwight Eisenhower
+				
+				---
+				
+				## 2. Goals
+				1. ✅ Improve user onboarding flow  
+				2. ⏳ Upgrade backend API performance  
+				3. ❌ Reduce churn rate to below 5%
+				
+				---
+				
+				## 3. Task Breakdown
+				
+				### 🔧 Development
+				- [x] Set up CI/CD pipeline
+				- [ ] Implement auth service (ETA: Oct 15)
+				- [ ] Add GraphQL support
+				- [ ] Write integration tests
+				
+				### 🎨 Design
+				- [x] Refresh brand color palette
+				- [ ] Finalize mobile layouts
+				- [ ] Add dark mode theme
+				
+				### 📢 Marketing
+				- [ ] Draft launch campaign
+				- [ ] Secure press coverage
+				- [ ] Collect beta feedback
+				
+				---
+				
+				## 4. Priority Matrix
+				
+				| Task                  | Priority | Status   |
+				|-----------------------|----------|----------|
+				| CI/CD Setup           | High     | Done ✅  |
+				| Auth Service          | High     | In Prog. |
+				| Dark Mode             | Medium   | Pending  |
+				| Launch Campaign       | High     | Pending  |
+				| GraphQL Support       | Low      | Pending  |
+				
+				---
+				
+				## 5. Risks & Mitigations
+				- **Risk:** API scaling issues  
+					**Mitigation:** Introduce load testing early  
+				- **Risk:** Design delays  
+					**Mitigation:** Allocate backup designer resources  
+				- **Risk:** Marketing miss  
+					**Mitigation:** Engage external PR support
+				
+				---
+				
+				## 6. Resources
+				- [Confluence Docs](https://confluence.example.com/apollo)
+				- [Design Mockups](https://figma.example.com/apollo)
+				- [CI/CD Pipeline](https://ci.example.com/apollo)
+				
+				---
+				
+				## 7. Notes
+				> ℹ️ Weekly standups occur **Monday at 10AM EST**.  
+				> Action items are reviewed every Friday.
+				
+				---
+				
+				## 8. Code Snippets
+				Example for setting up API endpoint:
+				
+				```js
+				import express from 'express';
+				const app = express();
+				
+				app.get('/health', (req, res) => {
+					res.json({ status: 'ok' });
+				});
+				
+				app.listen(3000, () => console.log('API running...'));
+				```
+			</x-markdown>
+
+		<!-- Recent Activity Section -->
+		<x-box
+			sx:background="var(--paletteBackgroundPaper)"
+			sx:borderRadius="8px"
+			sx:p="3"
+			sx:border="1px solid var(--paletteDivider)"
+			sx:display="flex"
+			sx:flexDirection="column"
+			sx:gap="2"
+			sx:mb="4"
+			sx:mt="4"
+		>
+			<x-box
+				sx:display="flex"
+				sx:alignItems="center"
+				sx:mb="2"
+			>
+				<x-icon
+					icon="History"
+					color="var(--palettePrimaryMain)"
+					size="large"
+					sx:mr="1"
+				></x-icon>
+				<x-typography variant="label"> Recent Activity </x-typography>
+			</x-box>
+
+			<x-box
 				sx:display="flex"
 				sx:flexDirection="column"
 				sx:gap="2"
-				sx:mb="4"
-				sx:mt="4"
 			>
-				<x-box
-					sx:display="flex"
-					sx:alignItems="center"
-					sx:mb="2"
-				>
-					<x-icon
-						icon="History"
-						color="var(--palettePrimaryMain)"
-						size="large"
-						sx:mr="1"
-					></x-icon>
-					<x-typography variant="label"> Recent Activity </x-typography>
-				</x-box>
-
-				<x-box
-					sx:display="flex"
-					sx:flexDirection="column"
-					sx:gap="2"
-				>
-					<x-map items="global_recentActivity">
-						<x-box
-							sx:display="flex"
-							sx:alignItems="center"
-							sx:gap="2"
-							sx:py="1"
+				<x-map items="global_recentActivity">
+					<x-box
+						sx:display="flex"
+						sx:alignItems="center"
+						sx:gap="2"
+						sx:py="1"
+					>
+						<x-icon
+							icon="{{item_icon}}"
+							color="var(--paletteTextSecondary)"
+							size="medium"
+						></x-icon>
+						<x-typography variant="body2">
+							{{ item_user }} {{ item_action }} "{{ item_item }}"
+						</x-typography>
+						<x-typography
+							variant="caption"
+							sx:ml="auto"
 						>
-							<x-icon
-								icon="{{item_icon}}"
-								color="var(--paletteTextSecondary)"
-								size="medium"
-							></x-icon>
-							<x-typography variant="body2">
-								{{ item_user }} {{ item_action }} "{{ item_item }}"
-							</x-typography>
-							<x-typography
-								variant="caption"
-								sx:ml="auto"
-							>
-								{{ item_time }}
-							</x-typography>
-						</x-box>
-					</x-map>
-				</x-box>
+							{{ item_time }}
+						</x-typography>
+					</x-box>
+				</x-map>
 			</x-box>
 		</x-box>
 	</x-content>

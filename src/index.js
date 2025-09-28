@@ -3,6 +3,7 @@ import { dispatchEvent } from './_lib/utils.js';
 
 // Register all web components first
 import './web-components.js';
+import '../framework/framework.js';
 
 import { ApplicationController } from './Application/ApplicationController.js';
 import { ReaderController } from './Reader/ReaderController.js';
@@ -10,10 +11,10 @@ import { ReaderController } from './Reader/ReaderController.js';
 async function startReader() {
 	const applicationController = new ApplicationController();
 	const readerController = new ReaderController();
-	
+
 	// Make ApplicationController globally available
 	window.appController = applicationController;
-	
+
 	dispatchEvent('app:init');
 }
 

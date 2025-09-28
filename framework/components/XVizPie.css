@@ -1,0 +1,154 @@
+/* x-viz-pie component styles */
+x-viz-pie {
+	display: block;
+	width: 100%;
+	height: 300px;
+}
+
+x-viz-pie .viz-pie-container {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	height: 100%;
+}
+
+x-viz-pie .viz-svg {
+	width: 200px;
+	height: 200px;
+	flex-shrink: 1;
+}
+
+x-viz-pie .viz-slice {
+	fill: var(--palettePrimaryMain, #1976d2);
+	transition: fill 0.2s ease;
+	cursor: pointer;
+}
+
+x-viz-pie .viz-slice:hover {
+	fill: color-mix(in srgb, var(--palettePrimaryMain, #1976d2) 80%, black);
+}
+
+x-viz-pie .viz-slice:nth-child(1) {
+	fill: var(--palettePrimaryMain, #1976d2);
+}
+x-viz-pie .viz-slice:nth-child(2) {
+	fill: color-mix(
+		in srgb,
+		var(--palettePrimaryMain, #1976d2) 80%,
+		var(--paletteBackgroundPaper, #ffffff)
+	);
+}
+x-viz-pie .viz-slice:nth-child(3) {
+	fill: color-mix(
+		in srgb,
+		var(--palettePrimaryMain, #1976d2) 60%,
+		var(--paletteBackgroundPaper, #ffffff)
+	);
+}
+x-viz-pie .viz-slice:nth-child(4) {
+	fill: color-mix(
+		in srgb,
+		var(--palettePrimaryMain, #1976d2) 40%,
+		var(--paletteBackgroundPaper, #ffffff)
+	);
+}
+x-viz-pie .viz-slice:nth-child(5) {
+	fill: color-mix(
+		in srgb,
+		var(--palettePrimaryMain, #1976d2) 20%,
+		var(--paletteBackgroundPaper, #ffffff)
+	);
+}
+
+x-viz-pie .viz-legend {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	flex: 1;
+	min-width: 0;
+	margin-right: 5px;
+}
+
+x-viz-pie .viz-legend-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-family: var(--fontFamily, sans-serif);
+	min-width: 0;
+}
+
+x-viz-pie .viz-legend-color {
+	width: 16px;
+	height: 16px;
+	border-radius: 2px;
+	background-color: var(--palettePrimaryMain, #1976d2);
+}
+
+x-viz-pie .viz-legend-item:nth-child(1) .viz-legend-color {
+	background-color: var(--palettePrimaryMain, #1976d2);
+}
+x-viz-pie .viz-legend-item:nth-child(2) .viz-legend-color {
+	background-color: color-mix(
+		in srgb,
+		var(--palettePrimaryMain, #1976d2) 80%,
+		var(--paletteBackgroundPaper, #ffffff)
+	);
+}
+x-viz-pie .viz-legend-item:nth-child(3) .viz-legend-color {
+	background-color: color-mix(
+		in srgb,
+		var(--palettePrimaryMain, #1976d2) 60%,
+		var(--paletteBackgroundPaper, #ffffff)
+	);
+}
+x-viz-pie .viz-legend-item:nth-child(4) .viz-legend-color {
+	background-color: color-mix(
+		in srgb,
+		var(--palettePrimaryMain, #1976d2) 40%,
+		var(--paletteBackgroundPaper, #ffffff)
+	);
+}
+x-viz-pie .viz-legend-item:nth-child(5) .viz-legend-color {
+	background-color: color-mix(
+		in srgb,
+		var(--palettePrimaryMain, #1976d2) 20%,
+		var(--paletteBackgroundPaper, #ffffff)
+	);
+}
+
+x-viz-pie .viz-legend-label {
+	font-size: 14px;
+	color: var(--paletteTextPrimary, #333);
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+x-viz-pie .viz-legend-value {
+	font-size: 12px;
+	color: var(--paletteTextSecondary, #666);
+	margin-left: auto;
+}
+
+x-viz-pie .viz-error {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	color: var(--paletteErrorMain, #d32f2f);
+	font-family: var(--fontFamily, sans-serif);
+}
+
+@media (max-width: 600px) {
+	x-viz-pie .viz-pie-container {
+		flex-direction: column;
+		text-align: center;
+	}
+
+	x-viz-pie .viz-svg {
+		width: 150px;
+		height: 150px;
+	}
+}

@@ -1,0 +1,83 @@
+/* x-viz-bar component styles */
+x-viz-bar {
+	display: block;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+x-viz-bar * {
+	box-sizing: border-box;
+}
+
+x-viz-bar .viz-wrapper {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+x-viz-bar .viz-chart {
+	display: flex;
+	align-items: flex-end;
+	height: 100%;
+	gap: 4px;
+	width: 100%;
+	padding: 20px 0 30px 0;
+}
+
+x-viz-bar .viz-bar-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+	height: 100%;
+	position: relative;
+	min-width: 0;
+}
+
+x-viz-bar .viz-bar {
+	background-color: var(--palettePrimaryMain, #1976d2);
+	width: 100%;
+	min-height: 4px;
+	transition: background-color 0.2s ease;
+	border-radius: 2px 2px 0 0;
+	margin-top: auto;
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+x-viz-bar .viz-bar:hover {
+	background-color: color-mix(
+		in srgb,
+		var(--palettePrimaryMain, #1976d2) 80%,
+		black
+	);
+}
+
+x-viz-bar .viz-value {
+	position: absolute;
+	top: -20px;
+	width: 100%;
+	text-align: center;
+	z-index: 1;
+}
+
+x-viz-bar .viz-label {
+	position: absolute;
+	bottom: -25px;
+	width: 100%;
+	text-align: center;
+	color: var(--paletteTextPrimary, #333);
+}
+
+x-viz-bar .viz-error {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	color: var(--paletteErrorMain, #d32f2f);
+	font-family: var(--fontFamily, sans-serif);
+}

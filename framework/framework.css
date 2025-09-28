@@ -339,7 +339,8 @@ x-navbar {
 /* x-content component - main content area */
 x-content {
 	padding: 1rem;
-	max-width: 1200px;
+	width: 100%;
+	max-width: 1000px;
 	margin: 0 auto;
 	flex: 1;
 	box-sizing: border-box;
@@ -347,6 +348,12 @@ x-content {
 	height: calc(100vh - 60px); /* Subtract navbar height */
 	border: none;
 	border-top: none;
+	/* Common content styling */
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-bottom: 200px;
+	margin-top: 1em;
 }
 
 /* x-page-fragment component - page fragment container */

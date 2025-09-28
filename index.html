@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -11,9 +11,20 @@
 		<!-- Theme colors - handled by Capacitor -->
 
 		<!-- Favicon -->
-		<link rel="icon" type="image/svg+xml" href="/reader-favicon.svg" />
-		<link rel="alternate icon" href="/reader-favicon.svg" />
-		<link rel="mask-icon" href="/reader-favicon.svg" color="#000000" />
+		<link
+			rel="icon"
+			type="image/svg+xml"
+			href="/reader-favicon.svg"
+		/>
+		<link
+			rel="alternate icon"
+			href="/reader-favicon.svg"
+		/>
+		<link
+			rel="mask-icon"
+			href="/reader-favicon.svg"
+			color="#000000"
+		/>
 
 		<style>
 			/* Hide content until styles are loaded to prevent FOUC */
@@ -59,8 +70,7 @@
 
 			// Show loading indicator initially
 			document.addEventListener('DOMContentLoaded', () => {
-				const loadingIndicator =
-					document.getElementById('loading-indicator');
+				const loadingIndicator = document.getElementById('loading-indicator');
 				const appContainer = document.getElementById('app-container');
 
 				// Hide loading indicator and show app after a short delay
