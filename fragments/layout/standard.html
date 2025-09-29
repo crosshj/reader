@@ -24,7 +24,7 @@
 
 		if(currentPath === state.activePath) return;
 		// console.log('Path changed!', event);
-		      console.log('currentPath', currentPath);
+		console.log('currentPath', currentPath);
 		SetData('activePath', currentPath);
 
 		// Transform to fragment path for loading content
@@ -69,7 +69,7 @@
 			sx:flexDirection="column"
 		>
 			<x-box
-				sx:display="DEBUG WHEN global_pageContent THEN none ELSE flex"
+				sx:display="WHEN global_pageContent THEN none ELSE flex"
 				sx:width="100%"
 				sx:height="100%"
 				sx:background="inherit"

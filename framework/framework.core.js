@@ -25,7 +25,7 @@ class FrameworkCore {
 		if (JSON.stringify(oldValue) !== JSON.stringify(value)) {
 			this.state[property] = value;
 
-			// Reset window.state with current state
+			// Reset window.state with current state BEFORE notifying listeners
 			if (typeof window !== 'undefined') {
 				window.state = { ...this.state };
 			}
@@ -69,7 +69,6 @@ class FrameworkCore {
 	// Notify all listeners for a property
 	notifyListeners(property, eventDetail) {
 		const propertyListeners = this.listeners.get(property);
-		console.log({ _: `changed: ${property}`, propertyListeners });
 		if (propertyListeners) {
 			propertyListeners.forEach((callback) => {
 				try {

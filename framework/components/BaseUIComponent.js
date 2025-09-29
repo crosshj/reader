@@ -8,18 +8,23 @@ export class BaseUIComponent extends HTMLElement {
 		super();
 		this.stateSubscriptions = new Map(); // Map of stateKey -> unsubscribe function
 		this.initialState = null;
+		this.originalAttributes = new Map(); // Store ALL original attributes for re-evaluation
+
+		// Set up state subscriptions immediately in constructor
+		// This ensures we don't miss state changes that happen before connectedCallback
+		this.setupStateSubscriptions();
 	}
 
 	connectedCallback() {
 		// Store initial state for conditional rendering
 		this.initialState = this.getCurrentState();
 
-		// Set up state subscriptions for conditional attributes
-		this.setupStateSubscriptions();
+		// Store ALL original attributes for re-evaluation
+		this.storeOriginalAttributes();
 
-		// Apply initial styles and classes
+		// Apply initial styles and conditional attributes
 		this.applySxStyles();
-		this.applyConditionalClasses();
+		this.applyConditionalAttributes();
 	}
 
 	disconnectedCallback() {
@@ -35,84 +40,77 @@ export class BaseUIComponent extends HTMLElement {
 			: {};
 	}
 
+	storeOriginalAttributes() {
+		// Store ALL original attributes for re-evaluation
+		const attributes = Array.from(this.attributes);
+		attributes.forEach((attr) => {
+			this.originalAttributes.set(attr.name, attr.value);
+		});
+	}
+
 	setupStateSubscriptions() {
 		const stateRefs = extractStateReferences(this.attributes);
 
-		// console.log({ stateRefs });
-
 		stateRefs.forEach((stateKey) => {
 			if (typeof window !== 'undefined' && window.subscribeToState) {
-				const unsubscribe = window.subscribeToState(stateKey, () => {
-					this.handleStateChange();
+				const unsubscribe = window.subscribeToState(stateKey, (eventDetail) => {
+					this.handleStateChange(eventDetail.state);
 				});
 				this.stateSubscriptions.set(stateKey, unsubscribe);
 			}
 		});
 	}
 
-	handleStateChange() {
-		debugger;
+	handleStateChange(newState) {
 		// Update state and re-apply conditional rendering
-		this.initialState = this.getCurrentState();
+		this.initialState = newState || this.getCurrentState();
 		this.applySxStyles();
-		this.applyConditionalClasses();
+		this.applyConditionalAttributes();
 	}
 
-	applyConditionalClasses() {
-		// Handle className and class attributes with conditional syntax
-		const classNameAttr = this.getAttribute('className');
-		const classAttr = this.getAttribute('class');
-
-		if (classNameAttr) {
-			const isDebug = classNameAttr.startsWith('DEBUG ');
-			if (isDebug) {
-				console.log('🐛 DEBUG applyConditionalClasses className:', {
-					element: this.tagName,
-					originalValue: classNameAttr,
-					currentState: this.initialState,
-				});
+	applyConditionalAttributes() {
+		// Handle ALL attributes with conditional syntax using original attributes
+		this.originalAttributes.forEach((value, name) => {
+			// Skip sx: attributes as they're handled by applySxStyles
+			if (name.startsWith('sx:')) {
+				return;
 			}
 
-			const resolvedClassName = parseConditionalValue(
-				classNameAttr,
-				this.initialState
-			);
-			this.className = resolvedClassName;
-			// Update the attribute value to show the resolved value
-			this.setAttribute('className', resolvedClassName);
+			// Check if this attribute contains global_ references (conditional logic)
+			if (
+				value.includes('global_') ||
+				value.includes('WHEN ') ||
+				value.includes('DEBUG ')
+			) {
+				const isDebug = value.startsWith('DEBUG ');
+				if (isDebug) {
+					console.log('🐛 DEBUG applyConditionalAttributes:', {
+						element: this.tagName,
+						attribute: name,
+						originalValue: value,
+						currentState: this.initialState,
+					});
+				}
 
-			if (isDebug) {
-				console.log('🐛 DEBUG className resolved:', {
-					original: classNameAttr,
-					resolved: resolvedClassName,
-					appliedToElement: this.className,
-				});
+				const resolvedValue = parseConditionalValue(value, this.initialState);
+
+				// Apply the resolved value to the element
+				if (name === 'className' || name === 'class') {
+					this.className = resolvedValue;
+				}
+				this.setAttribute(name, resolvedValue);
+
+				if (isDebug) {
+					console.log('🐛 DEBUG attribute resolved:', {
+						element: this.tagName,
+						attribute: name,
+						original: value,
+						resolved: resolvedValue,
+						appliedToElement: this.getAttribute(name),
+					});
+				}
 			}
-		}
-
-		if (classAttr) {
-			const isDebug = classAttr.startsWith('DEBUG ');
-			if (isDebug) {
-				console.log('🐛 DEBUG applyConditionalClasses class:', {
-					element: this.tagName,
-					originalValue: classAttr,
-					currentState: this.initialState,
-				});
-			}
-
-			const resolvedClass = parseConditionalValue(classAttr, this.initialState);
-			this.className = resolvedClass;
-			// Update the attribute value to show the resolved value
-			this.setAttribute('class', resolvedClass);
-
-			if (isDebug) {
-				console.log('🐛 DEBUG class resolved:', {
-					original: classAttr,
-					resolved: resolvedClass,
-					appliedToElement: this.className,
-				});
-			}
-		}
+		});
 	}
 
 	/**
@@ -120,15 +118,13 @@ export class BaseUIComponent extends HTMLElement {
 	 * This method can be called by any component that needs sx: support
 	 */
 	applySxStyles() {
-		// Get all attributes that start with 'sx:'
-		const attributes = Array.from(this.attributes);
+		// Use stored original attributes for evaluation
 		const sxStyles = {};
-
-		attributes.forEach((attr) => {
-			if (attr.name.startsWith('sx:')) {
+		this.originalAttributes.forEach((value, name) => {
+			if (name.startsWith('sx:')) {
 				// Remove 'sx:' prefix and convert to CSS property
-				const cssProperty = attr.name.substring(3);
-				const cssValue = parseConditionalValue(attr.value, this.initialState);
+				const cssProperty = name.substring(3);
+				const cssValue = parseConditionalValue(value, this.initialState);
 
 				// Handle shorthand properties for padding and margin
 				const shorthandProperties = this.expandShorthandProperty(
@@ -136,13 +132,20 @@ export class BaseUIComponent extends HTMLElement {
 					cssValue
 				);
 				Object.assign(sxStyles, shorthandProperties);
-				this.removeAttribute(attr.name); // Remove the sx: attribute after processing
 			}
 		});
 
 		// Apply the styles directly to the element
 		Object.entries(sxStyles).forEach(([property, value]) => {
 			this.style.setProperty(property, value);
+		});
+
+		// Remove sx: attributes from DOM after first processing (keep DOM clean)
+		const attributes = Array.from(this.attributes);
+		attributes.forEach((attr) => {
+			if (attr.name.startsWith('sx:')) {
+				this.removeAttribute(attr.name);
+			}
 		});
 	}
 

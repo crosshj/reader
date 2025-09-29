@@ -8,7 +8,7 @@ export class XIcon extends BaseUIComponent {
 
 	connectedCallback() {
 		const icon = this.getAttribute('icon');
-		const color = this.getAttribute('color');
+		const color = this.getAttribute('color') || this.getAttribute('sx:color');
 		const size = this.getAttribute('size') || 'medium';
 
 		// Only replace content if this is a standalone icon (not inside a button)
