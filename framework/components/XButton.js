@@ -113,6 +113,7 @@ export class XButton extends BaseUIComponent {
 			Person: 'user',
 			LineChart: 'line-chart',
 			History: 'history',
+			Play: 'play',
 		};
 
 		return (
