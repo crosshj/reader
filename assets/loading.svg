@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 44 44" fill="none" stroke="currentColor" aria-label="Loading">
+  <defs>
+    <style>
+      @keyframes spin { to { transform: rotate(360deg) } }
+      @keyframes dash { 0% { stroke-dasharray: 1,150; stroke-dashoffset: 0 }
+                        50% { stroke-dasharray: 90,150; stroke-dashoffset: -35 }
+                        100%{ stroke-dasharray: 90,150; stroke-dashoffset: -124 } }
+      .r { transform-origin: 22px 22px; animation: spin 1s linear infinite }
+      .c { stroke-width: 4; stroke-linecap: round; animation: dash 1.5s ease-in-out infinite }
+    </style>
+  </defs>
+  <g class="r">
+    <circle class="c" cx="22" cy="22" r="18"/>
+  </g>
+</svg>

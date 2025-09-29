@@ -25,7 +25,7 @@ class FrameworkCore {
 		if (JSON.stringify(oldValue) !== JSON.stringify(value)) {
 			this.state[property] = value;
 
-			// Reset window.state with current state
+			// Reset window.state with current state BEFORE notifying listeners
 			if (typeof window !== 'undefined') {
 				window.state = { ...this.state };
 			}

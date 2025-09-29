@@ -32,8 +32,6 @@ export class XMarkdown extends BaseUIComponent {
 			// Parse markdown with marked.js using custom renderer
 			const html = this.parseWithCustomRenderer(unescapedContent);
 
-			console.log({ content, html, dedentedContent, unescapedContent });
-
 			this.innerHTML = html;
 		} catch (error) {
 			console.error('Failed to parse markdown:', error);
