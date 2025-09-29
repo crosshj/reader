@@ -69,6 +69,7 @@ class FrameworkCore {
 	// Notify all listeners for a property
 	notifyListeners(property, eventDetail) {
 		const propertyListeners = this.listeners.get(property);
+		console.log({ _: `changed: ${property}`, propertyListeners });
 		if (propertyListeners) {
 			propertyListeners.forEach((callback) => {
 				try {

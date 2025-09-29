@@ -21,8 +21,7 @@ export class SystemElement extends HTMLElement {
 	}
 
 	disconnectedCallback() {
-		if (this.unregister) {
-			this.unregister();
-		}
+		if (!this.unregister) return;
+		this.unregister();
 	}
 }

@@ -154,34 +154,29 @@ export function extractStateReferences(attributes) {
 	const stateRefs = new Set();
 
 	Array.from(attributes).forEach((attr) => {
-		if (
-			attr.name.startsWith('sx:') ||
-			attr.name === 'className' ||
-			attr.name === 'class'
-		) {
-			const value = attr.value;
-			const isDebug = value.startsWith('DEBUG ');
+		const value = attr.value;
+		const isDebug = value.startsWith('DEBUG ');
 
-			if (isDebug) {
-				console.log('🐛 DEBUG extractStateReferences found DEBUG attribute:', {
-					attributeName: attr.name,
-					attributeValue: value,
-					element: attr.ownerElement?.tagName,
-				});
-			}
+		if (isDebug) {
+			console.log('🐛 DEBUG extractStateReferences found DEBUG attribute:', {
+				attributeName: attr.name,
+				attributeValue: value,
+				element: attr.ownerElement?.tagName,
+			});
+		}
 
-			// Find global_ references in the value
-			const globalMatches = value.match(/global_(\w+)/g);
-			if (globalMatches) {
-				globalMatches.forEach((match) => {
-					const stateKey = match.substring(7); // Remove 'global_' prefix
-					stateRefs.add(stateKey);
+		// Find global_ references in the value
+		const globalMatches = value.match(/global_(\w+)/g);
+		if (globalMatches) {
+			// debugger;
+			globalMatches.forEach((match) => {
+				const stateKey = match.substring(7); // Remove 'global_' prefix
+				stateRefs.add(stateKey);
 
-					if (isDebug) {
-						console.log('🐛 DEBUG will subscribe to state key:', stateKey);
-					}
-				});
-			}
+				if (isDebug) {
+					console.log('🐛 DEBUG will subscribe to state key:', stateKey);
+				}
+			});
 		}
 	});
 

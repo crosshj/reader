@@ -34,7 +34,7 @@
 		SetData(
 			'pageContent',
 			Query({ url: fragmentPath })
-		);
+		 );
 	</x-flow>
 
 	<x-data
@@ -50,7 +50,6 @@
 		sx:flexDirection="row"
 		sx:height="100vh"
 		sx:width="100vw"
-		className="standardLayoutContainer"
 		class="standardLayoutContainer"
 	>
 		<x-include
@@ -70,20 +69,67 @@
 			sx:flexDirection="column"
 		>
 			<x-box
-				sx:display="WHEN global_pageContent THEN none ELSE flex"
-				width="100%"
-				height="100%"
-				background="inherit"
-				alignItems="center"
-				justifyContent="center"
+				sx:display="DEBUG WHEN global_pageContent THEN none ELSE flex"
+				sx:width="100%"
+				sx:height="100%"
+				sx:background="inherit"
+				sx:alignItems="center"
+				sx:justifyContent="center"
 			>
 				<x-box
 					sx:width="55px"
 					sx:height="55px"
-					sx:backgroundImage="url(/loading.svg)"
-					sx:backgroundSize="cover"
 					sx:opacity="0.1"
-				></x-box>
+				>
+					<svg
+						width="100%"
+						height="100%"
+						viewBox="0 0 44 44"
+						fill="none"
+						stroke="var(--palettePrimaryMain)"
+					>
+						<defs>
+							<style>
+								@keyframes spin {
+									to {
+										transform: rotate(360deg);
+									}
+								}
+								@keyframes dash {
+									0% {
+										stroke-dasharray: 1, 150;
+										stroke-dashoffset: 0;
+									}
+									50% {
+										stroke-dasharray: 90, 150;
+										stroke-dashoffset: -35;
+									}
+									100% {
+										stroke-dasharray: 90, 150;
+										stroke-dashoffset: -124;
+									}
+								}
+								.r {
+									transform-origin: 22px 22px;
+									animation: spin 1s linear infinite;
+								}
+								.c {
+									stroke-width: 4;
+									stroke-linecap: round;
+									animation: dash 1.5s ease-in-out infinite;
+								}
+							</style>
+						</defs>
+						<g class="r">
+							<circle
+								class="c"
+								cx="22"
+								cy="22"
+								r="18"
+							/>
+						</g>
+					</svg>
+				</x-box>
 			</x-box>
 			<x-fragment
 				contents="global_pageContent"

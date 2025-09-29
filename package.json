@@ -36,7 +36,7 @@
     "@capacitor/share": "^7.0.1",
     "@capacitor/status-bar": "^7.0.3",
     "@capawesome/capacitor-file-picker": "^7.2.0",
-    "capacitor-document-tree-access": "file:./plugins/capacitor-document-tree-access",
+    "capacitor-document-tree-access": "file:plugins/capacitor-document-tree-access",
     "sql.js": "^1.13.0"
   },
   "devDependencies": {

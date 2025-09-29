@@ -38,6 +38,8 @@ export class BaseUIComponent extends HTMLElement {
 	setupStateSubscriptions() {
 		const stateRefs = extractStateReferences(this.attributes);
 
+		// console.log({ stateRefs });
+
 		stateRefs.forEach((stateKey) => {
 			if (typeof window !== 'undefined' && window.subscribeToState) {
 				const unsubscribe = window.subscribeToState(stateKey, () => {
@@ -49,6 +51,7 @@ export class BaseUIComponent extends HTMLElement {
 	}
 
 	handleStateChange() {
+		debugger;
 		// Update state and re-apply conditional rendering
 		this.initialState = this.getCurrentState();
 		this.applySxStyles();
@@ -133,6 +136,7 @@ export class BaseUIComponent extends HTMLElement {
 					cssValue
 				);
 				Object.assign(sxStyles, shorthandProperties);
+				this.removeAttribute(attr.name); // Remove the sx: attribute after processing
 			}
 		});
 
