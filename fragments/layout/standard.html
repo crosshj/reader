@@ -42,45 +42,18 @@
 		route="/framework/#/:rest*"
 	></x-data>
 
-	<x-box
-		sx:position="absolute"
-		sx:top="0"
-		sx:left="0"
-		sx:display="flex"
-		sx:flexDirection="row"
-		sx:height="100vh"
-		sx:width="100vw"
-		class="standardLayoutContainer"
-	>
+	<x-box class="standardLayoutContainer">
 		<x-include
 			href="./menu.html"
-			sx:background="var(--palettePrimaryMain)"
-			sx:width="260px"
-			sx:height="100vh"
-			sx:flexShrink="0"
+			class="menu-sidebar"
 		></x-include>
 
-		<x-box
-			sx:background="var(--paletteBackgroundDefault)"
-			sx:height="100vh"
-			sx:flex="1"
-			sx:overflow="auto"
-			sx:display="flex"
-			sx:flexDirection="column"
-		>
+		<x-box class="main-content-area">
 			<x-box
+				class="loading-area"
 				sx:display="WHEN global_pageContent THEN none ELSE flex"
-				sx:width="100%"
-				sx:height="100%"
-				sx:background="inherit"
-				sx:alignItems="center"
-				sx:justifyContent="center"
 			>
-				<x-box
-					sx:width="55px"
-					sx:height="55px"
-					sx:opacity="0.1"
-				>
+				<x-box class="loading-spinner-svg">
 					<svg
 						width="100%"
 						height="100%"
@@ -88,38 +61,6 @@
 						fill="none"
 						stroke="var(--palettePrimaryMain)"
 					>
-						<defs>
-							<style>
-								@keyframes spin {
-									to {
-										transform: rotate(360deg);
-									}
-								}
-								@keyframes dash {
-									0% {
-										stroke-dasharray: 1, 150;
-										stroke-dashoffset: 0;
-									}
-									50% {
-										stroke-dasharray: 90, 150;
-										stroke-dashoffset: -35;
-									}
-									100% {
-										stroke-dasharray: 90, 150;
-										stroke-dashoffset: -124;
-									}
-								}
-								.r {
-									transform-origin: 22px 22px;
-									animation: spin 1s linear infinite;
-								}
-								.c {
-									stroke-width: 4;
-									stroke-linecap: round;
-									animation: dash 1.5s ease-in-out infinite;
-								}
-							</style>
-						</defs>
 						<g class="r">
 							<circle
 								class="c"

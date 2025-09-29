@@ -77,33 +77,14 @@
 	]'
 	></x-data>
 
-	<x-box
-		sx:background="var(--palettePrimaryMain)"
-		sx:width="260px"
-		sx:height="100%"
-		sx:p="3"
-		sx:pt="1"
-	>
+	<x-box class="menu-container">
 		<x-link
 			href="/"
 			underline="none"
 		>
-			<x-box
-				sx:width="100%"
-				sx:height="55px"
-				sx:backgroundImage="url(/assets/logoWithNameNX.svg)"
-				sx:backgroundSize="cover"
-				sx:backgroundPosition="center"
-				sx:backgroundRepeat="no-repeat"
-				sx:mb="2.5"
-			></x-box>
+			<x-box class="logo-area"></x-box>
 		</x-link>
-		<x-box
-			sx:display="flex"
-			sx:flexDirection="column"
-			sx:gap="1.25"
-			sx:ml="-2px"
-		>
+		<x-box class="menu-items">
 			<x-map items="global_projectManagementMenuItems">
 				<x-link
 					href="{{item_path}}"
@@ -114,9 +95,9 @@
 					>
 						<x-icon
 							icon="{{item_icon}}"
-							sx:color="var(--palettePrimaryContrast)"
+							class="menu-item-icon"
 						></x-icon>
-						<x-typography sx:color="var(--palettePrimaryContrast)">
+						<x-typography class="menu-item-text">
 							{{ item_label }}
 						</x-typography>
 					</x-box>
