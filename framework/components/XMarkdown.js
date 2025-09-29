@@ -1,5 +1,6 @@
 import { BaseUIComponent } from './BaseUIComponent.js';
 import { marked } from '../vendor/marked.mjs';
+import { getColorHex, html } from '../framework.utils.js';
 import './XMarkdown.css';
 
 // Define x-markdown web component
@@ -94,22 +95,56 @@ export class XMarkdown extends BaseUIComponent {
 		const renderer = {
 			heading({ tokens, depth }) {
 				const text = this.parser.parseInline(tokens);
-				return `<x-typography variant="h${depth}">${text}</x-typography>`;
+				return html` <x-typography variant="h${depth}" sx:mt="5" sx:mb="1">
+					${text}
+				</x-typography>`;
 			},
 
 			// paragraph({ tokens }) {
 			// 	const text = this.parser.parse(tokens);
-			// 	return `<x-typography variant="body1">${text}</x-typography>`;
+			// 	return html`<x-typography variant="body1" sx:my="2" sx:mx="0">${text}</x-typography>`;
 			// },
 
 			blockquote({ tokens }) {
 				const text = this.parser.parse(tokens);
-				return `<x-typography variant="blockquote">${text}</x-typography>`;
+				return html`<x-typography variant="blockquote" sx:my="2" sx:mx="0"
+					>${text}</x-typography
+				>`;
 			},
 
 			strong({ tokens }) {
 				const text = this.parser.parseInline(tokens);
-				return `<x-typography variant="strong">${text}</x-typography>`;
+				return html`<x-typography variant="strong" sx:my="2" sx:mx="0"
+					>${text}</x-typography
+				>`;
+			},
+
+			link({ href, title, tokens }) {
+				const text = this.parser.parseInline(tokens);
+				const t = title ? ` title="${title}"` : '';
+				return html`<x-link href="${href}" ${t}>${text}</x-link>`;
+			},
+
+			tablecell({ tokens, align }) {
+				const text = this.parser.parseInline(tokens);
+
+				// Replace all instances of icon syntax: icon:IconName;color (backticks optional)
+				const iconRegex = /`?icon:([^;]+);([^`\s]+)`?/g;
+				const replacedText = text.replace(
+					iconRegex,
+					(match, iconName, color) => {
+						const hexColor = getColorHex(color.trim());
+						return html`<x-icon
+							icon="${iconName}"
+							sx:color="${hexColor}"
+							size="large"
+						></x-icon>`;
+					}
+				);
+
+				// Return the complete td element with alignment
+				const alignAttr = align ? ` style="text-align: ${align}"` : '';
+				return html`<td${alignAttr}>${replacedText}</td>`;
 			},
 		};
 

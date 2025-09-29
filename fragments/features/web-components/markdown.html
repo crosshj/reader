@@ -1,0 +1,320 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Markdown` component provides rich markdown rendering with custom renderers and framework integration. It uses the `marked.js` library with custom renderers that convert markdown elements to framework components, ensuring consistent styling and functionality. The component supports custom icon syntax, automatic indentation handling, and HTML entity unescaping for optimal markdown processing.
+
+			## Features
+
+			- **Rich Markdown Support**: Full CommonMark specification support
+			- **Custom Renderers**: Framework component integration for tables, icons, and more
+			- **Icon Syntax**: Special `icon:IconName;color` syntax for inline icons
+			- **Table Styling**: Automatic table styling with zebra stripes and headers
+			- **Code Highlighting**: Syntax highlighting for code blocks
+			- **HTML Safety**: Automatic HTML entity handling and sanitization
+			- **Theme Integration**: Consistent styling with framework theme
+
+			## Usage
+
+			```html
+			<x-markdown>
+				# Heading
+				This is **bold** and *italic* text.
+			</x-markdown>
+			```
+
+			## Basic Markdown
+
+			### Headings
+			```html
+			<x-markdown>
+				# Heading 1
+				## Heading 2
+				### Heading 3
+				#### Heading 4
+				##### Heading 5
+				###### Heading 6
+			</x-markdown>
+			```
+			**Description**: All six levels of markdown headings with consistent styling.
+
+			### Text Formatting
+			```html
+			<x-markdown>
+				This is **bold text** and this is *italic text*.
+				You can also use __bold__ and _italic_ syntax.
+				This is ***bold and italic*** text.
+				~~Strikethrough text~~ is also supported.
+			</x-markdown>
+			```
+			**Description**: Various text formatting options including bold, italic, and strikethrough.
+
+			### Lists
+			```html
+			<x-markdown>
+				- Unordered list item 1
+				- Unordered list item 2
+				  - Nested item 2.1
+				  - Nested item 2.2
+				- Unordered list item 3
+
+				1. Ordered list item 1
+				2. Ordered list item 2
+				   1. Nested ordered item 2.1
+				   2. Nested ordered item 2.2
+				3. Ordered list item 3
+			</x-markdown>
+			```
+			**Description**: Both unordered and ordered lists with nested items.
+
+			### Links and Images
+			```html
+			<x-markdown>
+				[Link to Google](https://www.google.com)
+				[Internal Link](/features)
+				![Alt text](https://via.placeholder.com/150)
+			</x-markdown>
+			```
+			**Description**: Links and images with proper styling and functionality.
+
+			## Tables
+
+			### Basic Table
+			```html
+			<x-markdown>
+				| Name | Age | City |
+				|------|-----|------|
+				| John | 25 | New York |
+				| Jane | 30 | London |
+				| Bob | 35 | Paris |
+			</x-markdown>
+			```
+			**Description**: Basic table with automatic styling and zebra stripes.
+
+			### Table with Icons
+			```html
+			<x-markdown>
+				| Status | Task | Priority |
+				|--------|------|----------|
+				| icon:CheckCircle;green500 | Complete project | High |
+				| icon:Construction;orange500 | Fix bugs | Medium |
+				| icon:Error;red500 | Review code | Low |
+			</x-markdown>
+			```
+			**Description**: Table with custom icon syntax in cells.
+
+			### Complex Table
+			```html
+			<x-markdown>
+				| Feature | Status | Description | Notes |
+				|---------|--------|-------------|-------|
+				| User Auth | icon:CheckCircle;green500 | Complete | Ready for production |
+				| Data Export | icon:Construction;orange500 | In Progress | 80% complete |
+				| API Integration | icon:Error;red500 | Blocked | Waiting for external API |
+				| UI Updates | icon:CheckCircle;green500 | Complete | All components updated |
+			</x-markdown>
+			```
+			**Description**: Complex table with multiple columns and status icons.
+
+			## Code Blocks
+
+			### Inline Code
+			```html
+			<x-markdown>
+				Use `console.log()` to debug your JavaScript code.
+				The `x-button` component supports various variants.
+			</x-markdown>
+			```
+			**Description**: Inline code with proper syntax highlighting.
+
+			### Code Blocks
+			```html
+			<x-markdown>
+				```javascript
+				function greetUser(name) {
+					console.log(`Hello, ${name}!`);
+					return `Welcome, ${name}`;
+				}
+				```
+
+				```html
+				<x-button variant="primary">
+					Click me
+				</x-button>
+				```
+
+				```css
+				.button {
+					background-color: var(--palettePrimaryMain);
+					color: white;
+					padding: 8px 16px;
+				}
+				```
+			</x-markdown>
+			```
+			**Description**: Code blocks with syntax highlighting for different languages.
+
+			## Blockquotes
+
+			### Simple Blockquote
+			```html
+			<x-markdown>
+				> This is a blockquote.
+				> It can span multiple lines.
+				> 
+				> And include multiple paragraphs.
+			</x-markdown>
+			```
+			**Description**: Basic blockquote with proper styling.
+
+			### Nested Blockquote
+			```html
+			<x-markdown>
+				> This is a blockquote with **bold text** and *italic text*.
+				> 
+				> > This is a nested blockquote.
+				> > It can contain other markdown elements.
+				> 
+				> Back to the main blockquote.
+			</x-markdown>
+			```
+			**Description**: Nested blockquotes with mixed content.
+
+			## Custom Icon Syntax
+
+			### Basic Icons
+			```html
+			<x-markdown>
+				icon:Home;blue500 Home Page
+				icon:Search;green500 Search Results
+				icon:User;purple500 User Profile
+			</x-markdown>
+			```
+			**Description**: Inline icons with custom colors using the special syntax.
+
+			### Icons in Lists
+			```html
+			<x-markdown>
+				- icon:CheckCircle;green500 Completed tasks
+				- icon:Construction;orange500 In progress
+				- icon:Error;red500 Blocked items
+				- icon:Info;blue500 Information
+			</x-markdown>
+			```
+			**Description**: Icons integrated into list items.
+
+			### Icons in Tables
+			```html
+			<x-markdown>
+				| Action | Icon | Description |
+				|--------|------|-------------|
+				| Save | icon:Save;green500 | Save changes |
+				| Delete | icon:Delete;red500 | Remove item |
+				| Edit | icon:Edit;blue500 | Modify content |
+			</x-markdown>
+			```
+			**Description**: Icons in table cells with custom colors.
+
+			## Advanced Features
+
+			### Horizontal Rules
+			```html
+			<x-markdown>
+				Section 1 content here.
+
+				---
+
+				Section 2 content here.
+
+				***
+
+				Section 3 content here.
+			</x-markdown>
+			```
+			**Description**: Horizontal rules for content separation.
+
+			### Line Breaks
+			```html
+			<x-markdown>
+				This is the first line.  
+				This is the second line with two spaces.
+
+				This is a new paragraph.
+			</x-markdown>
+			```
+			**Description**: Line breaks and paragraph separation.
+
+			### Escaped Characters
+			```html
+			<x-markdown>
+				\*This is not italic\*
+				\# This is not a heading
+				\[This is not a link\](not-a-url)
+			</x-markdown>
+			```
+			**Description**: Escaped characters that don't trigger markdown formatting.
+
+			## How It Works
+
+			### Markdown Processing
+			1. **Input Processing**: Takes markdown text from component content
+			2. **Parser Configuration**: Configures marked.js with custom renderers
+			3. **Custom Renderers**: Applies framework-specific renderers for tables and icons
+			4. **HTML Generation**: Converts markdown to HTML with framework components
+			5. **Content Injection**: Updates component innerHTML with processed content
+
+			### Custom Renderers
+			1. **Table Renderer**: Converts markdown tables to framework table components
+			2. **TableCell Renderer**: Processes individual cells for icon syntax
+			3. **Icon Processing**: Converts `icon:Name;color` syntax to `<x-icon>` components
+			4. **Styling Integration**: Applies framework theme and styling
+
+			### Icon Syntax Processing
+			1. **Pattern Matching**: Uses regex to find `icon:Name;color` patterns
+			2. **Icon Component**: Converts to `<x-icon icon="Name" color="color">` syntax
+			3. **Color Processing**: Handles both named colors and CSS variables
+			4. **Fallback Handling**: Provides fallback for invalid icon names
+
+			## Best Practices
+
+			### Content Structure
+			- Use consistent heading hierarchy (H1 → H2 → H3)
+			- Keep paragraphs focused and concise
+			- Use lists for better readability
+			- Test markdown with different content lengths
+
+			### Table Design
+			- Keep tables simple and focused
+			- Use descriptive headers
+			- Avoid overly wide tables
+			- Test tables on different screen sizes
+
+			### Icon Usage
+			- Use icons sparingly for emphasis
+			- Choose appropriate colors for context
+			- Test icon rendering across different browsers
+			- Consider accessibility when using icons
+
+			### Performance
+			- Avoid extremely long markdown content
+			- Use code blocks efficiently
+			- Test rendering performance with large documents
+			- Consider pagination for very long content
+
+			## Common Use Cases
+
+			- **Documentation**: Technical documentation and user guides
+			- **Content Management**: Dynamic content from CMS or APIs
+			- **Blog Posts**: Article content with rich formatting
+			- **Release Notes**: Version updates and changelogs
+			- **Help Content**: FAQ sections and help articles
+			- **README Files**: Project documentation and setup guides
+			- **Email Templates**: Rich email content with formatting
+			- **Comment Systems**: User-generated content with markdown support
+		</x-markdown>
+	</x-content>
+</x-page>

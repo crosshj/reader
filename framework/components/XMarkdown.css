@@ -65,31 +65,36 @@ x-markdown a:hover {
 }
 
 x-markdown code {
-	background-color: color-mix(
+	background: color-mix(
 		in srgb,
-		var(--paletteBackgroundPaper, #fff) 90%,
-		var(--paletteTextPrimary, #333)
+		var(--palettePrimaryMain) 15%,
+		var(--paletteBackgroundPaper)
 	);
+	color: var(--paletteTextPrimary);
 	padding: 0.125rem 0.25rem;
 	border-radius: 0.25rem;
 	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-	font-size: 0.875rem;
+	font-size: 0.875em;
 }
 
 x-markdown pre {
-	background-color: color-mix(
+	background: color-mix(
 		in srgb,
-		var(--paletteBackgroundPaper, #fff) 90%,
-		var(--paletteTextPrimary, #333)
+		var(--palettePrimaryMain) 8%,
+		var(--paletteBackgroundPaper)
 	);
+	color: var(--paletteTextPrimary);
 	padding: 1rem;
 	border-radius: 0.5rem;
+	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+	font-size: 0.875rem;
 	overflow-x: auto;
 	margin: 1rem 0;
 }
 
 x-markdown pre code {
-	background: none;
+	background: transparent;
 	padding: 0;
 	border-radius: 0;
+	font-size: inherit;
 }

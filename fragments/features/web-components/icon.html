@@ -1,0 +1,103 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Icon` component provides a consistent way to display Font Awesome icons throughout your application. It automatically converts PascalCase icon names to Font Awesome classes and supports various sizes, colors, and styling options.
+
+			## Usage
+
+			```html
+			<x-icon icon="Home"></x-icon>
+			<x-icon icon="Search" color="blue"></x-icon>
+			<x-icon icon="User" size="large" sx:color="var(--palettePrimaryMain)"></x-icon>
+			```
+
+			## Live Examples
+
+			### Basic Icons
+			<x-icon icon="Home"></x-icon>
+			<x-icon icon="Search"></x-icon>
+			<x-icon icon="User"></x-icon>
+			<x-icon icon="Settings"></x-icon>
+			<x-icon icon="Menu"></x-icon>
+			<x-icon icon="Close"></x-icon>
+
+			### Size Variations
+			**Small Icons:**
+			<x-icon icon="Home" size="small"></x-icon>
+			<x-icon icon="Search" size="small"></x-icon>
+			<x-icon icon="User" size="small"></x-icon>
+
+			**Medium Icons:**
+			<x-icon icon="Home" size="medium"></x-icon>
+			<x-icon icon="Search" size="medium"></x-icon>
+			<x-icon icon="User" size="medium"></x-icon>
+
+			**Large Icons:**
+			<x-icon icon="Home" size="large"></x-icon>
+			<x-icon icon="Search" size="large"></x-icon>
+			<x-icon icon="User" size="large"></x-icon>
+
+			### Color Variations
+			**Theme Colors:**
+			<x-icon icon="Home" color="var(--palettePrimaryMain)"></x-icon>
+			<x-icon icon="Search" color="var(--paletteSecondaryMain)"></x-icon>
+			<x-icon icon="User" color="var(--paletteTextPrimary)"></x-icon>
+			<x-icon icon="Settings" color="var(--paletteTextSecondary)"></x-icon>
+
+			**Custom Colors:**
+			<x-icon icon="Home" color="#ff6b6b"></x-icon>
+			<x-icon icon="Search" color="#4ecdc4"></x-icon>
+			<x-icon icon="User" color="#45b7d1"></x-icon>
+			<x-icon icon="Settings" color="#96ceb4"></x-icon>
+
+			**Status Colors:**
+			<x-icon icon="CheckCircle" color="var(--paletteSuccessMain)"></x-icon>
+			<x-icon icon="Error" color="var(--paletteErrorMain)"></x-icon>
+			<x-icon icon="Warning" color="var(--paletteWarningMain)"></x-icon>
+			<x-icon icon="Info" color="var(--paletteInfoMain)"></x-icon>
+
+			### Action Icons
+			<x-icon icon="Edit"></x-icon>
+			<x-icon icon="Delete"></x-icon>
+			<x-icon icon="Add"></x-icon>
+			<x-icon icon="Save"></x-icon>
+			<x-icon icon="Cancel"></x-icon>
+			<x-icon icon="Check"></x-icon>
+
+
+			## Attributes
+
+			| Attribute | Type | Required | Default | Description |
+			|-----------|------|----------|---------|-------------|
+			| `icon` | string | Yes | - | Icon name in PascalCase (e.g., "Home", "Search", "User") |
+			| `color` | string | No | - | Icon color (CSS color value) |
+			| `size` | string | No | `medium` | Icon size: `small`, `medium`, or `large` |
+
+			## How It Works
+
+			### Icon Name Conversion
+			1. **PascalCase Input**: Takes icon names like "Home", "Search", "User"
+			2. **Font Awesome Mapping**: Converts to Font Awesome classes like "fa-home", "fa-search", "fa-user"
+			3. **Special Cases**: Handles Material Design icon names with custom mappings
+			4. **Fallback**: Uses the original name if no mapping is found
+
+			### Size Handling
+			1. **Size Attribute**: Processes `size` attribute (small, medium, large)
+			2. **CSS Classes**: Applies appropriate CSS classes for consistent sizing
+			3. **Button Context**: Adjusts sizing when used inside buttons
+			4. **Custom Sizing**: Supports custom sizing via sx: attributes
+
+			### Color Processing
+			1. **Color Attribute**: Processes `color` attribute for direct color values
+			2. **SX Color**: Supports `sx:color` for CSS variable references
+			3. **Theme Integration**: Works with theme color variables
+			4. **Fallback**: Uses default text color if no color is specified
+
+		</x-markdown>
+	</x-content>
+</x-page>

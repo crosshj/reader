@@ -1,0 +1,68 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Content` component provides a flexible container for main page content. It serves as a wrapper that can be styled with the `sx:` attribute system and is commonly used as the main content area in page layouts.
+
+			## Features
+
+			- **Flexible Container**: Can hold any content and be styled as needed
+			- **SX Styling**: Full support for the `sx:` attribute system
+			- **Layout Integration**: Designed to work within page layouts
+			- **Semantic Structure**: Provides proper content hierarchy
+
+			## Usage
+
+			```html
+			<x-content>
+				Your content here
+			</x-content>
+			```
+
+			## Examples
+
+			### Basic Content
+			```html
+			<x-content sx:padding="2" sx:border="1px solid var(--paletteDivider)" sx:borderRadius="4px">
+				Basic content container
+			</x-content>
+			```
+
+			### Styled Content
+			```html
+			<x-content sx:background="var(--paletteBackgroundPaper)" sx:padding="2" sx:borderRadius="8px" sx:boxShadow="0 2px 4px rgba(0,0,0,0.1)">
+				Styled content with background and shadow
+			</x-content>
+			```
+
+			### Content with Different Sizes
+			```html
+			<x-content sx:padding="1" sx:border="1px solid var(--paletteDivider)" sx:borderRadius="4px" sx:minWidth="200px">
+				Small content
+			</x-content>
+			<x-content sx:padding="3" sx:border="1px solid var(--paletteDivider)" sx:borderRadius="4px" sx:minWidth="300px">
+				Large content with more padding
+			</x-content>
+			```
+
+			### Content with Flex Layout
+			```html
+			<x-content sx:display="flex" sx:flexDirection="column" sx:gap="1" sx:padding="2" sx:border="1px solid var(--paletteDivider)" sx:borderRadius="4px" sx:flex="1" sx:minWidth="200px">
+				<x-typography variant="h3">Title</x-typography>
+				<x-typography>This is content with a title and description.</x-typography>
+			</x-content>
+			```
+
+			## Common Use Cases
+
+			- **Page Content**: Main content area for pages and sections
+			- **Card Containers**: Wrapping content in cards and panels
+			- **Form Sections**: Grouping form elements and labels
+			- **Article Content**: Containing articles, blog posts, and documentation
+		</x-markdown>
+	</x-content>
+</x-page>

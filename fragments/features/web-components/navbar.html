@@ -1,0 +1,223 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Navbar` component provides a dynamic navigation header that automatically updates based on the current application path. It displays a formatted title derived from the active path and includes a right-side area for additional actions or content. The component subscribes to path changes and updates its display accordingly, making it ideal for application-wide navigation headers.
+
+			## Features
+
+			- **Dynamic Title**: Automatically updates based on current path
+			- **Path Formatting**: Converts technical paths to user-friendly titles
+			- **Component Name Cleanup**: Removes "x-" prefix from component names
+			- **State Subscription**: Automatically updates when path changes
+			- **Flexible Layout**: Supports additional content in the right area
+			- **Responsive Design**: Adapts to different screen sizes
+			- **Theme Integration**: Consistent styling with framework theme
+
+			## Usage
+
+			```html
+			<x-navbar></x-navbar>
+			<x-navbar>
+				<x-button variant="outlined" size="small">Settings</x-button>
+			</x-navbar>
+			```
+
+			## Basic Navbar
+
+			### Simple Navbar
+			```html
+			<x-navbar></x-navbar>
+			```
+			**Description**: Basic navbar that displays the current path as a formatted title.
+
+			### Navbar with Actions
+			```html
+			<x-navbar>
+				<x-button variant="outlined" size="small">Settings</x-button>
+			</x-navbar>
+			```
+			**Description**: Navbar with additional action buttons in the right area.
+
+			### Multiple Actions
+			```html
+			<x-navbar>
+				<x-box sx:display="flex" sx:gap="2" sx:alignItems="center">
+					<x-button variant="text" size="small">Help</x-button>
+					<x-button variant="outlined" size="small">Settings</x-button>
+					<x-button variant="primary" size="small">Save</x-button>
+				</x-box>
+			</x-navbar>
+			```
+			**Description**: Navbar with multiple action buttons grouped together.
+
+			## Dynamic Title Examples
+
+			### Path Formatting
+			The navbar automatically formats different path patterns:
+
+			```html
+			<!-- Path: /features/web-components/button -->
+			<x-navbar></x-navbar>
+			<!-- Displays: "Features / Web Components / Button" -->
+
+			<!-- Path: /framework/components/icon -->
+			<x-navbar></x-navbar>
+			<!-- Displays: "Framework / Components / Icon" -->
+
+			<!-- Path: /settings/user/preferences -->
+			<x-navbar></x-navbar>
+			<!-- Displays: "Settings / User / Preferences" -->
+			```
+
+			### Component Name Cleanup
+			The navbar automatically removes "x-" prefixes from component names:
+
+			```html
+			<!-- Path: /features/web-components/x-button -->
+			<x-navbar></x-navbar>
+			<!-- Displays: "Features / Web Components / Button" -->
+
+			<!-- Path: /framework/components/x-icon -->
+			<x-navbar></x-navbar>
+			<!-- Displays: "Framework / Components / Icon" -->
+			```
+
+			## Styled Navbar
+
+			### Themed Navbar
+			```html
+			<x-navbar sx:background="var(--palettePrimaryMain)" sx:color="white">
+				<x-button variant="outlined" size="small" sx:color="white" sx:borderColor="white">
+					Settings
+				</x-button>
+			</x-navbar>
+			```
+			**Description**: Navbar with primary theme colors and matching button styling.
+
+			### Custom Styling
+			```html
+			<x-navbar sx:background="var(--paletteBackgroundPaper)" sx:borderBottom="2px solid var(--palettePrimaryMain)" sx:padding="2">
+				<x-box sx:display="flex" sx:gap="2" sx:alignItems="center">
+					<x-icon icon="Settings" size="small"></x-icon>
+					<x-typography variant="body2">Admin Panel</x-typography>
+				</x-box>
+			</x-navbar>
+			```
+			**Description**: Navbar with custom background, border, and icon content.
+
+			### Responsive Navbar
+			```html
+			<x-navbar sx:padding="WHEN screen.width < 768 THEN 1 ELSE 2">
+				<x-box sx:display="flex" sx:gap="2" sx:alignItems="center" sx:flexWrap="wrap">
+					<x-button variant="text" size="small">Menu</x-button>
+					<x-button variant="outlined" size="small">Settings</x-button>
+					<x-button variant="primary" size="small">Save</x-button>
+				</x-box>
+			</x-navbar>
+			```
+			**Description**: Responsive navbar that adjusts padding and layout based on screen size.
+
+			## Content Examples
+
+			### Icon Content
+			```html
+			<x-navbar>
+				<x-box sx:display="flex" sx:gap="2" sx:alignItems="center">
+					<x-icon icon="User" size="small"></x-icon>
+					<x-typography variant="body2">John Doe</x-typography>
+				</x-box>
+			</x-navbar>
+			```
+			**Description**: Navbar with user information and icon.
+
+			### Status Indicators
+			```html
+			<x-navbar>
+				<x-box sx:display="flex" sx:gap="2" sx:alignItems="center">
+					<x-icon icon="CheckCircle" size="small" color="var(--paletteSuccessMain)"></x-icon>
+					<x-typography variant="body2" sx:color="var(--paletteSuccessMain)">Online</x-typography>
+				</x-box>
+			</x-navbar>
+			```
+			**Description**: Navbar with status indicator and colored text.
+
+			### Breadcrumb Style
+			```html
+			<x-navbar>
+				<x-box sx:display="flex" sx:gap="1" sx:alignItems="center">
+					<x-link href="/" sx:color="var(--paletteTextSecondary)">Home</x-link>
+					<x-typography sx:color="var(--paletteTextSecondary)">/</x-typography>
+					<x-link href="/features" sx:color="var(--paletteTextSecondary)">Features</x-link>
+					<x-typography sx:color="var(--paletteTextSecondary)">/</x-typography>
+					<x-typography sx:color="var(--paletteTextPrimary)">Web Components</x-typography>
+				</x-box>
+			</x-navbar>
+			```
+			**Description**: Navbar with breadcrumb-style navigation links.
+
+			## How It Works
+
+			### Path Processing
+			1. **State Subscription**: Subscribes to `activePath` state changes
+			2. **Path Parsing**: Splits the path into segments
+			3. **Title Generation**: Converts path segments to readable titles
+			4. **Component Cleanup**: Removes "x-" prefixes from component names
+			5. **Display Update**: Updates the navbar title with formatted text
+
+			### Title Formatting
+			1. **Segment Processing**: Converts each path segment to title case
+			2. **Separator Addition**: Adds " / " between segments
+			3. **Special Handling**: Handles root path ("/") as "Home"
+			4. **Component Names**: Removes "x-" prefix from component names
+			5. **Final Display**: Shows formatted title in the navbar
+
+			### State Management
+			1. **Automatic Updates**: Updates when `activePath` changes
+			2. **Initial Load**: Displays current path on component creation
+			3. **Real-time Sync**: Stays in sync with navigation changes
+			4. **Error Handling**: Gracefully handles invalid or missing paths
+
+			## Best Practices
+
+			### Content Design
+			- Keep navbar content concise and focused
+			- Use consistent styling across all navbar instances
+			- Test navbar with different path lengths and formats
+			- Consider mobile responsiveness for navbar content
+
+			### Performance
+			- Avoid complex content that could slow down rendering
+			- Use efficient state subscriptions
+			- Test navbar performance with frequent path changes
+			- Consider caching for static navbar content
+
+			### Accessibility
+			- Ensure sufficient color contrast for navbar text
+			- Provide meaningful labels for interactive elements
+			- Test with screen readers and keyboard navigation
+			- Use semantic HTML structure when possible
+
+			### Responsive Design
+			- Test navbar on different screen sizes
+			- Consider hiding or simplifying content on mobile
+			- Use responsive styling for different breakpoints
+			- Ensure touch-friendly button sizes on mobile
+
+			## Common Use Cases
+
+			- **Application Headers**: Main navigation headers for web applications
+			- **Section Headers**: Headers for different sections or modules
+			- **Page Headers**: Headers for individual pages or views
+			- **Dashboard Headers**: Headers for dashboard and admin interfaces
+			- **Documentation Headers**: Headers for documentation and help systems
+			- **Settings Headers**: Headers for configuration and settings pages
+			- **User Interface Headers**: Headers for user-facing interfaces
+			- **Admin Interface Headers**: Headers for administrative interfaces
+		</x-markdown>
+	</x-content>
+</x-page>

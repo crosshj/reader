@@ -72,11 +72,16 @@ export class XIcon extends BaseUIComponent {
 			Warning: 'exclamation-triangle',
 			Error: 'exclamation-circle',
 			Success: 'check-circle',
+			CheckCircle: 'check-circle',
 			Loading: 'refresh',
 			People: 'users',
 			Person: 'user',
 			LineChart: 'line-chart',
 			History: 'history',
+			Construction: 'wrench',
+			Settings: 'cog',
+			Menu: 'bars',
+			Cancel: 'times',
 		};
 
 		return (

@@ -1,0 +1,184 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Include` component allows you to include content from other HTML files into your current page. It's perfect for creating reusable layouts, shared components, and modular page structures. The component automatically resolves relative paths and handles content loading asynchronously.
+
+			## Features
+
+			- **File Inclusion**: Load and display content from external HTML files
+			- **Path Resolution**: Automatically resolves relative paths based on current page location
+			- **Error Handling**: Graceful error handling with user-friendly error messages
+			- **Content Cleaning**: Automatically cleans server-generated HTML content
+			- **Async Loading**: Non-blocking content loading with proper error states
+			- **Style Support**: Full support for `sx:` styling attributes
+			- **Conditional Rendering**: Support for conditional display using `sx:display` with WHEN conditions
+
+			## Usage
+
+			```html
+			<x-include href="./menu.html"></x-include>
+			<x-include href="../shared/header.html"></x-include>
+			<x-include href="/fragments/layout/footer.html"></x-include>
+			```
+
+			## Attributes
+
+			| Attribute | Type | Required | Description |
+			|-----------|------|----------|-------------|
+			| `href` | string | Yes | Path to the HTML file to include |
+
+			## Path Resolution
+
+			The component intelligently resolves paths based on the current page location:
+
+			### Absolute Paths
+			```html
+			<x-include href="/fragments/layout/header.html"></x-include>
+			```
+			**Description**: Absolute paths start with `/` and are resolved from the root directory.
+
+			### Relative Paths
+			```html
+			<x-include href="./menu.html"></x-include>
+			<x-include href="../shared/footer.html"></x-include>
+			```
+			**Description**: Relative paths are resolved based on the current page's location.
+
+			### Examples
+			```html
+			<!-- From /fragments/features/web-components/button.html -->
+			<x-include href="./menu.html"></x-include>
+			<!-- Resolves to: /fragments/features/web-components/menu.html -->
+
+			<x-include href="../layout/header.html"></x-include>
+			<!-- Resolves to: /fragments/layout/header.html -->
+
+			<x-include href="/fragments/shared/footer.html"></x-include>
+			<!-- Resolves to: /fragments/shared/footer.html -->
+			```
+
+			## Content Cleaning
+
+			The component automatically cleans server-generated HTML content by removing:
+
+			- `DOCTYPE` declarations
+			- `html` opening and closing tags
+			- `head` sections and all their content
+			- `body` tags (keeping the content)
+			- `script` tags that might cause conflicts
+			- `style` tags that might affect the page
+
+			## Conditional Rendering
+
+			The component supports conditional display using `sx:display` with WHEN conditions:
+
+			```html
+			<x-include 
+				href="./admin-menu.html" 
+				sx:display="WHEN global_userRole IS 'admin' THEN block ELSE none"
+			></x-include>
+			```
+			**Description**: Only displays the admin menu when the user has admin role.
+
+			## Error Handling
+
+			The component provides graceful error handling:
+
+			### File Not Found
+			```html
+			<x-include href="./nonexistent.html"></x-include>
+			```
+			**Result**: Displays "Error loading content: File not found"
+
+			### Network Error
+			```html
+			<x-include href="http://example.com/missing.html"></x-include>
+			```
+			**Result**: Displays "Error loading content: Network error"
+
+			### Invalid Path
+			```html
+			<x-include href=""></x-include>
+			```
+			**Result**: Displays "Error loading content: Invalid path"
+
+			## Examples
+
+			### Basic Inclusion
+			```html
+			<x-page>
+				<x-navbar></x-navbar>
+				<x-content>
+					<x-include href="./menu.html"></x-include>
+					<main>Page content here</main>
+				</x-content>
+			</x-page>
+			```
+			**Description**: Includes a menu file in the page layout.
+
+
+			## How It Works
+
+			### Loading Process
+			1. **Path Resolution**: Resolves the `href` path relative to current page
+			2. **Content Fetching**: Makes an HTTP request to load the HTML file
+			3. **Content Cleaning**: Removes server-specific HTML elements
+			4. **Content Injection**: Inserts the cleaned content into the component
+			5. **Error Handling**: Displays error messages if loading fails
+
+			### Path Resolution Logic
+			1. **Absolute Paths**: Start with `/` and resolve from root
+			2. **Relative Paths**: Resolve based on current page location
+			3. **Parent Directories**: `../` moves up one directory level
+			4. **Current Directory**: `./` refers to current directory
+
+			### Content Cleaning Process
+			1. **HTML Parsing**: Parses the loaded HTML content
+			2. **Element Removal**: Removes `DOCTYPE`, `html`, `head`, `body` tags
+			3. **Script/Style Removal**: Removes `script` and `style` tags
+			4. **Content Extraction**: Extracts the inner content for display
+
+			## Best Practices
+
+			### File Organization
+			- Keep included files focused and single-purpose
+			- Use descriptive file names that indicate their purpose
+			- Organize files in logical directory structures
+			- Avoid circular dependencies between included files
+
+			### Performance
+			- Minimize the number of included files per page
+			- Use absolute paths for frequently included files
+			- Consider caching strategies for static content
+			- Test loading performance with multiple includes
+
+			### Error Handling
+			- Always provide fallback content for critical includes
+			- Test with missing files to ensure graceful degradation
+			- Use conditional rendering to avoid loading unnecessary content
+			- Monitor console for loading errors
+
+			### Content Structure
+			- Ensure included files are well-formed HTML
+			- Avoid including files with conflicting styles or scripts
+			- Use semantic HTML in included content
+			- Test included content in different contexts
+
+			## Common Use Cases
+
+			- **Layout Components**: Headers, footers, sidebars, and navigation
+			- **Shared Content**: Common sections across multiple pages
+			- **Modular Pages**: Breaking large pages into smaller, manageable pieces
+			- **Conditional Content**: Different content based on user roles or states
+			- **Template Systems**: Creating reusable page templates
+			- **Component Libraries**: Sharing UI components across projects
+			- **Content Management**: Including content from CMS or external sources
+			- **Development Workflow**: Separating concerns and improving maintainability
+		</x-markdown>
+	</x-content>
+</x-page>

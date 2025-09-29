@@ -1,0 +1,78 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Typography` component provides a comprehensive text rendering system with predefined variants, responsive design, and advanced styling capabilities. It supports the full `sx:` styling system with specialized shorthand properties for spacing and layout.
+
+			## Usage
+
+			```html
+			<x-typography variant="h1">Main Heading</x-typography>
+			<x-typography variant="body1" sx:p="2" sx:color="var(--palettePrimaryMain)">
+				Body text with custom styling
+			</x-typography>
+			```
+
+			## Live Examples
+
+			<x-typography variant="h1">Heading 1</x-typography>
+			<x-typography variant="h2">Heading 2</x-typography>
+			<x-typography variant="h3">Heading 3</x-typography>
+			<x-typography variant="h4">Heading 4</x-typography>
+			<x-typography variant="h5">Heading 5</x-typography>
+			<x-typography variant="h6">Heading 6</x-typography>
+
+			<x-typography variant="body1">Body 1 - Main body text for paragraphs and general content.</x-typography>
+			<x-typography variant="body2">Body 2 - Secondary body text for less prominent content.</x-typography>
+
+			<x-typography variant="subtitle1">Subtitle 1 - Section subtitles and medium emphasis text.</x-typography>
+			<x-typography variant="subtitle2">Subtitle 2 - Smaller subtitles and labels.</x-typography>
+			<x-typography variant="caption">Caption - Small text for captions and metadata.</x-typography>
+			<x-typography variant="overline">Overline - Uppercase text for labels and categories.</x-typography>
+
+			<x-typography variant="strong">Strong - Bold text for emphasis.</x-typography>
+			<x-typography variant="em">Em - Italic text for emphasis.</x-typography>
+			<x-typography variant="blockquote">Blockquote - Quoted text with special styling.</x-typography>
+
+			## Attributes
+
+			| Attribute | Type | Required | Default | Description |
+			|-----------|------|----------|---------|-------------|
+			| `variant` | string | No | `body1` | Typography variant (h1-h6, body1-body2, subtitle1-subtitle2, caption, overline, strong, em, blockquote) |
+
+			## How It Works
+
+			### Typography Variants
+			1. **Heading Variants**: h1-h6 with predefined font sizes and weights
+			2. **Body Variants**: body1-body2 for paragraph and general text
+			3. **Specialized Variants**: subtitle, caption, overline for specific use cases
+			4. **Emphasis Variants**: strong, em, blockquote for text emphasis
+
+			### Spacing Shorthand
+			1. **Padding**: p, pt, pb, pl, pr, px, py for padding control
+			2. **Margin**: m, mt, mb, ml, mr, mx, my for margin control
+			3. **Value Mapping**: Numeric values map to rem units (1 = 0.5rem)
+			4. **Axis Shorthand**: px/py for horizontal/vertical spacing
+
+			### Style Processing
+			1. **SX Processing**: Processes sx: attributes for styling
+			2. **CSS Generation**: Generates CSS from sx attributes
+			3. **Style Application**: Applies styles to the component element
+			4. **Responsive Support**: Handles responsive styling conditions
+			5. **Theme Integration**: Integrates with framework theme system
+
+			## Common Use Cases
+
+			- **Headings**: Page titles, section headers, and content hierarchy
+			- **Body Text**: Paragraphs, descriptions, and main content
+			- **Labels**: Form labels, captions, and metadata
+			- **Navigation**: Menu items, breadcrumbs, and navigation text
+			- **Status Messages**: Success, error, and warning messages
+			- **Data Display**: Tables, lists, and structured data presentation
+		</x-markdown>
+	</x-content>
+</x-page>

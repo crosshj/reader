@@ -1,0 +1,212 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Page` component is a simple container component that provides a foundation for page-level layouts. It extends `BaseUIComponent` and supports the full `sx:` styling system, making it ideal for creating custom page layouts and containers. While minimal in functionality, it serves as a consistent base for page-level components and provides a standard interface for styling and state management.
+
+			## Features
+
+			- **Container Foundation**: Provides a base container for page-level layouts
+			- **SX Styling**: Full support for the `sx:` attribute system
+			- **Layout Integration**: Designed to work within application layouts
+			- **Semantic Structure**: Provides proper page hierarchy
+			- **State Management**: Inherits state management from BaseUIComponent
+			- **Event Handling**: Supports event handling and lifecycle management
+
+			## Usage
+
+			```html
+			<x-page>
+				Your page content here
+			</x-page>
+			```
+
+			## Basic Page
+
+			### Simple Page
+			```html
+			<x-page>
+				<x-typography variant="h1">Welcome to My Page</x-typography>
+				<x-typography>This is the main content of the page.</x-typography>
+			</x-page>
+			```
+			**Description**: Basic page container with simple content.
+
+			### Page with Styling
+			```html
+			<x-page sx:padding="3" sx:background="var(--paletteBackgroundPaper)">
+				<x-typography variant="h1">Styled Page</x-typography>
+				<x-typography>This page has custom padding and background.</x-typography>
+			</x-page>
+			```
+			**Description**: Page with custom styling using sx attributes.
+
+			## Themed Page
+
+			### Primary Theme
+			```html
+			<x-page sx:background="var(--palettePrimaryMain)" sx:color="white" sx:padding="4">
+				<x-typography variant="h1" sx:color="white">Primary Page</x-typography>
+				<x-typography sx:color="white">This page uses the primary theme colors.</x-typography>
+			</x-page>
+			```
+			**Description**: Page with primary theme colors and white text.
+
+			### Secondary Theme
+			```html
+			<x-page sx:background="var(--paletteSecondaryMain)" sx:color="white" sx:padding="4">
+				<x-typography variant="h1" sx:color="white">Secondary Page</x-typography>
+				<x-typography sx:color="white">This page uses the secondary theme colors.</x-typography>
+			</x-page>
+			```
+			**Description**: Page with secondary theme colors and white text.
+
+			### Custom Theme
+			```html
+			<x-page sx:background="linear-gradient(135deg, #667eea 0%, #764ba2 100%)" sx:color="white" sx:padding="4">
+				<x-typography variant="h1" sx:color="white">Custom Page</x-typography>
+				<x-typography sx:color="white">This page uses a custom gradient background.</x-typography>
+			</x-page>
+			```
+			**Description**: Page with custom gradient background and styling.
+
+			## Responsive Page
+
+			### Mobile-first Design
+			```html
+			<x-page sx:padding="WHEN screen.width < 768 THEN 2 ELSE 4" sx:maxWidth="1200px" sx:mx="auto">
+				<x-typography variant="h1">Responsive Page</x-typography>
+				<x-typography>This page adapts to different screen sizes.</x-typography>
+			</x-page>
+			```
+			**Description**: Responsive page that adjusts padding based on screen size.
+
+			### Flexible Layout
+			```html
+			<x-page sx:display="flex" sx:flexDirection="column" sx:minHeight="100vh">
+				<x-box sx:flex="1" sx:padding="4">
+					<x-typography variant="h1">Flexible Page</x-typography>
+					<x-typography>This page uses flexbox for flexible layout.</x-typography>
+				</x-box>
+				<x-box sx:background="var(--paletteBackgroundPaper)" sx:padding="2" sx:borderTop="1px solid var(--paletteDivider)">
+					<x-typography variant="body2" sx:textAlign="center">Footer Content</x-typography>
+				</x-box>
+			</x-page>
+			```
+			**Description**: Page with flexible layout and footer section.
+
+			## Layout Integration
+
+			### Page with Navbar
+			```html
+			<x-page>
+				<x-navbar></x-navbar>
+				<x-content sx:padding="4">
+					<x-typography variant="h1">Page with Navbar</x-typography>
+					<x-typography>This page includes a navigation bar.</x-typography>
+				</x-content>
+			</x-page>
+			```
+			**Description**: Page with integrated navbar and content sections.
+
+			### Page with Sidebar
+			```html
+			<x-page sx:display="flex" sx:minHeight="100vh">
+				<x-box sx:width="250px" sx:background="var(--paletteBackgroundPaper)" sx:borderRight="1px solid var(--paletteDivider)" sx:padding="2">
+					<x-typography variant="h6">Sidebar</x-typography>
+					<x-typography>Navigation items here</x-typography>
+				</x-box>
+				<x-box sx:flex="1" sx:padding="4">
+					<x-typography variant="h1">Main Content</x-typography>
+					<x-typography>This page has a sidebar layout.</x-typography>
+				</x-box>
+			</x-page>
+			```
+			**Description**: Page with sidebar layout and main content area.
+
+			## Conditional Page
+
+			### Role-based Page
+			```html
+			<x-page sx:display="WHEN global_userRole IS 'admin' THEN block ELSE none">
+				<x-typography variant="h1">Admin Page</x-typography>
+				<x-typography>This page is only visible to admin users.</x-typography>
+			</x-page>
+			```
+			**Description**: Page that only displays for admin users.
+
+			### State-based Page
+			```html
+			<x-page sx:background="WHEN global_theme IS 'dark' THEN var(--paletteBackgroundDark) ELSE var(--paletteBackgroundPaper)">
+				<x-typography variant="h1">Dynamic Page</x-typography>
+				<x-typography>This page changes based on the current theme.</x-typography>
+			</x-page>
+			```
+			**Description**: Page with dynamic styling based on application state.
+
+			## How It Works
+
+			### Component Structure
+			1. **BaseUIComponent**: Extends the base component class
+			2. **SX Support**: Inherits full `sx:` styling system
+			3. **State Management**: Inherits state subscription capabilities
+			4. **Event Handling**: Inherits event handling and lifecycle management
+			5. **Content Rendering**: Renders child content with applied styles
+
+			### Styling System
+			1. **SX Processing**: Processes `sx:` attributes for styling
+			2. **CSS Generation**: Generates CSS from sx attributes
+			3. **Style Application**: Applies styles to the component element
+			4. **Responsive Support**: Handles responsive styling conditions
+			5. **Theme Integration**: Integrates with framework theme system
+
+			### Layout Integration
+			1. **Container Role**: Serves as a container for page content
+			2. **Layout Support**: Supports various layout patterns
+			3. **Responsive Design**: Adapts to different screen sizes
+			4. **Theme Consistency**: Maintains consistency with application theme
+			5. **State Integration**: Integrates with application state management
+
+			## Best Practices
+
+			### Page Design
+			- Use consistent page layouts across your application
+			- Keep page content focused and well-organized
+			- Test pages on different screen sizes and devices
+			- Consider accessibility in page design
+
+			### Performance
+			- Avoid overly complex page layouts that could impact performance
+			- Use efficient styling and avoid unnecessary re-renders
+			- Test page loading performance with different content sizes
+			- Consider lazy loading for large page content
+
+			### Styling
+			- Use theme variables for consistent styling
+			- Test styling with different themes and color schemes
+			- Consider responsive design for all page layouts
+			- Use semantic HTML structure when possible
+
+			### State Management
+			- Use conditional rendering appropriately
+			- Test pages with different state conditions
+			- Consider state persistence for page-specific data
+			- Handle state changes gracefully
+
+			## Common Use Cases
+
+			- **Main Pages**: Home, dashboard, and primary application pages
+			- **Content Pages**: Article, blog post, and documentation pages
+			- **Form Pages**: User registration, settings, and data entry pages
+			- **List Pages**: Product catalogs, user lists, and data tables
+			- **Detail Pages**: Product details, user profiles, and item views
+			- **Landing Pages**: Marketing, welcome, and introduction pages
+			- **Error Pages**: 404, 500, and other error state pages
+			- **Modal Pages**: Overlay pages and modal dialogs
+		</x-markdown>
+	</x-content>
+</x-page>

@@ -86,7 +86,6 @@ Tabs (2):
   Tab (4)
 TabContainer (2):
   Tab (4)
-PageFragment (7)
 
 # Cross-cutting Components (used across multiple parent contexts)
 CrossCutting:
@@ -111,7 +110,7 @@ CrossCutting:
   NestedTable (52):
     Parents: PageContent, Box, Typography, TextField, CodeBlock, Link, Spacing
   Data (296):
-    Parents: Page, Box, CodeBlock, PageFragment, SetData, SidebarContent
+    Parents: Page, Box, CodeBlock, SetData, SidebarContent
   Query (88):
     Parents: Flow, Case, Confirm, Insert, Navigate, SetData
   IconButton (77):

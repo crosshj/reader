@@ -11,6 +11,10 @@ export class XButton extends BaseUIComponent {
 		const href = this.getAttribute('href');
 		const icon = this.getAttribute('icon');
 		const iconPosition = this.getAttribute('iconPosition') || 'left';
+		const variant = this.getAttribute('variant') || 'primary';
+		const size = this.getAttribute('size') || 'medium';
+		const disabled = this.hasAttribute('disabled');
+		const loading = this.hasAttribute('loading');
 
 		// Get text content excluding icon elements
 		const textContent = this.getTextContentExcludingIcons();
@@ -18,18 +22,41 @@ export class XButton extends BaseUIComponent {
 
 		// Create icon if specified
 		let iconElement = null;
-		if (icon) {
+		if (icon && !loading) {
 			iconElement = document.createElement('span');
-			iconElement.className = `fa fa-${this.convertToFontAwesome(icon)} small button-icon`;
+			iconElement.className = `fa fa-${this.convertToFontAwesome(icon)} button-icon`;
+		}
+
+		// Create loading spinner if loading
+		let loadingElement = null;
+		if (loading) {
+			loadingElement = document.createElement('span');
+			loadingElement.className = 'fa fa-refresh fa-spin button-icon';
 		}
 
 		// Create button content with proper icon positioning
-		const button = document.createElement('button');
-		if (href) {
-			button.onclick = () => (window.location.href = href);
+		let button;
+
+		if (href && !disabled && !loading) {
+			// Create x-link for navigation buttons
+			button = document.createElement('x-link');
+			button.setAttribute('href', href);
+			button.className = `x-button x-button-${variant} x-button-${size}`;
+		} else {
+			// Create regular button for actions
+			button = document.createElement('button');
+			button.className = `x-button x-button-${variant} x-button-${size}`;
+
+			if (disabled || loading) {
+				button.disabled = true;
+			}
 		}
 
-		if (icon && iconPosition === 'left') {
+		// Add content based on state
+		if (loading) {
+			button.appendChild(loadingElement);
+			button.appendChild(document.createTextNode('Loading...'));
+		} else if (icon && iconPosition === 'left') {
 			button.appendChild(iconElement);
 			button.appendChild(document.createTextNode(buttonText));
 		} else if (icon && iconPosition === 'right') {

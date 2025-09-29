@@ -1,0 +1,59 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<x-box
+			sx:display="flex"
+			sx:flexDirection="column"
+			sx:gap="2"
+			sx:mb="200px"
+			sx:mt="-1em"
+			sx:width="100%"
+			sx:maxWidth="1000px"
+			sx:mx="auto"
+		>
+			<!-- prettier-ignore -->
+			<x-markdown>
+				## Overview
+
+				The `Box` component is a flexible container component that provides layout and styling capabilities. It's based on the Material-UI Box concept and supports the `sx:` attribute system for inline styling.
+
+				## Features
+
+				- **Flexible Layout**: Supports flexbox, grid, and block layouts
+				- **SX Styling**: Full support for the `sx:` attribute system
+				- **Responsive Design**: Built-in responsive behavior
+				- **Theme Integration**: Works seamlessly with the design system
+
+				## Usage
+
+				```html
+				<x-box sx:display="flex" sx:gap="2" sx:p="3">
+					<!-- Content goes here -->
+				</x-box>
+				```
+
+				## Examples
+
+				### Basic Container
+				<x-box sx:border="1px solid #ccc" sx:p="2" sx:mb="2">
+					This is a basic Box container with border and padding.
+				</x-box>
+
+				### Flex Layout
+				<x-box sx:display="flex" sx:gap="2" sx:mb="2">
+					<x-box sx:flex="1" sx:bg="lightblue" sx:p="2">Item 1</x-box>
+					<x-box sx:flex="1" sx:bg="lightgreen" sx:p="2">Item 2</x-box>
+					<x-box sx:flex="1" sx:bg="lightcoral" sx:p="2">Item 3</x-box>
+				</x-box>
+
+				### Grid Layout
+				<x-box sx:display="grid" sx:gridTemplateColumns="repeat(3, 1fr)" sx:gap="2" sx:mb="2">
+					<x-box sx:bg="lightblue" sx:p="2">Grid Item 1</x-box>
+					<x-box sx:bg="lightgreen" sx:p="2">Grid Item 2</x-box>
+					<x-box sx:bg="lightcoral" sx:p="2">Grid Item 3</x-box>
+				</x-box>
+			</x-markdown>
+		</x-box>
+	</x-content>
+</x-page>

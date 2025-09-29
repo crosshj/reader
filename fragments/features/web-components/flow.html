@@ -1,0 +1,242 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Flow` component provides a way to define executable JavaScript code that can be triggered by events or called directly. Flows are the core mechanism for handling business logic, state changes, and user interactions in the framework. They run in a controlled environment with access to global state and utility functions.
+
+			## Features
+
+			- **Event-Driven Execution**: Flows can be triggered by state changes, user interactions, or direct calls
+			- **Global State Access**: Direct access to application state through global variables
+			- **Utility Functions**: Built-in functions for common operations like navigation and data management
+			- **Error Handling**: Graceful error handling with console logging
+			- **Lifecycle Management**: Auto-registers on connect, unregisters on disconnect
+			- **Strict Mode**: Executes in strict JavaScript mode for better error detection
+
+			## Usage
+
+			```html
+			<x-flow key="myFlow">
+				// Your JavaScript code here
+				console.log('Flow executed!');
+			</x-flow>
+			```
+
+			## Attributes
+
+			| Attribute | Type | Required | Description |
+			|-----------|------|----------|-------------|
+			| `key` | string | Yes | Unique identifier for the flow |
+
+			## Global Variables
+
+			Flows have access to all application state through the `global` and `state` objects (which are identical):
+
+			| Variable | Type | Description |
+			|----------|------|-------------|
+			| `global` | object | Read-only copy of application state - access any property via `global.propertyName` |
+			| `state` | object | Read-only copy of application state (identical to global) |
+			| `event` | object | Event details when triggered by subscription |
+
+			### Accessing State Properties
+
+			All state properties can be accessed through either `global` or `state` using standard JavaScript property syntax. **Important**: These are read-only copies - direct mutation will not affect the actual application state:
+
+			```javascript
+			// Access any state property (both are identical)
+			const currentPath = global.activePath;  // or state.activePath
+			const userData = global.user;           // or state.user
+			const pageContent = global.pageContent; // or state.pageContent
+			const customData = global.myCustomProperty; // or state.myCustomProperty
+
+			// ❌ DON'T DO THIS - direct mutation won't work
+			state.foo = 'bar';  // This won't update the actual state
+			global.bar = 'baz'; // This won't update the actual state
+
+			// ✅ DO THIS - use SetData to update state
+			SetData('foo', 'bar');
+			SetData('bar', 'baz');
+			```
+
+			## Utility Functions
+
+			Flows have access to several utility functions for common operations. Both capitalized and lowercase versions are supported for backward compatibility, but the capitalized versions are recommended:
+
+			| Function | Parameters | Description |
+			|----------|------------|-------------|
+			| `SetData(key, value)` | key: string, value: any | Set a state value |
+			| `Query(options)` | options: {url: string} | Fetch content from URL (async function) |
+			| `Navigate(path)` | path: string | Navigate to a new path |
+			| `console.log(...args)` | ...args: any | Log to console |
+
+			**Note**: Lowercase versions (`setData`, `query`, `navigate`) are also supported for backward compatibility, but the capitalized versions are the recommended standard.
+
+			## Examples
+
+			### Basic State Management
+			```html
+			<x-flow key="updateCounter">
+				// Increment a counter in state
+				const currentCount = state.counter || 0;
+				SetData('counter', currentCount + 1);
+				console.log('Counter updated to:', currentCount + 1);
+			</x-flow>
+			```
+			**Description**: This flow demonstrates basic state management by incrementing a counter value and logging the result.
+
+			### Path Change Handling
+			```html
+			<x-data name="pathData" route="/framework/#/:rest*"></x-data>
+			
+			<x-flow key="pathChange">
+				let currentPath = `/${global.pathData?.rest || ''}`;
+				
+				if (currentPath === '' || currentPath === '/') {
+					currentPath = '/';
+				}
+				
+				if (currentPath === global.activePath) return;
+				
+				SetData('activePath', currentPath);
+				const fragmentPath = currentPath === '/' ? 'fragments/home.html' : `fragments${currentPath}.html`;
+				SetData('pageContent', Query({ url: fragmentPath }));
+			</x-flow>
+			```
+			**Description**: Handles URL path changes by updating the active path and loading the appropriate page content. Requires an `x-data` element to capture URL parameters.
+
+			### User Authentication Check
+			```html
+			<x-flow key="userLogin">
+				if (global.user === undefined) {
+					SetData('loginError', 'Please log in first');
+					Navigate('/login');
+				} else {
+					Query({ url: 'api/getUserData' });
+					Navigate('/home');
+				}
+			</x-flow>
+			```
+			**Description**: Checks if a user is logged in and either redirects to login or proceeds to home with user data.
+
+			### Data Processing
+			```html
+			<x-flow key="processFormData">
+				const formData = global.formData;
+				
+				// Validate required fields
+				if (!formData.email || !formData.name) {
+					SetData('formError', 'Email and name are required');
+					return;
+				}
+				
+				// Process the data
+				const processedData = {
+					...formData,
+					timestamp: new Date().toISOString(),
+					id: Math.random().toString(36).substr(2, 9)
+				};
+				
+				SetData('processedData', processedData);
+				SetData('formSubmitted', true);
+			</x-flow>
+			```
+			**Description**: Validates form data, processes it with additional metadata, and updates the application state.
+
+			### Conditional Navigation
+			```html
+			<x-flow key="checkPermissions">
+				const userRole = global.user?.role;
+				const requestedPath = global.requestedPath;
+				
+				if (userRole === 'admin') {
+					Navigate(requestedPath);
+				} else if (userRole === 'user' && requestedPath.startsWith('/admin')) {
+					SetData('error', 'Access denied');
+					Navigate('/dashboard');
+				} else {
+					Navigate(requestedPath);
+				}
+			</x-flow>
+			```
+			**Description**: Implements role-based access control by checking user permissions before navigation.
+
+			### API Integration
+			```html
+			<x-flow key="loadUserData">
+				SetData('loading', true);
+				
+				try {
+					const userData = await Query({ url: 'api/user/profile' });
+					SetData('userProfile', userData);
+					SetData('lastUpdated', new Date().toISOString());
+				} catch (error) {
+					SetData('error', 'Failed to load user data');
+					console.error('API Error:', error);
+				} finally {
+					SetData('loading', false);
+				}
+			</x-flow>
+			```
+			**Description**: Demonstrates async API integration with loading states and error handling. `Query()` is an async function that fetches content from URLs.
+
+			## How It Works
+
+			### Registration Process
+			1. **Component Creation**: When `<x-flow>` is added to the DOM, it registers itself
+			2. **Key Extraction**: Extracts the `key` attribute for identification
+			3. **Code Storage**: Stores the JavaScript code in the flows registry
+			4. **Execution Context**: Sets up global variables and utility functions
+
+			### Execution Context
+			Flows execute in a controlled environment with:
+			- **Strict Mode**: JavaScript strict mode for better error detection
+			- **Global Scope**: Access to application state and utilities
+			- **Error Handling**: Try-catch blocks around execution
+			- **Event Context**: Access to triggering event details
+
+			### Triggering Flows
+			Flows can be triggered by:
+			- **Direct Calls**: `triggerFlow('flowKey', eventDetail)`
+			- **State Subscriptions**: Via `<x-subscribe>` components
+			- **Event Handlers**: From user interactions
+			- **Other Flows**: Flows can trigger other flows
+
+			## Best Practices
+
+			### Naming Conventions
+			- Use descriptive, camelCase keys: `userLogin`, `pathChange`, `processFormData`
+			- Avoid generic names: `flow1`, `handler`, `doSomething`
+			- Be consistent across your application
+
+			### Error Handling
+			- Always wrap risky operations in try-catch blocks
+			- Use `console.log` for debugging and `console.error` for errors
+			- Set error states in the application state for user feedback
+
+			### Performance
+			- Keep flows focused and single-purpose
+			- Avoid long-running operations that could block the UI
+			- Use async/await for API calls and other async operations
+
+			### State Management
+			- Use `SetData()` for state updates instead of direct assignment
+			- **Never** mutate `global` or `state` directly (they are read-only copies)
+			- Check for existing values before overwriting
+			- Clear temporary state when no longer needed
+
+			## Common Use Cases
+
+			- **Navigation Logic**: Handle routing and page transitions
+			- **Form Processing**: Validate and process user input
+			- **Authentication**: Check user permissions and redirect
+			- **Data Loading**: Fetch and process data from APIs
+			- **State Updates**: Modify application state based on events
+			- **User Interactions**: Handle button clicks and form submissions
+			- **Business Logic**: Implement complex application workflows
+		</x-markdown>
+	</x-content>
+</x-page>

@@ -1,0 +1,184 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Fragment` component provides a way to display dynamic content from the application state. It subscribes to state changes and automatically updates its content when the state changes, making it perfect for reactive UI elements, dynamic page content, and real-time data display.
+
+			## Features
+
+			- **State Subscription**: Automatically subscribes to state changes and updates content
+			- **Loading States**: Optional loading spinner when content is empty or loading
+			- **Content Cleaning**: Automatically cleans HTML content from server responses
+			- **Multiple Content Types**: Handles both HTML strings and JSON objects
+			- **Global Prefix Support**: Automatically handles `global_` prefix in state paths
+			- **Error Handling**: Graceful handling of missing or invalid content
+			- **Lifecycle Management**: Proper cleanup of subscriptions when component is removed
+
+			## Usage
+
+			```html
+			<x-fragment contents="global_pageContent" showLoading="true"></x-fragment>
+			<x-fragment contents="userProfile" showLoading="false"></x-fragment>
+			<x-fragment contents="global_dashboardData"></x-fragment>
+			```
+
+			## Attributes
+
+			| Attribute | Type | Required | Default | Description |
+			|-----------|------|----------|---------|-------------|
+			| `contents` | string | Yes | - | State path to subscribe to (with or without `global_` prefix) |
+			| `showLoading` | boolean | No | `true` | Whether to show loading spinner when content is empty |
+
+			## Content Types
+
+			### HTML Content
+			When the state contains HTML strings, the component:
+			- Cleans the HTML by removing `DOCTYPE`, `html`, `head`, and `body` tags
+			- Removes `script` and `style` tags to prevent conflicts
+			- Displays the cleaned HTML content
+
+			```html
+			<x-fragment contents="global_pageContent"></x-fragment>
+			```
+			**Description**: Displays HTML content from the `pageContent` state, commonly used for dynamic page content.
+
+			### JSON Content
+			When the state contains objects or arrays, the component:
+			- Converts the data to formatted JSON
+			- Displays it in a `<pre>` element for readability
+
+			```html
+			<x-fragment contents="global_userData"></x-fragment>
+			```
+			**Description**: Displays user data as formatted JSON, useful for debugging or data inspection.
+
+			## Examples
+
+			### Dynamic Page Content
+			```html
+			<x-page>
+				<x-navbar></x-navbar>
+				<x-content>
+					<x-fragment 
+						contents="global_pageContent" 
+						showLoading="true"
+					></x-fragment>
+				</x-content>
+			</x-page>
+			```
+			**Description**: Creates a dynamic page that loads content based on navigation. Shows a loading spinner while content is being fetched.
+
+			### User Profile Display
+			```html
+			<x-box sx:display="flex" sx:flexDirection="column" sx:gap="2">
+				<x-typography variant="h2">User Profile</x-typography>
+				<x-fragment contents="global_userProfile"></x-fragment>
+			</x-box>
+			```
+			**Description**: Displays user profile information that updates automatically when the profile data changes in state.
+
+			### Dashboard Data
+			```html
+			<x-box sx:display="grid" sx:gridTemplateColumns="1fr 1fr" sx:gap="4">
+				<x-box>
+					<x-typography variant="h3">Analytics</x-typography>
+					<x-fragment contents="global_analyticsData"></x-fragment>
+				</x-box>
+				<x-box>
+					<x-typography variant="h3">Recent Activity</x-typography>
+					<x-fragment contents="global_recentActivity"></x-fragment>
+				</x-box>
+			</x-box>
+			```
+			**Description**: Creates a dashboard with multiple data sections that update independently based on their respective state values.
+
+			### Loading States
+			```html
+			<!-- With loading spinner -->
+			<x-fragment contents="global_heavyData" showLoading="true"></x-fragment>
+			
+			<!-- Without loading spinner -->
+			<x-fragment contents="global_quickData" showLoading="false"></x-fragment>
+			```
+			**Description**: Shows how to control loading states. Use `showLoading="true"` for content that takes time to load, and `showLoading="false"` for quick updates.
+
+			### Debug Information
+			```html
+			<x-box sx:background="#f5f5f5" sx:p="2" sx:borderRadius="4px">
+				<x-typography variant="h4">Debug Info</x-typography>
+				<x-fragment contents="global_debugData"></x-fragment>
+			</x-box>
+			```
+			**Description**: Creates a debug panel that displays application state as formatted JSON, useful for development and troubleshooting.
+
+			## How It Works
+
+			### Subscription Process
+			1. **Path Resolution**: Removes `global_` prefix if present to get the actual state path
+			2. **State Subscription**: Subscribes to changes in the specified state property
+			3. **Initial Content**: Loads and displays the current state value
+			4. **Content Updates**: Automatically updates when the state changes
+
+			### Content Processing
+			1. **Type Detection**: Determines if content is a string (HTML) or object (JSON)
+			2. **HTML Cleaning**: For strings, removes server-specific HTML elements
+			3. **JSON Formatting**: For objects, creates formatted JSON display
+			4. **Content Injection**: Updates the component's innerHTML
+
+			### Content Cleaning
+			For HTML content, the component removes:
+			- `DOCTYPE` declarations
+			- `html` opening and closing tags
+			- `head` sections and all their content
+			- `body` tags (keeping the content)
+			- `script` tags that might cause conflicts
+			- `style` tags that might affect the page
+
+			### Lifecycle Management
+			- **Connected**: Subscribes to state changes and loads initial content
+			- **Updated**: Automatically updates when subscribed state changes
+			- **Disconnected**: Unsubscribes from state changes to prevent memory leaks
+
+			## Best Practices
+
+			### State Management
+			- Use descriptive state property names that clearly indicate their purpose
+			- Keep state data focused and single-purpose
+			- Avoid deeply nested state structures when possible
+			- Use `global_` prefix consistently in your state naming
+
+			### Performance
+			- Use `showLoading="false"` for frequently updated content
+			- Avoid subscribing to large objects that change frequently
+			- Consider using `x-subscribe` for complex state logic
+			- Clean up unused fragments to prevent memory leaks
+
+			### Content Structure
+			- Ensure HTML content is well-formed and valid
+			- Use semantic HTML in your state content
+			- Avoid including large scripts or styles in state content
+			- Test content with different data types and sizes
+
+			### Error Handling
+			- Always provide fallback content for critical UI elements
+			- Use loading states appropriately for better user experience
+			- Test with empty or null state values
+			- Monitor console warnings for missing content attributes
+
+			## Common Use Cases
+
+			- **Dynamic Page Content**: Loading different page content based on navigation
+			- **Real-time Data**: Displaying live data that updates automatically
+			- **User Interface**: Showing user-specific content and preferences
+			- **Dashboard Widgets**: Displaying various data visualizations and metrics
+			- **Debug Panels**: Showing application state for development purposes
+			- **Content Management**: Displaying content from CMS or API responses
+			- **Notifications**: Showing dynamic notification content
+			- **Forms**: Displaying form content that changes based on user input
+		</x-markdown>
+	</x-content>
+</x-page>

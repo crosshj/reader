@@ -69,12 +69,6 @@ export class XInclude extends BaseUIComponent {
 			return;
 		}
 
-		// Set background color as a style attribute on the x-include element
-		this.setAttribute(
-			'style',
-			'background-color: var(--palettePrimaryMain, #1976d2);'
-		);
-
 		try {
 			// Resolve the path relative to the current page
 			const currentPagePath = this.getCurrentPagePath();

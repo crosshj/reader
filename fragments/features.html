@@ -1,0 +1,199 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+            ### Web Components
+
+            | Status                      | Name / Link                                                               | Description                                                                              |
+            | --------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+            | icon:CheckCircle;green500   | [Box](/features/web-components/box)                                      | Container component with flexible layout and styling options                             |
+            | icon:CheckCircle;green500   | [Button](/features/web-components/button)                                | Button component with various styles and states                                          |
+            | icon:CheckCircle;green500   | [Content](/features/web-components/content)                              | Main content area component for page layouts                                             |
+            | icon:CheckCircle;green500   | [Data](/features/web-components/data)                                    | Data display and management component                                                    |
+            | icon:CheckCircle;green500   | [Flow](/features/web-components/flow)                                    | Flow control and conditional rendering component                                         |
+            | icon:CheckCircle;green500   | [Fragment](/features/web-components/fragment)                            | Fragment inclusion and embedding component                                               |
+            | icon:CheckCircle;green500   | [Icon](/features/web-components/icon)                                    | Icon component with Font Awesome integration                                             |
+            | icon:CheckCircle;green500   | [Include](/features/web-components/include)                              | Include external content and fragments                                                   |
+            | icon:CheckCircle;green500   | [Link](/features/web-components/link)                                    | Link component with enhanced styling and behavior                                        |
+            | icon:CheckCircle;green500   | [Map](/features/web-components/map)                                      | Map visualization component                                                              |
+            | icon:CheckCircle;green500   | [Markdown](/features/web-components/markdown)                            | Markdown rendering component with custom renderers                                       |
+            | icon:CheckCircle;green500   | [Navbar](/features/web-components/navbar)                                | Navigation bar component                                                                 |
+            | icon:CheckCircle;green500   | [Page](/features/web-components/page)                                    | Page container component                                                                 |
+            | icon:CheckCircle;green500   | [Subscribe](/features/web-components/subscribe)                          | State subscription and reactivity component                                              |
+            | icon:CheckCircle;green500   | [Typography](/features/web-components/typography)                        | Typography component with theme integration                                              |
+            | icon:CheckCircle;green500   | [VizBar](/features/web-components/vizbar)                                | Bar chart visualization component                                                        |
+            | icon:CheckCircle;green500   | [VizPie](/features/web-components/vizpie)                                | Pie chart visualization component                                                        |
+
+            ---
+
+            ### Components
+
+            | Status                      | Name / Link                                                              | Description                                                                              |
+            | --------------------------- | -------------------------------------------------------------------------| ---------------------------------------------------------------------------------------- |
+            | icon:CheckCircle;green500   | [Typography](/features/components/typography)                            | Typography; includes theme and responsiveness.                                           |
+            | icon:CheckCircle;green500   | [Icons](/features/components/icons)                                      | Icons: material font, custom, and svg.                                                   |
+            | icon:CheckCircle;green500   | [Button](/features/components/Button)                                    | Just buttons                                                                             |
+            | icon:CheckCircle;green500   | [Actions](/features/components/Actions)                                  | Anything that can trigger a flow when clicked, i.e Buttons, Links, Chips and IconButtons |
+            | icon:CheckCircle;green500   | [MUI Box](/features/components/box)                                      | MUI Box.  Includes options to selectively render children                                |
+            | icon:CheckCircle;green500   | [Hide Components](/features/components/HideComponent)                    | Hide a component based on some Data value                                                |
+            | icon:Warning;amber800       | [Pills](/features/components/StandalonePills)                            | Pill indicator as a standalone component.                                                |
+            | icon:CheckCircle;green500   | [Alert](/features/components/alert)                                      | Show callout boxes, aka Alert's.                                                         |
+            | icon:CheckCircle;green500   | [MUI Textfield](/features/components/textField)                          | MUI Textfield Component, which also covers Input Variations including Select and Options |
+            | icon:CheckCircle;green500   | [MUI Checkbox](/features/components/checkbox)                            | MUI Checkbox                                                                             |
+            | icon:CheckCircle;green500   | [MUI Radio Button](/features/components/radioButton)                     | MUI Radio Button                                                                         |
+            | icon:CheckCircle;green500   | [MUI Switch](/features/components/switch)                                | MUI Switch                                                                               |
+            | icon:CheckCircle;green500   | [MUI Autocomplete](/features/components/autocomplete)                    | MUI Autocomplete                                                                         |
+            | icon:Warning;amber800       | [Obscured](/features/components/obscured)                                | What obscured data looks like and how to configure it i.e. \*\*\* or ###.                |
+            | icon:CheckCircle;green500   | [Data Visualization](/features/components/dataViz)                       | Data Visualization using [Recharts](https://recharts.org/)                               |
+            | icon:CheckCircle;green500   | [MUI Step indicator](/features/components/stepIndicator)                 | MUI Step Indicator                                                                       |
+            | icon:CheckCircle;green500   | [Fragment](/features/components/fragment)                                | Embed fragments in the current XML using this component.                                 |
+            | icon:CheckCircle;green500   | [FilePicker](/features/components/filepicker)                            | File Picker component, mostly plain React but styled to look like MUI                    |
+            | icon:CheckCircle;green500   | [Stack](/features/components/stack)                                      | MUI Stack component.  Used for right Sidebar as with Records/Notes.                      |
+            | icon:Construction;gray500   | [MUI Card](/features/components/card)                                    | MUI Card.                                                                                |
+            | icon:CheckCircle;green500   | [Dialog](/features/components/dialog)                                    | Dialogs, aka modals, aka popups, etc                                                     |
+            | icon:Construction;gray500   | [Signature](/features/components/signature)                              | Signature read and write                                                                 |
+            | icon:CheckCircle;green500   | [Pagination](/features/components/pagination)                            | Switch between pages, eg. in a table.                                                    |
+            | icon:CheckCircle;green500   | [Map](/features/components/map)                                          | Repeats children over an array                                                           |
+            | icon:CheckCircle;green500   | [JSON View](/features/components/jsonView)                               | show JSON                                                                                |
+            
+            see also:
+            
+            -   [Data / Get Opts](/features/data/getOpts) - shows examples of Options Lists in use
+
+            ---
+            
+            ### Tables
+            
+            | Status                      | Name / Link                                                            | Description                                                                                                           |
+            | --------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+            | icon:Construction;gray500   | [Conditional Row Actions](/features/tables/ConditionalRowActions)      | Show actions on some rows but nt others                                                                               |
+            | icon:Warning;amber800       | [Encryption](/features/tables/Encryption)                              | Show an encryted table in a de-crypted state                                                                          |
+            | icon:Construction;gray500   | [Extensible Columns](/features/tables/ExtensibleCols)                  | Support regular components inside table cells, versus previous approach with column "variant"                         |
+            | icon:Construction;gray500   | [Nested w/ Configurable Columns](/features/tables/nestedColumnConfigs) | Custom columns based on Nest Level                                                                                    |
+            | icon:Construction;gray500   | [Sticky Columns](/features/tables/stickyColumns)                       | Pin columns to left or right, useful in horizontally scrolled tables                                                  |
+            | icon:Construction;gray500   | [Addon Elements](/features/tables/addonElements)                       | Add some rows at the bottom of table                                                                                  |
+            | icon:Construction;gray500   | [Nest Headers](/features/tables/nestHeaders)                           | Customize headers for nest levels.  Includes totals example.                                                          |
+            | icon:Construction;gray500   | [Table Forms](/features/tables/forms)                                  | provides way to fill values, including dynamic ones, in order to create or update entities through or within a table.  See also [props/dynamicBind](/features/props/dynamicBind) |
+            | icon:Construction;gray500   | [Nest Levels 0](/features/tables/nestLevels0)                          | Tables with no nest levels.                                                                                           |
+            | icon:Construction;gray500   | [Nest Levels 1](/features/tables/nestLevels1)                          | Tables with one nest level.                                                                                           |
+            | icon:Construction;gray500   | [Nest Levels 2](/features/tables/nestLevels2)                          | Tables with two nest levels.                                                                                          |
+            | icon:Construction;gray500   | [Nest Levels 3](/features/tables/nestLevels3)                          | Tables with three nest levels.                                                                                        |
+            | icon:Construction;gray500   | [Nest Levels 4](/features/tables/nestLevels4)                          | Tables with four nest levels.  OMG, make it stop!!!                                                                   |
+            | icon:Construction;gray500   | [Empty](/features/tables/empty)                                        | A table with no results in it.                                                                                        |
+            | icon:Construction;gray500   | [Complex 1](/features/tables/complex1)                                 | Complex Table Scenarios #1: lots of nesting and addons examples                                                       |
+            | icon:Construction;gray500   | [Row Customization](/features/tables/rowCustom)                        | Tables with row customization                                                                                         |
+            
+            In most cases, components should be treated the same whether they render inside or outside a table.
+            However, there are cases, like with selecting rows, where the table and inner components should act in tandem and this calls for more complex data-binding.
+            
+            See the table sections at the following links for further explorations of these concepts.
+            
+            -   [Components / MUI Switch](/features/components/switch)
+            -   [Components / MUI Radio Button](/features/components/radioButton)
+            -   [Components / MUI Checkbox](/features/components/checkbox)
+
+            ---
+            
+            ### Props
+            
+            | Status                      | Name / Link                                                              | Description                                                                                                                                          |
+            | --------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+            | icon:Construction;gray500   | [Dynamic Bind](/features/props/dynamicBind)                              | When a component depends on data from another component. For instance a multi-step form where each step depends on chosen option from previous step. See also [tables/forms](/features/tables/forms) |
+            | icon:Construction;gray500   | [Formatters](/features/props/formatters)                                 | Coerce a prop value based on pre-defined formats  |
+            | icon:Construction;gray500   | [Theme](/features/props/theme)                                           | Use colors from theme                             |
+            
+            ---
+            
+            ### Forms
+            
+            | Status                      | Name / Link                                                              | Description                               |
+            | --------------------------- | ------------------------------------------------------------------------ | ----------------------------------------- |
+            | icon:Construction;gray500   | [Inputs](/features/forms/inputs)                                         | Form inputs; use a TextField instead      |
+            | icon:Construction;gray500   | [Input Labels](/features/forms/labels)                                   | Form Input labels; use a TextFiel instead |
+            | icon:Construction;gray500   | [Submit Mutliple Forms](/features/forms/procComposition/999)             | Submit multiple Forms at once             |
+            | icon:Construction;gray500   | [Grid Layout](/features/forms/grid)                                      | Layout Components in a Grid               |
+            
+            ---
+
+            ### Data
+            
+            | Status                      | Name / Link                                                             | Description                                   |
+            | --------------------------- | ----------------------------------------------------------------------- | --------------------------------------------- |
+            | icon:Construction;gray500   | [Complex 1](/features/data/complex1)                                    | A complex data example.                       |
+            | icon:Construction;gray500   | [Complex 2](/features/data/complex2)                                    | An extension of data/complex1 which covers complex options lists scenarios |
+            | icon:CheckCircle;green500   | [Get Opts](/features/data/getOpts)                                      | Read options data from DB.                    |
+            | icon:CheckCircle;green500   | [JSON-ify](/features/data/JSONify)                                      | Submitting JSON string paramater to database. |
+            | icon:CheckCircle;green500   | [Path-based](/features/data/pathBased)                                  | (USE Triggers+SetData with route for this) Read data from the URL path.                  |
+            | icon:Warning;amber800       | [Validation](/features/data/validation)                                 | Validate data from DB and in UI.              |
+            | icon:Warning;amber800       | [Validation Alternate](/features/data/validationAlternate)              | Validate data using jsonSchema directly.      |
+            
+
+            ---
+            
+            ### Flows
+            
+            | Status                      | Name / Link                                                             | Description                                                     |
+            | --------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------- |
+            | icon:Construction;gray500   | [Alert](/features/flows/alert)                                           | Show toasts/alerts on Flows.                                    |
+            | icon:Construction;gray500   | [Async Process](/features/flows/asyncProcess)                            | Use DB Workflows to execute long-running process.               |
+            | icon:Construction;gray500   | [Async Multi-Step](/features/flows/asyncMultiStep)                       | Use DB Workflows to execute a multi-step process.               |
+            | icon:Construction;gray500   | [Case](/features/flows/case)                                             | Conditionally Call Flow components                              |
+            | icon:Construction;gray500   | [Confirm](/features/flows/confirm)                                         | Add a popup step in a flow.                                     |
+            | icon:Construction;gray500   | [Generalized Workflows](/features/flows/generalizedWorkflows)              | Workflows that aren't long-running but still need to save state |
+            | icon:Construction;gray500   | [FlowArgs](/features/flows/args)                                         | When an action triggers a flow, "pass data" to flow             |
+            | icon:Construction;gray500   | [Local Data](/features/flows/localData)                                  | Manipulate Flow data (flowArgs)                                  |
+            | icon:Construction;gray500   | [Navigate](/features/flows/navigate)                                     | Shows how to use the Navigate step in a flow.                   |
+            | icon:Construction;gray500   | [Query Call](/features/flows/query/call)                                 | Call an API with Query, eg. Vertex API                          |
+            | icon:Construction;gray500   | [Query Multiple](/features/flows/query/multi)                            | Mulitiple Query components in one Flow.                         |
+            | icon:Construction;gray500   | [Query Static Params](/features/flows/query/staticParams)                | Submit a Query with static parameter.                           |
+            | icon:Construction;gray500   | [Query /w Params](/features/flows/query/params)                          | Submit a Query with parameters.                                 |
+            | icon:Construction;gray500   | [Set Data](/features/flows/setData)                                      | Manipulate global data.                                         |
+            | icon:Construction;gray500   | [Table Submit](/features/flows/tableSubmit)                              | Submit an entire table of data to a DB proc.                    |
+            | icon:Construction;gray500   | [Triggers](/features/flows/triggers)                                     | Trigger a flow when page loads or closes                         |
+            
+            see also:
+            
+            -   [Props / Dynamic Bind](/features/props/dynamicBind) - Subscribe component calls flow!
+            
+            ---
+            
+            ### Backend
+            
+            | Status                      | Name / Link                                                            | Description                                                                                                           |
+            | --------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+            | icon:Construction;gray500   | [Mappers](/features/backend/mappers)                                   | Transform data before returning to frontend                                                                           |
+            | icon:Construction;gray500   | [Decrypt](/features/backend/decrypt)                                   | Show an encryted table in a de-crypted state                                                                          |
+            | icon:Construction;gray500   | [Encrypt](/features/backend/encrypt)                                   | Submit data to DB which should be encrypted                                                                           |
+            
+            ---
+            
+            ### Sandbox / WIP
+            
+            *The following is holding space for short-term work.*
+            
+            | Status                      | Name / Link                                                              | Description                              |
+            | --------------------------- | ------------------------------------------------------------------------ | ---------------------------------------- |
+            | icon:CheckCircle;green500   | [PDF](/poc/pdf)                                                          | PDF: Export, Fill, Sign, etc             |
+            | icon:CheckCircle;green500   | [PDF Templates](/features/pdf/templates)                                 | Manage PDF Templates, includes a helper to get fields from pdf doc                 |
+            | icon:CheckCircle;green500   | [PDF Fill Existing](/features/pdf/fillExisting)                          | Fill fields on an already filled PDF     |
+            | icon:Construction;gray500   | [Roles and Access Rights](/features/rolesAndAccessRights)                | Roles and Access Rights views            |
+            | icon:Construction;gray500   | [Doc Upload POC](/poc/fileUpload)                                        | Document Upload example                  |
+            | icon:Construction;gray500   | [Realtime Polling](/poc/realtimePoll)                                    | Realtime Data (Polling)                  |
+            | icon:Construction;gray500   | [Error handling](/features/errors)                                       | Trigger/simluate errors in backend       |
+            
+            ---
+            
+            See also: [Deprecated Features](/features/deprecated)
+            
+            ### Status Legend
+            
+            | Icon                          | Status                                                                   |
+            | ----------------------------- | ------------------------------------------------------------------------ |
+            | icon:CheckCircle;green500     | Complete                                                                 |
+            | icon:Construction;gray500     | Work In Progress                                                         |
+            | icon:Warning;amber800         | To Do                                                                    |               
+        </x-markdown>
+	</x-content>
+</x-page>

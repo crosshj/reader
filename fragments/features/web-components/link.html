@@ -1,0 +1,195 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Link` component provides enhanced navigation functionality with automatic state management and event handling. It extends standard HTML anchor elements with framework integration, supporting both regular links and button-style links. The component automatically handles hash-based routing and dispatches navigation events for centralized state management.
+
+			## Features
+
+			- **Framework Integration**: Seamless integration with the framework's routing system
+			- **State Management**: Automatic state updates on navigation
+			- **Button Support**: Special styling when used as a button
+			- **Event Handling**: Centralized navigation event dispatching
+			- **Hash Routing**: Support for hash-based navigation
+			- **Style Support**: Full support for `sx:` styling attributes
+			- **Underline Control**: Configurable text decoration
+
+			## Usage
+
+			```html
+			<x-link href="/home">Home</x-link>
+			<x-link href="/profile" underline="false">Profile</x-link>
+			<x-link href="/settings" sx:color="var(--palettePrimaryMain)">Settings</x-link>
+			```
+
+			## Attributes
+
+			| Attribute | Type | Required | Default | Description |
+			|-----------|------|----------|---------|-------------|
+			| `href` | string | Yes | - | URL or path to navigate to |
+			| `underline` | boolean | No | `true` | Whether to show underline decoration |
+
+			## Basic Links
+
+			### Standard Links
+			```html
+			<x-link href="/home">Home</x-link>
+			<x-link href="/about">About</x-link>
+			<x-link href="/contact">Contact</x-link>
+			```
+			**Description**: Basic navigation links with default styling and underline.
+
+			### Links Without Underline
+			```html
+			<x-link href="/home" underline="false">Home</x-link>
+			<x-link href="/about" underline="false">About</x-link>
+			<x-link href="/contact" underline="false">Contact</x-link>
+			```
+			**Description**: Links without underline decoration for cleaner appearance.
+
+			### Styled Links
+			```html
+			<x-link href="/home" sx:color="var(--palettePrimaryMain)">Home</x-link>
+			<x-link href="/about" sx:color="var(--paletteSecondaryMain)">About</x-link>
+			<x-link href="/contact" sx:color="var(--paletteTextPrimary)">Contact</x-link>
+			```
+			**Description**: Links with custom colors using theme variables.
+
+			## Button Integration
+
+			### Button-style Links
+			```html
+			<x-button variant="primary">
+				<x-link href="/dashboard" underline="false">Dashboard</x-link>
+			</x-button>
+			<x-button variant="secondary">
+				<x-link href="/settings" underline="false">Settings</x-link>
+			</x-button>
+			```
+			**Description**: Links styled as buttons with appropriate button styling.
+
+			### Navigation Buttons
+			```html
+			<x-button variant="outlined">
+				<x-link href="/back" underline="false">← Back</x-link>
+			</x-button>
+			<x-button variant="text">
+				<x-link href="/next" underline="false">Next →</x-link>
+			</x-button>
+			```
+			**Description**: Navigation buttons with arrow indicators.
+
+			## Breadcrumbs
+
+			### Simple Breadcrumb
+			```html
+			<x-box sx:display="flex" sx:gap="1" sx:alignItems="center">
+				<x-link href="/">Home</x-link>
+				<x-typography>/</x-typography>
+				<x-link href="/features">Features</x-link>
+				<x-typography>/</x-typography>
+				<x-typography>Web Components</x-typography>
+			</x-box>
+			```
+			**Description**: Breadcrumb navigation with separators.
+
+			### Styled Breadcrumb
+			```html
+			<x-box sx:display="flex" sx:gap="2" sx:alignItems="center" sx:padding="2" sx:background="var(--paletteBackgroundPaper)" sx:borderRadius="4px">
+				<x-link href="/" sx:color="var(--paletteTextSecondary)">Home</x-link>
+				<x-typography sx:color="var(--paletteTextSecondary)">/</x-typography>
+				<x-link href="/features" sx:color="var(--paletteTextSecondary)">Features</x-link>
+				<x-typography sx:color="var(--paletteTextSecondary)">/</x-typography>
+				<x-typography sx:color="var(--paletteTextPrimary)">Web Components</x-typography>
+			</x-box>
+			```
+			**Description**: Styled breadcrumb with background and color hierarchy.
+
+			## Conditional Navigation
+
+			### Role-based Links
+			```html
+			<x-link 
+				href="/admin" 
+				sx:display="WHEN global_userRole IS 'admin' THEN inline ELSE none"
+			>
+				Admin Panel
+			</x-link>
+			```
+			**Description**: Link that only shows for admin users.
+
+			### State-based Links
+			```html
+			<x-link 
+				href="/profile" 
+				sx:color="WHEN global_userLoggedIn IS true THEN var(--palettePrimaryMain) ELSE var(--paletteTextDisabled)"
+			>
+				Profile
+			</x-link>
+			```
+			**Description**: Link with different styling based on login state.
+
+			## How It Works
+
+			### Navigation Process
+			1. **Click Handling**: Intercepts click events on the link
+			2. **Path Processing**: Processes the href attribute for navigation
+			3. **State Update**: Updates the application state with new path
+			4. **Event Dispatch**: Dispatches navigation events for other components
+			5. **URL Update**: Updates the browser URL with hash-based routing
+
+			### Button Integration
+			1. **Context Detection**: Detects when link is inside a button
+			2. **Style Adaptation**: Removes default link styling when in button context
+			3. **Color Inheritance**: Inherits button color instead of link color
+			4. **Decoration Removal**: Removes underline when used as button
+
+			### State Management
+			1. **Path Tracking**: Updates global state with current path
+			2. **Event Broadcasting**: Notifies other components of navigation changes
+			3. **History Management**: Maintains navigation history
+			4. **Route Resolution**: Resolves paths to appropriate content
+
+			## Best Practices
+
+			### Navigation Design
+			- Use descriptive link text that clearly indicates the destination
+			- Maintain consistent styling across all navigation links
+			- Provide visual feedback for interactive states
+			- Test navigation flows thoroughly
+
+			### Performance
+			- Use relative paths when possible for better performance
+			- Avoid deep nesting in navigation structures
+			- Consider lazy loading for complex navigation components
+			- Test navigation performance with large applications
+
+			### Accessibility
+			- Ensure sufficient color contrast for link visibility
+			- Provide keyboard navigation support
+			- Use meaningful link text instead of generic "click here"
+			- Test with screen readers and assistive technologies
+
+			### State Management
+			- Use consistent path naming conventions
+			- Handle navigation errors gracefully
+			- Provide fallback navigation options
+			- Test navigation state persistence
+
+			## Common Use Cases
+
+			- **Navigation Menus**: Primary and secondary navigation systems
+			- **Breadcrumbs**: Hierarchical navigation and page context
+			- **Action Links**: Links that trigger specific actions or workflows
+			- **External Links**: Links to external websites and resources
+			- **Internal Navigation**: Links between different sections of the application
+			- **Button Links**: Links styled as buttons for prominent actions
+			- **Conditional Navigation**: Links that appear based on user state or permissions
+			- **Footer Links**: Links in page footers for additional navigation options
+		</x-markdown>
+	</x-content>
+</x-page>

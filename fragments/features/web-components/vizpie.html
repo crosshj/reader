@@ -1,0 +1,91 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- Data for the pie chart -->
+		<x-data
+			name="deviceUsage"
+			defaultValue='[
+			{ "label": "Desktop", "value": 45 },
+			{ "label": "Mobile", "value": 35 },
+			{ "label": "Tablet", "value": 20 },
+			{ "label": "Game Console", "value": 25 }
+		]'
+		></x-data>
+
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `VizPie` component provides a simple pie chart visualization for displaying data arrays. It automatically calculates angles and renders each data point as a colored slice with a legend showing labels and values.
+
+			## Features
+
+			- **Automatic Scaling**: Slices are automatically sized based on data values
+			- **Data Subscription**: Automatically updates when data changes
+			- **Legend Display**: Shows labels and values for each slice
+			- **Color Assignment**: Automatically assigns colors to slices
+			- **Error Handling**: Graceful handling of missing or invalid data
+
+			## Usage
+
+			```html
+			<x-viz-pie data="global_deviceUsage"></x-viz-pie>
+			```
+
+			## Data Format
+
+			The component expects an array of objects with `label` and `value` properties:
+
+			```javascript
+			[
+				{ "label": "Desktop", "value": 45 },
+				{ "label": "Mobile", "value": 35 },
+				{ "label": "Tablet", "value": 20 },
+				{ "label": "Game Console", "value": 25 }
+			]
+			```
+
+			## Live Example
+
+			<x-box sx:width="400px" sx:height="300px">
+				<x-viz-pie data="global_deviceUsage"></x-viz-pie>
+			</x-box>
+
+			## Attributes
+
+			| Attribute | Type | Required | Description |
+			|-----------|------|----------|-------------|
+			| `data` | string | Yes | State path to the data array |
+
+			## How It Works
+
+			### Data Processing
+			1. **Data Retrieval**: Gets data from state using the `data` attribute path
+			2. **Validation**: Checks if data is an array and has valid structure
+			3. **Angle Calculation**: Calculates angles for each slice based on values
+			4. **Rendering**: Creates SVG pie chart with colored slices and legend
+
+			### Pie Rendering
+			1. **Angle Calculation**: Calculates slice angles as percentage of total
+			2. **Color Assignment**: Assigns colors to each slice
+			3. **SVG Generation**: Creates SVG pie chart with proper positioning
+			4. **Legend Creation**: Generates legend with labels and values
+
+			### State Subscription
+			1. **Automatic Subscription**: Subscribes to data path for changes
+			2. **Re-rendering**: Automatically re-renders when data changes
+			3. **Cleanup**: Unsubscribes when component is disconnected
+			4. **Performance**: Only re-renders when the specific data path changes
+
+			## Common Use Cases
+
+			- **Market Share**: Product or service market distribution
+			- **Survey Results**: Response distribution and percentages
+			- **Budget Allocation**: Spending breakdown by category
+			- **User Demographics**: Age groups, locations, or preferences
+			- **Device Usage**: Desktop, mobile, and tablet statistics
+			- **Revenue Sources**: Income breakdown by channel
+		</x-markdown>
+	</x-content>
+</x-page>

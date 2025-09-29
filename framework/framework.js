@@ -14,7 +14,6 @@ import { XContent } from './components/XContent.js';
 import { XBox } from './components/XBox.js';
 import { XButton } from './components/XButton.js';
 import { XTypography } from './components/XTypography.js';
-import { XPageFragment } from './components/XPageFragment.js';
 import { XLink } from './components/XLink.js';
 import { XMap } from './components/XMap.js';
 import { XIcon } from './components/XIcon.js';
@@ -23,6 +22,7 @@ import { XInclude } from './components/XInclude.js';
 import { XVizBar } from './components/XVizBar.js';
 import { XVizPie } from './components/XVizPie.js';
 import { XMarkdown } from './components/XMarkdown.js';
+import { XBreadcrumb } from './components/XBreadcrumb.js';
 import { cleanServerHTML } from './components/cleanServerHTML.js';
 
 // Register all web components
@@ -36,7 +36,6 @@ function registerFrameworkComponents() {
 		{ name: 'x-button', class: XButton },
 		{ name: 'x-typography', class: XTypography },
 		{ name: 'x-include', class: XInclude },
-		{ name: 'x-page-fragment', class: XPageFragment },
 		{ name: 'x-link', class: XLink },
 		{ name: 'x-map', class: XMap },
 		{ name: 'x-icon', class: XIcon },

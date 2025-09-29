@@ -14,10 +14,10 @@
 ### Usage
 
 ```html
-<x-data name="salesData"
-	>[{"value": 10, "label": "Q1"}, {"value": 20, "label": "Q2"}, {"value": 30,
-	"label": "Q3"}, {"value": 40, "label": "Q4"}]</x-data
->
+<x-data name="salesData">
+	[{"value": 10, "label": "Q1"}, {"value": 20, "label": "Q2"}, {"value": 30,
+	"label": "Q3"}, {"value": 40, "label": "Q4"}]
+</x-data>
 <x-viz-bar data="global_salesData"></x-viz-bar>
 ```
 

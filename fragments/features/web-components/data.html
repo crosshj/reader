@@ -1,0 +1,132 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Data` component is a fundamental part of the framework's state management system. It registers data sources that can be accessed throughout the application using the centralized state system. Data components automatically register themselves when connected and unregister when disconnected, making them perfect for page-level data management.
+
+			## Features
+
+			- **State Registration**: Automatically registers data with the global state system
+			- **JSON Support**: Parses and stores JSON data from `defaultValue` attributes
+			- **Route Integration**: Supports route-based data sources for dynamic content
+			- **Lifecycle Management**: Auto-registers on connect, unregisters on disconnect
+			- **Type Safety**: Consistent camelCase attribute naming
+			- **Error Handling**: Graceful fallback for malformed JSON data
+
+			## Usage
+
+			```html
+			<x-data name="myData" defaultValue='{"key": "value"}'></x-data>
+			```
+
+			## Attributes
+
+			| Attribute | Type | Required | Description |
+			|-----------|------|----------|-------------|
+			| `name` | string | Yes | Unique identifier for the data source |
+			| `defaultValue` | string | No | JSON string containing the initial data |
+			| `route` | string | No | Route pattern for dynamic data loading |
+
+			## How It Works
+
+			### Registration Process
+			1. **Component Creation**: When `<x-data>` is added to the DOM, it automatically registers itself
+			2. **Attribute Parsing**: Extracts `name`, `defaultValue`, and `route` attributes
+			3. **JSON Parsing**: Attempts to parse the `defaultValue` as JSON
+			4. **State Storage**: Stores the parsed data in the global state system
+			5. **Route Setup**: If `route` is provided, sets up dynamic data loading
+
+			### Data Access
+			Once registered, data can be accessed by components throughout the application:
+
+			```html
+			<!-- Display data in components -->
+			<x-typography>{{global_userProfile.name}}</x-typography>
+			<x-typography>{{global_menuItems.0.title}}</x-typography>
+
+			<!-- Conditional rendering based on data -->
+			<x-box sx:display="WHEN global_userProfile.role IS 'admin' THEN flex ELSE none">
+				<x-typography>Admin Panel</x-typography>
+			</x-box>
+
+			<!-- Iterating over data arrays -->
+			<x-map items="global_menuItems">
+				<x-button>{{item.title}}</x-button>
+			</x-map>
+			```
+
+			### Flow Integration
+			Data can also be accessed and modified in flows:
+
+			```html
+			<x-flow key="updateProfile">
+				const currentProfile = global.userProfile;
+				SetData('userProfile', { ...currentProfile, lastLogin: new Date() });
+			</x-flow>
+			```
+
+			**Note**: In flows, you use `global.propertyName` syntax, while in components you use `global_propertyName` syntax.
+
+			### Lifecycle Management
+			- **Connected**: Data is registered and available globally
+			- **Disconnected**: Data registration is cleaned up automatically when the component is removed from the DOM
+			- **State Persistence**: The actual state value remains in memory even after unregistration (only the registration is cleaned up)
+			- **Error Handling**: Malformed JSON falls back to string value
+
+			**Important**: When a page changes and `x-data` components are removed, the data registration is cleaned up, but the state values remain in memory. This means data persists across page navigation unless explicitly cleared.
+
+			## Best Practices
+
+			### Naming Conventions
+			- Use descriptive, camelCase names: `userProfile`, `dashboardConfig`
+			- Avoid generic names: `data`, `info`, `stuff`
+			- Be consistent across your application
+
+			### Data Structure
+			- Keep data structures flat when possible for easier access
+			- Use meaningful property names
+			- Include metadata like `id`, `timestamp`, `version` when relevant
+
+			### Performance
+			- Register data at the page level, not component level
+			- Use route-based data for dynamic content
+			- Avoid deeply nested structures when possible
+
+			## Common Use Cases
+
+			- **Page Configuration**: Store page-specific settings and options
+			- **User Data**: User profiles, preferences, and session information
+			- **Navigation Data**: Menu items, breadcrumbs, and routing information
+			- **URL Routing**: Capture URL parameters for dynamic page content
+			- **Chart Data**: Datasets for visualizations and analytics
+			- **Feature Flags**: Application feature toggles and configuration
+			- **API Responses**: Cached data from external services
+
+			### URL Routing Example
+
+			```html
+			<x-data name="pathData" route="/framework/#/:rest*"></x-data>
+			
+			<x-flow key="pathChange">
+				let currentPath = `/${global.pathData?.rest || ''}`;
+				
+				if (currentPath === '' || currentPath === '/') {
+					currentPath = '/';
+				}
+				
+				if (currentPath === global.activePath) return;
+				
+				SetData('activePath', currentPath);
+				const fragmentPath = currentPath === '/' ? 'fragments/home.html' : `fragments${currentPath}.html`;
+				SetData('pageContent', Query({ url: fragmentPath }));
+			</x-flow>
+			```
+
+			**Description**: This example shows how `x-data` captures URL parameters using a route pattern, making them available to flows for dynamic content loading. The `:rest*` parameter captures everything after the hash, and the flow uses this data to determine which page content to load.
+		</x-markdown>
+	</x-content>
+</x-page>

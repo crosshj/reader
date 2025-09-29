@@ -1,0 +1,218 @@
+<x-page>
+	<x-navbar> </x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Overview
+
+			The `Subscribe` component provides reactive state subscription capabilities that automatically trigger flows when specific state values change. It takes a `path` and `handler` and calls the handler flow whenever the item at that path changes, making it perfect for creating reactive behaviors and automatic state management.
+
+			## Features
+
+			- **State Subscription**: Automatically subscribes to state changes at a specific path
+			- **Flow Triggering**: Calls a specified flow when the subscribed data changes
+			- **Event Details**: Passes change details to the triggered flow
+			- **Lifecycle Management**: Proper cleanup of subscriptions when component is removed
+			- **Performance**: Efficient subscription management with minimal overhead
+			- **Error Handling**: Graceful handling of missing or invalid paths
+
+			## Usage
+
+			```html
+			<x-subscribe path="global_userName" handler="userNameChanged"></x-subscribe>
+			<x-subscribe path="pathData" handler="pathChange"></x-subscribe>
+			```
+
+			## Attributes
+
+			| Attribute | Type | Required | Description |
+			|-----------|------|----------|-------------|
+			| `path` | string | Yes | State path to subscribe to |
+			| `handler` | string | Yes | Flow key to trigger when data changes |
+
+			## Basic Examples
+
+			### Path Change Handling
+			```html
+			<x-subscribe path="pathData" handler="pathChange"></x-subscribe>
+			
+			<x-flow key="pathChange">
+				let currentPath = `/${state.pathData.rest || ''}`;
+				
+				if (currentPath === '' || currentPath === '/') {
+					currentPath = '/';
+				}
+				
+				if (currentPath === state.activePath) return;
+				
+				SetData('activePath', currentPath);
+				const fragmentPath = currentPath === '/' ? 'fragments/home.html' : `fragments${currentPath}.html`;
+				SetData('pageContent', Query({ url: fragmentPath }));
+			</x-flow>
+			```
+			**Description**: Automatically handles URL path changes by updating the active path and loading appropriate content.
+
+			### User State Changes
+			```html
+			<x-subscribe path="global_user" handler="userStateChanged"></x-subscribe>
+			
+			<x-flow key="userStateChanged">
+				if (state.user) {
+					SetData('userLoggedIn', true);
+					SetData('welcomeMessage', `Welcome back, ${state.user.name}!`);
+				} else {
+					SetData('userLoggedIn', false);
+					SetData('welcomeMessage', 'Please log in');
+				}
+			</x-flow>
+			```
+			**Description**: Automatically updates login state and welcome message when user data changes.
+
+			### Form Data Validation
+			```html
+			<x-subscribe path="global_formData" handler="validateForm"></x-subscribe>
+			
+			<x-flow key="validateForm">
+				const formData = state.formData;
+				let isValid = true;
+				let errors = [];
+				
+				if (!formData.email || !formData.email.includes('@')) {
+					isValid = false;
+					errors.push('Valid email is required');
+				}
+				
+				if (!formData.name || formData.name.length < 2) {
+					isValid = false;
+					errors.push('Name must be at least 2 characters');
+				}
+				
+				SetData('formValid', isValid);
+				SetData('formErrors', errors);
+			</x-flow>
+			```
+			**Description**: Automatically validates form data whenever it changes and updates validation state.
+
+			### Counter Changes
+			```html
+			<x-subscribe path="global_counter" handler="counterChanged"></x-subscribe>
+			
+			<x-flow key="counterChanged">
+				const count = state.counter;
+				
+				if (count > 10) {
+					SetData('counterMessage', 'Great job! You reached 10+');
+					SetData('counterColor', 'var(--paletteSuccessMain)');
+				} else if (count < 0) {
+					SetData('counterMessage', 'Counter cannot be negative');
+					SetData('counterColor', 'var(--paletteErrorMain)');
+				} else {
+					SetData('counterMessage', '');
+					SetData('counterColor', 'var(--paletteTextPrimary)');
+				}
+			</x-flow>
+			```
+			**Description**: Automatically updates counter-related UI when the counter value changes.
+
+			### Feature Flag Changes
+			```html
+			<x-subscribe path="global_featureFlags" handler="featureFlagsChanged"></x-subscribe>
+			
+			<x-flow key="featureFlagsChanged">
+				const flags = state.featureFlags;
+				
+				// Update UI based on feature flags
+				SetData('showNewDashboard', flags.newDashboard || false);
+				SetData('enableBetaFeatures', flags.betaFeatures || false);
+				SetData('maintenanceMode', flags.maintenance || false);
+				
+				// Log feature flag changes
+				console.log('Feature flags updated:', flags);
+			</x-flow>
+			```
+			**Description**: Automatically updates application behavior when feature flags change.
+
+			### Data Loading States
+			```html
+			<x-subscribe path="global_loading" handler="loadingStateChanged"></x-subscribe>
+			
+			<x-flow key="loadingStateChanged">
+				const isLoading = state.loading;
+				
+				if (isLoading) {
+					SetData('loadingMessage', 'Loading data...');
+					SetData('showSpinner', true);
+				} else {
+					SetData('loadingMessage', '');
+					SetData('showSpinner', false);
+					SetData('lastUpdated', new Date().toISOString());
+				}
+			</x-flow>
+			```
+			**Description**: Automatically manages loading states and UI indicators when loading status changes.
+
+			## How It Works
+
+			### Subscription Process
+			1. **Path Registration**: Registers a subscription to the specified state path
+			2. **Handler Association**: Associates the subscription with a flow handler
+			3. **Change Monitoring**: Monitors the state path for changes
+			4. **Flow Triggering**: Calls the specified flow when changes occur
+			5. **Event Details**: Passes change details to the triggered flow
+			6. **Cleanup**: Unregisters the subscription when component is removed
+
+			### Event Details
+			When a flow is triggered by a subscription, it receives event details including:
+			- **Previous Value**: The value before the change
+			- **New Value**: The current value after the change
+			- **Path**: The path that changed
+			- **Timestamp**: When the change occurred
+
+			### State Access
+			The triggered flow can access the current state through:
+			- `state.propertyName` - Access any state property
+			- `global.propertyName` - Same as state (read-only copy)
+			- `event` - Event details about the change
+
+			## Best Practices
+
+			### Subscription Design
+			- Use specific paths to avoid unnecessary triggers
+			- Keep subscription handlers focused and single-purpose
+			- Test subscriptions with different data types and values
+			- Consider performance implications of frequent changes
+
+			### Flow Handlers
+			- Keep flow handlers simple and focused
+			- Avoid long-running operations in subscription handlers
+			- Use conditional logic to prevent unnecessary updates
+			- Handle edge cases like null or undefined values
+
+			### Performance
+			- Avoid subscribing to paths that change very frequently
+			- Use debouncing for high-frequency changes if needed
+			- Clean up unused subscriptions to prevent memory leaks
+			- Test subscription performance with large datasets
+
+			### Error Handling
+			- Always check for valid data in subscription handlers
+			- Provide fallback behavior for missing or invalid data
+			- Test with different data types and edge cases
+			- Monitor console for subscription-related errors
+
+			## Common Use Cases
+
+			- **Navigation**: Automatic page loading when URL changes
+			- **Form Validation**: Real-time validation as user types
+			- **State Synchronization**: Keeping multiple UI elements in sync
+			- **Feature Toggles**: Updating UI when feature flags change
+			- **User Authentication**: Handling login/logout state changes
+			- **Data Loading**: Managing loading states and error handling
+			- **Real-time Updates**: Responding to live data changes
+			- **Configuration Changes**: Updating UI when settings change
+		</x-markdown>
+	</x-content>
+</x-page>
+	</x-content>
+</x-page>

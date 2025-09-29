@@ -202,45 +202,24 @@ class FrameworkCore {
 		try {
 			// Create execution context
 			const self = this; // Store reference to FrameworkCore instance
+			const currentState = self.getState();
+
+			// Create deep copies to prevent direct mutation
+			const stateCopy = JSON.parse(JSON.stringify(currentState));
+
 			const flowContext = {
-				get global_pathData() {
-					return self.get('pathData') || {};
-				},
-				get global_activePath() {
-					return self.get('activePath') || '';
-				},
-				get global_user() {
-					return self.get('user');
-				},
-				get global_pageContent() {
-					return self.get('pageContent') || '';
-				},
-				get state() {
-					return self.getState();
-				},
+				global: stateCopy,
+				state: stateCopy,
 				get event() {
 					return window.lastFlowEvent || {};
 				},
 
-				SetData: async (name, value) => {
-					// If value is a Promise, await it
-					const resolvedValue = value instanceof Promise ? await value : value;
-					self.set(name, resolvedValue);
-				},
+				SetData: (name, value) => self.SetData(name, value),
+				setData: (name, value) => self.SetData(name, value),
 				Query: (options) => self.Query(options),
-				navigate: (path) => {
-					self.set('currentPath', path);
-					window.dispatchEvent(
-						new CustomEvent('navigate', { detail: { path } })
-					);
-				},
-				query: (exec, params = {}, outputVar = null) => {
-					console.log(
-						`Query: ${exec}`,
-						params,
-						outputVar ? `-> ${outputVar}` : ''
-					);
-				},
+				query: (options) => self.Query(options),
+				Navigate: (path) => self.Navigate(path),
+				navigate: (path) => self.Navigate(path),
 			};
 
 			// Execute the flow
@@ -316,23 +295,36 @@ class FrameworkCore {
 	}
 
 	// Utility function to load page content
-	Query(options) {
+	async Query(options) {
 		const { url } = options;
 
 		if (!url) {
-			return Promise.resolve('');
+			return '';
 		}
 
 		// Add leading slash if not present
 		const fullPath = url.startsWith('/') ? url : `/${url}`;
 
-		// Return a promise that resolves to the content
-		return fetch(fullPath)
-			.then((response) => response.text())
-			.catch((error) => {
-				console.error('Error loading page content:', error);
-				return `<div style="padding: 20px; color: red;">Error loading content: ${error.message}</div>`;
-			});
+		try {
+			const response = await fetch(fullPath);
+			return await response.text();
+		} catch (error) {
+			console.error('Error loading page content:', error);
+			return `<div style="padding: 20px; color: red;">Error loading content: ${error.message}</div>`;
+		}
+	}
+
+	// Utility function to navigate to a new path
+	Navigate(path) {
+		this.set('currentPath', path);
+		window.dispatchEvent(new CustomEvent('navigate', { detail: { path } }));
+	}
+
+	// Utility function to set data (with Promise support)
+	async SetData(name, value) {
+		// If value is a Promise, await it
+		const resolvedValue = value instanceof Promise ? await value : value;
+		this.set(name, resolvedValue);
 	}
 
 	// Clear all state (useful for testing)

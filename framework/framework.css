@@ -59,16 +59,16 @@ body {
 
 	/* Palette System */
 	/* Primary Palette */
-	--palettePrimaryMain: #5a3d8a;
-	--palettePrimaryLight: #5b2ec2;
-	--palettePrimaryDark: #29105d;
+	--palettePrimaryMain: #9a6b75;
+	--palettePrimaryLight: #b88a96;
+	--palettePrimaryDark: #7d4f5a;
 	--palettePrimaryContrast: #fff;
-	--palettePrimaryNavbar: #391881;
+	--palettePrimaryNavbar: #372759;
 
 	/* Secondary Palette */
-	--paletteSecondaryMain: #2e3d78;
-	--paletteSecondaryDark: #2c6c85;
-	--paletteSecondaryLight: #2f5b8f;
+	--paletteSecondaryMain: #7a6b8a;
+	--paletteSecondaryDark: #625a73;
+	--paletteSecondaryLight: #9a8fb0;
 	--paletteSecondaryContrast: #fff;
 
 	/* Background Palette */
@@ -248,49 +248,47 @@ body {
 
 	/* Menu sidebar */
 	.menu-sidebar {
-		background: var(--palettePrimaryMain);
+		display: contents;
+	}
+
+	/* Menu container */
+	.menu-container {
+		background: var(--palettePrimaryNavbar);
 		width: 260px;
 		height: 100vh;
 		flex-shrink: 0;
+		padding: 1.5rem;
+		padding-top: 0.25rem;
+	}
 
-		/* Menu container */
-		.menu-container {
-			background: var(--palettePrimaryMain);
-			width: 260px;
-			height: 100%;
-			padding: 1.5rem;
-			padding-top: 0.25rem;
-		}
+	/* Logo area */
+	.logo-area {
+		width: 100%;
+		height: 55px;
+		background-image: url(/assets/logoWithNameNX.svg);
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		margin-bottom: 1.25rem;
+	}
 
-		/* Logo area */
-		.logo-area {
-			width: 100%;
-			height: 55px;
-			background-image: url(/assets/logoWithNameNX.svg);
-			background-size: cover;
-			background-position: center;
-			background-repeat: no-repeat;
-			margin-bottom: 1.25rem;
-		}
+	/* Menu items container */
+	.menu-items {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		margin-left: -2px;
+	}
 
-		/* Menu items container */
-		.menu-items {
-			display: flex;
-			flex-direction: column;
-			gap: 1.25rem;
-			margin-left: -2px;
-		}
+	/* Menu item icons */
+	.menu-item-icon {
+		color: var(--palettePrimaryContrast);
+		opacity: 0.7;
+	}
 
-		/* Menu item icons */
-		.menu-item-icon {
-			color: var(--palettePrimaryContrast);
-			opacity: 0.7;
-		}
-
-		/* Menu item text */
-		.menu-item-text {
-			color: var(--palettePrimaryContrast);
-		}
+	/* Menu item text */
+	.menu-item-text {
+		color: var(--palettePrimaryContrast);
 	}
 
 	.standardMenuItem {
@@ -368,7 +366,7 @@ x-page {
 
 /* x-navbar component - navigation bar */
 x-navbar {
-	height: 80px;
+	height: 75px;
 	background: rgba(255, 255, 255, 0.6);
 	padding: 0 1.5rem;
 	display: flex;
@@ -430,10 +428,6 @@ x-content {
 	gap: 1rem;
 	margin-bottom: 200px;
 	margin-top: 1em;
-}
-
-/* x-page-fragment component - page fragment container */
-x-page-fragment {
 }
 
 /* x-include component - include content container */
@@ -669,7 +663,7 @@ x-typography {
 	&[variant='h1'] {
 		/* Page titles, main headings */
 		font-size: 1.75rem;
-		font-weight: 500;
+		font-weight: 300;
 		line-height: 1.2;
 		color: var(--paletteTextPrimary);
 	}
@@ -819,6 +813,156 @@ x-icon {
 }
 
 /* =====================
+	TABLE STYLING
+	===================== */
+
+/* Markdown tables */
+x-markdown table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1.5rem 0;
+	background: white;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+x-markdown table thead {
+	background: color-mix(
+		in srgb,
+		var(--palettePrimaryMain) 20%,
+		var(--paletteBackgroundPaper)
+	);
+}
+
+x-markdown table th {
+	padding: 12px 16px;
+	text-align: left;
+	font-weight: 600;
+	font-size: 0.875rem;
+	color: var(--paletteTextPrimary);
+	border-bottom: 1px solid #e9ecef;
+	background: #f8f9fa;
+	text-transform: capitalize;
+}
+
+x-markdown table td {
+	padding: 12px 16px;
+	border-bottom: 1px solid #e9ecef;
+	font-size: 0.875rem;
+	color: var(--paletteTextPrimary);
+	vertical-align: top;
+}
+
+x-markdown table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+x-markdown table tbody tr:nth-child(even) {
+	background: color-mix(
+		in srgb,
+		var(--palettePrimaryMain) 8%,
+		var(--paletteBackgroundPaper)
+	);
+}
+
+x-markdown table tbody tr:hover {
+	background: color-mix(
+		in srgb,
+		var(--palettePrimaryMain) 12%,
+		var(--paletteBackgroundPaper)
+	);
+}
+
+/* Table links */
+x-markdown table a {
+	color: var(--palettePrimaryMain);
+	text-decoration: underline;
+	font-weight: 500;
+}
+
+x-markdown table a:hover {
+	color: var(--palettePrimaryDark);
+	text-decoration: none;
+}
+
+/* Horizontal rules */
+x-markdown hr {
+	border: none;
+	border-top: 1px solid var(--paletteDivider);
+	margin-block: 3rem;
+	background: none;
+}
+
+/* Status icons in tables - override global code styling */
+x-markdown table code {
+	background: transparent;
+	padding: 0;
+	font-family: inherit;
+	font-size: inherit;
+	color: inherit;
+}
+
+/* Code and emphasis styling with primary color */
+code {
+	background: color-mix(
+		in srgb,
+		var(--palettePrimaryMain) 15%,
+		var(--paletteBackgroundPaper)
+	);
+	color: var(--paletteTextPrimary);
+	padding: 0.125rem 0.25rem;
+	border-radius: 0.25rem;
+	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+	font-size: 0.875em;
+}
+
+pre {
+	background: color-mix(
+		in srgb,
+		var(--palettePrimaryMain) 8%,
+		var(--paletteBackgroundPaper)
+	);
+	color: var(--paletteTextPrimary);
+	padding: 1rem;
+	border-radius: 0.5rem;
+	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+	font-size: 0.875rem;
+	overflow-x: auto;
+}
+
+pre code {
+	background: transparent;
+	padding: 0;
+	border-radius: 0;
+	font-size: inherit;
+}
+
+em {
+	background: color-mix(
+		in srgb,
+		var(--palettePrimaryMain) 12%,
+		var(--paletteBackgroundPaper)
+	);
+	color: var(--paletteTextPrimary);
+	font-style: italic;
+	padding: 0.125rem 0.25rem;
+	border-radius: 0.25rem;
+}
+
+/* Table responsive behavior */
+@media (max-width: 768px) {
+	x-markdown table {
+		font-size: 0.75rem;
+	}
+
+	x-markdown table th,
+	x-markdown table td {
+		padding: 8px 12px;
+	}
+}
+
+/* =====================
 	LOADING INDICATORS
 	===================== */
 
@@ -916,5 +1060,137 @@ x-icon {
 	}
 	to {
 		opacity: 1;
+	}
+}
+
+/* ========================================
+   BUTTON COMPONENT STYLES
+   ======================================== */
+
+x-button button,
+x-button x-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	font-family: inherit;
+	font-weight: 500;
+	text-decoration: none;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+	white-space: nowrap;
+}
+
+x-button button:focus,
+x-button x-link:focus {
+	outline: 2px solid var(--palettePrimaryMain);
+	outline-offset: 2px;
+}
+
+x-button button:disabled {
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+/* Button Variants */
+x-button button.x-button-primary,
+x-button x-link.x-button-primary {
+	background-color: var(--palettePrimaryMain);
+	color: var(--palettePrimaryContrast);
+	border-color: var(--palettePrimaryMain);
+}
+
+x-button button.x-button-primary:hover:not(:disabled),
+x-button x-link.x-button-primary:hover:not(:disabled) {
+	background-color: var(--palettePrimaryDark);
+	border-color: var(--palettePrimaryDark);
+}
+
+x-button button.x-button-secondary,
+x-button x-link.x-button-secondary {
+	background-color: var(--paletteSecondaryMain);
+	color: var(--paletteSecondaryContrast);
+	border-color: var(--paletteSecondaryMain);
+}
+
+x-button button.x-button-secondary:hover:not(:disabled),
+x-button x-link.x-button-secondary:hover:not(:disabled) {
+	background-color: var(--paletteSecondaryDark);
+	border-color: var(--paletteSecondaryDark);
+}
+
+x-button button.x-button-outlined,
+x-button x-link.x-button-outlined {
+	background-color: transparent;
+	color: var(--palettePrimaryMain);
+	border-color: var(--palettePrimaryMain);
+}
+
+x-button button.x-button-outlined:hover:not(:disabled),
+x-button x-link.x-button-outlined:hover:not(:disabled) {
+	background-color: color-mix(
+		in srgb,
+		var(--palettePrimaryMain) 30%,
+		transparent
+	);
+	color: var(--palettePrimaryMain);
+}
+
+x-button button.x-button-text,
+x-button x-link.x-button-text {
+	background-color: transparent;
+	color: var(--palettePrimaryMain);
+	border-color: transparent;
+}
+
+x-button button.x-button-text:hover:not(:disabled),
+x-button x-link.x-button-text:hover:not(:disabled) {
+	background-color: color-mix(
+		in srgb,
+		var(--palettePrimaryMain) 20%,
+		transparent
+	);
+}
+
+/* Button Sizes */
+x-button button.x-button-small,
+x-button x-link.x-button-small {
+	padding: 0.25rem 0.5rem;
+	font-size: 0.75rem;
+	min-height: 1.75rem;
+}
+
+x-button button.x-button-medium,
+x-button x-link.x-button-medium {
+	padding: 0.375rem 0.75rem;
+	font-size: 0.875rem;
+	min-height: 2rem;
+}
+
+x-button button.x-button-large,
+x-button x-link.x-button-large {
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	min-height: 2.25rem;
+}
+
+/* Button Icon */
+x-button .button-icon {
+	font-size: 0.875em;
+}
+
+x-button .button-icon.fa-spin {
+	animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
 	}
 }
