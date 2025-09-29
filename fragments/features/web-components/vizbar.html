@@ -1,19 +1,19 @@
 <x-page>
+	<!-- Data for the bar chart -->
+	<x-data
+		name="salesData"
+		defaultValue='[
+			{ "label": "January", "value": 100 },
+			{ "label": "February", "value": 150 },
+			{ "label": "March", "value": 200 },
+			{ "label": "April", "value": 175 },
+			{ "label": "May", "value": 250 }
+		]'
+	></x-data>
+
 	<x-navbar> </x-navbar>
 
 	<x-content>
-		<!-- Data for the bar chart -->
-		<x-data
-			name="salesData"
-			defaultValue='[
-				{ "label": "January", "value": 100 },
-				{ "label": "February", "value": 150 },
-				{ "label": "March", "value": 200 },
-				{ "label": "April", "value": 175 },
-				{ "label": "May", "value": 250 }
-			]'
-		></x-data>
-
 		<!-- prettier-ignore -->
 		<x-markdown>
 			## Overview

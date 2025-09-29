@@ -1,18 +1,18 @@
 <x-page>
-	<x-navbar> </x-navbar>
-
-	<x-content>
-		<!-- Data for the pie chart -->
-		<x-data
-			name="deviceUsage"
-			defaultValue='[
+	<!-- Data for the pie chart -->
+	<x-data
+		name="deviceUsage"
+		defaultValue='[
 			{ "label": "Desktop", "value": 45 },
 			{ "label": "Mobile", "value": 35 },
 			{ "label": "Tablet", "value": 20 },
 			{ "label": "Game Console", "value": 25 }
 		]'
-		></x-data>
+	></x-data>
 
+	<x-navbar> </x-navbar>
+
+	<x-content>
 		<!-- prettier-ignore -->
 		<x-markdown>
 			## Overview
