@@ -1,7 +1,12 @@
 // Framework.js - Module for loading web components and fragments
 import { html } from './framework.utils.js';
 import { BaseUIComponent } from './components/BaseUIComponent.js';
-import { initializeCore, setState } from './framework.core.js';
+import {
+	initializeCore,
+	setState,
+	getState,
+	subscribeToState,
+} from './framework.core.js';
 
 // Import all framework components
 import { SystemElement } from './components/SystemElement.js';
@@ -95,5 +100,8 @@ export function initializeFramework() {
 
 	// Framework initialized with all web components registered
 }
+
+// Re-export state management functions for convenience
+export { setState, getState, subscribeToState };
 
 // Components will be initialized explicitly when needed

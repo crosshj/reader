@@ -1,0 +1,49 @@
+{
+	"name": "@crosshj/x-framework",
+	"version": "1.0.0",
+	"description": "A lightweight web component framework with state management and conditional rendering",
+	"type": "module",
+	"main": "./dist/htmlNext.js",
+	"module": "./dist/htmlNext.js",
+	"types": "./index.d.ts",
+	"exports": {
+		".": {
+			"types": "./index.d.ts",
+			"import": "./dist/htmlNext.js"
+		},
+		"./css": "./dist/htmlNext.css"
+	},
+	"files": [
+		"dist/",
+		"index.d.ts",
+		"README.md"
+	],
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite build --watch",
+		"prepublishOnly": "npm run build"
+	},
+	"keywords": [
+		"web-components",
+		"framework",
+		"state-management",
+		"conditional-rendering",
+		"html-templates",
+		"es6-modules"
+	],
+	"author": "crosshj",
+	"license": "MIT",
+	"devDependencies": {
+		"terser": "^5.44.0",
+		"vite": "^7.0.4"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/crosshj/reader.git",
+		"directory": "framework"
+	},
+	"homepage": "https://github.com/crosshj/reader#readme",
+	"bugs": {
+		"url": "https://github.com/crosshj/reader/issues"
+	}
+}

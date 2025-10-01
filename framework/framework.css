@@ -1054,6 +1054,13 @@ x-button x-link.x-button-large {
 	min-height: 1.875rem; /* 30px - smaller than before */
 }
 
+/* Full Width Button */
+x-button button.x-button-fullwidth,
+x-button x-link.x-button-fullwidth {
+	width: 100%;
+	justify-content: center;
+}
+
 /* Ripple effect */
 x-button button::before {
 	content: '';

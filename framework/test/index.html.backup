@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>HTMLNext Test - SPA Pattern</title>
+		<link
+			rel="stylesheet"
+			href="../dist/htmlNext.css"
+		/>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				font-family:
+					-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			}
+			.app-layout {
+				display: grid;
+				grid-template-columns: 250px 1fr;
+				grid-template-rows: 60px 1fr;
+				height: 100vh;
+			}
+			.sidebar {
+				grid-column: 1;
+				grid-row: 1 / -1;
+				background: #f5f5f5;
+				border-right: 1px solid #e0e0e0;
+			}
+			.header {
+				grid-column: 2;
+				grid-row: 1;
+				background: white;
+				border-bottom: 1px solid #e0e0e0;
+				display: flex;
+				align-items: center;
+				padding: 0 20px;
+			}
+			.main-content {
+				grid-column: 2;
+				grid-row: 2;
+				background: white;
+				overflow: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Main App Layout with Panes -->
+		<div class="app-layout">
+			<!-- Sidebar Pane -->
+			<div class="sidebar">
+				<x-fragment id="sidebar-content"></x-fragment>
+			</div>
+
+			<!-- Header Pane -->
+			<div class="header">
+				<x-fragment id="header-content"></x-fragment>
+			</div>
+
+			<!-- Main Content Pane -->
+			<div class="main-content">
+				<x-fragment id="main-content"></x-fragment>
+			</div>
+		</div>
+
+		<!-- Data Sources -->
+		<x-data
+			name="pathData"
+			defaultValue="/dashboard"
+		></x-data>
+		<x-data
+			name="sidebarContent"
+			defaultValue=""
+		></x-data>
+		<x-data
+			name="headerContent"
+			defaultValue=""
+		></x-data>
+		<x-data
+			name="mainContent"
+			defaultValue=""
+		></x-data>
+
+		<!-- Flow for path changes -->
+		<x-flow key="onPathChange">
+			const path = state.pathData || '/dashboard';
+			console.log('Path changed to:', path);
+
+			// Load sidebar content
+			fetch('sidebar.html')
+				.then(response => response.text())
+				.then(html => {
+					setState('sidebarContent', html);
+					document.getElementById('sidebar-content').innerHTML = html;
+				});
+
+			// Load header content
+			fetch('header.html')
+				.then(response => response.text())
+				.then(html => {
+					setState('headerContent', html);
+					document.getElementById('header-content').innerHTML = html;
+				});
+
+			// Load main content based on path
+			let contentFile = 'dashboard.html';
+			if (path === '/users') contentFile = 'users.html';
+			if (path === '/settings') contentFile = 'settings.html';
+
+			fetch(contentFile)
+				.then(response => response.text())
+				.then(html => {
+					setState('mainContent', html);
+					document.getElementById('main-content').innerHTML = html;
+				});
+		</x-flow>
+
+		<!-- Subscriptions for State Changes -->
+		<x-subscribe
+			path="pathData"
+			handler="onPathChange"
+		></x-subscribe>
+		<x-subscribe
+			path="sidebarContent"
+			handler="updateSidebar"
+		></x-subscribe>
+		<x-subscribe
+			path="headerContent"
+			handler="updateHeader"
+		></x-subscribe>
+		<x-subscribe
+			path="mainContent"
+			handler="updateMainContent"
+		></x-subscribe>
+
+		<!-- Flow for updating sidebar -->
+		<x-flow key="updateSidebar">
+			const content = state.sidebarContent || '';
+			document.getElementById('sidebar-content').innerHTML = content;
+		</x-flow>
+
+		<!-- Flow for updating header -->
+		<x-flow key="updateHeader">
+			const content = state.headerContent || '';
+			document.getElementById('header-content').innerHTML = content;
+		</x-flow>
+
+		<!-- Flow for updating main content -->
+		<x-flow key="updateMainContent">
+			const content = state.mainContent || '';
+			document.getElementById('main-content').innerHTML = content;
+		</x-flow>
+
+		<script type="module">
+			import {
+				initializeFramework,
+				setState,
+				getState,
+				subscribeToState,
+			} from '../dist/htmlNext.js';
+
+			// Initialize the framework
+			initializeFramework();
+
+			// Add user function - demonstrates state changes
+			function addUser() {
+				const currentCount = getState('userCount') || 0;
+				setState('userCount', currentCount + 1);
+
+				// Also add a notification
+				const notifications = getState('notifications') || [];
+				notifications.push({
+					id: Date.now(),
+					message: `User #${currentCount + 1} added`,
+					timestamp: new Date().toISOString(),
+				});
+				setState('notifications', notifications);
+
+				console.log('User added! New count:', getState('userCount'));
+			}
+
+			// Initialize the app
+			function initializeApp() {
+				// Set initial state
+				setState('pathData', '/dashboard');
+				setState('userCount', 0);
+				setState('notifications', []);
+
+				// Trigger initial path change
+				const pathFlow = document.querySelector('x-flow[key="onPathChange"]');
+				if (pathFlow) {
+					const code = pathFlow.textContent.trim();
+					eval(code);
+				}
+
+				console.log('✅ HTMLNext SPA initialized successfully!');
+				console.log('📦 Initial state:', getState());
+			}
+
+			// Make functions globally accessible
+			window.addUser = addUser;
+
+			// Initialize when DOM is ready
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initializeApp);
+			} else {
+				initializeApp();
+			}
+		</script>
+	</body>
+</html>

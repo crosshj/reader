@@ -1,4 +1,5 @@
 // Framework Core - Centralized system management
+
 class FrameworkCore {
 	constructor() {
 		this.state = {};
@@ -214,6 +215,8 @@ class FrameworkCore {
 					return window.lastFlowEvent || {};
 				},
 
+				SetState: (name, value) => self.set(name, value),
+				setState: (name, value) => self.set(name, value),
 				SetData: (name, value) => self.SetData(name, value),
 				setData: (name, value) => self.SetData(name, value),
 				Query: (options) => self.Query(options),
@@ -349,6 +352,9 @@ export function initializeCore() {
 export function setState(property, value) {
 	frameworkCore.set(property, value);
 }
+
+// Export SetState as an alias for setState (for flows compatibility)
+export const SetState = setState;
 
 export function getState(property) {
 	return frameworkCore.get(property);

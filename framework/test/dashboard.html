@@ -1,0 +1,46 @@
+<x-page>
+	<x-navbar></x-navbar>
+	<x-content>
+		<x-typography
+			variant="body1"
+			sx:margin="16px 0"
+		>
+			Welcome to your dashboard! This content was loaded via path change and
+			fragment fetch.
+		</x-typography>
+		<x-box
+			sx:display="flex"
+			sx:gap="16"
+			sx:margin="20px 0"
+		>
+			<x-box
+				sx:padding="16"
+				sx:backgroundColor="blue50"
+				sx:borderRadius="8"
+				sx:flex="1"
+			>
+				<x-typography variant="h3">Users</x-typography>
+				<x-typography
+					variant="h2"
+					sx:color="blue600"
+					id="user-count-display"
+					>0</x-typography
+				>
+			</x-box>
+			<x-box
+				sx:padding="16"
+				sx:backgroundColor="green50"
+				sx:borderRadius="8"
+				sx:flex="1"
+			>
+				<x-typography variant="h3">Notifications</x-typography>
+				<x-typography
+					variant="h2"
+					sx:color="green600"
+					id="notification-count-display"
+					>0</x-typography
+				>
+			</x-box>
+		</x-box>
+	</x-content>
+</x-page>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>HTMLNext Test - SPA Pattern</title>
+		<link
+			rel="stylesheet"
+			href="../dist/htmlNext.css"
+		/>
+	</head>
+	<style>
+		.app-layout {
+			display: grid;
+			grid-template-columns: 250px 1fr;
+			grid-template-rows: 60px 1fr;
+			grid-template-areas:
+				'sidebar main'
+				'sidebar main';
+			height: 100vh;
+			width: 100vw;
+		}
+	</style>
+	<body>
+		<x-data
+			name="pathData"
+			route="/framework/test/index.html#/:rest*"
+		></x-data>
+		<x-data
+			name="sidebarContent"
+			defaultValue=""
+		></x-data>
+		<x-data
+			name="mainContent"
+			defaultValue="main"
+		></x-data>
+
+		<x-subscribe
+			path="pathData"
+			handler="onPathChange"
+		></x-subscribe>
+
+		<!-- prettier-ignore -->
+		<x-flow key="onPathChange">
+			const path = state.pathData || '/dashboard';
+			console.log('Path changed to:', path.rest);
+			if(state.activePath === '/'+path.rest) return;
+			SetState('activePath', '/'+path.rest);
+
+			fetch(`./${path.rest}.html`).then(x => SetData("mainContent", x.text()));
+			if(!state.sidebarContent) fetch(`./sidebar.html`).then(x => SetData("sidebarContent", x.text()));
+		</x-flow>
+
+		<div class="app-layout">
+			<div style="grid-area: sidebar">
+				<x-fragment contents="global_sidebarContent"></x-fragment>
+			</div>
+			<div style="grid-area: main">
+				<x-fragment contents="global_mainContent"></x-fragment>
+			</div>
+		</div>
+
+		<script type="module">
+			import {
+				initializeFramework,
+				SetState,
+				getState,
+				subscribeToState,
+			} from '../dist/htmlNext.js';
+
+			initializeFramework();
+
+			window.addUser = () => alert('Add User Clicked');
+		</script>
+	</body>
+</html>

@@ -15,6 +15,7 @@ export class XButton extends BaseUIComponent {
 		const size = this.getAttribute('size') || 'medium';
 		const disabled = this.hasAttribute('disabled');
 		const loading = this.hasAttribute('loading');
+		const fullWidth = this.hasAttribute('fullWidth');
 
 		// Get text content excluding icon elements
 		const textContent = this.getTextContentExcludingIcons();
@@ -42,10 +43,12 @@ export class XButton extends BaseUIComponent {
 			button = document.createElement('x-link');
 			button.setAttribute('href', href);
 			button.className = `x-button x-button-${variant} x-button-${size}`;
+			if (fullWidth) button.classList.add('x-button-fullwidth');
 		} else {
 			// Create regular button for actions
 			button = document.createElement('button');
 			button.className = `x-button x-button-${variant} x-button-${size}`;
+			if (fullWidth) button.classList.add('x-button-fullwidth');
 
 			if (disabled || loading) {
 				button.disabled = true;
@@ -71,6 +74,25 @@ export class XButton extends BaseUIComponent {
 
 		// Apply sx: styles if any
 		this.applySxStyles();
+	}
+
+	// Override applySxStyles to apply to the inner button element
+	applySxStyles() {
+		// Call parent method first to get the processed styles
+		super.applySxStyles();
+
+		// Move the styles from this element to the inner button
+		const innerButton = this.querySelector('button, x-link');
+		if (innerButton && this.style.length > 0) {
+			// Copy all styles from the wrapper to the inner button
+			for (let i = 0; i < this.style.length; i++) {
+				const property = this.style[i];
+				const value = this.style.getPropertyValue(property);
+				innerButton.style.setProperty(property, value);
+			}
+			// Clear styles from wrapper
+			this.style.cssText = '';
+		}
 	}
 
 	getTextContentExcludingIcons() {
