@@ -60,3 +60,52 @@
 	item 1 - List item 2 [Link to example](https://example.com)
 </x-markdown>
 ```
+
+## x-table
+
+- Renders HTML tables with two main use cases
+- Scoped CSS in framework.css
+- Use CSS variables from framework.css
+- Supports inline table definition with `<td>` elements
+- Supports data-driven tables using `data` attribute
+- Optional styling attributes: `striped`, `bordered`, `hover`
+- Responsive design with horizontal scroll on mobile
+
+### Usage
+
+#### Inline Table Definition
+
+```html
+<x-table striped bordered>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Age</th>
+			<th>City</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>John</td>
+			<td>25</td>
+			<td>New York</td>
+		</tr>
+		<tr>
+			<td>Jane</td>
+			<td>30</td>
+			<td>Los Angeles</td>
+		</tr>
+	</tbody>
+</x-table>
+```
+
+#### Data-Driven Table
+
+```html
+<x-data name="users">
+	[ {"name": "John", "age": 25, "city": "New York"}, {"name": "Jane", "age": 30,
+	"city": "Los Angeles"} ]
+</x-data>
+
+<x-table data="global_users" striped hover> </x-table>
+```

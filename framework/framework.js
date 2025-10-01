@@ -23,6 +23,8 @@ import { XVizBar } from './components/XVizBar.js';
 import { XVizPie } from './components/XVizPie.js';
 import { XMarkdown } from './components/XMarkdown.js';
 import { XBreadcrumb } from './components/XBreadcrumb.js';
+import { XTable } from './components/XTable.js';
+import { XHtml } from './components/XHtml.js';
 import { cleanServerHTML } from './components/cleanServerHTML.js';
 
 // Register all web components
@@ -45,6 +47,8 @@ function registerFrameworkComponents() {
 		{ name: 'x-viz-bar', class: XVizBar },
 		{ name: 'x-viz-pie', class: XVizPie },
 		{ name: 'x-markdown', class: XMarkdown },
+		{ name: 'x-table', class: XTable },
+		{ name: 'x-html', class: XHtml },
 	];
 
 	for (const { name, class: ComponentClass } of components) {
@@ -67,6 +71,7 @@ export async function loadFragment(fragmentPath) {
 			throw new Error(`Failed to load fragment: ${response.status}`);
 		}
 		const content = await response.text();
+		console.log({ content });
 		const cleanedContent = cleanServerHTML(content);
 		document.body.innerHTML = cleanedContent;
 

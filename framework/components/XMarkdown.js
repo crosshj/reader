@@ -16,9 +16,21 @@ export class XMarkdown extends BaseUIComponent {
 	}
 
 	renderMarkdown() {
-		const originalContent = this.innerHTML;
-		const content = originalContent.trim();
-		if (!content) {
+		// Get content from the content attribute or fallback to innerHTML
+		let content = this.getAttribute('content') || this.innerHTML;
+
+		// If content came from attribute, decode the escaped characters
+		if (this.getAttribute('content')) {
+			content = content
+				.replace(/&quot;/g, '"')
+				.replace(/&#39;/g, "'")
+				.replace(/&#10;/g, '\n')
+				.replace(/&#13;/g, '\r')
+				.replace(/&#9;/g, '\t');
+		}
+
+		const originalContent = content;
+		if (!content.trim()) {
 			this.innerHTML = '';
 			return;
 		}
@@ -32,8 +44,12 @@ export class XMarkdown extends BaseUIComponent {
 
 			// Parse markdown with marked.js using custom renderer
 			const html = this.parseWithCustomRenderer(unescapedContent);
-
 			this.innerHTML = html;
+
+			// Clear the content attribute after processing
+			if (this.getAttribute('content')) {
+				this.removeAttribute('content');
+			}
 		} catch (error) {
 			console.error('Failed to parse markdown:', error);
 			// Fallback to original content if parsing fails
@@ -107,8 +123,10 @@ export class XMarkdown extends BaseUIComponent {
 
 			blockquote({ tokens }) {
 				const text = this.parser.parse(tokens);
+				// Remove <p> tags from blockquote content
+				const cleanText = text.replace(/<p>/g, '').replace(/<\/p>/g, '');
 				return html`<x-typography variant="blockquote" sx:my="2" sx:mx="0"
-					>${text}</x-typography
+					>${cleanText}</x-typography
 				>`;
 			},
 

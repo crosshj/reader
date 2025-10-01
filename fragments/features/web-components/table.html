@@ -1,0 +1,109 @@
+<x-page>
+	<x-data
+		name="users"
+		defaultValue='[
+			{"name": "John Doe", "age": 25, "city": "New York"}, 
+			{"name": "Jane Smith", "age": 30, "city": "Los Angeles"},
+			{"name": "Bob Johnson", "age": 35, "city": "Chicago"},
+			{"name": "Alice Brown", "age": 28, "city": "Miami"}
+		]'
+	></x-data>
+
+	<x-navbar></x-navbar>
+
+	<x-content>
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Data-Driven Table
+			Use data from global state to automatically generate table rows.
+
+			### Usage
+			```html
+			<x-data
+				name="users"
+				defaultValue='[
+					{"name": "John Doe", "age": 25, "city": "New York"}, 
+					{"name": "Jane Smith", "age": 30, "city": "Los Angeles"}
+				]'
+			></x-data>
+
+			<x-table data="global_users">
+				<thead>
+					<tr>
+						<th property="name">Name</th>
+						<th property="age">Age</th>
+						<th property="city">City</th>
+					</tr>
+				</thead>
+			</x-table>
+			```
+			### Live Example
+		</x-markdown>
+
+		<x-table data="global_users">
+			<thead>
+				<tr>
+					<th property="name">Name</th>
+					<th property="age">Age</th>
+					<th property="city">City</th>
+				</tr>
+			</thead>
+		</x-table>
+
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Inline Definition
+
+			Define tables directly with HTML elements.
+			> **Note**: Most of the time you don't want to use this approach. Use the data-driven approach (or a regular table) instead.
+		
+			### Usage
+			```html
+			<x-table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Age</th>
+						<th>City</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>John Doe</td>
+						<td>25</td>
+						<td>New York</td>
+					</tr>
+					<tr>
+						<td>Jane Smith</td>
+						<td>30</td>
+						<td>Los Angeles</td>
+					</tr>
+				</tbody>
+			</x-table>
+			```
+			### Live Example
+		</x-markdown>
+
+		<x-table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Age</th>
+					<th>City</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>John Doe</td>
+					<td>25</td>
+					<td>New York</td>
+				</tr>
+				<tr>
+					<td>Jane Smith</td>
+					<td>30</td>
+					<td>Los Angeles</td>
+				</tr>
+			</tbody>
+		</x-table>
+	</x-content>
+</x-page>

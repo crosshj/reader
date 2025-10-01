@@ -307,7 +307,8 @@ class FrameworkCore {
 
 		try {
 			const response = await fetch(fullPath);
-			return await response.text();
+			const content = await response.text();
+			return content;
 		} catch (error) {
 			console.error('Error loading page content:', error);
 			return `<div style="padding: 20px; color: red;">Error loading content: ${error.message}</div>`;

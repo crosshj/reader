@@ -81,6 +81,7 @@ export class XInclude extends BaseUIComponent {
 				);
 			}
 			const content = await response.text();
+			console.log({ content });
 			const cleanedContent = cleanServerHTML(content);
 
 			// Just update innerHTML - the browser handles the rest
