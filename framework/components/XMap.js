@@ -1,7 +1,8 @@
-import { getState, subscribeToState } from '../framework.core.js';
+import { BaseUIComponent } from './BaseUIComponent.js';
+import { getState } from '../framework.core.js';
 
 // Define x-map web component
-export class XMap extends HTMLElement {
+export class XMap extends BaseUIComponent {
 	constructor() {
 		super();
 		// Add instance tracking for debugging
@@ -10,10 +11,12 @@ export class XMap extends HTMLElement {
 		}
 		XMap.instanceCount++;
 		this.instanceId = XMap.instanceCount;
-		this.unsubscribe = null;
 	}
 
 	connectedCallback() {
+		// Call parent connectedCallback first to handle sx: styles and subscriptions
+		super.connectedCallback();
+		
 		const items = this.getAttribute('items');
 
 		// Check if already processed to prevent multiple renders
@@ -35,16 +38,16 @@ export class XMap extends HTMLElement {
 
 		// Process the data if available
 		this.processData(items);
-
-		// Subscribe to activePath changes to re-render menu items
-		this.unsubscribe = subscribeToState('activePath', () => {
-			this.processData(items);
-		});
 	}
 
-	disconnectedCallback() {
-		if (this.unsubscribe) {
-			this.unsubscribe();
+	handleStateChange(newState) {
+		// Call parent method first
+		super.handleStateChange(newState);
+		
+		// Re-process data when state changes
+		const items = this.getAttribute('items');
+		if (items) {
+			this.processData(items);
 		}
 	}
 
@@ -54,25 +57,13 @@ export class XMap extends HTMLElement {
 			return;
 		}
 
-		// Get the data from global state or window
-		// Handle both direct paths and global_ prefixed paths
-		let data = null;
+		// Get the data from state (BaseUIComponent provides this)
 		let actualPath = dataPath;
-
-		// Remove global_ prefix if present
 		if (dataPath.startsWith('global_')) {
 			actualPath = dataPath.substring(7); // Remove 'global_' prefix
 		}
 
-		// Try to get data from the centralized state management first
-		data = getState(actualPath);
-
-		// Fallback to old method for backward compatibility
-		if (!data && window.state && window.state[actualPath]) {
-			data = window.state[actualPath];
-		} else if (!data && window[actualPath]) {
-			data = window[actualPath];
-		}
+		const data = getState(actualPath);
 
 		if (!data) {
 			console.warn(
@@ -176,11 +167,13 @@ export class XMap extends HTMLElement {
 		);
 
 		// Process conditional classes after template variables are replaced
+		// This is handled by BaseUIComponent's conditional attribute processing
+		// but we need to process it here since we're creating HTML strings
 		processedTemplate = processedTemplate.replace(
 			/class="WHEN\s+(.+?)\s+IS\s+(.+?)\s+THEN\s+(.+?)\s+ELSE\s+(.+?)"/g,
 			(match, leftSide, rightSide, thenValue, elseValue) => {
-				// Get current state
-				const state = window.state || {};
+				// Use the current state from BaseUIComponent
+				const state = this.initialState || {};
 
 				// Evaluate the comparison
 				const leftValue = leftSide.trim().startsWith('global_')

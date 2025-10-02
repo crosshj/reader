@@ -320,8 +320,8 @@ class FrameworkCore {
 
 	// Utility function to navigate to a new path
 	Navigate(path) {
-		this.set('currentPath', path);
-		window.dispatchEvent(new CustomEvent('navigate', { detail: { path } }));
+		console.log('Navigate: Updating URL hash to:', path);
+		window.location.hash = path;
 	}
 
 	// Utility function to set data (with Promise support)
@@ -338,6 +338,28 @@ class FrameworkCore {
 		this.dataSources.clear();
 		this.subscriptions.clear();
 		this.flows.clear();
+	}
+
+	// Debug method to get all active subscriptions
+	getActiveSubscriptions() {
+		const subscriptions = {};
+		for (const [property, listeners] of this.listeners.entries()) {
+			subscriptions[property] = {
+				count: listeners.size,
+				listeners: Array.from(listeners).map(listener => ({
+					name: listener.name || 'anonymous',
+					toString: listener.toString()
+				}))
+			};
+		}
+		return subscriptions;
+	}
+
+	// Debug method to log all active subscriptions
+	logActiveSubscriptions() {
+		const subscriptions = this.getActiveSubscriptions();
+		console.log('🔍 Active State Subscriptions:', subscriptions);
+		return subscriptions;
 	}
 }
 
@@ -400,9 +422,20 @@ export function register({ type, attributes, body }) {
 // Export the core instance for advanced usage
 export { frameworkCore };
 
+// Export utility functions
+export function Navigate(path) {
+	if (path) {
+		frameworkCore.Navigate(path);
+	}
+}
+
 // Initialize window.state for debugging
 if (typeof window !== 'undefined') {
 	window.state = { ...frameworkCore.getState() };
 	window.subscribeToState = (property, callback) =>
 		frameworkCore.subscribe(property, callback);
+	
+	// Debug methods
+	window.getActiveSubscriptions = () => frameworkCore.getActiveSubscriptions();
+	window.logActiveSubscriptions = () => frameworkCore.logActiveSubscriptions();
 }

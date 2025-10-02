@@ -10,9 +10,10 @@ export class XMarkdown extends BaseUIComponent {
 	}
 
 	connectedCallback() {
+		// Call parent connectedCallback first to handle sx: styles
+		super.connectedCallback();
+		
 		this.renderMarkdown();
-		// Apply sx: styles
-		this.applySxStyles();
 	}
 
 	renderMarkdown() {

@@ -164,7 +164,6 @@ customElements.define('my-component', MyComponent);
 - `x-link` - Link component
 - `x-icon` - Icon component
 - `x-table` - Data table
-- `x-html` - Raw HTML content
 
 ### Data Components
 

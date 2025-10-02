@@ -7,6 +7,9 @@ export class XIcon extends BaseUIComponent {
 	}
 
 	connectedCallback() {
+		// Call parent connectedCallback first to handle sx: styles
+		super.connectedCallback();
+		
 		const icon = this.getAttribute('icon');
 		const color = this.getAttribute('color') || this.getAttribute('sx:color');
 		const size = this.getAttribute('size') || 'medium';
@@ -37,9 +40,6 @@ export class XIcon extends BaseUIComponent {
 			// The button will handle the icon rendering
 			this.style.display = 'none';
 		}
-
-		// Apply sx: styles if any
-		this.applySxStyles();
 	}
 
 	convertToFontAwesome(pascalCaseName) {

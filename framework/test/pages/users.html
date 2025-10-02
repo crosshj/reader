@@ -8,12 +8,16 @@
 			Manage your users here. This content was loaded via path change and
 			fragment fetch.
 		</x-typography>
-		<x-button
-			onclick="addUser()"
-			sx:backgroundColor="green500"
-			sx:color="white"
+		<x-box
+			sx:display="flex"
+			sx:gap="16px"
 		>
-			Add User
-		</x-button>
+			<x-button
+				onclick="addUser()"
+				variant="primary"
+			>
+				Add User
+			</x-button>
+		</x-box>
 	</x-content>
 </x-page>

@@ -11,6 +11,9 @@ export class XFragment extends BaseUIComponent {
 	}
 
 	connectedCallback() {
+		// Call parent connectedCallback first to handle sx: styles
+		super.connectedCallback();
+		
 		const contents = this.getAttribute('contents');
 		const showLoading = this.getAttribute('showLoading') !== 'false';
 
@@ -32,9 +35,6 @@ export class XFragment extends BaseUIComponent {
 		// Set initial content
 		const initialContent = getState(actualPath);
 		this.updateContent(initialContent, showLoading);
-
-		// Apply sx: styles
-		this.applySxStyles();
 	}
 
 	updateContent(content, showLoading) {

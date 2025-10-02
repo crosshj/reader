@@ -1,0 +1,115 @@
+/* Test Case CSS - Minimal styling with FOUC prevention */
+
+/* FOUC Prevention - Hide content until framework loads */
+body {
+	visibility: hidden;
+}
+
+body.framework-loaded {
+	visibility: visible;
+}
+
+/* Override framework CSS variables for custom theme */
+:root {
+	/* Primary Palette - Modern Blue Theme */
+	--palettePrimaryMain: #2563eb;
+	--palettePrimaryLight: #60a5fa;
+	--palettePrimaryDark: #1d4ed8;
+	--palettePrimaryContrast: #ffffff;
+	--palettePrimaryNavbar: #1e40af;
+
+	/* Secondary Palette - Complementary Purple */
+	--paletteSecondaryMain: #7c3aed;
+	--paletteSecondaryDark: #6d28d9;
+	--paletteSecondaryLight: #a78bfa;
+	--paletteSecondaryContrast: #ffffff;
+
+	/* Background Palette - Clean Whites and Grays */
+	--paletteBackgroundDefault: #f8fafc;
+	--paletteBackgroundPaper: #ffffff;
+	--paletteBackgroundContrast: #ffffff;
+
+	/* Text Palette - High Contrast */
+	--paletteTextPrimary: #1e293b;
+	--paletteTextSecondary: #475569;
+	--paletteTextTertiary: #64748b;
+	--paletteTextDisabled: #94a3b8;
+
+	/* Divider - Subtle */
+	--paletteDivider: #e2e8f0;
+
+	/* Border Radius - More Rounded */
+	--radius-sm: 0.375rem;
+	--radius-md: 0.5rem;
+	--radius-lg: 0.75rem;
+	--radius-xl: 1rem;
+
+	/* Spacing - More Generous */
+	--spacing-xs: 0.375rem;
+	--spacing-sm: 0.75rem;
+	--spacing-md: 1.25rem;
+	--spacing-lg: 2rem;
+	--spacing-xl: 3rem;
+	--spacing-2xl: 4rem;
+
+	/* Transitions - Smoother */
+	--transition-fast: 0.2s ease;
+	--transition-normal: 0.3s ease;
+	--transition-slow: 0.4s ease;
+}
+
+/* App Layout - Let framework handle component styling */
+.app-layout {
+	display: grid;
+	grid-template-columns: 250px 1fr;
+	grid-template-rows: 60px 1fr;
+	grid-template-areas:
+		'sidebar main'
+		'sidebar main';
+	height: 100vh;
+	width: 100vw;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.app-layout {
+		grid-template-columns: 1fr;
+		grid-template-rows: auto 1fr;
+		grid-template-areas:
+			'sidebar'
+			'main';
+	}
+}
+
+/* Print Styles */
+@media print {
+	.app-layout {
+		grid-template-columns: 1fr;
+		grid-template-areas: 'main';
+	}
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+	:root {
+		--paletteTextPrimary: #000000;
+		--paletteTextSecondary: #000000;
+		--paletteDivider: #000000;
+		--palettePrimaryMain: #0000ff;
+	}
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--transition-fast: 0s;
+		--transition-normal: 0s;
+		--transition-slow: 0s;
+	}
+
+	* {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}

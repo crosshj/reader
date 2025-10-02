@@ -27,9 +27,7 @@ import { XInclude } from './components/XInclude.js';
 import { XVizBar } from './components/XVizBar.js';
 import { XVizPie } from './components/XVizPie.js';
 import { XMarkdown } from './components/XMarkdown.js';
-import { XBreadcrumb } from './components/XBreadcrumb.js';
 import { XTable } from './components/XTable.js';
-import { XHtml } from './components/XHtml.js';
 import { cleanServerHTML } from './components/cleanServerHTML.js';
 
 // Register all web components
@@ -53,7 +51,6 @@ function registerFrameworkComponents() {
 		{ name: 'x-viz-pie', class: XVizPie },
 		{ name: 'x-markdown', class: XMarkdown },
 		{ name: 'x-table', class: XTable },
-		{ name: 'x-html', class: XHtml },
 	];
 
 	for (const { name, class: ComponentClass } of components) {

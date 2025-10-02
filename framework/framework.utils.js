@@ -225,6 +225,19 @@ export function parseConditionalValue(value, state) {
 		return result;
 	}
 
+	// Check if it's a color token that needs resolution
+	const colorHex = getColorHex(cleanValue);
+	if (colorHex !== '#9e9e9e' || cleanValue === 'grey500') {
+		if (isDebug) {
+			console.log('🐛 DEBUG color token resolved:', {
+				originalValue: value,
+				cleanValue: cleanValue,
+				resolvedColor: colorHex,
+			});
+		}
+		return colorHex;
+	}
+
 	if (isDebug) {
 		console.log(
 			'🐛 DEBUG no conditional pattern matched, returning original value'

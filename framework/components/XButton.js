@@ -1,4 +1,5 @@
 import { BaseUIComponent } from './BaseUIComponent.js';
+import { Navigate } from '../framework.core.js';
 
 // Define x-button web component
 export class XButton extends BaseUIComponent {
@@ -7,6 +8,9 @@ export class XButton extends BaseUIComponent {
 	}
 
 	connectedCallback() {
+		// Call parent connectedCallback first to handle sx: styles
+		super.connectedCallback();
+		
 		const label = this.getAttribute('label');
 		const href = this.getAttribute('href');
 		const icon = this.getAttribute('icon');
@@ -38,21 +42,21 @@ export class XButton extends BaseUIComponent {
 		// Create button content with proper icon positioning
 		let button;
 
-		if (href && !disabled && !loading) {
-			// Create x-link for navigation buttons
-			button = document.createElement('x-link');
-			button.setAttribute('href', href);
-			button.className = `x-button x-button-${variant} x-button-${size}`;
-			if (fullWidth) button.classList.add('x-button-fullwidth');
-		} else {
-			// Create regular button for actions
-			button = document.createElement('button');
-			button.className = `x-button x-button-${variant} x-button-${size}`;
-			if (fullWidth) button.classList.add('x-button-fullwidth');
+		// Create regular button for all cases
+		button = document.createElement('button');
+		button.className = `x-button x-button-${variant} x-button-${size}`;
+		if (fullWidth) button.classList.add('x-button-fullwidth');
 
-			if (disabled || loading) {
-				button.disabled = true;
-			}
+		if (disabled || loading) {
+			button.disabled = true;
+		}
+
+		// Add click handler for navigation if href is provided
+		if (href && !disabled && !loading) {
+			button.addEventListener('click', (e) => {
+				e.preventDefault();
+				Navigate(href);
+			});
 		}
 
 		// Add content based on state
@@ -72,26 +76,25 @@ export class XButton extends BaseUIComponent {
 		this.innerHTML = '';
 		this.appendChild(button);
 
-		// Apply sx: styles if any
-		this.applySxStyles();
+		// Copy all attributes from the wrapper to the inner button
+		this.copyAttributesToInnerButton();
 	}
 
-	// Override applySxStyles to apply to the inner button element
-	applySxStyles() {
-		// Call parent method first to get the processed styles
-		super.applySxStyles();
-
-		// Move the styles from this element to the inner button
+	copyAttributesToInnerButton() {
 		const innerButton = this.querySelector('button, x-link');
-		if (innerButton && this.style.length > 0) {
-			// Copy all styles from the wrapper to the inner button
-			for (let i = 0; i < this.style.length; i++) {
-				const property = this.style[i];
-				const value = this.style.getPropertyValue(property);
-				innerButton.style.setProperty(property, value);
-			}
-			// Clear styles from wrapper
-			this.style.cssText = '';
+		if (!innerButton) return;
+
+		// Copy href attribute to inner button if it exists
+		const href = this.getAttribute('href');
+		if (href) {
+			innerButton.setAttribute('href', href);
+		}
+
+		// Copy all inline styles from wrapper to inner button
+		for (let i = 0; i < this.style.length; i++) {
+			const property = this.style[i];
+			const value = this.style.getPropertyValue(property);
+			innerButton.style.setProperty(property, value);
 		}
 	}
 

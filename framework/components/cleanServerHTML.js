@@ -61,23 +61,6 @@ function transformXMarkdownElements(htmlContent) {
 		}
 	);
 
-	// Match x-html elements with their content
-	const xHtmlRegex = /<x-html([^>]*)>([\s\S]*?)<\/x-html>/gi;
-	transformed = transformed.replace(
-		xHtmlRegex,
-		(match, attributes, content) => {
-			// Escape the content for use in HTML attribute
-			const escapedContent = content
-				.replace(/"/g, '&quot;')
-				.replace(/'/g, '&#39;')
-				.replace(/\n/g, '&#10;')
-				.replace(/\r/g, '&#13;')
-				.replace(/\t/g, '&#9;');
-
-			// Return the transformed element with content attribute
-			return `<x-html${attributes} content="${escapedContent}"></x-html>`;
-		}
-	);
 
 	return transformed;
 }

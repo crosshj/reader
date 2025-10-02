@@ -10,6 +10,9 @@ export class XNavbar extends BaseUIComponent {
 	}
 
 	connectedCallback() {
+		// Call parent connectedCallback first to handle sx: styles
+		super.connectedCallback();
+		
 		// Subscribe to activePath changes to update the title
 		this.unsubscribe = subscribeToState('activePath', () => {
 			this.updateTitle();
@@ -17,9 +20,6 @@ export class XNavbar extends BaseUIComponent {
 
 		// Set initial title
 		this.updateTitle();
-
-		// Apply sx: styles if any
-		this.applySxStyles();
 	}
 
 	disconnectedCallback() {
