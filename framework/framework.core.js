@@ -124,7 +124,7 @@ class FrameworkCore {
 			} catch (e) {
 				// Keep as string if not JSON
 			}
-			this.set(name, parsedValue);
+			this.initializeProperty(name, parsedValue);
 		}
 	}
 

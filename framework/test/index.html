@@ -6,7 +6,7 @@
 			name="viewport"
 			content="width=device-width, initial-scale=1.0"
 		/>
-		<title>HTMLNext Test - SPA Pattern</title>
+		<title>HTMLNext Test</title>
 		<link
 			rel="stylesheet"
 			href="../dist/htmlNext.css"
@@ -17,91 +17,24 @@
 		/>
 	</head>
 	<body>
-		<x-data
-			name="activePath"
-			defaultValue=""
-		></x-data>
-		<x-data
-			name="pathData"
-			route="/framework/test/index.html#/:rest*"
-		></x-data>
-		<x-data
-			name="mainContent"
-			defaultValue="main"
-		></x-data>
-		<x-data
-			name="menuItems"
-			defaultValue="[]"
-		></x-data>
-
-		<x-subscribe
-			path="pathData"
-			handler="onPathChange"
-		></x-subscribe>
-
-		<x-flow key="onPathChange">
-			const path = state?.pathData?.rest || 'dashboard';
-			const currentPath = '/' + path;
-			if(state.activePath === currentPath) return;
-
-			console.log('Path changed to:', path);
-			SetState('activePath', currentPath);
-			fetch(`./pages/${path}.html`).then(x => SetData("mainContent", x.text()));
-
-			const menuItems = [
-				{ label: "Dashboard", href: "/dashboard" },
-				{ label: "Users", href: "/users" },
-				{ label: "Settings", href: "/settings" }
-			];
-			SetState('menuItems', menuItems.map(item => ({
-				...item,
-				variant: item.href === currentPath ? "primary" : "outlined"
-			})));
-		</x-flow>
-
-		<div class="app-layout">
-			<div style="grid-area: sidebar">
-				<x-box
-					sx:px="16px"
-					sx:background="#f1f1f1"
-					sx:height="100vh"
-					sx:display="flex"
-					sx:flexDirection="column"
-					sx:gap="16px"
-				>
-					<x-box
-						sx:height="75px"
-						sx:display="flex"
-						sx:alignItems="center"
-					>
-						<x-typography variant="h1">HTMLNextDemo</x-typography>
-					</x-box>
-					<x-box
-						sx:display="flex"
-						sx:flexDirection="column"
-						sx:gap="8px"
-					>
-						<x-map items="global_menuItems">
-							<x-button
-								href="{{item_href}}"
-								variant="{{item_variant}}"
-								sx:justifyContent="flex-start"
-								fullWidth
-							>
-								{{ item_label }}
-							</x-button>
-						</x-map>
-					</x-box>
-				</x-box>
-			</div>
-			<div style="grid-area: main; overflow-y: auto">
-				<x-fragment contents="global_mainContent"></x-fragment>
-			</div>
-		</div>
+		<x-fragment contents="global_appContent"></x-fragment>
 
 		<script type="module">
-			import { initializeFramework } from '../dist/htmlNext.js';
+			import { initializeFramework, setState } from '../dist/htmlNext.js';
 			initializeFramework();
+
+			const pages = [
+				{ label: 'Dashboard', href: '/dashboard' },
+				{ label: 'Users', href: '/users' },
+				{ label: 'Settings', href: '/settings' },
+			];
+
+			setState('menuItems', pages);
+
+			const appContent = await fetch('./app.html').then((response) =>
+				response.text()
+			);
+			setState('appContent', appContent);
 
 			// FOUC Prevention - Show content after framework loads
 			document.body.classList.add('framework-loaded');

@@ -83,14 +83,6 @@ export class BaseUIComponent extends HTMLElement {
 				value.includes('DEBUG ')
 			) {
 				const isDebug = value.startsWith('DEBUG ');
-				if (isDebug) {
-					console.log('🐛 DEBUG applyConditionalAttributes:', {
-						element: this.tagName,
-						attribute: name,
-						originalValue: value,
-						currentState: this.initialState,
-					});
-				}
 
 				const resolvedValue = parseConditionalValue(value, this.initialState);
 
@@ -99,16 +91,6 @@ export class BaseUIComponent extends HTMLElement {
 					this.className = resolvedValue;
 				}
 				this.setAttribute(name, resolvedValue);
-
-				if (isDebug) {
-					console.log('🐛 DEBUG attribute resolved:', {
-						element: this.tagName,
-						attribute: name,
-						original: value,
-						resolved: resolvedValue,
-						appliedToElement: this.getAttribute(name),
-					});
-				}
 			}
 		});
 	}
@@ -122,6 +104,8 @@ export class BaseUIComponent extends HTMLElement {
 		const sxStyles = {};
 		this.originalAttributes.forEach((value, name) => {
 			if (name.startsWith('sx:')) {
+				// Debug for x-button
+
 				// Remove 'sx:' prefix and convert to CSS property
 				const cssProperty = name.substring(3);
 				const cssValue = parseConditionalValue(value, this.initialState);
@@ -136,8 +120,24 @@ export class BaseUIComponent extends HTMLElement {
 		});
 
 		// Apply the styles directly to the element
+
 		Object.entries(sxStyles).forEach(([property, value]) => {
-			this.style.setProperty(property, value);
+			// Convert string values to numbers for numeric CSS properties
+			const numericProperties = [
+				'opacity',
+				'zIndex',
+				'fontWeight',
+				'lineHeight',
+			];
+			if (
+				numericProperties.includes(property) &&
+				typeof value === 'string' &&
+				!isNaN(value)
+			) {
+				this.style[property] = parseFloat(value);
+			} else {
+				this.style.setProperty(property, value);
+			}
 		});
 
 		// Remove sx: attributes from DOM after first processing (keep DOM clean)
@@ -207,7 +207,19 @@ export class BaseUIComponent extends HTMLElement {
 
 			// Fix specific CSS properties that need proper hyphenation
 			kebabProperty = this.fixCssPropertyName(kebabProperty);
-			expanded[kebabProperty] = addMuiSpacing(value);
+
+			// Don't apply MUI spacing to non-spacing properties
+			const nonSpacingProperties = [
+				'opacity',
+				'z-index',
+				'font-weight',
+				'line-height',
+			];
+			if (nonSpacingProperties.includes(kebabProperty)) {
+				expanded[kebabProperty] = value;
+			} else {
+				expanded[kebabProperty] = addMuiSpacing(value);
+			}
 		}
 
 		return expanded;

@@ -2,7 +2,17 @@
 x-markdown {
 	display: block;
 	width: 100%;
-	font-family: var(--fontFamily, sans-serif);
+	font-family: var(
+		--font-family,
+		'Inter',
+		-apple-system,
+		BlinkMacSystemFont,
+		'Segoe UI',
+		'Roboto',
+		'Helvetica Neue',
+		Arial,
+		sans-serif
+	);
 	line-height: 1.6;
 	color: var(--paletteTextPrimary, #333);
 }
@@ -32,14 +42,7 @@ x-markdown p {
 	margin: 0 0 1rem 0;
 }
 
-x-markdown ul {
-	margin: 0 0 1rem 0;
-	padding-left: 1.5rem;
-}
-
-x-markdown li {
-	margin: 0.25rem 0;
-}
+/* Lists now use global styles - no need for markdown-specific overrides */
 
 x-markdown strong {
 	font-weight: 600;

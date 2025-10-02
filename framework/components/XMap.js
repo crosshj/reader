@@ -14,9 +14,6 @@ export class XMap extends BaseUIComponent {
 	}
 
 	connectedCallback() {
-		// Call parent connectedCallback first to handle sx: styles and subscriptions
-		super.connectedCallback();
-		
 		const items = this.getAttribute('items');
 
 		// Check if already processed to prevent multiple renders
@@ -27,14 +24,15 @@ export class XMap extends BaseUIComponent {
 		// Mark as processed
 		this.setAttribute('data-processed', 'true');
 
-		// Hide the initial children (they are the template)
-		this.style.display = 'none';
-
 		// Store the template for later use
 		this.template = this.innerHTML;
 
 		// Clear the initial content since it's just a template
 		this.innerHTML = '';
+
+		// Call parent connectedCallback AFTER storing template and clearing content
+		// This prevents BaseUIComponent from processing the template elements with {{}} syntax
+		super.connectedCallback();
 
 		// Process the data if available
 		this.processData(items);
@@ -43,7 +41,7 @@ export class XMap extends BaseUIComponent {
 	handleStateChange(newState) {
 		// Call parent method first
 		super.handleStateChange(newState);
-		
+
 		// Re-process data when state changes
 		const items = this.getAttribute('items');
 		if (items) {

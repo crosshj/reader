@@ -9,7 +9,7 @@ export class XIcon extends BaseUIComponent {
 	connectedCallback() {
 		// Call parent connectedCallback first to handle sx: styles
 		super.connectedCallback();
-		
+
 		const icon = this.getAttribute('icon');
 		const color = this.getAttribute('color') || this.getAttribute('sx:color');
 		const size = this.getAttribute('size') || 'medium';
@@ -19,7 +19,13 @@ export class XIcon extends BaseUIComponent {
 		if (!isInsideButton) {
 			// Create icon element with Font Awesome class
 			const iconElement = document.createElement('span');
-			iconElement.className = `fa fa-${this.convertToFontAwesome(icon)} ${size}`;
+
+			// Handle Font Awesome icons that already have 'fa-' prefix
+			const iconClass = icon.startsWith('fa-')
+				? `fa ${icon}`
+				: `fa fa-${this.convertToFontAwesome(icon)}`;
+
+			iconElement.className = `${iconClass} ${size}`;
 
 			// Set consistent dimensions and alignment
 			iconElement.style.display = 'inline-flex';

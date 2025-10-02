@@ -16,12 +16,12 @@ body.framework-loaded {
 	--palettePrimaryLight: #60a5fa;
 	--palettePrimaryDark: #1d4ed8;
 	--palettePrimaryContrast: #ffffff;
-	--palettePrimaryNavbar: #1e40af;
+	--palettePrimaryNavbar: #f0f8ff;
 
-	/* Secondary Palette - Complementary Purple */
-	--paletteSecondaryMain: #7c3aed;
-	--paletteSecondaryDark: #6d28d9;
-	--paletteSecondaryLight: #a78bfa;
+	/* Secondary Palette - Light Blue */
+	--paletteSecondaryMain: #6ab0f0;
+	--paletteSecondaryDark: #4a9de8;
+	--paletteSecondaryLight: #8bc3f2;
 	--paletteSecondaryContrast: #ffffff;
 
 	/* Background Palette - Clean Whites and Grays */
@@ -62,10 +62,7 @@ body.framework-loaded {
 .app-layout {
 	display: grid;
 	grid-template-columns: 250px 1fr;
-	grid-template-rows: 60px 1fr;
-	grid-template-areas:
-		'sidebar main'
-		'sidebar main';
+	grid-template-areas: 'sidebar main';
 	height: 100vh;
 	width: 100vw;
 }
@@ -74,7 +71,7 @@ body.framework-loaded {
 .fade-up {
 	opacity: 0;
 	transform: translateY(20px);
-	animation: fadeUpIn 0.4s ease 0.1s forwards;
+	animation: fadeUpIn 0.15s ease 0.05s forwards;
 }
 
 @keyframes fadeUpIn {
