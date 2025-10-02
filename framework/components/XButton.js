@@ -10,7 +10,7 @@ export class XButton extends BaseUIComponent {
 	connectedCallback() {
 		// Call parent connectedCallback first to handle sx: styles
 		super.connectedCallback();
-		
+
 		const label = this.getAttribute('label');
 		const href = this.getAttribute('href');
 		const icon = this.getAttribute('icon');

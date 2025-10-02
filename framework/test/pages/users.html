@@ -1,23 +1,41 @@
 <x-page>
-	<x-navbar></x-navbar>
-	<x-content>
-		<x-typography
-			variant="body1"
-			sx:margin="16px 0"
+	<x-navbar>
+		<x-button
+			onclick="addUser()"
+			variant="primary"
 		>
-			Manage your users here. This content was loaded via path change and
-			fragment fetch.
-		</x-typography>
-		<x-box
-			sx:display="flex"
-			sx:gap="16px"
-		>
-			<x-button
-				onclick="addUser()"
-				variant="primary"
-			>
-				Add User
-			</x-button>
-		</x-box>
+			Add User
+		</x-button>
+	</x-navbar>
+	<x-content class="fade-up">
+		<!-- prettier-ignore -->
+		<x-markdown>
+			Manage your application users with the following tools and features.
+
+			## Available Actions
+
+			The **Add User** button in the navbar allows you to create new user accounts.
+
+			## User Management Features
+
+			### Current Capabilities
+
+			- ✅ **Add Users**: Create new user accounts
+			- ✅ **User Authentication**: Secure login system  
+			- ✅ **Role Management**: Assign user permissions
+			- ✅ **Profile Management**: Update user information
+
+			### Upcoming Features
+
+			- 🔄 **Bulk Operations**: Manage multiple users at once
+			- 🔄 **Advanced Filtering**: Search and filter user lists
+			- 🔄 **Audit Logs**: Track user activity and changes
+
+			## Getting Help
+
+			For more information about user management, check our documentation or contact support.
+
+			> **Note**: This page demonstrates the integration of `<x-markdown>` with interactive components like buttons and forms.
+		</x-markdown>
 	</x-content>
 </x-page>

@@ -1,12 +1,59 @@
 <x-page>
 	<x-navbar></x-navbar>
-	<x-content>
-		<x-typography
-			variant="body1"
-			sx:margin="16px 0"
-		>
-			Configure your application settings here. This content was loaded via path
-			change and fragment fetch.
-		</x-typography>
+	<x-content class="fade-up">
+		<!-- prettier-ignore -->
+		<x-markdown>
+			Configure your application settings and preferences here.
+
+			> **Tip**: This settings page demonstrates the full power of the `<x-markdown>` component with headings, lists, code blocks, and more!
+
+			## Configuration Options
+
+			### General Settings
+
+			- **Application Name**: HTMLNext Framework Demo
+			- **Version**: 1.0.0
+			- **Environment**: Development
+
+			### Theme Settings
+
+			The application uses a modern blue theme with the following features:
+
+			- **Primary Color**: `#2563eb` (Modern Blue)
+			- **Secondary Color**: `#7c3aed` (Complementary Purple)
+			- **Background**: Clean whites and grays
+			- **Typography**: High contrast text for accessibility
+
+			### Framework Features
+
+			This demo showcases the HTMLNext Framework's capabilities:
+
+			1. **Component System**: Reusable web components
+			2. **State Management**: Centralized state with subscriptions
+			3. **Routing**: Hash-based navigation
+			4. **Styling**: CSS variables and `sx:` attributes
+			5. **Markdown Support**: Rich content rendering
+
+			## Code Example
+
+			Here's how to use the markdown component:
+
+			```html
+			<x-markdown>
+				# Your Title
+
+				This is **bold** and *italic* text.
+
+				- List item 1
+				- List item 2
+
+				> This is a blockquote
+			</x-markdown>
+			```
+
+			## Advanced Configuration
+
+			For more advanced settings, refer to the framework documentation or contact the development team.
+		</x-markdown>
 	</x-content>
 </x-page>

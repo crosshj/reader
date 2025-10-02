@@ -1,7 +1,7 @@
 import { BaseUIComponent } from './BaseUIComponent.js';
 import { html } from '../framework.utils.js';
 import { getState } from '../framework.core.js';
-import { cleanServerHTML } from './cleanServerHTML.js';
+import { cleanServerHTML } from '../framework.utils.js';
 
 // Define x-include web component
 export class XInclude extends BaseUIComponent {

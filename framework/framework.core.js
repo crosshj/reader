@@ -346,10 +346,10 @@ class FrameworkCore {
 		for (const [property, listeners] of this.listeners.entries()) {
 			subscriptions[property] = {
 				count: listeners.size,
-				listeners: Array.from(listeners).map(listener => ({
+				listeners: Array.from(listeners).map((listener) => ({
 					name: listener.name || 'anonymous',
-					toString: listener.toString()
-				}))
+					toString: listener.toString(),
+				})),
 			};
 		}
 		return subscriptions;
@@ -434,7 +434,7 @@ if (typeof window !== 'undefined') {
 	window.state = { ...frameworkCore.getState() };
 	window.subscribeToState = (property, callback) =>
 		frameworkCore.subscribe(property, callback);
-	
+
 	// Debug methods
 	window.getActiveSubscriptions = () => frameworkCore.getActiveSubscriptions();
 	window.logActiveSubscriptions = () => frameworkCore.logActiveSubscriptions();

@@ -1,13 +1,21 @@
 <x-page>
 	<x-navbar></x-navbar>
-	<x-content>
-		<x-typography
-			variant="body1"
-			sx:margin="16px 0"
-		>
-			Welcome to your dashboard! This content was loaded via path change and
-			fragment fetch.
-		</x-typography>
+	<x-content class="fade-up">
+		<!-- prettier-ignore -->
+		<x-markdown>
+			Welcome to your **HTMLNext Framework** dashboard! This content demonstrates the power of the `<x-markdown>` component.
+
+			## Key Features
+
+			- **Real-time Updates**: Content loaded via path change and fragment fetch
+			- **Component Integration**: Seamless integration with framework components
+			- **Responsive Design**: Works across all device sizes
+
+			## Quick Stats
+
+			Below are your current metrics:
+		</x-markdown>
+		
 		<x-box
 			sx:display="flex"
 			sx:gap="16"
@@ -42,5 +50,16 @@
 				>
 			</x-box>
 		</x-box>
+
+		<!-- prettier-ignore -->
+		<x-markdown>
+			## Getting Started
+
+			1. **Navigation**: Use the sidebar to switch between pages
+			2. **Components**: Explore the various framework components
+			3. **Styling**: Customize using CSS variables and `sx:` attributes
+
+			> **Tip**: This markdown content is rendered client-side and supports all standard markdown features including *emphasis*, **bold text**, and `code snippets`.
+		</x-markdown>
 	</x-content>
 </x-page>

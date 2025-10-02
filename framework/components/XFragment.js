@@ -1,6 +1,6 @@
 import { BaseUIComponent } from './BaseUIComponent.js';
 import { html } from '../framework.utils.js';
-import { cleanServerHTML } from './cleanServerHTML.js';
+import { cleanServerHTML } from '../framework.utils.js';
 import { getState, subscribeToState } from '../framework.core.js';
 
 // Define x-fragment web component
@@ -13,7 +13,7 @@ export class XFragment extends BaseUIComponent {
 	connectedCallback() {
 		// Call parent connectedCallback first to handle sx: styles
 		super.connectedCallback();
-		
+
 		const contents = this.getAttribute('contents');
 		const showLoading = this.getAttribute('showLoading') !== 'false';
 

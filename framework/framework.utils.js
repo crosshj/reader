@@ -327,3 +327,144 @@ export function extractStateReferences(attributes) {
 
 	return Array.from(stateRefs);
 }
+
+// Function to transform x-markdown and x-table elements to use content attribute
+function transformXMarkdownElements(htmlContent) {
+	// First, temporarily replace markdown code blocks to avoid processing HTML tags inside them
+	const codeBlockPlaceholder = '___CODE_BLOCK_PLACEHOLDER___';
+	const codeBlockMatches = [];
+	let tempContent = htmlContent;
+
+	// Find and replace all markdown code blocks (```...```)
+	const codeBlockRegex = /```[\s\S]*?```/g;
+	tempContent = tempContent.replace(codeBlockRegex, (match) => {
+		const index = codeBlockMatches.length;
+		codeBlockMatches.push(match);
+		return `${codeBlockPlaceholder}${index}`;
+	});
+
+	// Now process x-markdown elements in the content without code blocks
+	let transformed = tempContent;
+	const openTagRegex = /<x-markdown([^>]*)>/gi;
+
+	let match;
+	while ((match = openTagRegex.exec(tempContent)) !== null) {
+		const openTag = match[0];
+		const attributes = match[1];
+		const startIndex = match.index;
+
+		// Find the matching closing tag
+		const nextClose = tempContent.indexOf(
+			'</x-markdown>',
+			startIndex + openTag.length
+		);
+
+		if (nextClose === -1) {
+			// No closing tag found, skip this one
+			continue;
+		}
+
+		const content = tempContent.substring(
+			startIndex + openTag.length,
+			nextClose
+		);
+
+		// Escape the content for use in HTML attribute
+		const escapedContent = content
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;')
+			.replace(/\n/g, '&#10;')
+			.replace(/\r/g, '&#13;')
+			.replace(/\t/g, '&#9;');
+
+		// Replace this specific match
+		const fullMatch = openTag + content + '</x-markdown>';
+		const replacement = `<x-markdown${attributes} content="${escapedContent}"></x-markdown>`;
+		transformed = transformed.replace(fullMatch, replacement);
+	}
+
+	// Restore code blocks
+	transformed = transformed.replace(
+		new RegExp(`${codeBlockPlaceholder}(\\d+)`, 'g'),
+		(match, index) => {
+			return codeBlockMatches[parseInt(index)];
+		}
+	);
+
+	// Match x-table elements with their content (only outside of x-markdown)
+	// First, temporarily replace x-markdown content to avoid processing x-table inside it
+	const markdownPlaceholder = '___MARKDOWN_PLACEHOLDER___';
+	const markdownMatches = [];
+	let tableContent = transformed;
+
+	// Store x-markdown elements temporarily
+	tableContent = tableContent.replace(
+		/<x-markdown[^>]*content="[^"]*"[^>]*><\/x-markdown>/gi,
+		(match) => {
+			const index = markdownMatches.length;
+			markdownMatches.push(match);
+			return `${markdownPlaceholder}${index}`;
+		}
+	);
+
+	// Process x-table elements in the content without x-markdown
+	// Transform ALL x-table elements to use content attribute
+	const xTableRegex = /<x-table([^>]*)>([\s\S]*?)<\/x-table>/gi;
+	tableContent = tableContent.replace(
+		xTableRegex,
+		(match, attributes, content) => {
+			// Escape the content for use in HTML attribute
+			const escapedContent = content
+				.replace(/"/g, '&quot;')
+				.replace(/'/g, '&#39;')
+				.replace(/\n/g, '&#10;')
+				.replace(/\r/g, '&#13;')
+				.replace(/\t/g, '&#9;');
+
+			// Return the transformed element with content attribute
+			return `<x-table${attributes} content="${escapedContent}"></x-table>`;
+		}
+	);
+
+	// Restore x-markdown elements
+	transformed = tableContent.replace(
+		new RegExp(`${markdownPlaceholder}(\\d+)`, 'g'),
+		(match, index) => {
+			return markdownMatches[parseInt(index)];
+		}
+	);
+
+	return transformed;
+}
+
+// Function to clean HTML content from server
+export function cleanServerHTML(htmlContent) {
+	// Remove Vite's injected script tags
+	let cleaned = htmlContent.replace(
+		/<script[^>]*type="module"[^>]*>[\s\S]*?<\/script>/gi,
+		''
+	);
+
+	// Remove any other Vite-related script injections
+	cleaned = cleaned.replace(
+		/<script[^>]*src="[^"]*vite[^"]*"[^>]*>[\s\S]*?<\/script>/gi,
+		''
+	);
+
+	// Remove any script tags that might be injected by build tools
+	cleaned = cleaned.replace(
+		/<script[^>]*src="[^"]*\/src\/[^"]*"[^>]*>[\s\S]*?<\/script>/gi,
+		''
+	);
+
+	// Remove any link tags that might be injected by build tools
+	cleaned = cleaned.replace(/<link[^>]*rel="modulepreload"[^>]*>/gi, '');
+
+	// Clean up any extra whitespace that might be left
+	cleaned = cleaned.replace(/\n\s*\n\s*\n/g, '\n\n');
+
+	// Transform x-markdown elements to use content attribute
+	cleaned = transformXMarkdownElements(cleaned);
+
+	return cleaned;
+}

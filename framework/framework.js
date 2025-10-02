@@ -28,7 +28,7 @@ import { XVizBar } from './components/XVizBar.js';
 import { XVizPie } from './components/XVizPie.js';
 import { XMarkdown } from './components/XMarkdown.js';
 import { XTable } from './components/XTable.js';
-import { cleanServerHTML } from './components/cleanServerHTML.js';
+import { cleanServerHTML } from './framework.utils.js';
 
 // Register all web components
 function registerFrameworkComponents() {
