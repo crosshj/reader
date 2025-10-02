@@ -17,9 +17,10 @@ export class XVizBar extends BaseUIComponent {
 		}
 
 		// Remove global_ prefix if present
-		const actualPath = dataPath.startsWith('global_')
-			? dataPath.substring(7)
-			: dataPath;
+		const actualPath =
+			dataPath && dataPath.startsWith('global_')
+				? dataPath.substring(7)
+				: dataPath;
 
 		// Subscribe to data changes
 		this.unsubscribe = subscribeToState(actualPath, (newData) => {
@@ -40,6 +41,11 @@ export class XVizBar extends BaseUIComponent {
 			return;
 		}
 
+		// Set CSS variable for base color
+		const baseColor =
+			this.getAttribute('color') || 'var(--palettePrimaryMain, #1976d2)';
+		this.style.setProperty('--bar-base-color', baseColor);
+
 		// Find max value for scaling
 		const maxValue = Math.max(...data.map((item) => item.value || 0));
 
@@ -47,12 +53,13 @@ export class XVizBar extends BaseUIComponent {
 		let barsHTML = '';
 		data.forEach((item, index) => {
 			const barHeight = (item.value / maxValue) * 100; // Percentage height
+			const isEven = index % 2 === 0;
 
 			barsHTML += `
 				<div class="viz-bar-container">
 					<div 
-						class="viz-bar" 
-						style="height: ${barHeight}%"
+						class="viz-bar ${isEven ? 'viz-bar-even' : 'viz-bar-odd'}" 
+						style="height: ${barHeight}%;"
 					>
 						<div class="viz-value">
 							<x-typography variant="caption">${item.value}</x-typography>

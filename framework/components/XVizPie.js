@@ -17,9 +17,10 @@ export class XVizPie extends BaseUIComponent {
 		}
 
 		// Remove global_ prefix if present
-		const actualPath = dataPath.startsWith('global_')
-			? dataPath.substring(7)
-			: dataPath;
+		const actualPath =
+			dataPath && dataPath.startsWith('global_')
+				? dataPath.substring(7)
+				: dataPath;
 
 		// Subscribe to data changes
 		this.unsubscribe = subscribeToState(actualPath, (newData) => {
@@ -46,6 +47,11 @@ export class XVizPie extends BaseUIComponent {
 			this.innerHTML = '<div class="viz-error">No data to display</div>';
 			return;
 		}
+
+		// Set CSS variable for base color
+		const baseColor =
+			this.getAttribute('color') || 'var(--palettePrimaryMain, #1976d2)';
+		this.style.setProperty('--pie-base-color', baseColor);
 
 		const radius = 98;
 		const centerX = 100;

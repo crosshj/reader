@@ -10,7 +10,7 @@ export class XIcon extends BaseUIComponent {
 		// Call parent connectedCallback first to handle sx: styles
 		super.connectedCallback();
 
-		const icon = this.getAttribute('icon');
+		const icon = this.getAttribute('icon') || this.getAttribute('name');
 		const color = this.getAttribute('color') || this.getAttribute('sx:color');
 		const size = this.getAttribute('size') || 'medium';
 

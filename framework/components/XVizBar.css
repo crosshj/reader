@@ -4,6 +4,7 @@ x-viz-bar {
 	width: 100%;
 	height: 100%;
 	box-sizing: border-box;
+	--bar-base-color: var(--palettePrimaryMain, #1976d2);
 }
 
 x-viz-bar * {
@@ -37,7 +38,7 @@ x-viz-bar .viz-bar-container {
 }
 
 x-viz-bar .viz-bar {
-	background-color: var(--palettePrimaryMain, #1976d2);
+	background-color: var(--bar-base-color);
 	width: 100%;
 	min-height: 4px;
 	transition: background-color 0.2s ease;
@@ -49,12 +50,20 @@ x-viz-bar .viz-bar {
 	justify-content: center;
 }
 
-x-viz-bar .viz-bar:hover {
+x-viz-bar .viz-bar-even {
 	background-color: color-mix(
 		in srgb,
-		var(--palettePrimaryMain, #1976d2) 80%,
-		black
+		var(--bar-base-color) 70%,
+		var(--paletteBackgroundPaper, #ffffff)
 	);
+}
+
+x-viz-bar .viz-bar-odd {
+	background-color: var(--bar-base-color);
+}
+
+x-viz-bar .viz-bar:hover {
+	background-color: color-mix(in srgb, var(--bar-base-color) 80%, black);
 }
 
 x-viz-bar .viz-value {

@@ -29,7 +29,11 @@ export class XButton extends BaseUIComponent {
 		let iconElement = null;
 		if (icon && !loading) {
 			iconElement = document.createElement('span');
-			iconElement.className = `fa fa-${this.convertToFontAwesome(icon)} button-icon`;
+			// Handle fa- prefix directly or convert from PascalCase
+			const iconClass = icon.startsWith('fa-')
+				? `fa ${icon}`
+				: `fa fa-${this.convertToFontAwesome(icon)}`;
+			iconElement.className = `${iconClass} button-icon`;
 		}
 
 		// Create loading spinner if loading
@@ -46,6 +50,7 @@ export class XButton extends BaseUIComponent {
 		button = document.createElement('button');
 		button.className = `x-button x-button-${variant} x-button-${size}`;
 		if (fullWidth) button.classList.add('x-button-fullwidth');
+		if (icon && !buttonText) button.classList.add('x-button-icon-only');
 
 		if (disabled || loading) {
 			button.disabled = true;
@@ -65,9 +70,16 @@ export class XButton extends BaseUIComponent {
 			button.appendChild(document.createTextNode('Loading...'));
 		} else if (icon && iconPosition === 'left') {
 			button.appendChild(iconElement);
-			button.appendChild(document.createTextNode(buttonText));
+			if (buttonText) {
+				button.appendChild(document.createTextNode(buttonText));
+			}
 		} else if (icon && iconPosition === 'right') {
-			button.appendChild(document.createTextNode(buttonText));
+			if (buttonText) {
+				button.appendChild(document.createTextNode(buttonText));
+			}
+			button.appendChild(iconElement);
+		} else if (icon && !buttonText) {
+			// Icon-only button
 			button.appendChild(iconElement);
 		} else {
 			button.textContent = buttonText;

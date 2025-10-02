@@ -1151,6 +1151,18 @@ x-button .button-icon {
 	flex-shrink: 0;
 }
 
+/* Icon-only buttons - center the icon perfectly */
+x-button button.x-button-icon-only {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+}
+
+x-button button.x-button-icon-only .button-icon {
+	margin: 0;
+}
+
 x-button[iconPosition='right'] .button-icon {
 	margin-right: 0;
 	margin-left: 8px;

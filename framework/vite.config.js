@@ -11,12 +11,6 @@ export default defineConfig({
 			fileName: () => 'htmlNext.js',
 			formats: ['es'],
 		},
-		rollupOptions: {
-			external: [],
-			output: {
-				globals: {},
-			},
-		},
 		// Force full minification for both ES and UMD
 		minify: 'terser',
 		terserOptions: {
@@ -34,6 +28,19 @@ export default defineConfig({
 		},
 		cssCodeSplit: false,
 		sourcemap: true,
+		assetsDir: '',
+		rollupOptions: {
+			external: [],
+			output: {
+				globals: {},
+				assetFileNames: (assetInfo) => {
+					if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+						return 'htmlNext.css';
+					}
+					return assetInfo.name;
+				},
+			},
+		},
 	},
 	plugins: [
 		{
@@ -65,19 +72,6 @@ export default defineConfig({
 				} else {
 					writeFileSync(esModulePath, result.code);
 					console.log('✅ ES module fully minified');
-				}
-			},
-		},
-		{
-			name: 'rename-css',
-			writeBundle() {
-				// Rename CSS file to htmlNext.css
-				const cssPath = resolve(__dirname, 'dist/x-framework.css');
-				const newCssPath = resolve(__dirname, 'dist/htmlNext.css');
-
-				if (existsSync(cssPath)) {
-					renameSync(cssPath, newCssPath);
-					console.log('✅ CSS renamed to htmlNext.css');
 				}
 			},
 		},

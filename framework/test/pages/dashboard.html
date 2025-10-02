@@ -1,73 +1,2214 @@
 <x-page>
-	<x-navbar></x-navbar>
-	<x-content class="fade-up">
-		<!-- prettier-ignore -->
-		<x-markdown>
-			Welcome to your **HTMLNext Framework** dashboard! This content demonstrates the power of the `<x-markdown>` component.
+	<!-- Data sources for visualizations -->
+	<x-data
+		name="monthlyRevenue"
+		defaultValue='[
+			{ "label": "Jan", "value": 12000 },
+			{ "label": "Feb", "value": 15000 },
+			{ "label": "Mar", "value": 18000 },
+			{ "label": "Apr", "value": 22000 },
+			{ "label": "May", "value": 25000 },
+			{ "label": "Jun", "value": 28000 }
+		]'
+	></x-data>
 
-			## Key Features
+	<x-data
+		name="deviceUsage"
+		defaultValue='[
+			{ "label": "Desktop", "value": 45 },
+			{ "label": "Mobile", "value": 35 },
+			{ "label": "Tablet", "value": 20 }
+		]'
+	></x-data>
 
-			- **Real-time Updates**: Content loaded via path change and fragment fetch
-			- **Component Integration**: Seamless integration with framework components
-			- **Responsive Design**: Works across all device sizes
+	<x-data
+		name="userGrowth"
+		defaultValue='[
+			{ "label": "Q1", "value": 1200 },
+			{ "label": "Q2", "value": 1500 },
+			{ "label": "Q3", "value": 1800 },
+			{ "label": "Q4", "value": 2100 }
+		]'
+	></x-data>
 
-			## Quick Stats
+	<x-data
+		name="salesByCategory"
+		defaultValue='[
+			{ "label": "Electronics", "value": 35 },
+			{ "label": "Clothing", "value": 25 },
+			{ "label": "Books", "value": 20 },
+			{ "label": "Home", "value": 20 }
+		]'
+	></x-data>
 
-			Below are your current metrics:
-		</x-markdown>
-		
-		<x-box
-			sx:display="flex"
-			sx:gap="16"
-			sx:margin="20px 0"
-		>
-			<x-box
-				sx:padding="16"
-				sx:backgroundColor="blue50"
-				sx:borderRadius="8"
-				sx:flex="1"
-			>
-				<x-typography variant="h3">Users</x-typography>
-				<x-typography
-					variant="h2"
-					sx:color="blue600"
-					id="user-count-display"
-					>0</x-typography
+	<x-data
+		name="weeklyTraffic"
+		defaultValue='[
+			{ "label": "Mon", "value": 1200 },
+			{ "label": "Tue", "value": 1900 },
+			{ "label": "Wed", "value": 3000 },
+			{ "label": "Thu", "value": 5000 },
+			{ "label": "Fri", "value": 3000 },
+			{ "label": "Sat", "value": 2000 },
+			{ "label": "Sun", "value": 1500 }
+		]'
+	></x-data>
+
+	<x-data
+		name="revenueByRegion"
+		defaultValue='[
+			{ "label": "North America", "value": 45 },
+			{ "label": "Europe", "value": 30 },
+			{ "label": "Asia", "value": 15 },
+			{ "label": "Other", "value": 10 }
+		]'
+	></x-data>
+
+	<div class="fade-up dashboard-container">
+		<div class="dashboard-main">
+			<x-navbar>
+				<x-button
+					onclick="addUser()"
+					variant="secondary"
+					icon="fa-user-plus"
+					sx:width="40px"
+					sx:height="40px"
+					sx:borderRadius="50%"
+					sx:display="flex"
+					sx:alignItems="center"
+					sx:justifyContent="center"
 				>
-			</x-box>
-			<x-box
-				sx:padding="16"
-				sx:backgroundColor="green50"
-				sx:borderRadius="8"
-				sx:flex="1"
-			>
-				<x-typography variant="h3">Notifications</x-typography>
-				<x-typography
-					variant="h2"
-					sx:color="green600"
-					id="notification-count-display"
-					>0</x-typography
+				</x-button>
+				<x-button
+					onclick="addUser()"
+					variant="secondary"
+					icon="fa-plus"
+					sx:width="40px"
+					sx:height="40px"
+					sx:borderRadius="50%"
+					sx:display="flex"
+					sx:alignItems="center"
+					sx:justifyContent="center"
 				>
+				</x-button>
+			</x-navbar>
+			<div style="padding: 1rem; padding-top: 2rem">
+				<!-- Key Metrics Grid -->
+				<x-box class="dashboard-metrics-grid">
+					<!-- Total Users Card -->
+					<x-box
+						class="dashboard-card"
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+					>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:justifyContent="space-between"
+							sx:margin="0 0 1rem 0"
+						>
+							<x-typography
+								variant="h4"
+								sx:margin="0 0 1rem 0"
+								>Total Users</x-typography
+							>
+							<x-icon
+								icon="fa-users"
+								sx:color="var(--palettePrimaryMain)"
+								sx:fontSize="1.5rem"
+							></x-icon>
+						</x-box>
+						<x-typography
+							variant="h2"
+							sx:color="var(--palettePrimaryMain)"
+							sx:margin="0 0 0.5rem 0"
+							>2,847</x-typography
+						>
+						<x-typography
+							variant="caption"
+							sx:color="var(--paletteSuccessMain)"
+							>+12% from last month</x-typography
+						>
+					</x-box>
+
+					<!-- Revenue Card -->
+					<x-box
+						class="dashboard-card"
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+					>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:justifyContent="space-between"
+							sx:margin="0 0 1rem 0"
+						>
+							<x-typography
+								variant="h4"
+								sx:margin="0 0 1rem 0"
+								>Revenue</x-typography
+							>
+							<x-icon
+								icon="fa-usd"
+								sx:color="var(--paletteSuccessMain)"
+								sx:fontSize="1.5rem"
+							></x-icon>
+						</x-box>
+						<x-typography
+							variant="h2"
+							sx:color="var(--paletteSuccessMain)"
+							sx:margin="0 0 0.5rem 0"
+							>$45,231</x-typography
+						>
+						<x-typography
+							variant="caption"
+							sx:color="var(--paletteSuccessMain)"
+							>+8.2% from last month</x-typography
+						>
+					</x-box>
+
+					<!-- Active Sessions Card -->
+					<x-box
+						class="dashboard-card"
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+					>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:justifyContent="space-between"
+							sx:margin="0 0 1rem 0"
+						>
+							<x-typography
+								variant="h4"
+								sx:margin="0 0 1rem 0"
+								>Active Sessions</x-typography
+							>
+							<x-icon
+								icon="fa-eye"
+								sx:color="var(--paletteInfoMain)"
+								sx:fontSize="1.5rem"
+							></x-icon>
+						</x-box>
+						<x-typography
+							variant="h2"
+							sx:color="var(--paletteInfoMain)"
+							sx:margin="0 0 0.5rem 0"
+							>1,423</x-typography
+						>
+						<x-typography
+							variant="caption"
+							sx:color="var(--paletteInfoMain)"
+							>+5.1% from last hour</x-typography
+						>
+					</x-box>
+
+					<!-- Conversion Rate Card -->
+					<x-box
+						class="dashboard-card"
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+					>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:justifyContent="space-between"
+							sx:margin="0 0 1rem 0"
+						>
+							<x-typography
+								variant="h4"
+								sx:margin="0 0 1rem 0"
+								>Conversion Rate</x-typography
+							>
+							<x-icon
+								icon="fa-percent"
+								sx:color="var(--paletteWarningMain)"
+								sx:fontSize="1.5rem"
+							></x-icon>
+						</x-box>
+						<x-typography
+							variant="h2"
+							sx:color="var(--paletteWarningMain)"
+							sx:margin="0 0 0.5rem 0"
+							>3.24%</x-typography
+						>
+						<x-typography
+							variant="caption"
+							sx:color="var(--paletteWarningMain)"
+							>+0.3% from last week</x-typography
+						>
+					</x-box>
+				</x-box>
+
+				<!-- Quick Stats Section -->
+				<x-box
+					class="dashboard-stats-grid"
+					sx:display="grid"
+					sx:gridTemplateColumns="repeat(2, 1fr)"
+					sx:gap="1.5rem"
+					sx:margin="0 0 2rem 0"
+				>
+					<!-- Top Pages -->
+					<x-box
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+					>
+						<x-typography
+							variant="h4"
+							sx:margin="0 0 1rem 0"
+							>Top Pages</x-typography
+						>
+						<x-box
+							sx:display="flex"
+							sx:flexDirection="column"
+							sx:gap="0.75rem"
+						>
+							<x-box
+								sx:display="flex"
+								sx:justifyContent="space-between"
+								sx:alignItems="center"
+							>
+								<x-box
+									sx:display="flex"
+									sx:alignItems="center"
+									sx:gap="0.75rem"
+								>
+									<x-icon
+										icon="fa-tachometer"
+										sx:color="var(--paletteSecondaryMain)"
+										sx:fontSize="1rem"
+									></x-icon>
+									<x-typography variant="body2">Dashboard</x-typography>
+								</x-box>
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextSecondary)"
+									>1,234</x-typography
+								>
+							</x-box>
+							<x-box
+								sx:display="flex"
+								sx:justifyContent="space-between"
+								sx:alignItems="center"
+							>
+								<x-box
+									sx:display="flex"
+									sx:alignItems="center"
+									sx:gap="0.75rem"
+								>
+									<x-icon
+										icon="fa-users"
+										sx:color="var(--paletteSecondaryMain)"
+										sx:fontSize="1rem"
+									></x-icon>
+									<x-typography variant="body2">Users</x-typography>
+								</x-box>
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextSecondary)"
+									>856</x-typography
+								>
+							</x-box>
+							<x-box
+								sx:display="flex"
+								sx:justifyContent="space-between"
+								sx:alignItems="center"
+							>
+								<x-box
+									sx:display="flex"
+									sx:alignItems="center"
+									sx:gap="0.75rem"
+								>
+									<x-icon
+										icon="fa-cog"
+										sx:color="var(--paletteSecondaryMain)"
+										sx:fontSize="1rem"
+									></x-icon>
+									<x-typography variant="body2">Settings</x-typography>
+								</x-box>
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextSecondary)"
+									>432</x-typography
+								>
+							</x-box>
+							<x-box
+								sx:display="flex"
+								sx:justifyContent="space-between"
+								sx:alignItems="center"
+							>
+								<x-box
+									sx:display="flex"
+									sx:alignItems="center"
+									sx:gap="0.75rem"
+								>
+									<x-icon
+										icon="fa-bar-chart"
+										sx:color="var(--paletteSecondaryMain)"
+										sx:fontSize="1rem"
+									></x-icon>
+									<x-typography variant="body2">Reports</x-typography>
+								</x-box>
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextSecondary)"
+									>298</x-typography
+								>
+							</x-box>
+						</x-box>
+					</x-box>
+
+					<!-- System Status -->
+					<x-box
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+					>
+						<x-typography
+							variant="h4"
+							sx:margin="0 0 1rem 0"
+							>System Status</x-typography
+						>
+						<x-box
+							sx:display="flex"
+							sx:flexDirection="column"
+							sx:gap="0.75rem"
+						>
+							<x-box
+								sx:display="flex"
+								sx:justifyContent="space-between"
+								sx:alignItems="center"
+							>
+								<x-box
+									sx:display="flex"
+									sx:alignItems="center"
+									sx:gap="0.75rem"
+								>
+									<x-icon
+										icon="fa-server"
+										sx:color="var(--paletteSecondaryMain)"
+										sx:fontSize="1rem"
+									></x-icon>
+									<x-typography variant="body2">API Server</x-typography>
+								</x-box>
+								<x-box
+									sx:display="flex"
+									sx:alignItems="center"
+									sx:gap="0.5rem"
+								>
+									<x-box
+										class="status-dot"
+										sx:backgroundColor="var(--paletteSuccessMain)"
+									></x-box>
+									<x-typography
+										variant="caption"
+										sx:color="var(--paletteSuccessMain)"
+										>Online</x-typography
+									>
+								</x-box>
+							</x-box>
+							<x-box
+								sx:display="flex"
+								sx:justifyContent="space-between"
+								sx:alignItems="center"
+							>
+								<x-box
+									sx:display="flex"
+									sx:alignItems="center"
+									sx:gap="0.75rem"
+								>
+									<x-icon
+										icon="fa-database"
+										sx:color="var(--paletteSecondaryMain)"
+										sx:fontSize="1rem"
+									></x-icon>
+									<x-typography variant="body2">Database</x-typography>
+								</x-box>
+								<x-box
+									sx:display="flex"
+									sx:alignItems="center"
+									sx:gap="0.5rem"
+								>
+									<x-box
+										class="status-dot"
+										sx:backgroundColor="var(--paletteSuccessMain)"
+									></x-box>
+									<x-typography
+										variant="caption"
+										sx:color="var(--paletteSuccessMain)"
+										>Online</x-typography
+									>
+								</x-box>
+							</x-box>
+							<x-box
+								sx:display="flex"
+								sx:justifyContent="space-between"
+								sx:alignItems="center"
+							>
+								<x-box
+									sx:display="flex"
+									sx:alignItems="center"
+									sx:gap="0.75rem"
+								>
+									<x-icon
+										icon="fa-globe"
+										sx:color="var(--paletteSecondaryMain)"
+										sx:fontSize="1rem"
+									></x-icon>
+									<x-typography variant="body2">CDN</x-typography>
+								</x-box>
+								<x-box
+									sx:display="flex"
+									sx:alignItems="center"
+									sx:gap="0.5rem"
+								>
+									<x-box
+										class="status-dot"
+										sx:backgroundColor="var(--paletteWarningMain)"
+									></x-box>
+									<x-typography
+										variant="caption"
+										sx:color="var(--paletteWarningMain)"
+										>Slow</x-typography
+									>
+								</x-box>
+							</x-box>
+						</x-box>
+					</x-box>
+				</x-box>
+
+				<!-- Charts and Analytics Section -->
+				<x-box class="dashboard-charts-grid">
+					<!-- Monthly Revenue Bar Chart -->
+					<x-box
+						class="dashboard-chart-card"
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+						sx:display="flex"
+						sx:flexDirection="column"
+						sx:gap="1rem"
+					>
+						<x-typography variant="h4">Monthly Revenue</x-typography>
+						<x-viz-bar
+							data="global_monthlyRevenue"
+							color="#3b82f6"
+						></x-viz-bar>
+					</x-box>
+
+					<!-- Device Usage Pie Chart -->
+					<x-box
+						class="dashboard-chart-card"
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+						sx:display="flex"
+						sx:flexDirection="column"
+						sx:gap="1rem"
+					>
+						<x-typography variant="h4">Device Usage</x-typography>
+						<x-viz-pie
+							data="global_deviceUsage"
+							color="#059669"
+						></x-viz-pie>
+					</x-box>
+
+					<!-- Sales by Category Pie Chart -->
+					<x-box
+						class="dashboard-chart-card"
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+						sx:display="flex"
+						sx:flexDirection="column"
+						sx:gap="1rem"
+					>
+						<x-typography variant="h4">Sales by Category</x-typography>
+						<x-viz-pie
+							data="global_salesByCategory"
+							color="#d97706"
+						></x-viz-pie>
+					</x-box>
+
+					<!-- Weekly Traffic Bar Chart -->
+					<x-box
+						class="dashboard-chart-card"
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+						sx:display="flex"
+						sx:flexDirection="column"
+						sx:gap="1rem"
+					>
+						<x-typography variant="h4">Weekly Traffic</x-typography>
+						<x-viz-bar
+							data="global_weeklyTraffic"
+							color="#7c3aed"
+						></x-viz-bar>
+					</x-box>
+
+					<!-- User Growth Bar Chart -->
+					<x-box
+						class="dashboard-chart-card"
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+						sx:display="flex"
+						sx:flexDirection="column"
+						sx:gap="1rem"
+					>
+						<x-typography variant="h4">User Growth</x-typography>
+						<x-viz-bar
+							data="global_userGrowth"
+							color="#dc2626"
+						></x-viz-bar>
+					</x-box>
+
+					<!-- Revenue by Region Pie Chart -->
+					<x-box
+						class="dashboard-chart-card"
+						sx:padding="1.5rem"
+						sx:backgroundColor="var(--paletteBackgroundPaper)"
+						sx:borderRadius="12px"
+						sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+						sx:border="1px solid var(--paletteDivider)"
+						sx:display="flex"
+						sx:flexDirection="column"
+						sx:gap="1rem"
+					>
+						<x-typography variant="h4">Revenue by Region</x-typography>
+						<x-viz-pie
+							data="global_revenueByRegion"
+							color="#0891b2"
+						></x-viz-pie>
+					</x-box>
+				</x-box>
+
+				<!-- Recent Activity -->
+				<x-box
+					sx:padding="1.5rem"
+					sx:backgroundColor="var(--paletteBackgroundPaper)"
+					sx:borderRadius="12px"
+					sx:boxShadow="0 2px 8px rgba(0,0,0,0.1)"
+					sx:border="1px solid var(--paletteDivider)"
+					sx:margin="0 0 2rem 0"
+				>
+					<x-typography
+						variant="h4"
+						sx:margin="0 0 1rem 0"
+						>Recent Activity</x-typography
+					>
+					<x-box
+						sx:display="flex"
+						sx:flexDirection="column"
+						sx:gap="0.75rem"
+					>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--palettePrimaryMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									icon="fa-user-plus"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2">New user registered</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>2 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteSuccessMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									icon="fa-check"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2">Payment processed</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>5 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteInfoMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									icon="fa-bell"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>System notification sent</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>10 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteWarningMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-exclamation"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>High traffic detected</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>15 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--palettePrimaryMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-database"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Database backup completed</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>20 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteSuccessMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-shield"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Security scan passed</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>25 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteInfoMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-cog"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>System maintenance started</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>30 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteWarningMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-clock-o"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Scheduled task delayed</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>35 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--palettePrimaryMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-upload"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>File upload completed</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>40 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteSuccessMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-check-circle"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2">Email campaign sent</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>45 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteInfoMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-line-chart"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Analytics report generated</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>50 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteWarningMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-exclamation-circle"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2">Memory usage high</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>55 minutes ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--palettePrimaryMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-refresh"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2">Cache refreshed</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>1 hour ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteSuccessMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-lock"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Password policy updated</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>1 hour ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteInfoMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-download"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2">Export completed</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>1 hour ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteWarningMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-wifi"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Network connectivity restored</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>2 hours ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--palettePrimaryMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-star"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Feature flag enabled</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>2 hours ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteSuccessMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-trash"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2">Old logs cleaned up</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>3 hours ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteInfoMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-refresh"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>System restart completed</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>4 hours ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteWarningMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-bug"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Bug report submitted</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>5 hours ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--palettePrimaryMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-code"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Code deployment successful</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>6 hours ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteSuccessMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-thumbs-up"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>User feedback received</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>8 hours ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteInfoMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-calendar"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Scheduled maintenance completed</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>12 hours ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--paletteWarningMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-server"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Server load normalized</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>1 day ago</x-typography
+								>
+							</x-box>
+						</x-box>
+						<x-box
+							sx:display="flex"
+							sx:alignItems="center"
+							sx:gap="1rem"
+						>
+							<x-box
+								sx:width="40px"
+								sx:height="40px"
+								sx:borderRadius="50%"
+								sx:backgroundColor="var(--palettePrimaryMain)"
+								sx:display="flex"
+								sx:alignItems="center"
+								sx:justifyContent="center"
+							>
+								<x-icon
+									name="fa-rocket"
+									sx:color="white"
+									sx:fontSize="1rem"
+								></x-icon>
+							</x-box>
+							<x-box sx:flex="1">
+								<x-typography variant="body2"
+									>Performance optimization applied</x-typography
+								>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextTertiary)"
+									>2 days ago</x-typography
+								>
+							</x-box>
+						</x-box>
+					</x-box>
+				</x-box>
+			</div>
+		</div>
+		<div class="dashboard-sidebar">
+			<x-box
+				style="
+					height: 75px;
+					min-height: 75px;
+					align-items: center;
+					display: flex;
+					position: sticky;
+					top: 0;
+					background-color: var(--paletteBackgroundPaper);
+					z-index: 100;
+					padding: 1rem;
+					backdrop-filter: blur(4px);
+					-webkit-backdrop-filter: blur(4px);
+					box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+					border: none;
+					border-bottom: none;
+					/* Add gradient overlay for smoother transition */
+					background: linear-gradient(
+						to bottom,
+						rgba(255, 255, 255, 0.95) 0%,
+						rgba(255, 255, 255, 0.85) 70%,
+						rgba(255, 255, 255, 0.6) 100%
+					);
+				"
+			>
+				<x-typography
+					variant="h1"
+					sx:marginBottom="12px"
+					sx:color="var(--paletteTextPrimary)"
+				>
+					Summary
+				</x-typography>
 			</x-box>
-		</x-box>
 
-		<!-- prettier-ignore -->
-		<x-markdown>
-			# Header Type 1
-			## Header 2
-			### Header 3
-			#### Header 4
-			##### Header 5
-			###### Header 6
-			
-			
-			## Getting Started
+			<div class="sidebar-content">
+				<!-- Your Balance Section -->
+				<div class="sidebar-section">
+					<x-typography
+						variant="h4"
+						sx:margin="0 0 2rem 0"
+					>
+						Your Balance
+					</x-typography>
+					<x-typography
+						variant="h1"
+						sx:fontWeight="bold"
+						sx:color="var(--paletteTextPrimary)"
+						sx:marginBottom="1rem"
+					>
+						$10,632.00
+					</x-typography>
 
-			1. **Navigation**: Use the sidebar to switch between pages
-			2. **Components**: Explore the various framework components
-			3. **Styling**: Customize using CSS variables and `sx:` attributes
+					<div class="balance-changes">
+						<div class="balance-change positive">
+							<x-icon
+								icon="fa-arrow-up"
+								sx:color="#4caf50"
+								sx:fontSize="12px"
+							></x-icon>
+							<span>$3,250.07</span>
+						</div>
+						<div class="balance-change negative">
+							<x-icon
+								icon="fa-arrow-down"
+								sx:color="#f44336"
+								sx:fontSize="12px"
+							></x-icon>
+							<span>$1,062.90</span>
+						</div>
+					</div>
+				</div>
 
-			> **Tip**: This markdown content is rendered client-side and supports all standard markdown features including *emphasis*, **bold text**, and `code snippets`.
-		</x-markdown>
-	</x-content>
+				<!-- Top Categories Section -->
+				<div class="sidebar-section">
+					<x-typography
+						variant="h4"
+						sx:margin="0 0 1rem 0"
+					>
+						Top Categories
+					</x-typography>
+
+					<div class="categories-grid">
+						<div class="category-card footwear">
+							<div class="category-icon">
+								<x-icon
+									icon="fa-shopping-bag"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="category-content">
+								<x-typography
+									variant="body2"
+									sx:fontWeight="bold"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Footwear
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									18,941 units
+								</x-typography>
+							</div>
+						</div>
+
+						<div class="category-card accessories">
+							<div class="category-icon">
+								<x-icon
+									icon="fa-hand-paper-o"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="category-content">
+								<x-typography
+									variant="body2"
+									sx:fontWeight="bold"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Accessories
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									26,061 units
+								</x-typography>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Activity Section -->
+				<div class="sidebar-section">
+					<div class="section-header">
+						<x-typography
+							variant="h4"
+							sx:margin="0 0 1rem 0"
+						>
+							Activity
+						</x-typography>
+						<x-typography
+							variant="body2"
+							sx:color="var(--palettePrimaryMain)"
+							sx:cursor="pointer"
+						>
+							SEE ALL
+						</x-typography>
+					</div>
+
+					<div class="activity-list">
+						<div class="activity-item">
+							<div class="activity-icon income">
+								<x-icon
+									icon="fa-money"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Withdraw Earning
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									12:40 am
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								$4,120
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon bills">
+								<x-icon
+									icon="fa-file-text"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Paying Website tax
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									10:20 am
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $230
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon shopping">
+								<x-icon
+									icon="fa-shopping-cart"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Online Purchase
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									9:15 am
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $89.99
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon expense">
+								<x-icon
+									icon="fa-credit-card"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Card Payment
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									8:30 am
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $156.75
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon income">
+								<x-icon
+									icon="fa-arrow-up"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Deposit Received
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									Yesterday
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								+ $2,500
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon food">
+								<x-icon
+									icon="fa-cutlery"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Restaurant Bill
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									Yesterday
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $67.50
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon transport">
+								<x-icon
+									icon="fa-car"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Gas Station
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									2 days ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $45.20
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon food">
+								<x-icon
+									icon="fa-coffee"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Coffee Shop
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									2 days ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $12.50
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon shopping">
+								<x-icon
+									icon="fa-shopping-bag"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Grocery Store
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									3 days ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $127.80
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon entertainment">
+								<x-icon
+									icon="fa-film"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Movie Theater
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									3 days ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $28.00
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon expense">
+								<x-icon
+									icon="fa-arrow-down"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									ATM Withdrawal
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									4 days ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $200
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon utilities">
+								<x-icon
+									icon="fa-phone"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Phone Bill
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									5 days ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $85.99
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon bills">
+								<x-icon
+									icon="fa-home"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Rent Payment
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									1 week ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $1,200
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon transport">
+								<x-icon
+									icon="fa-car"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Car Insurance
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									1 week ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $156.00
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon shopping">
+								<x-icon
+									icon="fa-gift"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Gift Purchase
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									1 week ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $75.00
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon health">
+								<x-icon
+									icon="fa-heartbeat"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Gym Membership
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									2 weeks ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $49.99
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon travel">
+								<x-icon
+									icon="fa-plane"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Flight Booking
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									2 weeks ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $450.00
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon travel">
+								<x-icon
+									icon="fa-bed"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Hotel Booking
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									2 weeks ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $320.00
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon income">
+								<x-icon
+									icon="fa-arrow-up"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Salary Deposit
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									3 weeks ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								+ $5,200
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon expense">
+								<x-icon
+									icon="fa-credit-card"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Credit Card Payment
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									3 weeks ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $890.00
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon food">
+								<x-icon
+									icon="fa-cutlery"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Fine Dining
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									3 weeks ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $180.50
+							</x-typography>
+						</div>
+
+						<div class="activity-item">
+							<div class="activity-icon shopping">
+								<x-icon
+									icon="fa-shopping-cart"
+									sx:color="white"
+								></x-icon>
+							</div>
+							<div class="activity-content">
+								<x-typography
+									variant="body2"
+									sx:color="var(--paletteTextPrimary)"
+								>
+									Online Shopping
+								</x-typography>
+								<x-typography
+									variant="caption"
+									sx:color="var(--paletteTextSecondary)"
+								>
+									4 weeks ago
+								</x-typography>
+							</div>
+							<x-typography
+								variant="body2"
+								sx:color="var(--paletteTextPrimary)"
+								sx:fontWeight="500"
+							>
+								- $234.99
+							</x-typography>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </x-page>

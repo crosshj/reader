@@ -2,7 +2,8 @@
 x-viz-pie {
 	display: block;
 	width: 100%;
-	height: 300px;
+	height: 100%;
+	--pie-base-color: var(--palettePrimaryMain, #1976d2);
 }
 
 x-viz-pie .viz-pie-container {
@@ -19,43 +20,43 @@ x-viz-pie .viz-svg {
 }
 
 x-viz-pie .viz-slice {
-	fill: var(--palettePrimaryMain, #1976d2);
+	fill: var(--pie-base-color);
 	transition: fill 0.2s ease;
 	cursor: pointer;
 }
 
 x-viz-pie .viz-slice:hover {
-	fill: color-mix(in srgb, var(--palettePrimaryMain, #1976d2) 80%, black);
+	fill: color-mix(in srgb, var(--pie-base-color) 80%, black);
 }
 
 x-viz-pie .viz-slice:nth-child(1) {
-	fill: var(--palettePrimaryMain, #1976d2);
+	fill: var(--pie-base-color);
 }
 x-viz-pie .viz-slice:nth-child(2) {
 	fill: color-mix(
 		in srgb,
-		var(--palettePrimaryMain, #1976d2) 80%,
+		var(--pie-base-color) 85%,
 		var(--paletteBackgroundPaper, #ffffff)
 	);
 }
 x-viz-pie .viz-slice:nth-child(3) {
 	fill: color-mix(
 		in srgb,
-		var(--palettePrimaryMain, #1976d2) 60%,
+		var(--pie-base-color) 70%,
 		var(--paletteBackgroundPaper, #ffffff)
 	);
 }
 x-viz-pie .viz-slice:nth-child(4) {
 	fill: color-mix(
 		in srgb,
-		var(--palettePrimaryMain, #1976d2) 40%,
+		var(--pie-base-color) 55%,
 		var(--paletteBackgroundPaper, #ffffff)
 	);
 }
 x-viz-pie .viz-slice:nth-child(5) {
 	fill: color-mix(
 		in srgb,
-		var(--palettePrimaryMain, #1976d2) 20%,
+		var(--pie-base-color) 40%,
 		var(--paletteBackgroundPaper, #ffffff)
 	);
 }
@@ -91,37 +92,37 @@ x-viz-pie .viz-legend-color {
 	width: 16px;
 	height: 16px;
 	border-radius: 2px;
-	background-color: var(--palettePrimaryMain, #1976d2);
+	background-color: var(--pie-base-color);
 }
 
 x-viz-pie .viz-legend-item:nth-child(1) .viz-legend-color {
-	background-color: var(--palettePrimaryMain, #1976d2);
+	background-color: var(--pie-base-color);
 }
 x-viz-pie .viz-legend-item:nth-child(2) .viz-legend-color {
 	background-color: color-mix(
 		in srgb,
-		var(--palettePrimaryMain, #1976d2) 80%,
+		var(--pie-base-color) 85%,
 		var(--paletteBackgroundPaper, #ffffff)
 	);
 }
 x-viz-pie .viz-legend-item:nth-child(3) .viz-legend-color {
 	background-color: color-mix(
 		in srgb,
-		var(--palettePrimaryMain, #1976d2) 60%,
+		var(--pie-base-color) 70%,
 		var(--paletteBackgroundPaper, #ffffff)
 	);
 }
 x-viz-pie .viz-legend-item:nth-child(4) .viz-legend-color {
 	background-color: color-mix(
 		in srgb,
-		var(--palettePrimaryMain, #1976d2) 40%,
+		var(--pie-base-color) 55%,
 		var(--paletteBackgroundPaper, #ffffff)
 	);
 }
 x-viz-pie .viz-legend-item:nth-child(5) .viz-legend-color {
 	background-color: color-mix(
 		in srgb,
-		var(--palettePrimaryMain, #1976d2) 20%,
+		var(--pie-base-color) 40%,
 		var(--paletteBackgroundPaper, #ffffff)
 	);
 }
